@@ -1,0 +1,35 @@
+# Dependencies
+node_modules/
+
+# OS / editor
+.DS_Store
+Thumbs.db
+Desktop.ini
+*.swp
+*.swo
+.idea/
+.vscode/
+*.code-workspace
+
+# Env & secrets
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+credentials.json
+
+# Local eval / temp
+_*.py
+_*.json
+*.log
+.tmp/
+temp/
+dist/
+build/
+
+# Playwright / test artifacts
+test-results/
+playwright-report/
+.arch_*.json
+.arch_*.png

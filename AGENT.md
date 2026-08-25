@@ -1,0 +1,80 @@
+# 架构生成器规范（给 Cursor / Swark / 任意 LLM Agent）
+
+> 本目录是一个「项目架构可视化脚手架」。
+> 你的任务：扫描上级目标仓库，把 6 个 .md 文件按本规范填满 Mermaid 代码。
+> **不要改 HTML、不要改 architecture.config.js、不要新建其他文件。**
+
+## 渲染协议（必须遵守）
+1. 每个 .md 文件由若干「## 子图N：标题」+ 紧跟其后的 ```mermaid 代码块 组成。
+2. viewer 用正则 /```mermaid\s*\n([\s\S]*?)```/g 提取代码块，标题用作子图卡片标题。
+3. Mermaid 版本为 11，支持 C4Context / C4Container / C4Component / flowchart / classDiagram。
+4. 节点 ID 用英文 snake_case（如 svc_auth、db_primary），label 可中文。
+5. C4 图里所有 Rel 引用的实体必须先声明（Person / System / Container / ...）。
+6. 每个视图推荐 2 张子图，避免单图过大；如内容多可增至 3 张。
+7. 每个 .md 末尾保留一行：`*模板文件 · 请替换为你项目的实际内容*`，并保留一个空行。
+
+## 6 个 .md 的填入要求
+| 文件 | 视图 | 内容来源 | Mermaid 类型 |
+|------|------|---------|-------------|
+| c4-context.md | 系统全景 | README、产品文档、外部依赖清单 | C4Context |
+| c4-container.md | 容器视图 | docker-compose.yml、Dockerfile、服务目录、端口 | C4Container |
+| c4-component.md | 组件详情 | 各服务源码的模块/类、import 关系 | C4Component |
+| block-diagram.md | 分层模块 | 按技术分层（前端/API/业务/数据/存储/监控/基础设施） | flowchart TB + subgraph |
+| class-diagram.md | 类图 | 核心领域模型、继承/组合关系 | classDiagram |
+| deployment-ops.md | 部署运维 | k8s manifest、CI/CD、监控配置 | flowchart TB |
+
+## 扫描优先级（零 API Key 即可完成）
+1. 包管理器：package.json / pom.xml / go.mod / requirements.txt / Cargo.toml
+2. 编排文件：docker-compose.yml、Dockerfile、k8s/*.yaml
+3. 端口与配置：.env.example、config/*.yml、application.yml（**禁止读取 .env**）
+4. 入口与路由：main.*、app.*、routes/、controller/
+5. 模块/import：src/ 下的 import / require / from 语句
+6. 数据模型：entity/、model/、domain/ 下的类/结构体
+
+## 输出禁忌
+- 禁止把 .env / 密钥 / token 写进 .md
+- 禁止臆造不存在的服务名或外部系统
+- 禁止改 architecture.config.js 与 architecture_visualized.html
+- 禁止引入 mermaid 11 不支持的语法
+- 禁止删除 .md 末尾的 `*模板文件 · 请替换为你项目的实际内容*` 行
+
+## 校验清单（写完每个 .md 自检）
+- [ ] 所有 Rel 实体都已先声明
+- [ ] 节点 ID 唯一、无重名
+- [ ] C4 图含 `UpdateLayoutConfig($c4ShapeInRow="3", $c4BoundaryInRow="1")`
+- [ ] 每个 .md 末尾保留：`*模板文件 · 请替换为你项目的实际内容*`
+- [ ] .md 末尾有空行（避免渲染截断）
+- [ ] 子图标题格式：`## 子图N：标题`（N 从 1 开始递增）
+
+## 标题格式
+
+viewer 认任意 `##` 标题 + 紧随其后的 mermaid 块。推荐 `## 子图N：标题`（N 从 1 递增）。单图文件也可以用 `## 分层全景` 这种描述性标题。
+
+## 推荐工作流（给 Cursor Agent）
+1. 先扫 docker-compose.yml / package.json → 填 c4-container.md（信息最确定）
+2. 再扫各服务源码目录 → 填 c4-component.md
+3. 扫领域模型 / entity → 填 class-diagram.md
+4. 按技术分层汇总 → 填 block-diagram.md
+5. 扫 k8s / 部署配置 → 填 deployment-ops.md
+6. 最后综合 README + 外部依赖 → 填 c4-context.md（可叙述补充）
+7. 浏览器打开 architecture_visualized.html 验证 6 张图都能渲染
+
+## 复制到 Cursor Chat 的提示词
+
+把本目录拷到目标项目后，在项目根打开 Chat，附上本文件：
+
+```
+@architecture_viewer/AGENT.md 是生成器规范。请扫描上级目录（本项目根）的
+源码、package.json / docker-compose.yml / configs / k8s，按 AGENT.md 要求
+覆写 6 个 .md 文件。每张图先给出 Mermaid 草稿，确认后再写盘。
+从 c4-container.md 开始，最后做 c4-context.md。
+```
+
+## Swark 产出怎么贴进来
+
+Swark 一次只出一张 Mermaid（多为 flowchart / classDiagram），不是 C4 全套。
+
+1. 复制生成的 mermaid 源码（不要外层 markdown 外壳也行）
+2. 贴进 `block-diagram.md` 或 `class-diagram.md` 的第一个 mermaid 块
+3. 保留该文件的 `##` 标题；其余 5 张图仍用 Cursor 按本规范生成
+

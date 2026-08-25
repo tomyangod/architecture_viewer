@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>架构可视化脚手架 - 集成示例（放入任意项目即可使用）</title>
+    <style>
+        * { box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'PingFang SC', 'Microsoft YaHei', sans-serif;
+            margin: 0;
+            padding: 30px;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e8eaf6 100%);
+            color: #263238;
+            line-height: 1.7;
+        }
+        .wrap { max-width: 1200px; margin: 0 auto; }
+        h1 { margin: 0 0 8px; font-size: 28px; color: #1a237e; }
+        .subtitle { color: #546e7a; margin-bottom: 30px; }
+        .card {
+            background: #fff;
+            border-radius: 14px;
+            padding: 22px 26px;
+            margin-bottom: 22px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+        }
+        .card h2 {
+            margin: 0 0 12px;
+            font-size: 18px;
+            color: #1a237e;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .tag {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 600;
+            background: #e8eaf6;
+            color: #283593;
+        }
+        .tag.rec { background: #c8e6c9; color: #2e7d32; }
+        .tag.plain { background: #fff3e0; color: #e65100; }
+        pre {
+            background: #263238;
+            color: #eceff1;
+            border-radius: 10px;
+            padding: 16px 18px;
+            overflow-x: auto;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+        code.inline {
+            background: #eceff1;
+            color: #37474f;
+            padding: 2px 8px;
+            border-radius: 5px;
+            font-size: 13px;
+        }
+        .btns { display: flex; flex-wrap: wrap; gap: 10px; margin: 12px 0; }
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 9px 18px;
+            border-radius: 10px;
+            background: linear-gradient(135deg,#1a237e,#283593);
+            color: #fff;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            transition: transform 0.15s, box-shadow 0.15s;
+        }
+        .btn:hover { transform: translateY(-2px); box-shadow: 0 6px 18px rgba(26,35,126,0.3); }
+        .btn.secondary { background: linear-gradient(135deg,#2e7d32,#388e3c); }
+        .btn.warn { background: linear-gradient(135deg,#e65100,#f57c00); }
+        .steps { counter-reset: step; list-style: none; padding: 0; }
+        .steps li {
+            counter-increment: step;
+            position: relative;
+            padding: 10px 0 10px 46px;
+            border-bottom: 1px dashed #cfd8dc;
+        }
+        .steps li:last-child { border-bottom: none; }
+        .steps li::before {
+            content: counter(step);
+            position: absolute;
+            left: 0; top: 8px;
+            width: 32px; height: 32px;
+            background: linear-gradient(135deg,#1a237e,#283593);
+            color: #fff;
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 700; font-size: 14px;
+        }
+        .iframe-wrap {
+            border-radius: 14px;
+            overflow: hidden;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.12);
+            background: #fff;
+        }
+        .tips {
+            background: linear-gradient(135deg,#e3f2fd,#e8eaf6);
+            border-left: 4px solid #1565c0;
+            padding: 14px 18px;
+            border-radius: 10px;
+            font-size: 13px;
+            color: #37474f;
+            margin-top: 14px;
+        }
+        .tips strong { color: #1a237e; }
+    </style>
+</head>
+<body>
+<div class="wrap">
+    <h1>🏗️ 项目架构可视化脚手架 — 集成示例</h1>
+    <p class="subtitle">本页面演示：如何把 <code class="inline">architecture_viewer</code> 作为插件/组件嵌入到任意项目中。</p>
+
+    <!-- ============ 卡片1： 3 秒快速开始 ============ -->
+    <div class="card">
+        <h2>⚡ 3 秒快速开始 <span class="tag rec">推荐独立使用</span></h2>
+        <ol class="steps">
+            <li>把整个 <code class="inline">architecture_viewer</code> 文件夹复制到你的项目任意位置，例如 <code class="inline">docs/architecture/</code></li>
+            <li>修改 <code class="inline">architecture.config.js</code> 顶部的 <code class="inline">USER_CONFIG</code>，填写项目名称、描述等信息</li>
+            <li>编辑同目录下的 6 个 <code class="inline">.md</code> 文件（C4 Context / Container / Component / Block / Class / Deployment），用你的 Mermaid 架构图替换模板</li>
+            <li>浏览器打开 <code class="inline">architecture_visualized.html</code> 即完成 ✅</li>
+        </ol>
+        <div class="btns">
+            <a class="btn" href="architecture_visualized.html" target="_blank">🔗 打开脚手架（独立模式）</a>
+        </div>
+    </div>
+
+    <!-- ============ 卡片2： URL 参数配置 ============ -->
+    <div class="card">
+        <h2>🔗 方式 A：URL 参数快速配置 <span class="tag plain">零配置文件</span></h2>
+        <p>直接在 HTML 链接后拼接参数，不需要修改任何文件。支持参数：<code class="inline">tab</code>、<code class="inline">embed</code>、<code class="inline">theme</code>、<code class="inline">primary</code>、<code class="inline">title</code>、<code class="inline">config</code>。</p>
+        <div class="btns">
+            <a class="btn secondary" href="architecture_visualized.html?tab=block&theme=ocean&title=电商系统架构图" target="_blank">示例：指定 Tab+海洋主题</a>
+            <a class="btn secondary" href="architecture_visualized.html?embed=1&tab=c4-container&hideHeader=1&hideFooter=1" target="_blank">示例：嵌入模式</a>
+            <a class="btn secondary" href="architecture_visualized.html?primary=c2185b&title=自定义主色示例" target="_blank">示例：自定义品牌色 #c2185b</a>
+        </div>
+        <pre>&lt;a href="architecture_visualized.html?tab=c4-container&theme=ocean&title=MyProject"&gt;
+  查看容器架构图
+&lt;/a&gt;</pre>
+    </div>
+
+    <!-- ============ 卡片3： iframe 嵌入 ============ -->
+    <div class="card">
+        <h2>📦 方式 B：作为 iframe 嵌入任意页面 <span class="tag rec">项目文档页集成</span></h2>
+        <p>在你的项目 README 页面、内部 Wiki、后台管理系统的文档页中直接嵌入，支持高度自定义 + postMessage 双向通信。</p>
+
+        <div class="btns">
+            <button class="btn" onclick="createIframeDemo()">✨ 插入 iframe（编程式）</button>
+            <button class="btn warn" onclick="clearIframeDemo()">🗑️ 清空示例</button>
+            <button class="btn secondary" onclick="switchIframeTab('c4-context')">切换到 Context</button>
+            <button class="btn secondary" onclick="switchIframeTab('block')">切换到分层图</button>
+        </div>
+
+        <div id="iframe-demo-slot"></div>
+
+        <div class="tips">
+            <strong>💡 嵌入模式特性：</strong><br>
+            • <code class="inline">embed=1</code> 自动隐藏返回顶部按钮<br>
+            • <code class="inline">hideHeader=1&hideFooter=1&hideChangelog=1</code> 只保留核心架构图<br>
+            • 通过父页面 JS 发送 postMessage 可以控制切换 Tab、注入 Mermaid 代码、下载、重新渲染
+        </div>
+        <pre>// 父页面 JS：控制嵌入的架构图 iframe
+const iframe = document.querySelector('#arch-iframe');
+
+// 切换到容器视图
+iframe.contentWindow.postMessage({
+  __arch_viewer__: true,
+  type: 'switchTab',
+  tabId: 'c4-container'
+}, '*');
+
+// 直接注入你的架构图 Mermaid 代码（不用创建 md 文件）
+iframe.contentWindow.postMessage({
+  __arch_viewer__: true,
+  type: 'setMermaid',
+  tabId: 'c4-context',
+  code: `C4Context
+    title 我的项目架构
+    Person(userA, "用户")
+    System(core, "我的系统")
+    Rel(userA, core, "使用", "HTTPS")`
+}, '*');</pre>
+    </div>
+
+    <!-- ============ 卡片4： 编程式 API ============ -->
+    <div class="card">
+        <h2>🧩 方式 C：编程式 API（全局 <code class="inline">ARCHITECTURE_VIEWER</code>） <span class="tag">高级</span></h2>
+        <p>在同域页面或插件中直接调用公开 API，动态生成配置并创建 iframe：</p>
+        <pre>// 先引入 architecture.config.js
+// &lt;script src="architecture.config.js"&gt;&lt;/script&gt;
+
+// 1) 获取 / 修改当前配置
+console.log(ARCHITECTURE_VIEWER.getConfig());
+ARCHITECTURE_VIEWER.setConfig({
+  project: { title: '动态修改的标题' },
+  features: { download: false, fullscreen: false }  // 按需禁用功能
+});
+
+// 2) 把配置对象编码成 URL 参数（用于 iframe src）
+const urlParams = ARCHITECTURE_VIEWER.toUrlParams({
+  embed: { enabled: true, hideHeader: true, defaultTab: 'class' },
+  theme: { preset: 'sunset' },
+  project: { title: '我的项目 - 代码结构视图' }
+});
+// => 'config=eyJlbWJlZCI6eyJlbmFibGVkIjp0cnVlLC...'
+
+// 3) 快捷创建一个可嵌入的 iframe 元素
+const iframe = ARCHITECTURE_VIEWER.createIframe(
+  'architecture_visualized.html',  // viewer 路径
+  { theme: { preset: 'forest' } }, // 配置对象
+  { width: '100%', height: '700px', borderRadius: '16px' }
+);
+document.body.appendChild(iframe);
+
+// 4) 给 iframe 发送命令（切换 tab / 注入代码 / 下载 ...）
+ARCHITECTURE_VIEWER.postToIframe(iframe, {
+  type: 'switchTab', tabId: 'deployment'
+});</pre>
+    </div>
+
+    <!-- ============ 卡片5： 功能开关 ============ -->
+    <div class="card">
+        <h2>🎛️ 功能开关（按需裁剪功能）</h2>
+        <p>在 <code class="inline">architecture.config.js</code> 中通过 <code class="inline">features</code> 字段，或 URL 参数、动态 setConfig 精细控制哪些功能启用：</p>
+        <pre>features: {
+  zoomPan: true,         // 缩放/平移（鼠标滚轮/拖拽）
+  fullscreen: true,      // 全屏查看
+  download: true,        // 导出 PNG / SVG
+  search: true,          // 搜索框 + 模块匹配
+  hoverHighlight: true,  // 悬停高亮关联路径
+  focusMode: true,       // 点击模块聚焦（淡化无关）
+  sourceRefresh: true,   // 🔄 刷新源文件按钮
+  interactionTips: true  // 首次打开的操作提示气泡
+}</pre>
+        <div class="btns">
+            <a class="btn" href="architecture_visualized.html?config=eyJmZWF0dXJlcyI6eyJ6b29tUGFuIjpmYWxzZSwiZnVsbHNjcmVlbiI6ZmFsc2UsImRvd25sb2FkIjpmYWxzZSwic2VhcmNoIjpmYWxzZSwiaG92ZXJIaWdobGlnaHQiOnRydWUsImZvY3VzTW9kZSI6ZmFsc2UsInNvdXJjZVJlZnJlc2giOmZhbHNlLCJpbnRlcmFjdGlvblRpcHMiOmZhbHNlfX0=" target="_blank">示例：最简模式（仅渲染）</a>
+        </div>
+    </div>
+
+    <!-- ============ 卡片6： 文件清单 ============ -->
+    <div class="card">
+        <h2>📁 脚手架文件清单</h2>
+        <p>把这些文件作为整体复制到任意项目目录即可，不依赖任何构建工具：</p>
+        <pre>architecture_viewer/
+├── architecture_visualized.html   # 🚀 主入口（浏览器打开这个）
+├── architecture.config.js         # ⚙️  配置文件（改项目信息）+ 插件 API
+│                                    #    ARCHITECTURE_VIEWER 全局对象在此暴露
+├── c4-context.md                  # 🗺️ C4 Context（系统全景）模板
+├── c4-container.md                # 🏠 C4 Container（容器视图）模板
+├── c4-component.md                # 🔧 C4 Component（组件详情）模板
+├── block-diagram.md               # 📦 分层模块图模板
+├── class-diagram.md               # 💻 核心类结构模板
+├── deployment-ops.md              # 🚀 部署运维图模板
+├── sample-usage.html              # 📖 本页面（集成示例，可删除）
+├── README.md                      # 说明文档
+└── USER_GUIDE.md                  # 用户指南</pre>
+        <div class="tips">
+            <strong>💡 单文件嵌入提示：</strong> 如果你希望更轻量（比如只需要 1 张图 + 不需要 md 文件），可以直接在 config 的 tabs 中使用 <code class="inline">inlineMermaid</code> 或 <code class="inline">inlineBlocks</code> 直接写 Mermaid 代码，或者在 iframe 嵌入后用 postMessage 调用 <code class="inline">setMermaid</code> 动态注入。
+        </div>
+    </div>
+</div>
+
+<script src="architecture.config.js"></script>
+<script>
+    // ===== 演示：通过全局 API 创建 iframe =====
+    let demoIframe = null;
+
+    function createIframeDemo() {
+        clearIframeDemo();
+        const slot = document.getElementById('iframe-demo-slot');
+        const cfg = {
+            embed: {
+                enabled: true,
+                hideHeader: false,
+                hideFooter: true,
+                hideChangelog: true,
+                hideFileReferences: true,
+                defaultTab: 'block'
+            },
+            theme: { preset: 'ocean' },
+            project: { title: '嵌入模式示例 - 电商平台架构' }
+        };
+        demoIframe = window.ARCHITECTURE_VIEWER.createIframe(
+            'architecture_visualized.html',
+            cfg,
+            { width: '100%', height: '720px', borderRadius: '16px' }
+        );
+        demoIframe.id = 'demo-arch-iframe';
+        const wrap = document.createElement('div');
+        wrap.className = 'iframe-wrap';
+        wrap.style.marginTop = '14px';
+        wrap.appendChild(demoIframe);
+        slot.appendChild(wrap);
+    }
+
+    function clearIframeDemo() {
+        const slot = document.getElementById('iframe-demo-slot');
+        slot.innerHTML = '';
+        demoIframe = null;
+    }
+
+    function switchIframeTab(tabId) {
+        if (!demoIframe) {
+            alert('请先点击「插入 iframe」创建示例');
+            return;
+        }
+        window.ARCHITECTURE_VIEWER.postToIframe(demoIframe, {
+            type: 'switchTab',
+            tabId: tabId
+        });
+    }
+</script>
+</body>
+</html>
