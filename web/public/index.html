@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Architecture Viewer — 把仓库变成永不漂移的架构图门户</title>
+  <meta name="description" content="VS Code / Cursor 扩展：扫描仓库一键生成 C4 六视图，预览、做漂移校验，跟着 PR 一起更新，让架构图再也不脱节。" />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link rel="alternate icon" href="/favicon.ico" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/styles.css" />
+</head>
+<body>
+  <div class="page">
+    <header class="top">
+      <a class="brand" href="/" data-i18n="brand">Architecture Viewer</a>
+      <nav class="nav">
+        <a href="#product" data-i18n="nav.product">产品</a>
+        <a href="#demo" data-i18n="nav.demo">演示</a>
+        <a href="#download" data-i18n="nav.download">下载</a>
+        <a href="#pricing" data-i18n="nav.pricing">定价</a>
+        <a class="nav-ext" href="https://gitee.com/heyangyan/architecture_viewer" target="_blank" rel="noopener" data-i18n="nav.repo">开源仓</a>
+        <button type="button" class="lang-toggle" id="lang-toggle" aria-label="Language">EN</button>
+      </nav>
+    </header>
+
+    <section class="hero" id="top">
+      <p class="eyebrow" data-i18n="hero.eyebrow">开源 Apache-2.0 · 漂移红灯进 CI · CLI + Web</p>
+      <h1 data-i18n-html="hero.title">架构图一脱节，PR 就红灯。</h1>
+      <p class="lede" data-i18n="hero.lede">
+        Community 免费：粘贴 Git URL 出六视图，把 Actions 模板丢进仓库，图与代码不一致就拦合并。
+        可选精修（DeepSeek Key，约 30–90 秒）。Pro 再做托管评论与增量同步。
+      </p>
+
+      <div class="try-it">
+        <form id="url-generate-form" class="try-form-wrap">
+          <div class="try-form">
+            <input type="text" id="repo-url" placeholder="https://gitee.com/user/repo" class="try-input" autocomplete="off" />
+            <button type="submit" class="btn primary" id="url-generate-btn" data-i18n="hero.tryBtn">生成架构图</button>
+          </div>
+          <p class="try-mode-line muted small">
+            <span id="try-mode" class="try-mode" data-i18n="hero.modeFast">本次：骨架（即时）</span>
+          </p>
+          <details class="try-advanced" id="try-advanced">
+            <summary data-i18n="hero.tryAdvanced">我有 API Key · 精修（可选）</summary>
+            <input type="password" id="repo-api-key" class="try-input try-key" autocomplete="off" placeholder="sk-…" />
+            <label class="try-remember small muted">
+              <input type="checkbox" id="repo-api-remember" checked />
+              <span data-i18n="hero.tryRemember">在本机浏览器记住 Key（仅存于 localStorage）</span>
+            </label>
+            <p class="try-key-hint muted small" data-i18n="hero.tryKeyHint">Key 只随本次请求发送，不会写入分享页或服务端。服务端已配置 Key 时可不填。</p>
+          </details>
+          <p id="try-status" class="try-status" hidden role="alert"></p>
+        </form>
+        <p class="try-hint muted small" data-i18n="hero.tryHint">公开仓库 · 无 Key 即时骨架 · 有 Key 精修约 30–90 秒</p>
+      </div>
+
+      <div class="cta">
+        <a class="btn ghost" href="#demo" data-i18n="hero.ctaSecondary">看 60 秒演示</a>
+        <a class="btn ghost" href="#download" data-i18n="hero.ctaCli">CLI 安装</a>
+      </div>
+      <div class="hero-stage" aria-hidden="true">
+        <div class="stage-grid"></div>
+        <div class="stage-panel">
+          <span class="stage-label">Workflow</span>
+          <code>Init → Generate → Preview → Validate(CI)</code>
+          <span class="stage-chips">
+            <i>Context</i><i>Container</i><i>Component</i><i>Block</i><i>Class</i><i>Ops</i>
+          </span>
+        </div>
+      </div>
+    </section>
+
+    <section class="split" id="product">
+      <div>
+        <h2 data-i18n="product.title">一条引擎，两个入口</h2>
+        <p class="section-copy" data-i18n-html="product.copy">
+          扫描、生成、校验全在 <code>lib/</code> 里，Web 和 CLI 共用一套引擎。
+          Web 负责粘贴 URL 即出图；CLI 负责写进仓库 + CI 漂移红灯。
+        </p>
+      </div>
+      <div class="pair">
+        <article>
+          <h3 data-i18n="product.webTitle">① 网页版 · 粘贴即出图</h3>
+          <p data-i18n-html="product.webBody">粘贴 Git 仓库 URL，得到六视图分享页 <code>/p/&lt;id&gt;</code>。无 Key 即时骨架；有 Key 精修后再分享。</p>
+          <ul class="feature-list">
+            <li data-i18n="product.web1">支持 GitHub / Gitee / GitLab 公开仓库</li>
+            <li data-i18n="product.web2">可缩放、搜索节点、高亮依赖</li>
+            <li data-i18n="product.web3">一张链接发评审会，图随版本走</li>
+          </ul>
+        </article>
+        <article>
+          <h3 data-i18n="product.extTitle">② CLI · 写进仓库 + CI 漂移</h3>
+          <p data-i18n="product.extBody"><code>npm i -g architecture-viewer</code>。Init → Generate → check --drift。图落在仓库里，跟 PR 一起 review。</p>
+          <ul class="feature-list">
+            <li data-i18n="product.ext1">六视图一次出图，图随仓库保存</li>
+            <li data-i18n="product.ext2">GitHub Actions 模板：PR 漂移直接红灯</li>
+            <li data-i18n="product.ext3">零运行时依赖，Node ≥ 18 即可</li>
+            <li data-i18n="product.ext4">可选 LLM 精修（用户自带 API Key）</li>
+          </ul>
+        </article>
+      </div>
+    </section>
+
+    <section class="split" id="pain">
+      <div>
+        <h2>为什么别再手画架构图</h2>
+        <p class="section-copy">
+          大多数架构图的半衰期就是发出去那天的下午。人走、代码动、需求改，图就开始撒谎。
+          我们的解法不是让你"更勤奋"，而是让代码 <strong>自己告诉图该怎么变</strong>。
+        </p>
+      </div>
+      <div class="pair">
+        <article>
+          <h3>痛点</h3>
+          <ul class="feature-list feature-vs">
+            <li>写完一次就没人维护</li>
+            <li>新人入职看的是"去年的真相"</li>
+            <li>评审会上对不上模块名</li>
+            <li>运维部署跟图上的架构不一致</li>
+          </ul>
+        </article>
+        <article>
+          <h3>Architecture Viewer</h3>
+          <ul class="feature-list feature-vs win">
+            <li>Generate 一键更新六视图</li>
+            <li>PR 里自动跑 Validate，漂移直接红</li>
+            <li>节点 ID 对齐到真实模块 / 服务名</li>
+            <li>部署目录、compose 服务、入口文件都纳入扫描</li>
+          </ul>
+        </article>
+      </div>
+    </section>
+
+    <section class="demo" id="demo">
+      <h2 data-i18n="demo.title">60 秒走一遍真实链路</h2>
+      <p class="section-copy" data-i18n-html="demo.copy">
+        我们做了一个专门的演示仓 <strong>Coffee Shop · 咖啡订单平台</strong>，刻意覆盖 compose、前后端、领域类、Worker、K8s。
+        下面是<strong>已烘焙的静态分享页</strong>（官网不实时扫你的仓库，轻量无风险）。点进去就能看见六视图长什么样。
+      </p>
+
+      <ol class="demo-steps" aria-label="产品链路">
+        <li><strong>Init</strong><span data-i18n="demo.step1">拷入 Viewer 套件</span></li>
+        <li><strong>Generate</strong><span data-i18n="demo.step2">扫描仓库出六视图</span></li>
+        <li><strong>Preview</strong><span data-i18n="demo.step3">浏览器 / Webview 看图</span></li>
+        <li><strong>Validate</strong><span data-i18n="demo.step4">协议 + 漂移；坏图 CI 红灯</span></li>
+      </ol>
+
+      <div class="demo-panel demo-samples">
+        <div class="tabs" role="tablist" aria-label="演示样例">
+          <button type="button" class="tab active" data-sample="showcase" data-i18n="demo.tabShowcase">完整六视图 · Coffee Shop</button>
+          <button type="button" class="tab" data-sample="drift-fail" data-i18n="demo.tabDrift">漂移红灯 · 故意坏图</button>
+        </div>
+
+        <div class="panel active" id="panel-showcase">
+          <h3 class="sample-title" data-i18n="demo.showcaseTitle">Coffee Shop · 咖啡订单平台</h3>
+          <p class="sample-desc muted" data-i18n="demo.showcaseDesc">
+            顾客下单 → frontend → api（Order / Payment / Inventory）→ postgres / redis → mq → worker 出杯通知。
+            扫描命中 6 个 compose 服务、backend 领域类、deploy/K8s，协议 PASS，漂移 0。
+          </p>
+          <div class="sample-result">
+            <span class="badge badge-ok">协议 PASS</span>
+            <span class="badge badge-ok">漂移 0</span>
+            <span class="badge badge-ok">6 服务</span>
+            <span class="badge badge-ok">领域类</span>
+          </div>
+          <div class="result-actions">
+            <a class="btn primary" href="/samples/showcase/?tab=block" target="_blank" rel="noopener" data-i18n="demo.openShowcase">打开六视图分享页</a>
+            <button type="button" class="btn ghost" data-copy="#cmd-showcase" data-i18n="demo.copyCmd">复制本地复现命令</button>
+          </div>
+          <pre id="cmd-showcase"><code>node lib/cli.js init examples/showcase-shop
+node lib/cli.js generate examples/showcase-shop
+node lib/cli.js check examples/showcase-shop/architecture_viewer --filled --drift --repo examples/showcase-shop
+# 然后在扩展里 Preview，或打开官网 /samples/showcase/</code></pre>
+        </div>
+
+        <div class="panel" id="panel-drift-fail">
+          <h3 class="sample-title">故意坏图 · 这才是付费理由</h3>
+          <p class="sample-desc muted">
+            同一套校验夹具：<code>Rel(web, ghost_service)</code> 未声明实体，外加模板占位未清。
+            <code>arch-viewer check --filled</code> 退出码非 0 —— CI 直接红灯，坏图进不了主干。
+          </p>
+          <div class="sample-result">
+            <span class="badge badge-bad">协议 FAIL</span>
+            <span class="badge badge-bad">Rel 未声明</span>
+            <span class="badge badge-bad">占位未清</span>
+          </div>
+          <div class="result-actions">
+            <a class="btn primary" href="/samples/drift-fail/" target="_blank" rel="noopener">打开坏图预览</a>
+            <button type="button" class="btn ghost" data-copy="#cmd-drift">复制校验命令</button>
+          </div>
+          <pre id="cmd-drift"><code>node lib/cli.js check eval/demo-drift --filled
+# 预期输出：
+# ERROR  c4-container.md: still contains template placeholders
+# ERROR  c4-container.md sub-1: Rel(web, ghost_service) → "ghost_service" NOT DECLARED
+# exit 1</code></pre>
+        </div>
+      </div>
+
+      <p class="tip" id="demo-tip" hidden></p>
+    </section>
+
+    <section class="download" id="download">
+      <h2 data-i18n="dl.title">安装 · 一分钟跑起来</h2>
+      <p class="section-copy" data-i18n="dl.copy">
+        Community 永远免费 + 开源（Apache-2.0）。两种方式任选其一。
+      </p>
+
+      <div class="download-grid">
+        <article class="dl-card">
+          <div class="dl-head">
+            <span class="dl-tag tag-cli">CLI</span>
+            <h3>命令行 · 给 CI 与脚本用</h3>
+          </div>
+          <p>一条命令 Init + Generate，CI 里跑 Validate 做门禁。</p>
+          <ul class="feature-list">
+            <li>Node ≥ 18，零运行时依赖</li>
+            <li>跟网页共用同一套 lib/ 引擎</li>
+            <li>GitHub Actions 模板：PR 漂移红灯</li>
+            <li>可选 LLM 精修（用户自带 API Key）</li>
+          </ul>
+          <div class="dl-actions">
+            <button type="button" class="btn primary" data-copy="#cmd-npm">复制安装命令</button>
+            <a class="btn ghost" href="https://gitee.com/heyangyan/architecture_viewer" target="_blank" rel="noopener">看 README</a>
+          </div>
+          <pre id="cmd-npm"><code>npm i -g architecture-viewer
+arch-viewer init ./your-repo
+arch-viewer generate ./your-repo
+# 精修（需 DEEPSEEK_API_KEY）：
+arch-viewer generate ./your-repo --refine
+arch-viewer check ./your-repo --drift</code></pre>
+        </article>
+
+        <article class="dl-card">
+          <div class="dl-head">
+            <span class="dl-tag tag-src">Docker</span>
+            <h3>自托管 Web · 给团队用</h3>
+          </div>
+          <p>一条 docker compose up，团队共享 Web 入口。</p>
+          <ul class="feature-list">
+            <li>粘贴 Git URL → 骨架即时 / 精修约 30–90 秒 → 分享链接</li>
+            <li>数据持久化（.data/ 卷）</li>
+            <li>内网部署，代码不出局域网</li>
+          </ul>
+          <div class="dl-actions">
+            <button type="button" class="btn primary" data-copy="#cmd-docker">复制部署命令</button>
+            <a class="btn ghost" href="https://gitee.com/heyangyan/architecture_viewer" target="_blank" rel="noopener">看 Dockerfile</a>
+          </div>
+          <pre id="cmd-docker"><code>git clone https://gitee.com/heyangyan/architecture_viewer.git
+cd architecture_viewer
+docker compose up -d
+# 打开 http://localhost:3847</code></pre>
+        </article>
+
+        <article class="dl-card">
+          <div class="dl-head">
+            <span class="dl-tag tag-src">源码</span>
+            <h3>二次开发</h3>
+          </div>
+          <p>Apache-2.0，直接 clone 跑官网或嵌到你自己的工具流里。</p>
+          <ul class="feature-list">
+            <li>CLI + Web 同构，共用 lib/ 引擎</li>
+            <li>无外部服务依赖</li>
+            <li>README 含完整指南</li>
+          </ul>
+          <div class="dl-actions">
+            <button type="button" class="btn primary" data-copy="#cmd-git">复制</button>
+            <a class="btn ghost" href="https://gitee.com/heyangyan/architecture_viewer" target="_blank" rel="noopener">打开仓库</a>
+          </div>
+          <pre id="cmd-git"><code>git clone https://gitee.com/heyangyan/architecture_viewer.git
+cd architecture_viewer
+npm install
+# npm run web 启官网；或 node lib/cli.js generate ./your-repo</code></pre>
+        </article>
+      </div>
+    </section>
+
+    <section class="pricing" id="pricing">
+      <h2 data-i18n="pricing.title">出图免费，漂移闭环收费</h2>
+      <p class="section-copy" data-i18n="pricing.copy">
+        Community：Actions 漂移模板自托管免费。Pro：托管 PR 漂移评论 + 增量同步（¥29/月）。Team：组织规范与门禁托管。
+      </p>
+      <div class="price-grid">
+        <article>
+          <h3>Community</h3>
+          <p class="price">¥0</p>
+          <ul>
+            <li>开源扩展 + CLI + 自托管 Web</li>
+            <li><strong>Actions 漂移红灯模板</strong></li>
+            <li>骨架生成 · 可选 --refine</li>
+          </ul>
+          <div class="price-cta">
+            <a class="btn ghost" href="#download">立即下载</a>
+          </div>
+        </article>
+        <article class="featured">
+          <h3>Pro · 规划中</h3>
+          <p class="price">¥29<span>/月</span></p>
+          <ul>
+            <li><strong>托管 PR 漂移评论</strong></li>
+            <li>增量同步 · 云端导入</li>
+            <li>私密分享 · 账户额度</li>
+          </ul>
+          <div class="price-cta">
+            <a class="btn primary" href="#download">先下 Community · 等 Pro</a>
+          </div>
+        </article>
+        <article>
+          <h3>Team · 规划中</h3>
+          <p class="price">¥999<span>/年/仓库</span></p>
+          <ul>
+            <li>组织图库 + 制图规范</li>
+            <li>CI 门禁托管 + 多仓聚合</li>
+            <li>私有化部署</li>
+          </ul>
+          <div class="price-cta">
+            <a class="btn ghost" href="https://gitee.com/heyangyan/architecture_viewer" target="_blank" rel="noopener">提 Issue 预约</a>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <footer class="foot">
+      <span>Architecture Viewer · v<span id="ver">0.1.0</span> · Apache-2.0</span>
+      <span>
+        <a href="/api/health">API</a> · <a href="https://gitee.com/heyangyan/architecture_viewer/blob/master/LICENSE" target="_blank" rel="noopener">License</a> · <a href="https://gitee.com/heyangyan/architecture_viewer/blob/master/COMMERCIAL.md" target="_blank" rel="noopener">商业说明</a>
+      </span>
+    </footer>
+  </div>
+  <script src="/app.js"></script>
+</body>
+</html>

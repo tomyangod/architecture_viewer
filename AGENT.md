@@ -11,7 +11,7 @@
 4. 节点 ID 用英文 snake_case（如 svc_auth、db_primary），label 可中文。
 5. C4 图里所有 Rel 引用的实体必须先声明（Person / System / Container / ...）。
 6. 每个视图推荐 2 张子图，避免单图过大；如内容多可增至 3 张。
-7. 每个 .md 末尾保留一行：`*模板文件 · 请替换为你项目的实际内容*`，并保留一个空行。
+7. **填完后删除** Init 模板页脚 `*模板文件 · 请替换为你项目的实际内容*`（`check --filled` 会因该行失败）。
 
 ## 6 个 .md 的填入要求
 | 文件 | 视图 | 内容来源 | Mermaid 类型 |
@@ -19,9 +19,30 @@
 | c4-context.md | 系统全景 | README、产品文档、外部依赖清单 | C4Context |
 | c4-container.md | 容器视图 | docker-compose.yml、Dockerfile、服务目录、端口 | C4Container |
 | c4-component.md | 组件详情 | 各服务源码的模块/类、import 关系 | C4Component |
-| block-diagram.md | 分层模块 | 按技术分层（前端/API/业务/数据/存储/监控/基础设施） | flowchart TB + subgraph |
+| block-diagram.md | **分层模块（观感主视图）** | 按业务/技术分层：前端、API、采集/异步、存储、监控、交付 | flowchart TB + 彩色 subgraph |
 | class-diagram.md | 类图 | 核心领域模型、继承/组合关系 | classDiagram |
 | deployment-ops.md | 部署运维 | k8s manifest、CI/CD、监控配置 | flowchart TB |
+
+## block-diagram.md 视觉规范（通解 · 任意仓库）
+
+目标观感：彩色分层底框 + 图标节点 +「中文名 / 文件名」双行标签 + 箭头语义。
+**实现入口**：`lib/layers.js`（`arch-viewer generate` 默认走这里）；本规范同时约束 Cursor / LLM。
+
+1. 用 `flowchart TB`，每层一个 `subgraph L_xxx["🖥️ 层名"]`；**空层不画**
+2. 语义层顺序（有节点才出现）：`frontend` → `api` → `schedule` → `worker` → `storage` → `monitor` → `ops`
+3. 节点写法：`id["🛒 中文名<br/><small>path/or/tech</small>"]`；存储可用圆柱 `id[("💾 ...")]`
+4. 层色建议（style subgraph）：
+   - 前端/交互：粉 `#fce4ec`
+   - API/业务：紫 `#ede7f6`
+   - 调度/异步：橙 `#fff3e0`
+   - 采集/Worker：绿 `#e8f5e9`
+   - 存储：青 `#e0f7fa`
+   - 监控：黄 `#fffde7`
+   - 交付：绿 `#e8f5e9`
+5. 用 `classDef` + `class` 给节点上色；箭头必须有中文标签（调用/读写/投递…）
+6. **禁止**把分层图画成只有 L1→L2→L3 三个空框；节点要落到真实文件/服务名
+7. 可选覆盖：仓库根 `architecture.layers.json`（见 `templates/architecture.layers.example.json`）
+8. C4 图保持标准建模即可；「好看、一眼分层」优先保证 block-diagram
 
 ## 扫描优先级（零 API Key 即可完成）
 1. 包管理器：package.json / pom.xml / go.mod / requirements.txt / Cargo.toml
@@ -36,13 +57,13 @@
 - 禁止臆造不存在的服务名或外部系统
 - 禁止改 architecture.config.js 与 architecture_visualized.html
 - 禁止引入 mermaid 11 不支持的语法
-- 禁止删除 .md 末尾的 `*模板文件 · 请替换为你项目的实际内容*` 行
+- 禁止在成品图中保留 `*模板文件 · 请替换*` / `[你的项目名称]` / `用户角色A` 等占位
 
 ## 校验清单（写完每个 .md 自检）
 - [ ] 所有 Rel 实体都已先声明
 - [ ] 节点 ID 唯一、无重名
 - [ ] C4 图含 `UpdateLayoutConfig($c4ShapeInRow="3", $c4BoundaryInRow="1")`
-- [ ] 每个 .md 末尾保留：`*模板文件 · 请替换为你项目的实际内容*`
+- [ ] 已删除模板页脚与占位文案（`check --filled` 必须通过）
 - [ ] .md 末尾有空行（避免渲染截断）
 - [ ] 子图标题格式：`## 子图N：标题`（N 从 1 开始递增）
 

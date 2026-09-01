@@ -1,0 +1,14 @@
+{
+  "id": "showcase",
+  "title": "Coffee Shop · 咖啡订单平台",
+  "subtitle": "官方 Showcase · 六视图一次看懂下单链路",
+  "protocolOk": true,
+  "driftOk": true,
+  "story": "顾客下单 → API 落库/扣库存 → MQ → Worker 出杯通知",
+  "checks": [
+    "协议 PASS",
+    "漂移 0",
+    "compose 6 服务",
+    "领域类 4 个"
+  ]
+}

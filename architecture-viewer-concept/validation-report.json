@@ -1,0 +1,96 @@
+{
+  "success": true,
+  "outcome": "passed",
+  "repairable": true,
+  "terminalViolations": [],
+  "terminalBlockingSummary": null,
+  "skillProvenance": {
+    "name": "solo-design",
+    "version": "2026.08.06.19.15.08",
+    "version_source": "skill-release-manifest.json",
+    "runtime_skill_dir": null,
+    "recorded_at": null,
+    "expected_version": "2026.08.06.19.15.08",
+    "status": "matched",
+    "read_status": "ok"
+  },
+  "operatingMode": "free-explore",
+  "renderBlockingErrorCount": 0,
+  "softWarningCount": 0,
+  "renderBlockingErrors": [],
+  "errorSignatures": [],
+  "softWarnings": [],
+  "repairPlanHints": [],
+  "repairActionTable": [],
+  "errorCount": 0,
+  "warningCount": 0,
+  "errors": [],
+  "warnings": [],
+  "validationRunDisciplineStatus": {
+    "declared": true,
+    "restoreMode": false,
+    "maxFullValidationRuns": 2,
+    "validationHistoryCount": 0,
+    "repairLedgerCount": 0,
+    "softWarningsTriggerRepair": false,
+    "terminalState": null,
+    "nextAction": null,
+    "violations": [],
+    "success": true
+  },
+  "terminalState": null,
+  "nextCheck": {
+    "type": "finish-readiness",
+    "command": "node '/Users/yanheyang/.trae-cn/builtin/design/default/skills/solo-design/shared-runtime/deterministic-tooling/validate-finish-readiness.mjs' '/Users/yanheyang/Desktop/architecture_viewer/architecture-viewer-concept' --check=all",
+    "fullValidationAllowed": false,
+    "reason": "workspace validation passed; run complete finish readiness before final delivery"
+  },
+  "repairBatch": [],
+  "repairContextPacket": {
+    "schema_version": "1.0",
+    "purpose": "small-context repair packet; read this before full validation-report.json",
+    "success": true,
+    "terminalState": null,
+    "skillProvenance": {
+      "name": "solo-design",
+      "version": "2026.08.06.19.15.08",
+      "version_source": "skill-release-manifest.json",
+      "runtime_skill_dir": null,
+      "recorded_at": null,
+      "expected_version": "2026.08.06.19.15.08",
+      "status": "matched",
+      "read_status": "ok"
+    },
+    "renderBlockingErrorCount": 0,
+    "softWarningCount": 0,
+    "renderBlockingErrors": [],
+    "repairActionTable": [],
+    "nextCheck": {
+      "type": "finish-readiness",
+      "command": "node '/Users/yanheyang/.trae-cn/builtin/design/default/skills/solo-design/shared-runtime/deterministic-tooling/validate-finish-readiness.mjs' '/Users/yanheyang/Desktop/architecture_viewer/architecture-viewer-concept' --check=all",
+      "fullValidationAllowed": false,
+      "reason": "workspace validation passed; run complete finish readiness before final delivery"
+    },
+    "forbidden": [
+      "do not read validator source",
+      "do not rerun full validation when nextCheck.fullValidationAllowed=false",
+      "do not start preview/browser unless user explicitly asks",
+      "do not hand-edit repair ledger fields"
+    ]
+  },
+  "projectFileHashes": {
+    "architecture-viewer-concept.design": "f74ce33b7ba5ab984e6152529b2eb3b6006cd63f13a64ae3f56246057a5d2bde",
+    "colors_and_type.css": "e305398ada6a3711a6ffada72552e5e0fac3cf1c3ab7ad0f74ca9f8b4cf0e116",
+    "runtime-orchestration-summary.json": "e8ce1b7737ab59184121933bd81c9ef4aea93a88ca478e71f557fcda09daeaf6",
+    "pages/concept.html": "0b9509e7a1962cea7db8c56573fea7e77321e95accce061ee12db88f35b77f47",
+    "pages/ide-workbench.html": "81af5eb99a995037330a37343724c7500b02366f01848097713c88eac484d230",
+    "pages/share-ci.html": "3442b0d6863206161f14ed9ff2d37c04f2b63ad3b9a2ed415b022f012be105cd",
+    "assets/board-concept.png": "7614ac002d7ade816f5aaaa690d57bb9a5392c78b55d7c1b3e464921f3301482",
+    "assets/board-ide-workbench.png": "64a9c866fbaf6abdb269372fa2e3dfbb638e5cf9ff1d3d55a1dccdf892719a7e",
+    "assets/board-share-ci.png": "37a95534e744615138dd40b739976458259fca34b66a5b0bf913e39da82feeb3"
+  },
+  "designDir": "/Users/yanheyang/Desktop/architecture_viewer/architecture-viewer-concept",
+  "expectedPages": 3,
+  "requireInteractions": null,
+  "checkedAt": "2026-08-29T12:44:45.503Z"
+}

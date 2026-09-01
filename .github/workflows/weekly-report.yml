@@ -1,0 +1,22 @@
+name: Weekly WBS report
+
+on:
+  schedule:
+    - cron: "0 9 * * 5"
+  workflow_dispatch:
+
+jobs:
+  report:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - name: Generate Friday progress report
+        run: node pm/scripts/wbs.mjs report
+      - name: Upload weekly report
+        uses: actions/upload-artifact@v4
+        with:
+          name: wbs-weekly-report
+          path: pm/reports/weekly/

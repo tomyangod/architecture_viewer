@@ -1,0 +1,12 @@
+{
+  "name": "showcase-shop",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Architecture Viewer official demo: coffee order platform",
+  "scripts": {
+    "start": "echo 'demo only — see README'"
+  },
+  "dependencies": {
+    "express": "^4.19.0"
+  }
+}

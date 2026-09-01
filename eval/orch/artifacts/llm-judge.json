@@ -1,0 +1,92 @@
+{
+  "scores": [
+    {
+      "id": "A",
+      "path_truth": 9,
+      "layer_semantics": 9,
+      "edge_correctness": 8,
+      "business_naming": 9,
+      "density_readability": 8,
+      "spec_compliance": 9,
+      "deliverable": 9,
+      "reason": "路径真实，分层清晰，关键链路完整，命名准确，但节点稍多且部分边冗余。"
+    },
+    {
+      "id": "B",
+      "path_truth": 6,
+      "layer_semantics": 6,
+      "edge_correctness": 5,
+      "business_naming": 6,
+      "density_readability": 7,
+      "spec_compliance": 7,
+      "deliverable": 6,
+      "reason": "路径基本真实但分层有误（队列归API），边方向部分错误，命名一般，节点数适中。"
+    },
+    {
+      "id": "C",
+      "path_truth": 9,
+      "layer_semantics": 9,
+      "edge_correctness": 9,
+      "business_naming": 9,
+      "density_readability": 7,
+      "spec_compliance": 9,
+      "deliverable": 9,
+      "reason": "路径真实，分层正确，链路完整，命名准确，但节点过多导致可读性稍差。"
+    },
+    {
+      "id": "D",
+      "path_truth": 8,
+      "layer_semantics": 8,
+      "edge_correctness": 7,
+      "business_naming": 8,
+      "density_readability": 7,
+      "spec_compliance": 8,
+      "deliverable": 8,
+      "reason": "路径较真实，分层基本正确，边方向部分合理，命名尚可，但节点偏多且有些边冗余。"
+    },
+    {
+      "id": "E",
+      "path_truth": 7,
+      "layer_semantics": 7,
+      "edge_correctness": 6,
+      "business_naming": 7,
+      "density_readability": 8,
+      "spec_compliance": 8,
+      "deliverable": 7,
+      "reason": "路径基本真实，但分层有误（抓取器归监控），边方向部分错误，命名一般，节点数适中。"
+    },
+    {
+      "id": "F",
+      "path_truth": 7,
+      "layer_semantics": 7,
+      "edge_correctness": 6,
+      "business_naming": 7,
+      "density_readability": 8,
+      "spec_compliance": 8,
+      "deliverable": 7,
+      "reason": "路径基本真实，但分层有误（抓取器归worker），边方向部分错误，命名一般，节点数适中。"
+    },
+    {
+      "id": "G",
+      "path_truth": 7,
+      "layer_semantics": 6,
+      "edge_correctness": 6,
+      "business_naming": 7,
+      "density_readability": 7,
+      "spec_compliance": 8,
+      "deliverable": 7,
+      "reason": "路径基本真实，但分层混乱（前端蓝图归API），边方向部分错误，命名一般，节点数适中。"
+    }
+  ],
+  "ranking": [
+    "A",
+    "C",
+    "D",
+    "E",
+    "F",
+    "G",
+    "B"
+  ],
+  "best": "A",
+  "comments": "总体观察：不同方法的质量差异点主要体现在分层语义和边方向准确性上，A和C在路径真实性和业务命名上表现突出，而B和G在分层和边上存在明显错误。"
+}

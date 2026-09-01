@@ -1,0 +1,30 @@
+{
+  "font": {
+    "assets": {
+      "outfit-regular": {
+        "family": "Outfit",
+        "source": "custom",
+        "zipPath": "assets/fonts/Outfit-Regular.ttf",
+        "format": "truetype",
+        "weight": "400",
+        "style": "normal"
+      },
+      "outfit-bold": {
+        "family": "Outfit",
+        "source": "custom",
+        "zipPath": "assets/fonts/Outfit-Bold.ttf",
+        "format": "truetype",
+        "weight": "700",
+        "style": "normal"
+      },
+      "jetbrains-mono": {
+        "family": "JetBrains Mono",
+        "source": "custom",
+        "zipPath": "assets/fonts/JetBrainsMono-Regular.ttf",
+        "format": "truetype",
+        "weight": "400",
+        "style": "normal"
+      }
+    }
+  }
+}

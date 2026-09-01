@@ -1,0 +1,29 @@
+{
+  "order": ["frontend", "api", "storage", "monitor", "ops"],
+  "titles": {
+    "frontend": "前端展示层",
+    "api": "后端 API 层",
+    "storage": "数据存储层",
+    "monitor": "监控探测层",
+    "ops": "交付 / 运维层"
+  },
+  "nodes": [
+    { "id": "spa", "layer": "frontend", "title": "监控看板", "sub": "src/ · Vue SPA" },
+    { "id": "index_html", "layer": "frontend", "title": "入口页", "sub": "index.html" },
+    { "id": "server", "layer": "api", "title": "HTTP API", "sub": "server/ · Express :3001" },
+    { "id": "auth", "layer": "api", "title": "认证", "sub": "server/auth.js" },
+    { "id": "sqlite", "layer": "storage", "title": "监控库", "sub": "db/ · SQLite / knex" },
+    { "id": "heartbeat", "layer": "monitor", "title": "心跳探测", "sub": "server/ 定时 HTTP/TCP/Ping" },
+    { "id": "notify", "layer": "monitor", "title": "告警通知", "sub": "Telegram / SMTP / Webhook" },
+    { "id": "docker", "layer": "ops", "title": "容器编排", "sub": "compose.yaml · Dockerfile" }
+  ],
+  "edges": [
+    { "from": "user", "to": "spa", "label": "打开看板" },
+    { "from": "spa", "to": "server", "label": "Socket.IO / REST" },
+    { "from": "server", "to": "auth", "label": "鉴权" },
+    { "from": "heartbeat", "to": "sqlite", "label": "写入心跳" },
+    { "from": "server", "to": "sqlite", "label": "读写配置" },
+    { "from": "heartbeat", "to": "notify", "label": "失败告警" },
+    { "from": "docker", "to": "server", "label": "部署" }
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "$schema_comment": "Optional repo-root override for Architecture Viewer layered block diagrams. Place at <repo>/architecture.layers.json",
+  "order": ["frontend", "api", "schedule", "worker", "storage", "monitor", "ops"],
+  "titles": {
+    "schedule": "调度核心层",
+    "worker": "采集层",
+    "storage": "数据存储与持久化",
+    "frontend": "前端展示层",
+    "api": "后端 API 层",
+    "monitor": "监控告警层"
+  },
+  "nodes": [
+    {
+      "id": "central_scheduler",
+      "layer": "schedule",
+      "title": "中央调度",
+      "sub": "scheduler.py"
+    }
+  ],
+  "aliases": {},
+  "edges": [
+    { "from": "user", "to": "central_scheduler", "label": "触发" }
+  ]
+}

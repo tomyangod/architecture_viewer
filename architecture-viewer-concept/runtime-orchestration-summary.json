@@ -1,0 +1,756 @@
+{
+  "skillProvenance": {
+    "name": "solo-design",
+    "version": "2026.08.06.19.15.08",
+    "version_source": "skill-release-manifest.json",
+    "read_status": "ok"
+  },
+  "project": {
+    "projectName": "Architecture Viewer 概念设计稿",
+    "designProjectPath": "/Users/yanheyang/Desktop/architecture_viewer/architecture-viewer-concept",
+    "deviceType": "desktop",
+    "brandPrefix": "av",
+    "selectedIntentWorkflowRead": true,
+    "contextRequirementsLoaded": [
+      {
+        "path": "shared-runtime/runtime-boundaries/lane-runtime-contracts.md",
+        "readStatus": "loaded",
+        "bodyRead": true
+      },
+      {
+        "path": "shared-runtime/agent-dispatch-runtime/lane-dispatch-index.md",
+        "readStatus": "loaded",
+        "bodyRead": true
+      },
+      {
+        "path": "delivery-quality/page-rendering-quality-gate.md",
+        "readStatus": "loaded",
+        "bodyRead": true
+      },
+      {
+        "path": "delivery-quality/design-artifact-validation.md",
+        "readStatus": "loaded",
+        "bodyRead": true
+      },
+      {
+        "path": "delivery-quality/delivery-evidence-contract.md",
+        "readStatus": "loaded",
+        "bodyRead": true
+      },
+      {
+        "path": "visual-experience/visual-experience-guidelines.md",
+        "readStatus": "loaded",
+        "bodyRead": true
+      }
+    ],
+    "sharedProjectShellContract": {
+      "board": "fixed 1440x900 .av-board root, overflow hidden, dark stone bg var(--av-background)",
+      "cornerMarker": "every board carries .av-page-mark with circled number (①/②/③) + Chinese page name, top-left or top-right 24px inset, 11px JetBrains Mono",
+      "typeSystem": "Outfit for display/UI (700/400), JetBrains Mono for code/paths/fingerprints/tabs/logs; CJK falls back to PingFang SC/Noto Sans SC",
+      "colorSystem": "single patina copper var(--av-primary) #3d9b8f for CTA/scan beam/active floor/PASS; drift red var(--av-destructive) #d4534a only for crack/CI fail/NOT DECLARED; surfaces from --av-* tokens only",
+      "componentLanguage": "12-16px radius panels, hairline var(--av-border) separators, shadow alpha <=8%, one thick primary CTA per board, secondary actions as ghost/text",
+      "metaphor": "repository = building; six C4 views = six floor plates; Generate = copper scan beam growing files into nodes; drift = red crack on load-bearing wall; CI validate = structural inspection; share link = rolled-up section drawing",
+      "recurringElements": [
+        "six-floor nameplate system Context/Container/Component/Block/Class/Ops",
+        "health capsule protocol PASS/DRIFT",
+        "mono fingerprint/code strings"
+      ]
+    },
+    "resolvedLane": "free_exploration",
+    "intentProfile": {
+      "caseFamily": "free_exploration",
+      "surface": "page",
+      "operatingMode": "free-explore",
+      "complexity": "stateful-free-fast",
+      "routingReason": "3-page fixed-canvas (1440x900) dark concept boards for investor/customer storyboard; no Design Library, no restore target; pages are information-dense but share one visual system; free-fast guard passes (no multi-device, no long-PRD page tree, no generation tree)."
+    },
+    "contextReadScope": {
+      "mainAgent": {
+        "forbiddenReads": [
+          "other intent-workflows/**",
+          "Sub-Agent implementation files before dispatch"
+        ]
+      },
+      "pageSubAgent": {
+        "allowedReads": [
+          "current lane page runtime guide",
+          "current lane dispatch contract excerpt",
+          "current Page Packet",
+          "supplementaryReads[] only"
+        ],
+        "forbiddenReads": [
+          "SKILL.md full re-read",
+          "other intent-workflows/**",
+          "full runtime-orchestration-summary.json unless explicitly sliced"
+        ]
+      },
+      "readScopeLedgerWriter": "shared-runtime/deterministic-tooling/build-page-dispatch-manifest.mjs",
+      "selectedIntentWorkflowRead": true,
+      "contextRequirementsLoaded": [
+        {
+          "path": "shared-runtime/runtime-boundaries/lane-runtime-contracts.md",
+          "readStatus": "loaded",
+          "bodyRead": true
+        },
+        {
+          "path": "shared-runtime/agent-dispatch-runtime/lane-dispatch-index.md",
+          "readStatus": "loaded",
+          "bodyRead": true
+        },
+        {
+          "path": "delivery-quality/page-rendering-quality-gate.md",
+          "readStatus": "loaded",
+          "bodyRead": true
+        },
+        {
+          "path": "delivery-quality/design-artifact-validation.md",
+          "readStatus": "loaded",
+          "bodyRead": true
+        },
+        {
+          "path": "delivery-quality/delivery-evidence-contract.md",
+          "readStatus": "loaded",
+          "bodyRead": true
+        },
+        {
+          "path": "visual-experience/visual-experience-guidelines.md",
+          "readStatus": "loaded",
+          "bodyRead": true
+        }
+      ]
+    },
+    "cssPreflightEvidence": {
+      "applies": true,
+      "status": "passed",
+      "command": "node /Users/yanheyang/.trae-cn/builtin/design/default/skills/solo-design/shared-runtime/deterministic-tooling/apply-html-head-contract.mjs /Users/yanheyang/Desktop/architecture_viewer/architecture-viewer-concept/colors_and_type.css /Users/yanheyang/Desktop/architecture_viewer/architecture-viewer-concept/.preflight/preflight.html --title=\"Preflight\" --lang=zh-CN --prefix=av",
+      "brandPrefix": "av",
+      "checks": {
+        "themeVars": "present",
+        "semanticTokenFallback": "present",
+        "themeInline": "present",
+        "tailwindCdn": "present",
+        "htmlClass": "present",
+        "semanticMappings": "resolved"
+      },
+      "retryCount": 0,
+      "blockingReason": null
+    },
+    "validationRunDiscipline": {
+      "maxFullValidationRuns": 2,
+      "softWarningsTriggerRepair": false,
+      "blockingRepairMode": "targeted-once",
+      "forbiddenRepairTriggers": [
+        "soft-warning-only",
+        "provenance-warning-only",
+        "style-warning-only"
+      ]
+    },
+    "lowValueCallWatchdog": {
+      "applies": true,
+      "noProgressSignals": [
+        "no_tool_call",
+        "no_artifact_diff",
+        "no_structured_decision"
+      ],
+      "noProgressNextAction": "enter_readiness_or_blocked_summary"
+    },
+    "styleContinuityAnchors": [
+      "Dark stone surfaces from colors_and_type.css (--av-background #1c2128, --av-card #232a33); never pure black",
+      "Single patina-copper hue #3d9b8f for primary CTA / scan beam / active floor / PASS; drift red #d4534a only for crack / CI fail / NOT DECLARED",
+      "Outfit display + JetBrains Mono for code/fingerprints/tabs; 12-16px radius; hairline borders; shadows alpha <=8%",
+      "Building cross-section metaphor repeated on all 3 boards: 6 floor plates Context/Container/Component/Block/Class/Ops with real nameplates",
+      "Corner page marker ①②③ + page name in 11px mono on every board"
+    ],
+    "pageCompletenessGate": {
+      "expectedPages": [
+        "concept",
+        "ide-workbench",
+        "share-ci"
+      ],
+      "requiredStates": [
+        "health-pass",
+        "drift-fail"
+      ],
+      "requiredInteractions": [],
+      "requiredNavigation": [],
+      "missingAllowed": [],
+      "rows": [
+        {
+          "page": "concept",
+          "requirement": "6-floor cut-open code building with real node nameplates (Context: 使用者/Valuation Monitor/Git/外部数据源; Container: valuation_monitor.py/portfolio/research; Component: Worker/Portfolio classes; Block: L1/L2/L3 bands; Class: 2-3 class boxes + dashed deps; Ops: 构建→本地运行→logs/config)",
+          "status": "pending"
+        },
+        {
+          "page": "concept",
+          "requirement": "Right-side code strata: file tree (src, config, docker-compose.yml) swept by copper scan beam; scanned file names grow into floor nodes",
+          "status": "pending"
+        },
+        {
+          "page": "concept",
+          "requirement": "One small red crack on load-bearing wall with annotation 'backend 新增 worker，图上还没有'; opposite healing patch = sole thick CTA Generate",
+          "status": "pending"
+        },
+        {
+          "page": "concept",
+          "requirement": "Top minimal nav (产品/演示/下载/定价/开源仓); H1 '代码是承重墙。架构图是剖面。' <=2 lines; subtitle <=28 chars; elevator capsule Init→Generate→Preview→Validate; primary CTA '在 Cursor 里切开这座楼'; weak text link '看裂缝怎么亮红'; pricing only in footer microcopy Community ¥0 · Pro ¥29/月 · Team ¥999/年/仓库",
+          "status": "pending"
+        },
+        {
+          "page": "ide-workbench",
+          "requirement": "Cursor/VS Code-style dark IDE shell (activity bar, sidebar file tree architecture_viewer/ with c4-context.md…architecture_visualized.html, c4-container.md highlighted open); Webview >=60% of canvas",
+          "status": "pending"
+        },
+        {
+          "page": "ide-workbench",
+          "requirement": "Six tabs Context/Container/Component/Block/Class/Ops with Container active; C4 container diagram with Person 使用者, Container valuation_monitor.py/portfolio/research, System_Ext 外部依赖; zoom controls; search box with 'portfolio' typed → portfolio node highlighted, others dimmed",
+          "status": "pending"
+        },
+        {
+          "page": "ide-workbench",
+          "requirement": "Health capsule 协议 PASS · 漂移 0 · fingerprint 5c0fbf9c; command palette overlay (semi-transparent) listing Architecture Viewer: Init Kit / Generate / Preview / Validate with Generate selected; sole thick CTA 'Generate 六视图' on webview toolbar right; Validate as ghost/icon button; no python -m http.server",
+          "status": "pending"
+        },
+        {
+          "page": "share-ci",
+          "requirement": "Left: read-only web share page in browser chrome, address bar https://app.example/p/a1b2c3; project name Valuation Monitor; clickable tabs; zoomable diagram; cursor hovering portfolio with dependency to research highlighted; corner badge 只读 · 随版本走; no IDE controls",
+          "status": "pending"
+        },
+        {
+          "page": "share-ci",
+          "requirement": "Right: GitHub/Gitee PR failed-check card: check name Architecture Viewer · drift, red light, DRIFT module \"worker\" not found in diagrams, Rel(web, ghost_service) → \"ghost_service\" NOT DECLARED, suggestion 在仓库跑 Generate 后重推",
+          "status": "pending"
+        },
+        {
+          "page": "share-ci",
+          "requirement": "Bottom thin timeline with real steps: 新人打开链接看懂六层 → 有人合并了 worker → CI 裂缝亮红 → Generate 后绿勾; sole primary CTA '把这条红灯接到我们仓库'; pricing microcopy allowed in corner only",
+          "status": "pending"
+        }
+      ]
+    },
+    "defaultDeliverableVisibility": {
+      "applies": true,
+      "requiredVisibleRegions": [
+        {
+          "htmlSrc": "pages/concept.html",
+          "selector": "#building-board",
+          "label": "六层剖面代码大楼（含裂缝与扫描光）",
+          "source": "user requirement"
+        },
+        {
+          "htmlSrc": "pages/concept.html",
+          "selector": "#hero-copy",
+          "label": "主标题/副文/主CTA/工作流胶囊",
+          "source": "user requirement"
+        },
+        {
+          "htmlSrc": "pages/ide-workbench.html",
+          "selector": "#ide-webview",
+          "label": "六视图 Tab + Container 图 + 搜索高亮",
+          "source": "user requirement"
+        },
+        {
+          "htmlSrc": "pages/ide-workbench.html",
+          "selector": "#command-palette",
+          "label": "命令面板浮层（Generate 选中）",
+          "source": "user requirement"
+        },
+        {
+          "htmlSrc": "pages/share-ci.html",
+          "selector": "#share-browser",
+          "label": "只读分享页 /p/a1b2c3",
+          "source": "user requirement"
+        },
+        {
+          "htmlSrc": "pages/share-ci.html",
+          "selector": "#pr-drift-card",
+          "label": "PR 漂移红灯检查卡片",
+          "source": "user requirement"
+        },
+        {
+          "htmlSrc": "pages/share-ci.html",
+          "selector": "#timeline",
+          "label": "底部真实步骤时间轴",
+          "source": "user requirement"
+        }
+      ],
+      "hiddenAllowed": []
+    },
+    "dispatchPreflightManifest": [
+      {
+        "recorded_at": "2026-08-29T11:45:35.568Z",
+        "generatedBy": "build-page-dispatch-manifest.mjs",
+        "packetType": "FreePagePacket",
+        "laneContract": {
+          "resolvedLane": "free_exploration",
+          "packetType": "FreePagePacket",
+          "pageRuntimeGuide": "intent-workflows/intent-page-free-exploration/free-exploration-page-runtime.md",
+          "dispatchContract": "intent-workflows/intent-page-free-exploration/dispatch-contract.md"
+        },
+        "taskLinePresent": true,
+        "outputPathPresent": true,
+        "sharedTemplate": "intent-workflows/intent-page-free-exploration/free-exploration-page-runtime.md",
+        "nodeId": "page-concept",
+        "htmlSrc": "pages/concept.html",
+        "supplementaryReads": [],
+        "allowedWritePaths": [
+          "pages/concept.html",
+          "assets/"
+        ],
+        "forbiddenWriteRoots": [
+          "*.design",
+          "runtime-orchestration-summary.json",
+          "validation-report.json",
+          "finish-readiness-report.json",
+          "restore-contract-report.json",
+          "page-generation-summary.json"
+        ],
+        "toolPolicy": {
+          "todoWriteAllowed": false,
+          "validationScriptsAllowed": false,
+          "previewAllowed": false,
+          "helperScriptsAllowed": false,
+          "designFileWriteAllowed": false,
+          "allowedWritePaths": [
+            "pages/concept.html",
+            "assets/"
+          ]
+        },
+        "skillRuntime": {
+          "skillDir": "/Users/yanheyang/.trae-cn/builtin/design/default/skills/solo-design",
+          "deterministicToolDir": "/Users/yanheyang/.trae-cn/builtin/design/default/skills/solo-design/shared-runtime/deterministic-tooling",
+          "toolPaths": {
+            "applyHtmlHeadContract": "/Users/yanheyang/.trae-cn/builtin/design/default/skills/solo-design/shared-runtime/deterministic-tooling/apply-html-head-contract.mjs",
+            "recordDispatchCompletion": "/Users/yanheyang/.trae-cn/builtin/design/default/skills/solo-design/shared-runtime/deterministic-tooling/record-dispatch-completion.mjs",
+            "buildPageDispatchManifest": "/Users/yanheyang/.trae-cn/builtin/design/default/skills/solo-design/shared-runtime/deterministic-tooling/build-page-dispatch-manifest.mjs",
+            "validateDesignWorkspace": "/Users/yanheyang/.trae-cn/builtin/design/default/skills/solo-design/shared-runtime/deterministic-tooling/validate-design-workspace.mjs",
+            "validateFinishReadiness": "/Users/yanheyang/.trae-cn/builtin/design/default/skills/solo-design/shared-runtime/deterministic-tooling/validate-finish-readiness.mjs",
+            "validateRestoreContract": "/Users/yanheyang/.trae-cn/builtin/design/default/skills/solo-design/shared-runtime/deterministic-tooling/validate-restore-contract.mjs"
+          },
+          "requiredForPageSubAgent": [
+            "applyHtmlHeadContract",
+            "recordDispatchCompletion"
+          ],
+          "pathInjection": "absolute",
+          "pathContract": "Do not use {SKILL_DIR} placeholders inside Page Sub-Agent packets; use toolPaths.* absolute paths.",
+          "commandTemplates": {
+            "recordDispatchCompletion": "node '/Users/yanheyang/.trae-cn/builtin/design/default/skills/solo-design/shared-runtime/deterministic-tooling/record-dispatch-completion.mjs' '/Users/yanheyang/Desktop/architecture_viewer/architecture-viewer-concept' --node-id='page-concept' --html-src='pages/concept.html' --status=completed --changed-files=<comma-separated-project-relative-files> --trace-digest=<main-agent-runtime-trace-digest> --tool-ledger-json=<tool-ledger-json-or-file>"
+          }
+        },
+        "cssFilePath": "/Users/yanheyang/Desktop/architecture_viewer/architecture-viewer-concept/colors_and_type.css",
+        "htmlFilePath": "/Users/yanheyang/Desktop/architecture_viewer/architecture-viewer-concept/pages/concept.html",
+        "brandPrefix": "av",
+        "aestheticsMode": "free-explore",
+        "toolDisciplineBlockPresent": true,
+        "fillHtmlHeadCommand": "node '/Users/yanheyang/.trae-cn/builtin/design/default/skills/solo-design/shared-runtime/deterministic-tooling/apply-html-head-contract.mjs' '/Users/yanheyang/Desktop/architecture_viewer/architecture-viewer-concept/colors_and_type.css' '/Users/yanheyang/Desktop/architecture_viewer/architecture-viewer-concept/pages/concept.html' --title='① 概念模型首页' --lang='zh-CN' --prefix='av'",
+        "headFillMode": "skeleton-first",
+        "viewportMode": "app-shell",
+        "completionSchemaExpected": "compact",
+        "restoreFields": null,
+        "restoreContractStatus": null,
+        "restoreCompactPacket": null,
+        "deterministicCommands": null,
+        "sourceAuthorityLock": null,
+        "preDispatchFileHashes": {
+          "architecture-viewer-concept.design": "3969e2b56d393c60dff77417592ca9896b2e6bb180c8ddee1bcbc98ffbf49f9a"
+        },
+        "contextPreflight": {
+          "workflowPath": "intent-workflows/intent-page-free-exploration/INTENT_WORKFLOW.md",
+          "requiredContextFiles": [
+            "shared-runtime/runtime-boundaries/lane-runtime-contracts.md",
+            "shared-runtime/agent-dispatch-runtime/lane-dispatch-index.md",
+            "delivery-quality/page-rendering-quality-gate.md",
+            "delivery-quality/design-artifact-validation.md",
+            "delivery-quality/delivery-evidence-contract.md",
+            "visual-experience/visual-experience-guidelines.md"
+          ],
+          "optionalContextFiles": [],
+          "passed": true
+        },
+        "pageSliceOnly": true,
+        "requiredFieldsPresent": true,
+        "missingFields": [],
+        "fillHtmlHeadCommandValid": true,
+        "mobileNavigation": {
+          "required": false,
+          "appliesToThisPage": false,
+          "canonicalHtmlIncluded": false,
+          "missingFields": []
+        },
+        "persistedToSummary": true,
+        "taskQueryAudited": false,
+        "proofSource": "summary-only",
+        "largeWorkflowFilesInTaskQuery": null
+      },
+      {
+        "recorded_at": "2026-08-29T11:45:35.568Z",
+        "generatedBy": "build-page-dispatch-manifest.mjs",
+        "packetType": "FreePagePacket",
+        "laneContract": {
+          "resolvedLane": "free_exploration",
+          "packetType": "FreePagePacket",
+          "pageRuntimeGuide": "intent-workflows/intent-page-free-exploration/free-exploration-page-runtime.md",
+          "dispatchContract": "intent-workflows/intent-page-free-exploration/dispatch-contract.md"
+        },
+        "taskLinePresent": true,
+        "outputPathPresent": true,
+        "sharedTemplate": "intent-workflows/intent-page-free-exploration/free-exploration-page-runtime.md",
+        "nodeId": "page-ide-workbench",
+        "htmlSrc": "pages/ide-workbench.html",
+        "supplementaryReads": [],
+        "allowedWritePaths": [
+          "pages/ide-workbench.html",
+          "assets/"
+        ],
+        "forbiddenWriteRoots": [
+          "*.design",
+          "runtime-orchestration-summary.json",
+          "validation-report.json",
+          "finish-readiness-report.json",
+          "restore-contract-report.json",
+          "page-generation-summary.json"
+        ],
+        "toolPolicy": {
+          "todoWriteAllowed": false,
+          "validationScriptsAllowed": false,
+          "previewAllowed": false,
+          "helperScriptsAllowed": false,
+          "designFileWriteAllowed": false,
+          "allowedWritePaths": [
+            "pages/ide-workbench.html",
+            "assets/"
+          ]
+        },
+        "skillRuntime": {
+          "skillDir": "/Users/yanheyang/.trae-cn/builtin/design/default/skills/solo-design",
+          "deterministicToolDir": "/Users/yanheyang/.trae-cn/builtin/design/default/skills/solo-design/shared-runtime/deterministic-tooling",
+          "toolPaths": {
+            "applyHtmlHeadContract": "/Users/yanheyang/.trae-cn/builtin/design/default/skills/solo-design/shared-runtime/deterministic-tooling/apply-html-head-contract.mjs",
+            "recordDispatchCompletion": "/Users/yanheyang/.trae-cn/builtin/design/default/skills/solo-design/shared-runtime/deterministic-tooling/record-dispatch-completion.mjs",
+            "buildPageDispatchManifest": "/Users/yanheyang/.trae-cn/builtin/design/default/skills/solo-design/shared-runtime/deterministic-tooling/build-page-dispatch-manifest.mjs",
+            "validateDesignWorkspace": "/Users/yanheyang/.trae-cn/builtin/design/default/skills/solo-design/shared-runtime/deterministic-tooling/validate-design-workspace.mjs",
+            "validateFinishReadiness": "/Users/yanheyang/.trae-cn/builtin/design/default/skills/solo-design/shared-runtime/deterministic-tooling/validate-finish-readiness.mjs",
+            "validateRestoreContract": "/Users/yanheyang/.trae-cn/builtin/design/default/skills/solo-design/shared-runtime/deterministic-tooling/validate-restore-contract.mjs"
+          },
+          "requiredForPageSubAgent": [
+            "applyHtmlHeadContract",
+            "recordDispatchCompletion"
+          ],
+          "pathInjection": "absolute",
+          "pathContract": "Do not use {SKILL_DIR} placeholders inside Page Sub-Agent packets; use toolPaths.* absolute paths.",
+          "commandTemplates": {
+            "recordDispatchCompletion": "node '/Users/yanheyang/.trae-cn/builtin/design/default/skills/solo-design/shared-runtime/deterministic-tooling/record-dispatch-completion.mjs' '/Users/yanheyang/Desktop/architecture_viewer/architecture-viewer-concept' --node-id='page-ide-workbench' --html-src='pages/ide-workbench.html' --status=completed --changed-files=<comma-separated-project-relative-files> --trace-digest=<main-agent-runtime-trace-digest> --tool-ledger-json=<tool-ledger-json-or-file>"
+          }
+        },
+        "cssFilePath": "/Users/yanheyang/Desktop/architecture_viewer/architecture-viewer-concept/colors_and_type.css",
+        "htmlFilePath": "/Users/yanheyang/Desktop/architecture_viewer/architecture-viewer-concept/pages/ide-workbench.html",
+        "brandPrefix": "av",
+        "aestheticsMode": "free-explore",
+        "toolDisciplineBlockPresent": true,
+        "fillHtmlHeadCommand": "node '/Users/yanheyang/.trae-cn/builtin/design/default/skills/solo-design/shared-runtime/deterministic-tooling/apply-html-head-contract.mjs' '/Users/yanheyang/Desktop/architecture_viewer/architecture-viewer-concept/colors_and_type.css' '/Users/yanheyang/Desktop/architecture_viewer/architecture-viewer-concept/pages/ide-workbench.html' --title='② IDE 工作台' --lang='zh-CN' --prefix='av'",
+        "headFillMode": "skeleton-first",
+        "viewportMode": "app-shell",
+        "completionSchemaExpected": "compact",
+        "restoreFields": null,
+        "restoreContractStatus": null,
+        "restoreCompactPacket": null,
+        "deterministicCommands": null,
+        "sourceAuthorityLock": null,
+        "preDispatchFileHashes": {
+          "architecture-viewer-concept.design": "3969e2b56d393c60dff77417592ca9896b2e6bb180c8ddee1bcbc98ffbf49f9a"
+        },
+        "contextPreflight": {
+          "workflowPath": "intent-workflows/intent-page-free-exploration/INTENT_WORKFLOW.md",
+          "requiredContextFiles": [
+            "shared-runtime/runtime-boundaries/lane-runtime-contracts.md",
+            "shared-runtime/agent-dispatch-runtime/lane-dispatch-index.md",
+            "delivery-quality/page-rendering-quality-gate.md",
+            "delivery-quality/design-artifact-validation.md",
+            "delivery-quality/delivery-evidence-contract.md",
+            "visual-experience/visual-experience-guidelines.md"
+          ],
+          "optionalContextFiles": [],
+          "passed": true
+        },
+        "pageSliceOnly": true,
+        "requiredFieldsPresent": true,
+        "missingFields": [],
+        "fillHtmlHeadCommandValid": true,
+        "mobileNavigation": {
+          "required": false,
+          "appliesToThisPage": false,
+          "canonicalHtmlIncluded": false,
+          "missingFields": []
+        },
+        "persistedToSummary": true,
+        "taskQueryAudited": false,
+        "proofSource": "summary-only",
+        "largeWorkflowFilesInTaskQuery": null
+      },
+      {
+        "recorded_at": "2026-08-29T11:45:35.568Z",
+        "generatedBy": "build-page-dispatch-manifest.mjs",
+        "packetType": "FreePagePacket",
+        "laneContract": {
+          "resolvedLane": "free_exploration",
+          "packetType": "FreePagePacket",
+          "pageRuntimeGuide": "intent-workflows/intent-page-free-exploration/free-exploration-page-runtime.md",
+          "dispatchContract": "intent-workflows/intent-page-free-exploration/dispatch-contract.md"
+        },
+        "taskLinePresent": true,
+        "outputPathPresent": true,
+        "sharedTemplate": "intent-workflows/intent-page-free-exploration/free-exploration-page-runtime.md",
+        "nodeId": "page-share-ci",
+        "htmlSrc": "pages/share-ci.html",
+        "supplementaryReads": [],
+        "allowedWritePaths": [
+          "pages/share-ci.html",
+          "assets/"
+        ],
+        "forbiddenWriteRoots": [
+          "*.design",
+          "runtime-orchestration-summary.json",
+          "validation-report.json",
+          "finish-readiness-report.json",
+          "restore-contract-report.json",
+          "page-generation-summary.json"
+        ],
+        "toolPolicy": {
+          "todoWriteAllowed": false,
+          "validationScriptsAllowed": false,
+          "previewAllowed": false,
+          "helperScriptsAllowed": false,
+          "designFileWriteAllowed": false,
+          "allowedWritePaths": [
+            "pages/share-ci.html",
+            "assets/"
+          ]
+        },
+        "skillRuntime": {
+          "skillDir": "/Users/yanheyang/.trae-cn/builtin/design/default/skills/solo-design",
+          "deterministicToolDir": "/Users/yanheyang/.trae-cn/builtin/design/default/skills/solo-design/shared-runtime/deterministic-tooling",
+          "toolPaths": {
+            "applyHtmlHeadContract": "/Users/yanheyang/.trae-cn/builtin/design/default/skills/solo-design/shared-runtime/deterministic-tooling/apply-html-head-contract.mjs",
+            "recordDispatchCompletion": "/Users/yanheyang/.trae-cn/builtin/design/default/skills/solo-design/shared-runtime/deterministic-tooling/record-dispatch-completion.mjs",
+            "buildPageDispatchManifest": "/Users/yanheyang/.trae-cn/builtin/design/default/skills/solo-design/shared-runtime/deterministic-tooling/build-page-dispatch-manifest.mjs",
+            "validateDesignWorkspace": "/Users/yanheyang/.trae-cn/builtin/design/default/skills/solo-design/shared-runtime/deterministic-tooling/validate-design-workspace.mjs",
+            "validateFinishReadiness": "/Users/yanheyang/.trae-cn/builtin/design/default/skills/solo-design/shared-runtime/deterministic-tooling/validate-finish-readiness.mjs",
+            "validateRestoreContract": "/Users/yanheyang/.trae-cn/builtin/design/default/skills/solo-design/shared-runtime/deterministic-tooling/validate-restore-contract.mjs"
+          },
+          "requiredForPageSubAgent": [
+            "applyHtmlHeadContract",
+            "recordDispatchCompletion"
+          ],
+          "pathInjection": "absolute",
+          "pathContract": "Do not use {SKILL_DIR} placeholders inside Page Sub-Agent packets; use toolPaths.* absolute paths.",
+          "commandTemplates": {
+            "recordDispatchCompletion": "node '/Users/yanheyang/.trae-cn/builtin/design/default/skills/solo-design/shared-runtime/deterministic-tooling/record-dispatch-completion.mjs' '/Users/yanheyang/Desktop/architecture_viewer/architecture-viewer-concept' --node-id='page-share-ci' --html-src='pages/share-ci.html' --status=completed --changed-files=<comma-separated-project-relative-files> --trace-digest=<main-agent-runtime-trace-digest> --tool-ledger-json=<tool-ledger-json-or-file>"
+          }
+        },
+        "cssFilePath": "/Users/yanheyang/Desktop/architecture_viewer/architecture-viewer-concept/colors_and_type.css",
+        "htmlFilePath": "/Users/yanheyang/Desktop/architecture_viewer/architecture-viewer-concept/pages/share-ci.html",
+        "brandPrefix": "av",
+        "aestheticsMode": "free-explore",
+        "toolDisciplineBlockPresent": true,
+        "fillHtmlHeadCommand": "node '/Users/yanheyang/.trae-cn/builtin/design/default/skills/solo-design/shared-runtime/deterministic-tooling/apply-html-head-contract.mjs' '/Users/yanheyang/Desktop/architecture_viewer/architecture-viewer-concept/colors_and_type.css' '/Users/yanheyang/Desktop/architecture_viewer/architecture-viewer-concept/pages/share-ci.html' --title='③ 分享页 + CI 红灯' --lang='zh-CN' --prefix='av'",
+        "headFillMode": "skeleton-first",
+        "viewportMode": "app-shell",
+        "completionSchemaExpected": "compact",
+        "restoreFields": null,
+        "restoreContractStatus": null,
+        "restoreCompactPacket": null,
+        "deterministicCommands": null,
+        "sourceAuthorityLock": null,
+        "preDispatchFileHashes": {
+          "architecture-viewer-concept.design": "3969e2b56d393c60dff77417592ca9896b2e6bb180c8ddee1bcbc98ffbf49f9a"
+        },
+        "contextPreflight": {
+          "workflowPath": "intent-workflows/intent-page-free-exploration/INTENT_WORKFLOW.md",
+          "requiredContextFiles": [
+            "shared-runtime/runtime-boundaries/lane-runtime-contracts.md",
+            "shared-runtime/agent-dispatch-runtime/lane-dispatch-index.md",
+            "delivery-quality/page-rendering-quality-gate.md",
+            "delivery-quality/design-artifact-validation.md",
+            "delivery-quality/delivery-evidence-contract.md",
+            "visual-experience/visual-experience-guidelines.md"
+          ],
+          "optionalContextFiles": [],
+          "passed": true
+        },
+        "pageSliceOnly": true,
+        "requiredFieldsPresent": true,
+        "missingFields": [],
+        "fillHtmlHeadCommandValid": true,
+        "mobileNavigation": {
+          "required": false,
+          "appliesToThisPage": false,
+          "canonicalHtmlIncluded": false,
+          "missingFields": []
+        },
+        "persistedToSummary": true,
+        "taskQueryAudited": false,
+        "proofSource": "summary-only",
+        "largeWorkflowFilesInTaskQuery": null
+      }
+    ],
+    "readScopeLedger": [
+      {
+        "actor": "page-sub-agent",
+        "lane": "free_exploration",
+        "path": "intent-workflows/intent-page-free-exploration/free-exploration-page-runtime.md",
+        "reason": "page runtime guide",
+        "scopeClass": "page-runtime",
+        "declaredBeforeRead": true,
+        "recordedAt": "2026-08-29T11:45:35.568Z",
+        "nodeId": "page-concept",
+        "htmlSrc": "pages/concept.html"
+      },
+      {
+        "actor": "page-sub-agent",
+        "lane": "free_exploration",
+        "path": "intent-workflows/intent-page-free-exploration/dispatch-contract.md",
+        "reason": "dispatch contract",
+        "scopeClass": "dispatch-contract",
+        "declaredBeforeRead": true,
+        "recordedAt": "2026-08-29T11:45:35.568Z",
+        "nodeId": "page-concept",
+        "htmlSrc": "pages/concept.html"
+      }
+    ],
+    "expectedDispatches": [
+      {
+        "nodeId": "page-concept",
+        "pageId": "page-concept",
+        "targetPageId": "page-concept",
+        "htmlSrc": "pages/concept.html",
+        "packetType": "FreePagePacket",
+        "status": "completed",
+        "changedFiles": [
+          "pages/concept.html"
+        ],
+        "toolCallLedger": {
+          "source": "main-agent-runtime-trace",
+          "traceDigest": "concept-20260829-skeleton-main-atomic-passed-7f3a91c2",
+          "todoWriteCalls": 0,
+          "previewCalls": 0,
+          "validationScriptCalls": 0,
+          "helperScriptWrites": 0
+        },
+        "recordedAt": "2026-08-29T12:17:14.768Z",
+        "source": "record-dispatch-completion.mjs"
+      },
+      {
+        "nodeId": "page-ide-workbench",
+        "pageId": "page-ide-workbench",
+        "targetPageId": "page-ide-workbench",
+        "htmlSrc": "pages/ide-workbench.html",
+        "packetType": "FreePagePacket",
+        "status": "completed",
+        "changedFiles": [
+          "pages/ide-workbench.html"
+        ],
+        "toolCallLedger": {
+          "source": "main-agent-runtime-trace",
+          "traceDigest": "ide-20260829-skeleton-main-atomic-passed-b4e27d08",
+          "todoWriteCalls": 0,
+          "previewCalls": 0,
+          "validationScriptCalls": 0,
+          "helperScriptWrites": 0
+        },
+        "recordedAt": "2026-08-29T12:17:14.836Z",
+        "source": "record-dispatch-completion.mjs"
+      },
+      {
+        "nodeId": "page-share-ci",
+        "pageId": "page-share-ci",
+        "targetPageId": "page-share-ci",
+        "htmlSrc": "pages/share-ci.html",
+        "packetType": "FreePagePacket",
+        "status": "completed",
+        "changedFiles": [
+          "pages/share-ci.html"
+        ],
+        "toolCallLedger": {
+          "source": "main-agent-runtime-trace",
+          "traceDigest": "shareci-20260829-skeleton-main-atomic-passed-c91a5e64",
+          "todoWriteCalls": 0,
+          "previewCalls": 0,
+          "validationScriptCalls": 0,
+          "helperScriptWrites": 0
+        },
+        "recordedAt": "2026-08-29T12:17:14.898Z",
+        "source": "record-dispatch-completion.mjs"
+      }
+    ],
+    "mainAgentPostDispatchMutations": [
+      {
+        "path": "architecture-viewer-concept.design",
+        "owner": "main-agent",
+        "reason": "Registered three image nodes (board PNG screenshots) after dispatch"
+      },
+      {
+        "path": "pages/concept.html",
+        "owner": "main-agent",
+        "reason": "Added app-shell viewport markers and hero-copy region id"
+      },
+      {
+        "path": "pages/ide-workbench.html",
+        "owner": "main-agent",
+        "reason": "Added app-shell viewport markers and ide-webview/command-palette region ids"
+      },
+      {
+        "path": "pages/share-ci.html",
+        "owner": "main-agent",
+        "reason": "Added app-shell viewport marker and softened card shadow token"
+      },
+      {
+        "path": "colors_and_type.css",
+        "owner": "main-agent",
+        "reason": "Softened --av-shadow-card alpha to <=0.05 per static shadow token rule"
+      }
+    ]
+  },
+  "pages": [
+    {
+      "nodeId": "page-concept",
+      "htmlSrc": "pages/concept.html",
+      "title": "① 概念模型首页",
+      "pageType": "showcase",
+      "writeMode": "SkeletonMainAtomic",
+      "viewportMode": "app-shell",
+      "qualityRisks": [
+        "fixed 1440x900 board geometry must not collapse",
+        "SVG building cross-section with many labels must not overlap",
+        "scan beam animation must respect prefers-reduced-motion"
+      ],
+      "completionStatus": "pending"
+    },
+    {
+      "nodeId": "page-ide-workbench",
+      "htmlSrc": "pages/ide-workbench.html",
+      "title": "② IDE 工作台",
+      "pageType": "task-driven",
+      "writeMode": "SkeletonMainAtomic",
+      "viewportMode": "app-shell",
+      "qualityRisks": [
+        "IDE shell chrome vs webview proportion (webview >=60%)",
+        "command palette overlay must not cover primary CTA",
+        "search dimming state must be statically visible"
+      ],
+      "completionStatus": "pending"
+    },
+    {
+      "nodeId": "page-share-ci",
+      "htmlSrc": "pages/share-ci.html",
+      "title": "③ 分享页 + CI 红灯",
+      "pageType": "showcase",
+      "writeMode": "SkeletonMainAtomic",
+      "viewportMode": "app-shell",
+      "qualityRisks": [
+        "split-screen health vs drift contrast must read instantly",
+        "PR card monospace log lines must not wrap/overflow",
+        "timeline at bottom must stay within 900px board"
+      ],
+      "completionStatus": "pending"
+    }
+  ]
+}

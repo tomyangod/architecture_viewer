@@ -1,0 +1,27 @@
+{
+  "order": ["frontend", "api", "storage", "ops"],
+  "titles": {
+    "frontend": "前端展示层",
+    "api": "后端 API 层",
+    "storage": "数据存储层",
+    "ops": "交付 / 运维层"
+  },
+  "nodes": [
+    { "id": "admin_ui", "layer": "frontend", "title": "管理后台", "sub": "frontend/ · Vue · :9000" },
+    { "id": "app", "layer": "api", "title": "listmonk 服务", "sub": "cmd/main.go · HTTP :9000" },
+    { "id": "models", "layer": "api", "title": "领域模型", "sub": "models/" },
+    { "id": "campaigns", "layer": "api", "title": "邮件投递", "sub": "internal/ · SMTP" },
+    { "id": "db", "layer": "storage", "title": "订阅库", "sub": "postgres · schema.sql" },
+    { "id": "compose", "layer": "ops", "title": "Compose 编排", "sub": "docker-compose.yml" },
+    { "id": "dockerfile", "layer": "ops", "title": "镜像", "sub": "Dockerfile" }
+  ],
+  "edges": [
+    { "from": "user", "to": "admin_ui", "label": "运营配置" },
+    { "from": "admin_ui", "to": "app", "label": "REST API" },
+    { "from": "app", "to": "models", "label": "读写" },
+    { "from": "models", "to": "db", "label": "SQL" },
+    { "from": "app", "to": "campaigns", "label": "触发投递" },
+    { "from": "compose", "to": "app", "label": "部署" },
+    { "from": "compose", "to": "db", "label": "启动 Postgres" }
+  ]
+}

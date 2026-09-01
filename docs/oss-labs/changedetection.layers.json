@@ -1,0 +1,32 @@
+{
+  "order": ["frontend", "api", "schedule", "worker", "storage", "monitor", "ops"],
+  "titles": {
+    "frontend": "前端展示层",
+    "api": "后端 API 层",
+    "schedule": "调度核心层",
+    "worker": "采集层",
+    "storage": "数据存储与持久化",
+    "monitor": "监控告警层",
+    "ops": "交付 / 运维层"
+  },
+  "nodes": [
+    { "id": "ui", "layer": "frontend", "title": "Watch 看板", "sub": "Jinja2 · Flask 页面" },
+    { "id": "flask", "layer": "api", "title": "HTTP API", "sub": "changedetectionio/flask_app.py" },
+    { "id": "queue", "layer": "schedule", "title": "任务队列", "sub": "custom_queue.py · queue_handlers.py" },
+    { "id": "worker", "layer": "worker", "title": "抓取 Worker", "sub": "worker.py · worker_pool.py" },
+    { "id": "playwright", "layer": "worker", "title": "浏览器采集", "sub": "content_fetchers/ · Playwright" },
+    { "id": "datastore", "layer": "storage", "title": "Watch 数据", "sub": "JSON/datastore · 快照 diff" },
+    { "id": "notify", "layer": "monitor", "title": "变更通知", "sub": "notification_service.py · SMTP/Webhook" },
+    { "id": "docker", "layer": "ops", "title": "容器交付", "sub": "Dockerfile · docker-compose.yml" }
+  ],
+  "edges": [
+    { "from": "user", "to": "ui", "label": "配置 Watch" },
+    { "from": "ui", "to": "flask", "label": "表单 / REST" },
+    { "from": "flask", "to": "queue", "label": "投递任务" },
+    { "from": "queue", "to": "worker", "label": "调度" },
+    { "from": "worker", "to": "playwright", "label": "拉取页面" },
+    { "from": "worker", "to": "datastore", "label": "写快照" },
+    { "from": "worker", "to": "notify", "label": "有 diff 则告警" },
+    { "from": "docker", "to": "flask", "label": "部署" }
+  ]
+}

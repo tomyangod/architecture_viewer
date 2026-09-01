@@ -1,0 +1,132 @@
+{
+  "data": [
+    {
+      "id": "page-concept",
+      "title": "① 概念模型首页",
+      "type": "page",
+      "version": 1,
+      "createdAt": 1788003482000,
+      "canvasData": {
+        "x": 0,
+        "y": 0,
+        "group": 0,
+        "layoutSnapshot": {
+          "version": 1,
+          "contentHeight": 900,
+          "viewportWidth": 1440,
+          "sourceHash": "fnv1a-3f58da1b",
+          "measuredAt": 1788006233438
+        }
+      },
+      "devMetadata": {
+        "htmlSrc": "pages/concept.html",
+        "interactions": []
+      }
+    },
+    {
+      "id": "page-ide-workbench",
+      "title": "② IDE 工作台",
+      "type": "page",
+      "version": 1,
+      "createdAt": 1788003482000,
+      "canvasData": {
+        "x": 480,
+        "y": 0,
+        "group": 0,
+        "layoutSnapshot": {
+          "version": 1,
+          "contentHeight": 900,
+          "viewportWidth": 1440,
+          "sourceHash": "fnv1a-aa4dc289",
+          "measuredAt": 1788006233438
+        }
+      },
+      "devMetadata": {
+        "htmlSrc": "pages/ide-workbench.html",
+        "interactions": []
+      }
+    },
+    {
+      "id": "page-share-ci",
+      "title": "③ 分享页 + CI 红灯",
+      "type": "page",
+      "version": 1,
+      "createdAt": 1788003482000,
+      "canvasData": {
+        "x": 960,
+        "y": 0,
+        "group": 0,
+        "layoutSnapshot": {
+          "version": 1,
+          "contentHeight": 900,
+          "viewportWidth": 1440,
+          "sourceHash": "fnv1a-543cc5f9",
+          "measuredAt": 1788006233438
+        }
+      },
+      "devMetadata": {
+        "htmlSrc": "pages/share-ci.html",
+        "interactions": []
+      }
+    },
+    {
+      "id": "image-001",
+      "title": "① 概念模型首页 · 代码大楼剖面图",
+      "type": "image",
+      "version": 1,
+      "createdAt": 1788003600000,
+      "canvasData": {
+        "x": 0,
+        "y": 373,
+        "naturalSize": {
+          "width": 1440,
+          "height": 900
+        }
+      },
+      "devMetadata": {
+        "imageSrc": "assets/board-concept.png"
+      }
+    },
+    {
+      "id": "image-002",
+      "title": "② IDE 工作台 · 六视图 Webview",
+      "type": "image",
+      "version": 1,
+      "createdAt": 1788003600000,
+      "canvasData": {
+        "x": 480,
+        "y": 373,
+        "naturalSize": {
+          "width": 1440,
+          "height": 900
+        }
+      },
+      "devMetadata": {
+        "imageSrc": "assets/board-ide-workbench.png"
+      }
+    },
+    {
+      "id": "image-003",
+      "title": "③ 分享页与 CI 漂移红灯 · 健康事故对比",
+      "type": "image",
+      "version": 1,
+      "createdAt": 1788003600000,
+      "canvasData": {
+        "x": 960,
+        "y": 373,
+        "naturalSize": {
+          "width": 1440,
+          "height": 900
+        }
+      },
+      "devMetadata": {
+        "imageSrc": "assets/board-share-ci.png"
+      }
+    }
+  ],
+  "config": {
+    "autoLayout": true,
+    "deviceType": "desktop",
+    "projectName": "Architecture Viewer 概念设计稿"
+  }
+}

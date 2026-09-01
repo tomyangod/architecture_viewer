@@ -1,0 +1,6 @@
+app:
+  name: showcase-shop
+  port: 8080
+features:
+  payments: true
+  notify: true

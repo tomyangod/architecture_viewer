@@ -1,0 +1,16 @@
+{
+  "repos": [
+    {
+      "id": "berkshire",
+      "path": "../../ai-berkshire-valuation-monitor"
+    },
+    {
+      "id": "publicopinion",
+      "path": "../../publicopinionmonitor_v2"
+    },
+    {
+      "id": "v18",
+      "path": "../../v18"
+    }
+  ]
+}

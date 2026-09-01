@@ -1,0 +1,249 @@
+{
+  "generated": "/tmp/arch-compare/method5-deepseek-handwriter/block-diagram.md",
+  "metrics": {
+    "子图数": 2,
+    "subgraph层数": 8,
+    "节点数": 49,
+    "箭头边数": 59,
+    "带中文标签边数": 59,
+    "classDef数": 8,
+    "mermaid块数": 2
+  },
+  "bannedHits": [
+    {
+      "name": "ticker.py",
+      "hit": false
+    },
+    {
+      "name": "socketio 路径(changedetectionio/socketio)",
+      "hit": false
+    },
+    {
+      "name": "notification.py(文件)",
+      "hit": false
+    },
+    {
+      "name": "processors/ai/",
+      "hit": false
+    },
+    {
+      "name": "datastore/ 目录",
+      "hit": false
+    },
+    {
+      "name": "SQLite/MySQL 字样",
+      "hit": true
+    },
+    {
+      "name": "模板占位句",
+      "hit": false
+    }
+  ],
+  "results": [
+    {
+      "token": "blueprint/watchlist/",
+      "verdict": "存在",
+      "real": "changedetectionio/blueprint/watchlist"
+    },
+    {
+      "token": "blueprint/ui/edit.py",
+      "verdict": "存在",
+      "real": "changedetectionio/blueprint/ui/edit.py"
+    },
+    {
+      "token": "blueprint/ui/diff.py",
+      "verdict": "存在",
+      "real": "changedetectionio/blueprint/ui/diff.py"
+    },
+    {
+      "token": "blueprint/ui/preview.py",
+      "verdict": "存在",
+      "real": "changedetectionio/blueprint/ui/preview.py"
+    },
+    {
+      "token": "static/js/",
+      "verdict": "存在",
+      "real": "changedetectionio/static/js"
+    },
+    {
+      "token": "flask_app.py",
+      "verdict": "存在",
+      "real": "changedetectionio/flask_app.py"
+    },
+    {
+      "token": "api/Watch.py",
+      "verdict": "存在",
+      "real": "changedetectionio/api/Watch.py"
+    },
+    {
+      "token": "api/Search.py",
+      "verdict": "存在",
+      "real": "changedetectionio/api/Search.py"
+    },
+    {
+      "token": "api/Import.py",
+      "verdict": "存在",
+      "real": "changedetectionio/api/Import.py"
+    },
+    {
+      "token": "api/Notifications.py",
+      "verdict": "存在",
+      "real": "changedetectionio/api/Notifications.py"
+    },
+    {
+      "token": "api/Spec.py",
+      "verdict": "存在",
+      "real": "changedetectionio/api/Spec.py"
+    },
+    {
+      "token": "queue_handlers.py",
+      "verdict": "存在",
+      "real": "changedetectionio/queue_handlers.py"
+    },
+    {
+      "token": "custom_queue.py",
+      "verdict": "存在",
+      "real": "changedetectionio/custom_queue.py"
+    },
+    {
+      "token": "queuedWatchMetaData.py",
+      "verdict": "存在",
+      "real": "changedetectionio/queuedWatchMetaData.py"
+    },
+    {
+      "token": "worker_pool.py",
+      "verdict": "存在",
+      "real": "changedetectionio/worker_pool.py"
+    },
+    {
+      "token": "worker.py",
+      "verdict": "存在",
+      "real": "changedetectionio/worker.py"
+    },
+    {
+      "token": "content_fetchers/requests.py",
+      "verdict": "存在",
+      "real": "changedetectionio/content_fetchers/requests.py"
+    },
+    {
+      "token": "content_fetchers/playwright.py",
+      "verdict": "存在",
+      "real": "changedetectionio/content_fetchers/playwright.py"
+    },
+    {
+      "token": "content_fetchers/webdriver_selenium.py",
+      "verdict": "存在",
+      "real": "changedetectionio/content_fetchers/webdriver_selenium.py"
+    },
+    {
+      "token": "processors/text_json_diff/",
+      "verdict": "存在",
+      "real": "changedetectionio/processors/text_json_diff"
+    },
+    {
+      "token": "processors/restock_diff/",
+      "verdict": "存在",
+      "real": "changedetectionio/processors/restock_diff"
+    },
+    {
+      "token": "processors/image_ssim_diff/",
+      "verdict": "存在",
+      "real": "changedetectionio/processors/image_ssim_diff"
+    },
+    {
+      "token": "store/__init__.py",
+      "verdict": "存在",
+      "real": "changedetectionio/store/__init__.py"
+    },
+    {
+      "token": "store/file_saving_datastore.py",
+      "verdict": "存在",
+      "real": "changedetectionio/store/file_saving_datastore.py"
+    },
+    {
+      "token": "model/Watch.py",
+      "verdict": "存在",
+      "real": "changedetectionio/model/Watch.py"
+    },
+    {
+      "token": "model/App.py",
+      "verdict": "存在",
+      "real": "changedetectionio/model/App.py"
+    },
+    {
+      "token": "model/persistence.py",
+      "verdict": "存在",
+      "real": "changedetectionio/model/persistence.py"
+    },
+    {
+      "token": "notification_service.py",
+      "verdict": "存在",
+      "real": "changedetectionio/notification_service.py"
+    },
+    {
+      "token": "notification/handler.py",
+      "verdict": "存在",
+      "real": "changedetectionio/notification/handler.py"
+    },
+    {
+      "token": "notification/apprise_plugin/",
+      "verdict": "存在",
+      "real": "changedetectionio/notification/apprise_plugin"
+    },
+    {
+      "token": "realtime/socket_server.py",
+      "verdict": "存在",
+      "real": "changedetectionio/realtime/socket_server.py"
+    },
+    {
+      "token": "realtime/events.py",
+      "verdict": "存在",
+      "real": "changedetectionio/realtime/events.py"
+    },
+    {
+      "token": "Dockerfile",
+      "verdict": "存在",
+      "real": "Dockerfile"
+    },
+    {
+      "token": "docker-compose.yml",
+      "verdict": "存在",
+      "real": "docker-compose.yml"
+    },
+    {
+      "token": "docker-entrypoint.sh",
+      "verdict": "存在",
+      "real": "docker-entrypoint.sh"
+    },
+    {
+      "token": "changedetection.py",
+      "verdict": "存在",
+      "real": "changedetection.py"
+    },
+    {
+      "token": "content_fetchers/",
+      "verdict": "存在",
+      "real": "changedetectionio/content_fetchers"
+    },
+    {
+      "token": "processors/text_json_diff/processor.py",
+      "verdict": "存在",
+      "real": "changedetectionio/processors/text_json_diff/processor.py"
+    },
+    {
+      "token": "diff/__init__.py",
+      "verdict": "存在",
+      "real": "changedetectionio/diff/__init__.py"
+    },
+    {
+      "token": "store/",
+      "verdict": "存在",
+      "real": "changedetectionio/store"
+    },
+    {
+      "token": "llm/evaluator.py",
+      "verdict": "存在",
+      "real": "changedetectionio/llm/evaluator.py"
+    }
+  ]
+}

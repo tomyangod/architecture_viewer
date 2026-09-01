@@ -1,0 +1,80 @@
+{
+  "schemaVersion": "1.0",
+  "project": {
+    "name": "Architecture Viewer 商业化",
+    "slug": "architecture-viewer",
+    "repo": "https://gitee.com/heyangyan/architecture_viewer.git",
+    "owner": "heyangyan",
+    "mode": "副业 / side-project",
+    "startDate": "2026-08-31",
+    "planningHorizon": "12 周 + Phase 3 backlog",
+    "northStar": "上架后 6 个月内跑通「Pro ¥29/月无限生成 + Team ¥999/年/仓库」的付费闭环，月收入 ¥1k–3k",
+    "strategyDocs": [
+      "COMMERCIAL.md",
+      "docs/market-evaluation/market-evaluation.html"
+    ]
+  },
+  "statusFlow": ["todo", "doing", "blocked", "done"],
+  "statusRules": {
+    "todo": "未开始",
+    "doing": "进行中（需填写 progress 0-100）",
+    "blocked": "阻塞（必须填写 blockedReason），其所有下游依赖任务自动标红",
+    "done": "完成（必须逐条满足 acceptance 且 acceptanceCommands 退出码为 0）"
+  },
+  "priorities": {
+    "P0": "本周必达，阻塞里程碑",
+    "P1": "本周应完成，可滑 1 周",
+    "P2": "缓冲项，假期/余力时做"
+  },
+  "phases": [
+    { "id": 0, "name": "Phase 0 · 合规与包装", "weeks": [1, 2], "milestone": "可打包、可离线、商业化文档定稿", "gate": "vsix 本地侧载成功 + 断网 Preview 正常" },
+    { "id": 1, "name": "Phase 1 · 上架 × 获客并行", "weeks": [3, 4, 5, 6], "milestone": "双 Marketplace 上架 + 首批 100 安装", "gate": "Marketplace 可安装 + Free/Pro 门禁可演示" },
+    { "id": 2, "name": "Phase 2 · 差异化（收费理由落地）", "weeks": [7, 8, 9, 10, 11, 12], "milestone": "防漂移闭环 + 首笔 Pro 付费 + Team 试点意向", "gate": "PR 漂移评论在真实仓库运行 + 首笔付费到账" },
+    { "id": 3, "name": "Phase 3 · 壁垒层（backlog）", "weeks": [13], "milestone": "架构资产管理器", "gate": "多仓聚合门户可用" }
+  ],
+  "weeks": [
+    { "id": "W01", "num": 1, "start": "2026-08-31", "end": "2026-09-04", "deadline": "2026-09-04", "phase": 0, "theme": "离线化 / 合规 / 商业文档" },
+    { "id": "W02", "num": 2, "start": "2026-09-07", "end": "2026-09-11", "deadline": "2026-09-11", "phase": 0, "theme": "打包脚手架 / Webview 回归 / 账号骨架" },
+    { "id": "W03", "num": 3, "start": "2026-09-14", "end": "2026-09-18", "deadline": "2026-09-18", "phase": 1, "theme": "生成质量打磨 / 五仓回归" },
+    { "id": "W04", "num": 4, "start": "2026-09-21", "end": "2026-09-25", "deadline": "2026-09-25", "phase": 1, "theme": "获客启动：教程文 / README / 种子博主" },
+    { "id": "W05", "num": 5, "start": "2026-09-28", "end": "2026-10-02", "deadline": "2026-10-02", "phase": 1, "theme": "付费门禁 / 支付通道（国庆假期，轻量）", "holiday": true },
+    { "id": "W06", "num": 6, "start": "2026-10-05", "end": "2026-10-09", "deadline": "2026-10-09", "phase": 1, "theme": "双 Marketplace 上架 / 落地页 / 冲榜", "holiday": true, "deadlineNote": "国庆假期缓冲，上架允许滑至 2026-10-16" },
+    { "id": "W07", "num": 7, "start": "2026-10-12", "end": "2026-10-16", "deadline": "2026-10-16", "phase": 2, "theme": "增量生成引擎 / architecture-rules.yaml" },
+    { "id": "W08", "num": 8, "start": "2026-10-19", "end": "2026-10-23", "deadline": "2026-10-23", "phase": 2, "theme": "CI Action 漂移检测 + PR 评论" },
+    { "id": "W09", "num": 9, "start": "2026-10-26", "end": "2026-10-30", "deadline": "2026-10-30", "phase": 2, "theme": "付费转化优化 / 首笔 Pro" },
+    { "id": "W10", "num": 10, "start": "2026-11-02", "end": "2026-11-06", "deadline": "2026-11-06", "phase": 2, "theme": "多语言漂移精度打磨 / PR 评论 v2" },
+    { "id": "W11", "num": 11, "start": "2026-11-09", "end": "2026-11-13", "deadline": "2026-11-13", "phase": 2, "theme": "按仓库年费 / PDF 导出 / 数据复盘" },
+    { "id": "W12", "num": 12, "start": "2026-11-16", "end": "2026-11-20", "deadline": "2026-11-20", "phase": 2, "theme": "Team 私有化试点 / 12 周复盘" },
+    { "id": "W13", "num": 13, "start": "2026-11-23", "end": null, "deadline": null, "phase": 3, "theme": "壁垒层 backlog（不排死期）" }
+  ],
+  "automation": {
+    "weeklyReport": {
+      "cron": "0 17 * * 5",
+      "timezone": "Asia/Shanghai",
+      "description": "每周五 17:00 生成进度周报：完成率、延期风险、阻塞高亮、下周计划",
+      "script": "pm/scripts/wbs-report.mjs",
+      "outputDir": "pm/reports/weekly"
+    },
+    "statusSync": {
+      "script": "pm/scripts/wbs-sync.mjs",
+      "description": "阻塞任务自动高亮；下游依赖自动联动；每次状态变更后运行 sync"
+    },
+    "giteeWebhook": {
+      "script": "pm/scripts/gitee-webhook.mjs",
+      "port": 3910,
+      "path": "/gitee-webhook",
+      "secretEnv": "GITEE_WEBHOOK_SECRET",
+      "description": "Gitee Push 事件：commit message 含 Wxx-yy 自动更新任务进度（done/完成→done；60%→progress；仅提及→doing 并记日志）"
+    },
+    "taskCards": {
+      "script": "pm/scripts/wbs-cards.mjs",
+      "description": "tasks.json 变更后重新生成每周任务卡（pm/tasks/Wxx/）与总览索引"
+    }
+  },
+  "commitMessageConvention": {
+    "done": "完成 W01-01 / closes W01-01 / done W01-01 / fix W01-01",
+    "progress": "W07-01 60%（按百分比更新进度）",
+    "start": "commit message 中出现 Wxx-yy 但无关键词 → 任务自动从 todo 转 doing 并记录活动日志",
+    "note": "一个 commit 可带多个任务号；webhook 日志写入 pm/reports/webhook.log"
+  }
+}

@@ -8,7 +8,8 @@ Desktop.ini
 *.swp
 *.swo
 .idea/
-.vscode/
+.vscode/*
+!.vscode/launch.json
 *.code-workspace
 
 # Env & secrets
@@ -27,9 +28,18 @@ _*.json
 temp/
 dist/
 build/
+eval/out/
+.data/
 
 # Playwright / test artifacts
 test-results/
 playwright-report/
 .arch_*.json
 .arch_*.png
+
+# Trae share packages (large zips)
+.trae-html-share-packages/
+
+# Local harness / agent dumps (not product)
+deepseek-harness/
+

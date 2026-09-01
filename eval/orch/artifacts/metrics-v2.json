@@ -1,0 +1,146 @@
+{
+  "method1": {
+    "missing": [],
+    "layer": [],
+    "m": {
+      "子图数": 2,
+      "分层数": 7,
+      "节点数": 32,
+      "边数": 47,
+      "带中文标签边数": 8,
+      "双行标签节点数": 22,
+      "classDef数": 9,
+      "路径核查数": 14,
+      "幻觉路径数": 0
+    },
+    "lint": [
+      "节点过密: 32 个（建议 15–25）"
+    ]
+  },
+  "method5": {
+    "missing": [],
+    "layer": [
+      "层归属错误: 节点 api_notifications 路径 api/Notifications.py 应属 monitor 层，当前在「🔌 后端 API 层」",
+      "层归属错误: 节点 app_model 路径 model/App.py 应属 api 层，当前在「💾 数据存储与持久化」"
+    ],
+    "m": {
+      "子图数": 2,
+      "分层数": 8,
+      "节点数": 49,
+      "边数": 72,
+      "带中文标签边数": 59,
+      "双行标签节点数": 48,
+      "classDef数": 8,
+      "路径核查数": 38,
+      "幻觉路径数": 0
+    },
+    "lint": [
+      "节点 id 重复: datastore",
+      "节点过密: 49 个（建议 15–25）"
+    ]
+  },
+  "digest": {
+    "missing": [],
+    "layer": [
+      "层归属错误: 节点 custom_queue 路径 changedetectionio/custom_queue.py 应属 schedule 层，当前在「🔌 API 后端/API」",
+      "层归属错误: 节点 queue_handlers 路径 changedetectionio/queue_handlers.py 应属 schedule 层，当前在「🔌 API 后端/API」",
+      "层归属错误: 节点 queued_meta 路径 changedetectionio/queuedWatchMetaData.py 应属 schedule 层，当前在「🔌 API 后端/API」"
+    ],
+    "m": {
+      "子图数": 1,
+      "分层数": 4,
+      "节点数": 9,
+      "边数": 10,
+      "带中文标签边数": 9,
+      "双行标签节点数": 9,
+      "classDef数": 4,
+      "路径核查数": 7,
+      "幻觉路径数": 0
+    },
+    "lint": []
+  },
+  "rich1": {
+    "missing": [],
+    "layer": [
+      "层归属错误: 节点 watchlist_blueprint 路径 changedetectionio/blueprint/watchlist 应属 api 层，当前在「🖥️ 前端/交互」",
+      "层归属错误: 节点 add_watch_ui 路径 changedetectionio/blueprint/add_watch_ui 应属 api 层，当前在「🖥️ 前端/交互」",
+      "层归属错误: 节点 settings_blueprint 路径 changedetectionio/blueprint/settings 应属 api 层，当前在「🖥️ 前端/交互」",
+      "层归属错误: 节点 tags_blueprint 路径 changedetectionio/blueprint/tags 应属 api 层，当前在「🖥️ 前端/交互」",
+      "层归属错误: 节点 rss_blueprint 路径 changedetectionio/blueprint/rss 应属 api 层，当前在「🖥️ 前端/交互」",
+      "层归属错误: 节点 app_model 路径 changedetectionio/model/App.py 应属 api 层，当前在「💾 数据存储」"
+    ],
+    "m": {
+      "子图数": 1,
+      "分层数": 7,
+      "节点数": 37,
+      "边数": 44,
+      "带中文标签边数": 38,
+      "双行标签节点数": 37,
+      "classDef数": 0,
+      "路径核查数": 35,
+      "幻觉路径数": 0
+    },
+    "lint": [
+      "节点过密: 37 个（建议 15–25）",
+      "缺少 classDef 上色"
+    ]
+  },
+  "nocritic": {
+    "missing": [],
+    "layer": [
+      "层归属错误: 节点 watchlist_blueprint 路径 changedetectionio/blueprint/watchlist 应属 api 层，当前在「🖥️ 前端界面」",
+      "层归属错误: 节点 settings_blueprint 路径 changedetectionio/blueprint/settings 应属 api 层，当前在「🖥️ 前端界面」"
+    ],
+    "m": {
+      "子图数": 1,
+      "分层数": 7,
+      "节点数": 20,
+      "边数": 16,
+      "带中文标签边数": 15,
+      "双行标签节点数": 20,
+      "classDef数": 7,
+      "路径核查数": 19,
+      "幻觉路径数": 0
+    },
+    "lint": []
+  },
+  "orch": {
+    "missing": [],
+    "layer": [
+      "层归属错误: 节点 watchlist_blueprint 路径 changedetectionio/blueprint/watchlist 应属 api 层，当前在「🖥️ 前端界面」",
+      "层归属错误: 节点 settings_blueprint 路径 changedetectionio/blueprint/settings 应属 api 层，当前在「🖥️ 前端界面」",
+      "层归属错误: 节点 scheduler 路径 changedetectionio/static/js/scheduler.js 应属 frontend 层，当前在「⏰ 调度层」",
+      "层归属错误: 节点 content_fetchers 路径 changedetectionio/content_fetchers 应属 worker 层，当前在「🔍 监控处理」",
+      "层归属错误: 节点 processors 路径 changedetectionio/processors 应属 worker 层，当前在「🔍 监控处理」",
+      "层归属错误: 节点 diff 路径 changedetectionio/diff 应属 worker 层，当前在「🔍 监控处理」"
+    ],
+    "m": {
+      "子图数": 1,
+      "分层数": 7,
+      "节点数": 23,
+      "边数": 22,
+      "带中文标签边数": 21,
+      "双行标签节点数": 23,
+      "classDef数": 7,
+      "路径核查数": 22,
+      "幻觉路径数": 0
+    },
+    "lint": []
+  },
+  "orch2": {
+    "missing": [],
+    "layer": [],
+    "m": {
+      "子图数": 1,
+      "分层数": 7,
+      "节点数": 26,
+      "边数": 22,
+      "带中文标签边数": 21,
+      "双行标签节点数": 26,
+      "classDef数": 7,
+      "路径核查数": 25,
+      "幻觉路径数": 0
+    },
+    "lint": []
+  }
+}

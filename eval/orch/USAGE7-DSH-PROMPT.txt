@@ -1,0 +1,23 @@
+You are generating Architecture Viewer diagrams for THIS repository (current working directory).
+
+Read architecture_viewer/AGENT.md (especially the block-diagram visual rules).
+
+Task: OVERWRITE only architecture_viewer/block-diagram.md with a high-quality layered Mermaid block diagram for this real codebase.
+
+Requirements:
+1. flowchart TB with colored subgraphs for non-empty layers among: frontend, api, schedule, worker, storage, monitor, ops.
+2. Nodes: icon + Chinese title + <br/><small>real/path/or/tech</small>. Storage may use cylinder shape.
+3. Edges must have Chinese labels and follow real runtime data flow.
+4. Include a second ## 子图 for the main path (flowchart LR).
+5. HARD RULE — path truth:
+   - Every token inside <small> that looks like a path (contains / or a source extension) MUST exist in this repo's file tree.
+   - Do NOT write tech stacks as paths (e.g. requests/playwright/puppeteer, SQLite/MySQL/PG).
+   - Do NOT write npm/go module names as paths (e.g. knadh/smtppool).
+   - Do NOT write build artifacts that are not in the tree (e.g. public/script.js unless that file exists).
+   - Before writing, verify each path with ls or test -e. If unsure, put only a directory that exists, or a tech name WITHOUT a slash.
+6. Prefer 12–25 nodes total; do not dump every file.
+7. Do NOT modify HTML, architecture.config.js, or other .md files.
+8. Do NOT leave template placeholder footer like "请替换为你项目的实际内容".
+9. After writing the file, print a one-line summary: LAYERS=... NODES=... DONE
+
+Write the file now.

@@ -1,0 +1,22 @@
+# Architecture Viewer — Docker Compose
+# 用法：docker compose up -d
+# 访问：http://localhost:3847
+
+services:
+  arch-viewer:
+    build: .
+    ports:
+      - "3847:3847"
+    environment:
+      # 开启 Git URL 输入（默认开启，核心功能）
+      - ARCH_WEB_PROJECTS_LIST=1
+      # 可选：允许服务器本地路径输入（自托管/内网时开启）
+      # - ARCH_WEB_PATH_MODE=1
+      # 可选：LLM 精修（用户自带 Key 或平台 Key）
+      # - DEEPSEEK_API_KEY=sk-xxxxxxxxxxxx
+    volumes:
+      - arch-data:/app/.data
+    restart: unless-stopped
+
+volumes:
+  arch-data:

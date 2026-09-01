@@ -1,0 +1,37 @@
+[
+  {
+    "letter": "A",
+    "id": "method1",
+    "label": "方法1 Cursor Agent（人工基准 ≈9）"
+  },
+  {
+    "letter": "B",
+    "id": "digest",
+    "label": "A: digest 扫描摘要"
+  },
+  {
+    "letter": "C",
+    "id": "method5",
+    "label": "方法5 DeepSeek全树手写引擎（≈7.5）"
+  },
+  {
+    "letter": "D",
+    "id": "rich1",
+    "label": "B: rich1 全树+摘录单轮"
+  },
+  {
+    "letter": "E",
+    "id": "orch",
+    "label": "C: orch 裸眼批判"
+  },
+  {
+    "letter": "F",
+    "id": "nocritic",
+    "label": "D: nocritic 流水线无批判"
+  },
+  {
+    "letter": "G",
+    "id": "orch2",
+    "label": "E: orch2 接地批判+层闸门"
+  }
+]

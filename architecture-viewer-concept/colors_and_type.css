@@ -1,0 +1,245 @@
+/* ============================================================
+   Architecture Viewer — Concept Design System
+   Dark stone / blueprint atmosphere · single patina-copper hue
+   Prefix: av
+   ============================================================ */
+
+:root {
+  /* ---- Font stacks (families injected via @font-face, see css.json) ---- */
+  --av-font-display: 'Outfit', 'PingFang SC', 'Noto Sans SC', 'Microsoft YaHei', system-ui, sans-serif;
+  --av-font-body: 'Outfit', 'PingFang SC', 'Noto Sans SC', 'Microsoft YaHei', system-ui, sans-serif;
+  --av-font-mono: 'JetBrains Mono', 'SF Mono', 'Menlo', 'Consolas', monospace;
+
+  /* ---- Surfaces: dark stone, never pure black ---- */
+  --av-background: #1c2128;          /* page base — deep blue-grey stone */
+  --av-foreground: #e6e9ed;          /* primary text — soft white, no halation */
+
+  --av-card: #232a33;                /* card / panel surface */
+  --av-card-foreground: #e6e9ed;
+
+  --av-popover: #28303b;             /* floating layer: palette, tooltip, menu */
+  --av-popover-foreground: #eef1f4;
+
+  --av-muted: #2a323c;               /* muted fill: inactive chips, wells */
+  --av-muted-foreground: #98a3af;    /* secondary text */
+
+  --av-input: #39424e;               /* input borders / controls */
+  --av-border: rgba(255, 255, 255, 0.09);   /* hairline separators */
+  --av-border-strong: rgba(255, 255, 255, 0.16);
+
+  /* ---- Single brand hue: oxidized copper / architectural patina ---- */
+  --av-primary: #3d9b8f;
+  --av-primary-foreground: #0b1513;             /* dark ink on copper fills */
+  --av-ring: #3d9b8f;
+
+  --av-brand-bright: #57b3a6;        /* hover / beam head */
+  --av-brand-dim: #2c7269;           /* pressed / deep copper */
+  --av-brand-tint: rgba(61, 155, 143, 0.14);    /* brand wash fills */
+  --av-brand-tint-strong: rgba(61, 155, 143, 0.24);
+  --av-brand-line: rgba(61, 155, 143, 0.45);    /* brand hairlines */
+
+  /* ---- Semantic state (status only, never decorative) ---- */
+  --av-destructive: #d4534a;         /* drift red — cracks, CI fail, NOT DECLARED */
+  --av-destructive-foreground: #fdecea;
+  --av-danger-tint: rgba(212, 83, 74, 0.12);
+  --av-danger-line: rgba(212, 83, 74, 0.45);
+  --av-success: #3d9b8f;             /* PASS reuses the patina green */
+
+  /* ---- Blueprint / diagram neutrals ---- */
+  --av-ink-2: rgba(230, 233, 237, 0.72);
+  --av-ink-3: rgba(230, 233, 237, 0.45);
+  --av-node-fill: #262e38;
+  --av-node-fill-alt: #2b343f;
+  --av-node-border: rgba(255, 255, 255, 0.14);
+  --av-diagram-line: rgba(160, 174, 188, 0.38);
+  --av-grid-line: rgba(255, 255, 255, 0.045);
+
+  /* ---- Block-view layer bands (stone steps, one band carries copper) ---- */
+  --av-band-l1: #33404c;             /* L1 交互 — cool slate */
+  --av-band-l2: #3a4754;             /* L2 业务 Python — mid stone */
+  --av-band-l3: #2f4a46;             /* L3 交付运维 — copper-tinted stone */
+
+  /* ---- Radius: 12–16px language ---- */
+  --av-radius-sm: 6px;
+  --av-radius-md: 12px;
+  --av-radius-lg: 16px;
+  --av-radius-pill: 999px;
+
+  /* ---- Shadows: light, alpha <= 8% on static surfaces ---- */
+  --av-shadow-card: 0 1px 2px rgba(0, 0, 0, 0.05), 0 12px 32px rgba(0, 0, 0, 0.05);
+  --av-shadow-float: 0 16px 40px -12px rgba(0, 0, 0, 0.55);
+  --av-inset-top: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+
+  /* ---- Type metrics ---- */
+  --av-leading-tight: 1.15;
+  --av-leading-body: 1.6;
+  --av-track-tight: -0.015em;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  background: var(--av-background);
+  color: var(--av-foreground);
+  font-family: var(--av-font-body);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+::selection {
+  background: var(--av-brand-tint-strong);
+  color: var(--av-foreground);
+}
+
+/* ---- Reusable primitives (boards are fixed-canvas concept art) ---- */
+
+.av-board {
+  width: 1440px;
+  height: 900px;
+  position: relative;
+  overflow: hidden;
+  background: var(--av-background);
+  color: var(--av-foreground);
+  font-family: var(--av-font-body);
+}
+
+.av-mono {
+  font-family: var(--av-font-mono);
+  font-variant-numeric: tabular-nums;
+}
+
+.av-display {
+  font-family: var(--av-font-display);
+  font-weight: 700;
+  letter-spacing: var(--av-track-tight);
+  line-height: var(--av-leading-tight);
+}
+
+/* Thick primary CTA — one per page */
+.av-cta-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--av-primary);
+  color: var(--av-primary-foreground);
+  font-family: var(--av-font-display);
+  font-weight: 700;
+  font-size: 16px;
+  line-height: 1;
+  padding: 16px 26px;
+  border-radius: var(--av-radius-md);
+  border: none;
+  box-shadow: var(--av-shadow-card), var(--av-inset-top);
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.av-cta-ghost {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: transparent;
+  color: var(--av-ink-2);
+  font-size: 14px;
+  font-weight: 500;
+  padding: 10px 14px;
+  border-radius: var(--av-radius-md);
+  border: 1px solid var(--av-border-strong);
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.av-text-link {
+  color: var(--av-muted-foreground);
+  font-size: 14px;
+  text-decoration: underline;
+  text-underline-offset: 5px;
+  text-decoration-color: var(--av-border-strong);
+  cursor: pointer;
+}
+
+/* Hairline panel */
+.av-panel {
+  background: var(--av-card);
+  border: 1px solid var(--av-border);
+  border-radius: var(--av-radius-lg);
+  box-shadow: var(--av-shadow-card), var(--av-inset-top);
+}
+
+/* Diagram node nameplate */
+.av-node {
+  background: var(--av-node-fill);
+  border: 1px solid var(--av-node-border);
+  border-radius: var(--av-radius-sm);
+  color: var(--av-foreground);
+}
+
+/* Health / status capsules */
+.av-capsule {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  height: 26px;
+  padding: 0 12px;
+  border-radius: var(--av-radius-pill);
+  font-family: var(--av-font-mono);
+  font-size: 12px;
+  letter-spacing: 0.01em;
+  border: 1px solid var(--av-border);
+  background: var(--av-card);
+  color: var(--av-ink-2);
+  white-space: nowrap;
+}
+
+.av-capsule--ok {
+  color: var(--av-brand-bright);
+  border-color: var(--av-brand-line);
+  background: var(--av-brand-tint);
+}
+
+.av-capsule--bad {
+  color: #e8837c;
+  border-color: var(--av-danger-line);
+  background: var(--av-danger-tint);
+}
+
+/* Corner page marker ①②③ */
+.av-page-mark {
+  position: absolute;
+  z-index: 50;
+  font-family: var(--av-font-mono);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  color: var(--av-ink-3);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.av-page-mark .av-page-mark-num {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border-radius: var(--av-radius-sm);
+  border: 1px solid var(--av-border-strong);
+  color: var(--av-muted-foreground);
+  font-size: 11px;
+}
+
+/* Blueprint grid backdrop */
+.av-blueprint-grid {
+  background-image:
+    linear-gradient(var(--av-grid-line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--av-grid-line) 1px, transparent 1px);
+  background-size: 48px 48px;
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}

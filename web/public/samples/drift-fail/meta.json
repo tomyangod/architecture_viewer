@@ -1,0 +1,13 @@
+{
+  "id": "drift-fail",
+  "title": "故意坏图 · 漂移红灯演示",
+  "subtitle": "Validate / CI 会拦截：未声明 Rel + 未填模板",
+  "protocolOk": false,
+  "driftOk": false,
+  "story": "演示「坏图进不了主干」——这才是付费理由",
+  "checks": [
+    "协议 FAIL",
+    "Rel 未声明",
+    "模板占位未清"
+  ]
+}

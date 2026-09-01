@@ -1,0 +1,101 @@
+{
+  "name": "architecture-viewer",
+  "displayName": "Architecture Viewer",
+  "description": "从仓库生成 C4 六视图架构图：CLI + 自托管 Web，扫描、生成、漂移校验一站式。",
+  "version": "0.2.1",
+  "publisher": "heyangyan",
+  "license": "Apache-2.0",
+  "engines": {
+    "node": ">=18"
+  },
+  "categories": [
+    "Visualization",
+    "Developer Tools"
+  ],
+  "keywords": [
+    "architecture",
+    "c4",
+    "mermaid",
+    "diagram",
+    "code-to-diagram",
+    "drift-detection"
+  ],
+  "files": [
+    "lib/",
+    "web/",
+    "vendor/",
+    "architecture_visualized.html",
+    "architecture.config.js",
+    "AGENT.md",
+    "USER_GUIDE.md",
+    "CHANGELOG.md",
+    "LICENSE",
+    "NOTICE",
+    "README.md",
+    "README.en.md"
+  ],
+  "activationEvents": [
+    "onCommand:architectureViewer.init",
+    "onCommand:architectureViewer.generate",
+    "onCommand:architectureViewer.preview",
+    "onCommand:architectureViewer.validate",
+    "onCommand:architectureViewer.copyAgentPrompt"
+  ],
+  "main": "./src/extension.js",
+  "bin": {
+    "arch-viewer": "./lib/cli.js"
+  },
+  "contributes": {
+    "commands": [
+      {
+        "command": "architectureViewer.init",
+        "title": "Architecture Viewer: Init Kit"
+      },
+      {
+        "command": "architectureViewer.generate",
+        "title": "Architecture Viewer: Generate"
+      },
+      {
+        "command": "architectureViewer.preview",
+        "title": "Architecture Viewer: Preview"
+      },
+      {
+        "command": "architectureViewer.validate",
+        "title": "Architecture Viewer: Validate"
+      },
+      {
+        "command": "architectureViewer.copyAgentPrompt",
+        "title": "Architecture Viewer: Copy Cursor Agent Prompt"
+      }
+    ],
+    "configuration": {
+      "title": "Architecture Viewer",
+      "properties": {
+        "architectureViewer.outputDir": {
+          "type": "string",
+          "default": "architecture_viewer",
+          "description": "Init/Generate 写入目标仓库的相对目录"
+        }
+      }
+    }
+  },
+  "scripts": {
+    "test": "node --test test/*.test.js",
+    "test:e2e": "playwright test",
+    "check": "node lib/cli.js check .",
+    "demo": "bash scripts/demo.sh",
+    "eval": "node lib/cli.js eval",
+    "web": "node web/server.js",
+    "start": "node web/server.js",
+    "bake:samples": "node scripts/bake-samples.js",
+    "wbs": "node pm/scripts/wbs.mjs",
+    "prepublishOnly": "node --check lib/cli.js && node --check lib/index.js && node --check web/server.js && node --test test/*.test.js"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.62.1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://gitee.com/heyangyan/architecture_viewer.git"
+  }
+}

@@ -1,0 +1,1713 @@
+{
+  "_doc": "Architecture Viewer 商业化 WBS 任务数据源（单一事实源）。状态流转：todo→doing→blocked→done。改动本文件后运行：node pm/scripts/wbs-cards.mjs 重新生成任务卡；node pm/scripts/wbs-sync.mjs sync 做依赖联动。",
+  "tasks": [
+    {
+      "id": "W01-01",
+      "title": "离线打包 Mermaid，移除 CDN 硬依赖",
+      "phase": 0,
+      "week": 1,
+      "priority": "P0",
+      "status": "done",
+      "progress": 100,
+      "assignee": "heyangyan",
+      "estHours": 5,
+      "deadline": "2026-09-04",
+      "deps": [],
+      "tags": [
+        "infra",
+        "offline"
+      ],
+      "context": "现状：src/extension.js 的 CSP 白名单含 cdn.jsdelivr.net，architecture_visualized.html 与 web 页面从 CDN 加载 Mermaid。企业内网不可用，且 Marketplace 审核偏好无远程依赖。",
+      "goal": "Mermaid 运行时全部本地化，断网可渲染六视图。",
+      "files": [
+        "vendor/mermaid.min.js",
+        "src/extension.js",
+        "architecture_visualized.html",
+        "architecture.config.js",
+        "web/public/index.html",
+        "lib/kit.js"
+      ],
+      "acceptance": [
+        "仓库源码中不存在 cdn.jsdelivr.net / unpkg 等远程脚本引用",
+        "断网（关闭 Wi-Fi）后扩展 Preview 六视图全部渲染、无 console 报错",
+        "网页版 npm run web 断网同样可渲染",
+        "npm test 通过"
+      ],
+      "acceptanceCommands": [
+        "grep -rn \"cdn.jsdelivr\\|unpkg\" src/ web/ lib/ architecture_visualized.html architecture.config.js || echo OFFLINE_OK",
+        "npm test"
+      ],
+      "refs": [
+        "src/extension.js",
+        "COMMERCIAL.md"
+      ],
+      "activity": [
+        {
+          "date": "2026-08-29",
+          "action": "状态变更 todo→done"
+        }
+      ]
+    },
+    {
+      "id": "W01-02",
+      "title": "NOTICE 第三方署名文件",
+      "phase": 0,
+      "week": 1,
+      "priority": "P1",
+      "status": "done",
+      "progress": 100,
+      "assignee": "heyangyan",
+      "estHours": 1,
+      "deadline": "2026-09-04",
+      "deps": [],
+      "tags": [
+        "legal"
+      ],
+      "context": "Apache-2.0 要求再分发时保留 NOTICE 与第三方署名；Mermaid 为 MIT 许可，需要在分发物中署名。",
+      "goal": "根目录新增 NOTICE，列清 Mermaid(MIT) 等第三方依赖与本项目 Apache-2.0 声明。",
+      "files": [
+        "NOTICE"
+      ],
+      "acceptance": [
+        "NOTICE 存在，包含 Architecture Viewer Apache-2.0 声明",
+        "NOTICE 列出 Mermaid (MIT) 及版本号",
+        "vsix 打包物中包含 NOTICE 与 LICENSE"
+      ],
+      "acceptanceCommands": [
+        "test -f NOTICE && grep -q \"Mermaid\" NOTICE && grep -q \"Apache\" NOTICE && echo NOTICE_OK"
+      ],
+      "refs": [
+        "LICENSE",
+        "COMMERCIAL.md"
+      ],
+      "activity": [
+        {
+          "date": "2026-08-29",
+          "action": "状态变更 todo→done"
+        }
+      ]
+    },
+    {
+      "id": "W01-03",
+      "title": "CHANGELOG 规范化（Keep a Changelog）",
+      "phase": 0,
+      "week": 1,
+      "priority": "P1",
+      "status": "done",
+      "progress": 100,
+      "assignee": "heyangyan",
+      "estHours": 1,
+      "deadline": "2026-09-04",
+      "deps": [],
+      "tags": [
+        "docs"
+      ],
+      "context": "现有 CHANGELOG 只有 0.1.0 一段；Marketplace 与用户都期待可见的版本演进。",
+      "goal": "按 Keep a Changelog 格式增加 [Unreleased] 段，后续每周改动归集 Added/Changed/Fixed。",
+      "files": [
+        "CHANGELOG.md"
+      ],
+      "acceptance": [
+        "CHANGELOG 含 [Unreleased] 与 [0.1.0] 两段",
+        "格式符合 Keep a Changelog（Added/Changed/Fixed 分组）"
+      ],
+      "acceptanceCommands": [
+        "grep -q \"Unreleased\" CHANGELOG.md && grep -q \"0.1.0\" CHANGELOG.md && echo CHANGELOG_OK"
+      ],
+      "refs": [
+        "CHANGELOG.md"
+      ],
+      "activity": [
+        {
+          "date": "2026-08-29",
+          "action": "状态变更 todo→done"
+        }
+      ]
+    },
+    {
+      "id": "W01-04",
+      "title": "Playwright 端到端冒烟测试",
+      "phase": 0,
+      "week": 1,
+      "priority": "P0",
+      "status": "done",
+      "progress": 100,
+      "assignee": "heyangyan",
+      "estHours": 6,
+      "deadline": "2026-09-04",
+      "deps": [
+        "W01-01"
+      ],
+      "tags": [
+        "test",
+        "ci"
+      ],
+      "context": "现有 test/ 只有单测；六视图渲染错误（mermaid 语法错、tab 切换失败）只能靠肉眼。需要可重复的自动冒烟。",
+      "goal": "Playwright 冒烟：网页版六视图 tab 逐个切换无渲染错误、/p/<id> 分享页可打开、离线 bundle 可加载。",
+      "files": [
+        "test/e2e/smoke.spec.js",
+        "playwright.config.js",
+        "package.json",
+        ".github/workflows/ci.yml"
+      ],
+      "acceptance": [
+        "npx playwright test 全部通过",
+        "用例覆盖：六个 tab 切换、mermaid svg 存在、无 .error-text / 渲染异常",
+        "CI workflow 中执行 e2e（或记录本地执行方式）"
+      ],
+      "acceptanceCommands": [
+        "npx playwright install --with-deps chromium",
+        "npx playwright test --reporter=line"
+      ],
+      "refs": [
+        "test/web.test.js",
+        "web/server.js"
+      ],
+      "activity": [
+        {
+          "date": "2026-08-29",
+          "action": "状态变更 todo→done"
+        }
+      ]
+    },
+    {
+      "id": "W01-05",
+      "title": "英文落地页骨架（双语切换）",
+      "phase": 0,
+      "week": 1,
+      "priority": "P1",
+      "status": "done",
+      "progress": 100,
+      "assignee": "heyangyan",
+      "estHours": 4,
+      "deadline": "2026-09-04",
+      "deps": [],
+      "tags": [
+        "growth",
+        "i18n"
+      ],
+      "context": "仅中文天花板低；$4 价位对 $15–80 的海外竞品是降维打击，英文 landing 是海外杠杆。调研结论：双语是必选项。",
+      "goal": "README.en.md 与网页落地页支持中/英切换（?lang=en），首屏含价值主张、60 秒 demo、安装按钮。",
+      "files": [
+        "README.en.md",
+        "web/public/index.html",
+        "web/public/app.js"
+      ],
+      "acceptance": [
+        "README.en.md 存在且含 Quick Start / Install / Demo 段落",
+        "落地页 ?lang=en 展示英文，?lang=zh 展示中文，默认中文",
+        "英文页无机器翻译硬伤（关键术语 C4/drift/preview 准确）"
+      ],
+      "acceptanceCommands": [
+        "test -f README.en.md && grep -qi \"install\" README.en.md && grep -qi \"mermaid\" README.en.md && echo EN_OK"
+      ],
+      "refs": [
+        "docs/market-evaluation/market-evaluation.html"
+      ],
+      "activity": [
+        {
+          "date": "2026-08-29",
+          "action": "状态变更 todo→done"
+        }
+      ]
+    },
+    {
+      "id": "W01-06",
+      "title": "商业化文档修订：定价与核心卖点重排",
+      "phase": 0,
+      "week": 1,
+      "priority": "P0",
+      "status": "done",
+      "progress": 100,
+      "assignee": "heyangyan",
+      "estHours": 2,
+      "deadline": "2026-09-04",
+      "deps": [],
+      "tags": [
+        "biz",
+        "docs"
+      ],
+      "context": "调研结论：按次计费反人性（micro-SaaS 61% 固定月费）；一次性生成撑不起订阅；¥29/月是国内被验证的首付费墙；团队应按仓库计费。",
+      "goal": "COMMERCIAL.md 改写：Pro=¥29/月无限生成，核心卖点=自动同步+漂移检测+PR 评论；Team=¥999/年/仓库；删除按次/额度表述。",
+      "files": [
+        "COMMERCIAL.md"
+      ],
+      "acceptance": [
+        "COMMERCIAL.md 含 Pro ¥29/月、无限生成",
+        "含 Team ¥999/年/仓库",
+        "核心卖点顺序：防漂移闭环在前，六视图生成在后",
+        "不再出现按次计费/生成额度作为付费墙的描述"
+      ],
+      "acceptanceCommands": [
+        "grep -q \"¥29\" COMMERCIAL.md && grep -q \"999\" COMMERCIAL.md && ! grep -q \"按次\" COMMERCIAL.md && echo BIZ_OK"
+      ],
+      "refs": [
+        "COMMERCIAL.md",
+        "docs/market-evaluation/market-evaluation.html"
+      ],
+      "activity": [
+        {
+          "date": "2026-08-29",
+          "action": "状态变更 todo→done"
+        }
+      ]
+    },
+    {
+      "id": "W02-01",
+      "title": "VS Code 扩展打包脚手架（vsce）",
+      "phase": 0,
+      "week": 2,
+      "priority": "P0",
+      "status": "todo",
+      "progress": 0,
+      "assignee": "heyangyan",
+      "estHours": 4,
+      "deadline": "2026-09-11",
+      "deps": [
+        "W01-01",
+        "W01-02"
+      ],
+      "tags": [
+        "infra",
+        "release"
+      ],
+      "context": "package.json 已有 publisher/commands，但缺 icon、repository 完整字段、vsce 打包验证；.vscodeignore 需确保不把 eval/、web/ 多余文件打进去。",
+      "goal": "一条命令打出可侧载的 .vsix，内容最小且完整（含 vendor/mermaid、NOTICE、LICENSE）。",
+      "files": [
+        "package.json",
+        ".vscodeignore",
+        "scripts/package-vsix.sh",
+        "assets/icon.png"
+      ],
+      "acceptance": [
+        "npx @vscode/vsce package 成功产出 architecture-viewer-*.vsix",
+        "vsix 内包含 vendor/mermaid.min.js、NOTICE、LICENSE，不含 eval/out、node_modules 测试件",
+        "package.json 含 icon、repository、engines、categories、keywords"
+      ],
+      "acceptanceCommands": [
+        "npx @vscode/vsce package --no-dependencies -o /tmp/av-test.vsix && unzip -l /tmp/av-test.vsix | grep -q \"vendor/mermaid\" && echo VSIX_OK"
+      ],
+      "refs": [
+        "package.json",
+        ".vscodeignore"
+      ],
+      "activity": []
+    },
+    {
+      "id": "W02-02",
+      "title": "网页版可下载离线包",
+      "phase": 0,
+      "week": 2,
+      "priority": "P1",
+      "status": "todo",
+      "progress": 0,
+      "assignee": "heyangyan",
+      "estHours": 4,
+      "deadline": "2026-09-11",
+      "deps": [
+        "W01-01"
+      ],
+      "tags": [
+        "web",
+        "release"
+      ],
+      "context": "无 IDE 的评审者需要零门槛打开；下载离线包也是未来私有化交付的雏形。",
+      "goal": "构建脚本把网页版静态产物（含内联 mermaid）打成 zip，解压后 node server.js 或直接打开即可用。",
+      "files": [
+        "scripts/build-web-dist.mjs",
+        "web/server.js"
+      ],
+      "acceptance": [
+        "node scripts/build-web-dist.mjs 产出 dist/architecture-viewer-web.zip",
+        "解压到空目录后 node server.js 可启动并生成六视图",
+        "zip 内无 CDN 引用"
+      ],
+      "acceptanceCommands": [
+        "node scripts/build-web-dist.mjs && test -f dist/architecture-viewer-web.zip && echo WEBZIP_OK"
+      ],
+      "refs": [
+        "web/server.js"
+      ],
+      "activity": []
+    },
+    {
+      "id": "W02-03",
+      "title": "Webview 离线回归与 CSP 加固",
+      "phase": 0,
+      "week": 2,
+      "priority": "P0",
+      "status": "todo",
+      "progress": 0,
+      "assignee": "heyangyan",
+      "estHours": 3,
+      "deadline": "2026-09-11",
+      "deps": [
+        "W01-01"
+      ],
+      "tags": [
+        "extension",
+        "security"
+      ],
+      "context": "buildPreviewHtml 的 CSP 当前放行 cdn.jsdelivr.net；离线化后应收紧为 localResourceRoots + cspSource，消除远程 connect-src。",
+      "goal": "Webview CSP 无远程域名；F5 开发宿主与侧载 vsix 两条路径断网均可 Preview。",
+      "files": [
+        "src/extension.js"
+      ],
+      "acceptance": [
+        "CSP 中不含 cdn.jsdelivr / https: 通配",
+        "断网 F5 启动 Extension Development Host，Preview 六图渲染正常",
+        "切 tab、搜索、导出按钮可用"
+      ],
+      "acceptanceCommands": [
+        "grep -q \"cdn.jsdelivr\" src/extension.js && echo CSP_FAIL || echo CSP_OK"
+      ],
+      "refs": [
+        "src/extension.js"
+      ],
+      "activity": []
+    },
+    {
+      "id": "W02-04",
+      "title": "移除 Python server 依赖路径",
+      "phase": 0,
+      "week": 2,
+      "priority": "P1",
+      "status": "todo",
+      "progress": 0,
+      "assignee": "heyangyan",
+      "estHours": 2,
+      "deadline": "2026-09-11",
+      "deps": [],
+      "tags": [
+        "docs",
+        "dx"
+      ],
+      "context": "README/DEMO 中 python -m http.server 是旧路径；扩展 Preview 与 node web 已覆盖，多一条 Python 依赖多一层流失。",
+      "goal": "文档与 demo 脚本统一走扩展 Preview / npm run web；python 仅在「无扩展兜底」附录中保留。",
+      "files": [
+        "README.md",
+        "DEMO.md",
+        "scripts/demo.sh",
+        "USER_GUIDE.md"
+      ],
+      "acceptance": [
+        "demo.sh 不依赖 python3",
+        "README 主路径无 python -m http.server（附录兜底除外并明确标注）"
+      ],
+      "acceptanceCommands": [
+        "! grep -q \"python\" scripts/demo.sh && echo NOPY_OK"
+      ],
+      "refs": [
+        "README.md",
+        "DEMO.md"
+      ],
+      "activity": []
+    },
+    {
+      "id": "W02-05",
+      "title": "一键预览双路径冒烟清单",
+      "phase": 0,
+      "week": 2,
+      "priority": "P0",
+      "status": "todo",
+      "progress": 0,
+      "assignee": "heyangyan",
+      "estHours": 2,
+      "deadline": "2026-09-11",
+      "deps": [
+        "W02-01",
+        "W02-03"
+      ],
+      "tags": [
+        "test",
+        "release"
+      ],
+      "context": "上架前必须人工确认两条安装路径都可用，否则首批用户差评致命。",
+      "goal": "产出可勾选的冒烟清单文档：F5 开发宿主 + vsix 侧载，各跑 Init/Generate/Preview/Validate/Copy Prompt。",
+      "files": [
+        "pm/checklists/release-smoke.md"
+      ],
+      "acceptance": [
+        "清单覆盖两条路径 × 五条命令",
+        "每条命令有预期结果描述",
+        "实际走查一遍并勾选记录"
+      ],
+      "acceptanceCommands": [
+        "test -f pm/checklists/release-smoke.md && grep -q \"Init\" pm/checklists/release-smoke.md && grep -q \"Validate\" pm/checklists/release-smoke.md && echo CHECKLIST_OK"
+      ],
+      "refs": [],
+      "activity": []
+    },
+    {
+      "id": "W02-06",
+      "title": "轻量邮箱账号体系骨架（≤3 文件）",
+      "phase": 0,
+      "week": 2,
+      "priority": "P0",
+      "status": "todo",
+      "progress": 0,
+      "assignee": "heyangyan",
+      "estHours": 6,
+      "deadline": "2026-09-11",
+      "deps": [],
+      "tags": [
+        "account",
+        "pro"
+      ],
+      "context": "License Key/设备码易盗版且体验差；账号体系是 Pro 门禁、Team 转化、埋点的共同底座。先做最小可用：邮箱验证码登录。",
+      "goal": "扩展内 Login 命令输入邮箱 → 服务端发码（开发期控制台打印/邮件 stub）→ 校验 → 本地持久化 token；whoami 可查登录态。",
+      "files": [
+        "account/auth-client.js",
+        "web/lib/auth.js",
+        "account/README.md"
+      ],
+      "acceptance": [
+        "命令面板有 Architecture Viewer: Login / Logout / Who Am I",
+        "输入邮箱后 6 位验证码流程可走通（stub 模式码打印在服务端日志）",
+        "token 持久化在 globalState，重启编辑器仍登录",
+        "未登录调用 Pro 命令时提示登录而非崩溃"
+      ],
+      "acceptanceCommands": [
+        "test -f account/auth-client.js && test -f web/lib/auth.js && test -f account/README.md && echo AUTH_OK"
+      ],
+      "refs": [
+        "COMMERCIAL.md"
+      ],
+      "activity": []
+    },
+    {
+      "id": "W03-01",
+      "title": "Generate 命令质量打磨与协议内置",
+      "phase": 1,
+      "week": 3,
+      "priority": "P0",
+      "status": "todo",
+      "progress": 0,
+      "assignee": "heyangyan",
+      "estHours": 8,
+      "deadline": "2026-09-18",
+      "deps": [
+        "W02-01"
+      ],
+      "tags": [
+        "core",
+        "quality"
+      ],
+      "context": "当前 generate 产出确定性骨架，LLM 填图靠用户手动贴 AGENT.md；生成后 Rel 校验已在命令内串联但错误提示需更可操作。",
+      "goal": "AGENT.md 协议内置进扩展（生成时自动写入套件）；Generate 完成后自动跑校验并在输出中给出可点击的修复提示。",
+      "files": [
+        "lib/generate.js",
+        "lib/kit.js",
+        "src/extension.js",
+        "AGENT.md"
+      ],
+      "acceptance": [
+        "Init 出的套件内含 AGENT.md",
+        "Generate 对 eval 三仓 0 protocol error",
+        "校验失败时错误信息含视图名与具体 Rel 缺失项",
+        "node lib/cli.js eval 全 PASS"
+      ],
+      "acceptanceCommands": [
+        "node lib/cli.js eval",
+        "npm test"
+      ],
+      "refs": [
+        "lib/generate.js",
+        "AGENT.md",
+        "eval/REPORT.md"
+      ],
+      "activity": []
+    },
+    {
+      "id": "W03-02",
+      "title": "五仓回归评测（含前端与 Java/Go）",
+      "phase": 1,
+      "week": 3,
+      "priority": "P0",
+      "status": "todo",
+      "progress": 0,
+      "assignee": "heyangyan",
+      "estHours": 4,
+      "deadline": "2026-09-18",
+      "deps": [
+        "W03-01"
+      ],
+      "tags": [
+        "eval",
+        "quality"
+      ],
+      "context": "现有 3 个评测仓偏 Python/Node；上架宣传需要多语言覆盖证据，尤其前端与编译型语言。",
+      "goal": "eval/repos.json 扩到 5 仓（新增 1 前端仓、1 Java 或 Go 仓），eval 报告记录通过率与典型问题。",
+      "files": [
+        "eval/repos.json",
+        "eval/REPORT.md"
+      ],
+      "acceptance": [
+        "eval 报告含 5 个仓库结果",
+        "PASS ≥ 4/5，失败仓有问题归因记录",
+        "漂移检测对人为改动夹具能报错"
+      ],
+      "acceptanceCommands": [
+        "node lib/cli.js eval && grep -c \"PASS\" eval/REPORT.md"
+      ],
+      "refs": [
+        "eval/REPORT.md"
+      ],
+      "activity": []
+    },
+    {
+      "id": "W03-03",
+      "title": "侧栏树视图 + 右键刷新此视图",
+      "phase": 1,
+      "week": 3,
+      "priority": "P1",
+      "status": "todo",
+      "progress": 0,
+      "assignee": "heyangyan",
+      "estHours": 5,
+      "deadline": "2026-09-18",
+      "deps": [
+        "W02-03"
+      ],
+      "tags": [
+        "extension",
+        "ux"
+      ],
+      "context": "命令面板对新用户不够直观；侧栏树是 VS Code 扩展的标准交互，也为后续单视图增量刷新铺路。",
+      "goal": "活动栏新增 Architecture Viewer 图标，树列六视图；单击打开 Preview 并定位 tab，右键支持「刷新此视图」「在编辑器中打开图源」。",
+      "files": [
+        "src/extension.js",
+        "src/treeView.js"
+      ],
+      "acceptance": [
+        "活动栏出现图标，树展示 6 个视图节点",
+        "单击节点打开 Webview 并切换到对应 tab",
+        "右键「刷新此视图」触发单视图重新生成"
+      ],
+      "acceptanceCommands": [
+        "grep -q \"TreeDataProvider\\|registerTreeDataProvider\" src/extension.js src/treeView.js 2>/dev/null && echo TREE_OK"
+      ],
+      "refs": [
+        "src/extension.js"
+      ],
+      "activity": []
+    },
+    {
+      "id": "W04-01",
+      "title": "实战教程文 + 60 秒 demo（掘金/知乎/GitHub）",
+      "phase": 1,
+      "week": 4,
+      "priority": "P0",
+      "status": "todo",
+      "progress": 0,
+      "assignee": "heyangyan",
+      "estHours": 6,
+      "deadline": "2026-09-25",
+      "deps": [
+        "W03-01"
+      ],
+      "tags": [
+        "growth",
+        "content"
+      ],
+      "context": "调研：技术博客「如何构建 X」长尾转化最好；W4 必须与开发并行启动获客，不能等上架。",
+      "goal": "1 篇 2000+ 字实战文《用 AI 自动生成架构图，还能在 PR 里抓漂移》，含 60 秒 demo GIF/视频，三平台发布。",
+      "files": [
+        "docs/blog/2026-09-ai-architecture-drift.md",
+        "docs/demo-script.md"
+      ],
+      "acceptance": [
+        "文章含：痛点、60 秒上手、漂移检测演示、定价与链接",
+        "demo 素材（GIF 或视频链接）可访问",
+        "掘金、知乎、GitHub README 三处发布链接记录在文章头部"
+      ],
+      "acceptanceCommands": [
+        "test -f docs/blog/2026-09-ai-architecture-drift.md && wc -l docs/blog/2026-09-ai-architecture-drift.md | awk '$1>=60{print \"BLOG_OK\"}'"
+      ],
+      "refs": [
+        "docs/market-evaluation/market-evaluation.html"
+      ],
+      "activity": []
+    },
+    {
+      "id": "W04-02",
+      "title": "README 升级：demo GIF + 英文 + badge",
+      "phase": 1,
+      "week": 4,
+      "priority": "P0",
+      "status": "todo",
+      "progress": 0,
+      "assignee": "heyangyan",
+      "estHours": 3,
+      "deadline": "2026-09-25",
+      "deps": [
+        "W03-01",
+        "W01-05"
+      ],
+      "tags": [
+        "growth",
+        "docs"
+      ],
+      "context": "README 是 Marketplace 与 GitHub 的第一转化页；调研显示 GitHub README 是开发者工具最长尾渠道。",
+      "goal": "首屏放 60 秒 demo GIF、一行价值主张、安装命令、Marketplace badge（上架后启用）、中英链接。",
+      "files": [
+        "README.md",
+        "README.en.md",
+        "docs/demo.gif"
+      ],
+      "acceptance": [
+        "README 首屏（前 30 行）含 demo GIF 引用",
+        "含 Marketplace 安装命令与 badge 占位",
+        "中英 README 互相链接"
+      ],
+      "acceptanceCommands": [
+        "grep -q \"demo.gif\\|demo.mp4\" README.md && grep -q \"README.en\" README.md && echo README_OK"
+      ],
+      "refs": [
+        "README.md"
+      ],
+      "activity": []
+    },
+    {
+      "id": "W04-03",
+      "title": "种子博主/架构师招募（10 人）",
+      "phase": 1,
+      "week": 4,
+      "priority": "P0",
+      "status": "todo",
+      "progress": 0,
+      "assignee": "heyangyan",
+      "estHours": 4,
+      "deadline": "2026-09-25",
+      "deps": [],
+      "tags": [
+        "growth",
+        "community"
+      ],
+      "context": "种子用户换反馈与转发是冷启动转化最高的渠道；送半年 Pro 成本为零（边际成本仅 AI 额度）。",
+      "goal": "建立 10 人名单（掘金/知乎/B站架构类博主、团队架构师），完成私信触达，≥3 人回复试用，反馈归集。",
+      "files": [
+        "pm/growth/seed-users.md"
+      ],
+      "acceptance": [
+        "名单含 10 个对象（平台、主页链接、触达状态）",
+        "话术模板含「送半年 Pro + 求 15 分钟反馈」",
+        "≥3 条回复记录在案"
+      ],
+      "acceptanceCommands": [
+        "test -f pm/growth/seed-users.md && grep -c \"http\" pm/growth/seed-users.md | awk '$1>=10{print \"SEED_OK\"}'"
+      ],
+      "refs": [],
+      "activity": []
+    },
+    {
+      "id": "W04-04",
+      "title": "遥测埋点（默认关闭，企业友好）",
+      "phase": 1,
+      "week": 4,
+      "priority": "P1",
+      "status": "todo",
+      "progress": 0,
+      "assignee": "heyangyan",
+      "estHours": 4,
+      "deadline": "2026-09-25",
+      "deps": [
+        "W02-06"
+      ],
+      "tags": [
+        "metrics",
+        "pro"
+      ],
+      "context": "付费率/留存只能靠数据；但企业用户对遥测敏感，必须默认关、可审计、不采代码内容。",
+      "goal": "lib/telemetry.js：命令使用、生成耗时、校验结果计数；配置项默认 false；开启时仅发事件名与时长，不含路径/代码。",
+      "files": [
+        "lib/telemetry.js",
+        "package.json",
+        "src/extension.js"
+      ],
+      "acceptance": [
+        "architectureViewer.telemetry 默认 false",
+        "开启后五条命令各触发事件，payload 中无文件路径与代码片段",
+        "隐私说明写入 README"
+      ],
+      "acceptanceCommands": [
+        "grep -q \"telemetry\" lib/telemetry.js && grep -q \"false\" package.json && echo TELEMETRY_OK"
+      ],
+      "refs": [],
+      "activity": []
+    },
+    {
+      "id": "W05-01",
+      "title": "Free/Pro 门禁可演示",
+      "phase": 1,
+      "week": 5,
+      "priority": "P0",
+      "status": "todo",
+      "progress": 0,
+      "assignee": "heyangyan",
+      "estHours": 5,
+      "deadline": "2026-10-02",
+      "deps": [
+        "W02-06",
+        "W03-01"
+      ],
+      "tags": [
+        "pro",
+        "account"
+      ],
+      "context": "国庆周轻量任务；门禁是支付的前置，必须先能演示「免费能用、Pro 要登录」。",
+      "goal": "Pro 特性（云端精修入口、增量同步占位）未登录提示升级；Pro 账号登录后放行；特性开关服务端可配。",
+      "files": [
+        "account/auth-client.js",
+        "web/lib/auth.js",
+        "src/extension.js"
+      ],
+      "acceptance": [
+        "未登录点 Pro 命令弹出升级提示（含定价页链接）",
+        "Pro 账号登录后命令可执行",
+        "Community 四命令永不禁用（COMMERCIAL.md 承诺）"
+      ],
+      "acceptanceCommands": [
+        "grep -q \"pro\\|Pro\" account/auth-client.js && echo GATE_OK"
+      ],
+      "refs": [
+        "COMMERCIAL.md"
+      ],
+      "activity": []
+    },
+    {
+      "id": "W05-02",
+      "title": "支付通道接入（爱发电/微信 + Lemon Squeezy 占位）",
+      "phase": 1,
+      "week": 5,
+      "priority": "P1",
+      "status": "todo",
+      "progress": 0,
+      "assignee": "heyangyan",
+      "estHours": 5,
+      "deadline": "2026-10-02",
+      "deps": [
+        "W05-01"
+      ],
+      "tags": [
+        "pro",
+        "billing"
+      ],
+      "context": "国内爱发电/微信支付路径最短，海外 Lemon Squeezy 处理税务合规；先收款再自动化。",
+      "goal": "国内收款链接可用 + 支付后手动/半自动开通 Pro 的 SOP；Lemon Squeezy 商品页创建（可沙箱）。",
+      "files": [
+        "web/lib/billing.js",
+        "docs/billing.md"
+      ],
+      "acceptance": [
+        "爱发电/微信收款链接在定价页可点",
+        "billing.md 记录「付款 → 核验 → 开通 Pro」操作步骤",
+        "Lemon Squeezy 商品页（或沙箱）链接记录在案"
+      ],
+      "acceptanceCommands": [
+        "test -f docs/billing.md && grep -q \"Pro\" docs/billing.md && echo BILLING_OK"
+      ],
+      "refs": [
+        "COMMERCIAL.md"
+      ],
+      "activity": []
+    },
+    {
+      "id": "W05-03",
+      "title": "60 秒 demo 视频成片（双语字幕）",
+      "phase": 1,
+      "week": 5,
+      "priority": "P2",
+      "status": "todo",
+      "progress": 0,
+      "assignee": "heyangyan",
+      "estHours": 3,
+      "deadline": "2026-10-02",
+      "deps": [
+        "W04-01"
+      ],
+      "tags": [
+        "growth",
+        "content"
+      ],
+      "context": "假期缓冲项；视频用于落地页、Marketplace 介绍、PH 发布。",
+      "goal": "60 秒演示：Init→Generate→Preview→Validate→PR 漂移评论，中英字幕。",
+      "files": [
+        "docs/demo.mp4"
+      ],
+      "acceptance": [
+        "视频时长 45–90 秒",
+        "含中英字幕或字幕文件",
+        "落地页与 README 可嵌入"
+      ],
+      "acceptanceCommands": [
+        "test -f docs/demo.mp4 && echo VIDEO_OK"
+      ],
+      "refs": [],
+      "activity": []
+    },
+    {
+      "id": "W06-01",
+      "title": "VS Marketplace + Open VSX 双上架",
+      "phase": 1,
+      "week": 6,
+      "priority": "P0",
+      "status": "todo",
+      "progress": 0,
+      "assignee": "heyangyan",
+      "estHours": 4,
+      "deadline": "2026-10-09",
+      "deps": [
+        "W02-01",
+        "W03-02",
+        "W04-02"
+      ],
+      "tags": [
+        "release",
+        "milestone"
+      ],
+      "context": "Open VSX 覆盖 Cursor 用户；两市场都过审才算 Phase 1 交付。国庆缓冲允许滑至 10-16。",
+      "goal": "扩展在两个市场可搜索、可安装；publisher 验证完成。",
+      "files": [
+        "package.json"
+      ],
+      "acceptance": [
+        "VS Marketplace 页面可访问且可安装",
+        "Open VSX 页面可访问（Cursor 可装）",
+        "安装后五条命令可用"
+      ],
+      "acceptanceCommands": [
+        "echo '人工验收：两个市场页面 URL 记录到 pm/checklists/release-smoke.md'"
+      ],
+      "refs": [],
+      "activity": []
+    },
+    {
+      "id": "W06-02",
+      "title": "落地页发布（定价 + demo + 安装）",
+      "phase": 1,
+      "week": 6,
+      "priority": "P0",
+      "status": "todo",
+      "progress": 0,
+      "assignee": "heyangyan",
+      "estHours": 4,
+      "deadline": "2026-10-09",
+      "deps": [
+        "W01-05",
+        "W05-03",
+        "W05-02"
+      ],
+      "tags": [
+        "web",
+        "growth"
+      ],
+      "context": "落地页是广告投放、博主转发、PH 的承接页。",
+      "goal": "公网可访问的落地页：价值主张、demo 视频、定价三档、安装按钮、GitHub 链接。",
+      "files": [
+        "web/public/index.html"
+      ],
+      "acceptance": [
+        "落地页公网 URL 可访问（部署方式记录）",
+        "含定价表（Free/Pro ¥29/Team ¥999/仓/年）",
+        "含安装命令与 demo 视频"
+      ],
+      "acceptanceCommands": [
+        "grep -q \"29\" web/public/index.html && grep -qi \"install\" web/public/index.html && echo LANDING_OK"
+      ],
+      "refs": [],
+      "activity": []
+    },
+    {
+      "id": "W06-03",
+      "title": "新品榜冲榜 + Product Hunt 提交",
+      "phase": 1,
+      "week": 6,
+      "priority": "P1",
+      "status": "todo",
+      "progress": 0,
+      "assignee": "heyangyan",
+      "estHours": 4,
+      "deadline": "2026-10-09",
+      "deps": [
+        "W06-01",
+        "W06-02"
+      ],
+      "tags": [
+        "growth",
+        "launch"
+      ],
+      "context": "上架首周自然流量窗口最宝贵；PH 徽章有长期社会证明价值（流量 72h 后衰减 80%）。",
+      "goal": "上架首周安装 ≥100；PH 提交页就绪并选好发布日；社群发布节奏表执行。",
+      "files": [
+        "pm/growth/launch-checklist.md"
+      ],
+      "acceptance": [
+        "launch-checklist 含发布日、渠道清单、话术",
+        "首周安装量记录 ≥100",
+        "PH 页面 URL 记录"
+      ],
+      "acceptanceCommands": [
+        "test -f pm/growth/launch-checklist.md && echo LAUNCH_OK"
+      ],
+      "refs": [],
+      "activity": []
+    },
+    {
+      "id": "W06-04",
+      "title": "安装与激活指标看板",
+      "phase": 1,
+      "week": 6,
+      "priority": "P1",
+      "status": "todo",
+      "progress": 0,
+      "assignee": "heyangyan",
+      "estHours": 2,
+      "deadline": "2026-10-09",
+      "deps": [
+        "W06-01",
+        "W04-04"
+      ],
+      "tags": [
+        "metrics"
+      ],
+      "context": "周报需要安装/激活数据支撑转化率判断；Marketplace 后台 + 遥测双来源。",
+      "goal": "pm/metrics.md 模板：周安装、周活跃、Generate 触发数、Pro 登录数，每周五随周报更新。",
+      "files": [
+        "pm/metrics.md"
+      ],
+      "acceptance": [
+        "metrics.md 含数据口径与首周数据",
+        "周报脚本引用或人工同步"
+      ],
+      "acceptanceCommands": [
+        "test -f pm/metrics.md && echo METRICS_OK"
+      ],
+      "refs": [],
+      "activity": []
+    },
+    {
+      "id": "W07-01",
+      "title": "增量生成引擎（缓存 + 变动模块重生成）",
+      "phase": 2,
+      "week": 7,
+      "priority": "P0",
+      "status": "todo",
+      "progress": 0,
+      "assignee": "heyangyan",
+      "estHours": 8,
+      "deadline": "2026-10-16",
+      "deps": [
+        "W03-01"
+      ],
+      "tags": [
+        "core",
+        "pro",
+        "cost"
+      ],
+      "context": "全量生成慢且费 token；Pro「无限生成」的成本可控性依赖增量；这也是「自动同步」卖点的引擎基础。",
+      "goal": "扫描结果与图源做哈希比对，仅对变动模块重生成提示词/内容；eval 脚本对比全量耗时与 token 规模。",
+      "files": [
+        "lib/generate.js",
+        "lib/cache.js",
+        "lib/scan.js",
+        "eval/REPORT.md"
+      ],
+      "acceptance": [
+        "无改动时二次 Generate 命中缓存，耗时下降 ≥80%",
+        "单模块改动时仅相关视图更新，其余视图内容不变",
+        "eval 报告记录增量 vs 全量耗时/token 对比，规模下降 ≥50%"
+      ],
+      "acceptanceCommands": [
+        "node lib/cli.js generate && node lib/cli.js generate && npm test"
+      ],
+      "refs": [
+        "lib/generate.js"
+      ],
+      "activity": []
+    },
+    {
+      "id": "W07-02",
+      "title": "architecture-rules.yaml 团队制图规范（差异化支点）",
+      "phase": 2,
+      "week": 7,
+      "priority": "P0",
+      "status": "todo",
+      "progress": 0,
+      "assignee": "heyangyan",
+      "estHours": 8,
+      "deadline": "2026-10-16",
+      "deps": [
+        "W03-01"
+      ],
+      "tags": [
+        "core",
+        "moat",
+        "pro"
+      ],
+      "context": "调研结论：Mermaid 官方扩展与 Cursor 都不会做「团队架构纪律」；这是平台不愿做的重管理功能，是第一个差异化支点。",
+      "goal": "支持 architecture-rules.yaml：节点命名正则、分层归属、禁止跨层依赖、Rel 白名单；Validate 对违规亮红灯。",
+      "files": [
+        "lib/rules.js",
+        "architecture-rules.example.yaml",
+        "lib/validate.js",
+        "test/validate.test.js"
+      ],
+      "acceptance": [
+        "example 规则文件含命名规则、跨层禁止、Rel 白名单三类示例",
+        "违规夹具运行 check 退出码非 0 且报出规则名",
+        "合规夹具通过",
+        "npm test 通过"
+      ],
+      "acceptanceCommands": [
+        "node lib/cli.js check . --rules architecture-rules.example.yaml || echo '需违规夹具验证'",
+        "npm test"
+      ],
+      "refs": [
+        "docs/market-evaluation/market-evaluation.html",
+        "lib/validate.js"
+      ],
+      "activity": []
+    },
+    {
+      "id": "W08-01",
+      "title": "GitHub/Gitee Action：漂移检测 + PR 评论标注",
+      "phase": 2,
+      "week": 8,
+      "priority": "P0",
+      "status": "todo",
+      "progress": 0,
+      "assignee": "heyangyan",
+      "estHours": 8,
+      "deadline": "2026-10-23",
+      "deps": [
+        "W07-01"
+      ],
+      "tags": [
+        "ci",
+        "pro",
+        "moat"
+      ],
+      "context": "PR 里自动标注漂移是持续付费理由的核心动作；Mermaid Chart 已做 PR-aware review，本任务要做到 C4 六视图粒度。",
+      "goal": "Action 在 PR 上运行 check --drift --rules，把漂移项评论到 PR（视图名、缺失模块、建议动作）；demo-drift 夹具必须触发红灯评论。",
+      "files": [
+        ".github/workflows/architecture-drift.yml",
+        "scripts/ci-drift-action.mjs",
+        ".gitee/"
+      ],
+      "acceptance": [
+        "提测 PR 上出现漂移评论，内容含视图名与缺失项",
+        "demo-drift 夹具对应 PR 检查失败（红灯）",
+        "无漂移时评论通过或不评论（可配置）",
+        "Gitee 侧有等价 pipeline 配置或脚本"
+      ],
+      "acceptanceCommands": [
+        "test -f .github/workflows/architecture-drift.yml && test -f scripts/ci-drift-action.mjs && echo ACTION_OK"
+      ],
+      "refs": [
+        ".github/workflows/ci.yml",
+        "eval/demo-drift"
+      ],
+      "activity": []
+    },
+    {
+      "id": "W08-02",
+      "title": "rules 校验接入扩展 Validate 与 CI",
+      "phase": 2,
+      "week": 8,
+      "priority": "P0",
+      "status": "todo",
+      "progress": 0,
+      "assignee": "heyangyan",
+      "estHours": 3,
+      "deadline": "2026-10-23",
+      "deps": [
+        "W07-02"
+      ],
+      "tags": [
+        "core",
+        "ux"
+      ],
+      "context": "rules 只在 CLI 可用则用户感知弱；扩展 Validate 与 CI 必须同源。",
+      "goal": "Validate 命令输出 rules 违规项；CI Action 同步执行 rules 检查。",
+      "files": [
+        "src/extension.js",
+        "lib/validate.js",
+        ".github/workflows/architecture-drift.yml"
+      ],
+      "acceptance": [
+        "扩展 Validate 结果含 rules 段",
+        "CI 对 rules 违规红灯",
+        "文档说明 rules 文件写法"
+      ],
+      "acceptanceCommands": [
+        "grep -q \"rules\" src/extension.js && npm test && echo RULES_UI_OK"
+      ],
+      "refs": [
+        "lib/validate.js"
+      ],
+      "activity": []
+    },
+    {
+      "id": "W08-03",
+      "title": "真实项目周更图试点",
+      "phase": 2,
+      "week": 8,
+      "priority": "P1",
+      "status": "todo",
+      "progress": 0,
+      "assignee": "heyangyan",
+      "estHours": 3,
+      "deadline": "2026-10-23",
+      "deps": [
+        "W08-01"
+      ],
+      "tags": [
+        "pilot",
+        "proof"
+      ],
+      "context": "「至少 1 个真实项目周更图」是 Phase 2 验收；也是博客/销售的最强素材。",
+      "goal": "1 个真实仓库接入 Action，连续 2 周 PR 有漂移检查行为，记录误报/漏报。",
+      "files": [
+        "pm/pilots.md"
+      ],
+      "acceptance": [
+        "pilots.md 记录试点仓库、接入日期、每周结果",
+        "连续 2 周有检查记录"
+      ],
+      "acceptanceCommands": [
+        "test -f pm/pilots.md && echo PILOT_OK"
+      ],
+      "refs": [],
+      "activity": []
+    },
+    {
+      "id": "W09-01",
+      "title": "付费转化优化（试用 + paywall 时机 + 漏斗）",
+      "phase": 2,
+      "week": 9,
+      "priority": "P0",
+      "status": "todo",
+      "progress": 0,
+      "assignee": "heyangyan",
+      "estHours": 6,
+      "deadline": "2026-10-30",
+      "deps": [
+        "W05-01",
+        "W06-01",
+        "W04-04"
+      ],
+      "tags": [
+        "pro",
+        "growth"
+      ],
+      "context": "2% 转化需要主动设计：7 天试用、价值时刻后弹 paywall（第 N 次生成或首次漂移检出）。",
+      "goal": "Pro 7 天试用流程；漂移检出/增量同步等价值时刻后引导升级；漏斗事件埋点（登录→试用→付费）。",
+      "files": [
+        "account/auth-client.js",
+        "lib/telemetry.js",
+        "web/public/index.html"
+      ],
+      "acceptance": [
+        "新用户可一键开启 7 天 Pro 试用",
+        "首次漂移检出后出现升级提示（不阻断）",
+        "漏斗事件可在遥测日志中看到"
+      ],
+      "acceptanceCommands": [
+        "grep -q \"trial\" account/auth-client.js web/lib/auth.js 2>/dev/null && echo TRIAL_OK"
+      ],
+      "refs": [],
+      "activity": []
+    },
+    {
+      "id": "W09-02",
+      "title": "客服文档与发票流程 SOP",
+      "phase": 2,
+      "week": 9,
+      "priority": "P1",
+      "status": "todo",
+      "progress": 0,
+      "assignee": "heyangyan",
+      "estHours": 2,
+      "deadline": "2026-10-30",
+      "deps": [
+        "W05-02"
+      ],
+      "tags": [
+        "support",
+        "biz"
+      ],
+      "context": "团队客户采购要发票；个人用户需要反馈渠道。",
+      "goal": "support.md（工单渠道、FAQ、响应时效）+ invoice.md（开票信息收集与流程）。",
+      "files": [
+        "docs/support.md",
+        "docs/invoice.md"
+      ],
+      "acceptance": [
+        "两份文档存在且从落地页可到达",
+        "FAQ ≥ 10 条（安装、登录、生成质量、离线…）"
+      ],
+      "acceptanceCommands": [
+        "test -f docs/support.md && test -f docs/invoice.md && echo SUPPORT_OK"
+      ],
+      "refs": [],
+      "activity": []
+    },
+    {
+      "id": "W09-03",
+      "title": "首笔 Pro 付费到账（里程碑）",
+      "phase": 2,
+      "week": 9,
+      "priority": "P0",
+      "status": "todo",
+      "progress": 0,
+      "assignee": "heyangyan",
+      "estHours": 2,
+      "deadline": "2026-10-30",
+      "deps": [
+        "W09-01",
+        "W05-02"
+      ],
+      "tags": [
+        "milestone",
+        "biz"
+      ],
+      "context": "首笔付费验证全链路；种子用户或自然流量转化均可。",
+      "goal": "≥1 笔真实 Pro 付款到账并完成开通。",
+      "files": [
+        "pm/metrics.md"
+      ],
+      "acceptance": [
+        "付款凭证/订单号记录在 metrics.md",
+        "用户 Pro 权益开通确认"
+      ],
+      "acceptanceCommands": [
+        "grep -q \"订单\\|order\\|付费\" pm/metrics.md && echo FIRST_PAY_OK"
+      ],
+      "refs": [],
+      "activity": []
+    },
+    {
+      "id": "W10-01",
+      "title": "多语言漂移检测精度打磨（Java/Go/前端）",
+      "phase": 2,
+      "week": 10,
+      "priority": "P0",
+      "status": "todo",
+      "progress": 0,
+      "assignee": "heyangyan",
+      "estHours": 8,
+      "deadline": "2026-11-06",
+      "deps": [
+        "W07-01",
+        "W08-01",
+        "W03-02"
+      ],
+      "tags": [
+        "core",
+        "quality"
+      ],
+      "context": "漂移误报多了用户会关 CI；编译型语言与前端框架的隐式依赖需要扫描规则补强。",
+      "goal": "三类语言各 1 仓的 eval 中，漂移检测误报率 <20%（人工判定），漏报有归因。",
+      "files": [
+        "lib/scan.js",
+        "lib/generate.js",
+        "eval/REPORT.md"
+      ],
+      "acceptance": [
+        "eval 报告含误报率统计",
+        "误报率 <20%，漏报项有 issue 记录"
+      ],
+      "acceptanceCommands": [
+        "node lib/cli.js eval && npm test"
+      ],
+      "refs": [
+        "eval/REPORT.md"
+      ],
+      "activity": []
+    },
+    {
+      "id": "W10-02",
+      "title": "PR 漂移评论 v2（定位视图/行 + 修复 prompt）",
+      "phase": 2,
+      "week": 10,
+      "priority": "P1",
+      "status": "todo",
+      "progress": 0,
+      "assignee": "heyangyan",
+      "estHours": 5,
+      "deadline": "2026-11-06",
+      "deps": [
+        "W08-01"
+      ],
+      "tags": [
+        "ci",
+        "ux",
+        "pro"
+      ],
+      "context": "评论只说「漂移了」不可执行；给出具体位置和一键修复 prompt 才形成闭环。",
+      "goal": "评论含：视图名、图源文件与行号、缺失/多余元素、可直接粘贴给 Cursor 的修复 prompt。",
+      "files": [
+        "scripts/ci-drift-action.mjs"
+      ],
+      "acceptance": [
+        "测试 PR 评论含行号定位与修复 prompt 代码块",
+        "prompt 粘贴到 Cursor 可产出修复 diff（人工验证 1 例）"
+      ],
+      "acceptanceCommands": [
+        "grep -q \"prompt\\|Prompt\" scripts/ci-drift-action.mjs && echo PRV2_OK"
+      ],
+      "refs": [],
+      "activity": []
+    },
+    {
+      "id": "W11-01",
+      "title": "Team 按仓库年费方案落地（¥999/年/仓库）",
+      "phase": 2,
+      "week": 11,
+      "priority": "P0",
+      "status": "todo",
+      "progress": 0,
+      "assignee": "heyangyan",
+      "estHours": 5,
+      "deadline": "2026-11-13",
+      "deps": [
+        "W05-02"
+      ],
+      "tags": [
+        "biz",
+        "team"
+      ],
+      "context": "席位制 ¥99–199/人/月在国内中小团队接受度极低；按仓库计费与「仓库内嵌」定位天然契合。",
+      "goal": "落地页与 billing 支持 ¥999/年/仓库商品；购买后解锁 Team 特性（CI 托管评论、rules 包、共享图库占位）。",
+      "files": [
+        "web/lib/billing.js",
+        "web/public/index.html",
+        "COMMERCIAL.md"
+      ],
+      "acceptance": [
+        "落地页定价表含 Team ¥999/年/仓库",
+        "billing 流程可下单（沙箱或真实）",
+        "COMMERCIAL.md 同步"
+      ],
+      "acceptanceCommands": [
+        "grep -q \"999\" web/public/index.html && grep -q \"999\" COMMERCIAL.md && echo TEAM_OK"
+      ],
+      "refs": [
+        "COMMERCIAL.md"
+      ],
+      "activity": []
+    },
+    {
+      "id": "W11-02",
+      "title": "PDF 导出与演示模式",
+      "phase": 2,
+      "week": 11,
+      "priority": "P1",
+      "status": "todo",
+      "progress": 0,
+      "assignee": "heyangyan",
+      "estHours": 5,
+      "deadline": "2026-11-13",
+      "deps": [
+        "W02-02"
+      ],
+      "tags": [
+        "viewer",
+        "feature"
+      ],
+      "context": "「给老板/评审会用」是高频场景；六视图合订 PDF 与全屏演示是付费感知功能。",
+      "goal": "Viewer 内一键导出六视图合订 PDF；演示模式全屏切换、快捷键导航。",
+      "files": [
+        "architecture_visualized.html",
+        "web/public/app.js"
+      ],
+      "acceptance": [
+        "导出 PDF 含六视图与标题页",
+        "演示模式可全屏、左右键切 tab"
+      ],
+      "acceptanceCommands": [
+        "grep -q \"pdf\\|print\" architecture_visualized.html && echo PDF_OK"
+      ],
+      "refs": [
+        "architecture_visualized.html"
+      ],
+      "activity": []
+    },
+    {
+      "id": "W11-03",
+      "title": "用户行为数据复盘（留存/漏斗/定价）",
+      "phase": 2,
+      "week": 11,
+      "priority": "P1",
+      "status": "todo",
+      "progress": 0,
+      "assignee": "heyangyan",
+      "estHours": 3,
+      "deadline": "2026-11-13",
+      "deps": [
+        "W04-04",
+        "W09-01"
+      ],
+      "tags": [
+        "metrics",
+        "biz"
+      ],
+      "context": "用真实数据替换调研基准：安装→激活→试用→付费漏斗、生成频率、留存。",
+      "goal": "复盘文档给出数据、与基准对比、3 条功能/定价调整建议。",
+      "files": [
+        "pm/retrospective-w11.md"
+      ],
+      "acceptance": [
+        "含漏斗各环节数字",
+        "含 ≥3 条有数据支撑的调整建议"
+      ],
+      "acceptanceCommands": [
+        "test -f pm/retrospective-w11.md && echo RETRO11_OK"
+      ],
+      "refs": [
+        "pm/metrics.md"
+      ],
+      "activity": []
+    },
+    {
+      "id": "W12-01",
+      "title": "Team 私有化试点（1 个付费意向）",
+      "phase": 2,
+      "week": 12,
+      "priority": "P0",
+      "status": "todo",
+      "progress": 0,
+      "assignee": "heyangyan",
+      "estHours": 6,
+      "deadline": "2026-11-20",
+      "deps": [
+        "W11-01",
+        "W08-03"
+      ],
+      "tags": [
+        "team",
+        "milestone",
+        "biz"
+      ],
+      "context": "私有化报价单页 + 离线包是 B 端敲门砖；从种子用户/试点仓库中转化。",
+      "goal": "私有化报价与交付说明页；≥1 个书面付费试点意向（邮件/合同/订单均可）。",
+      "files": [
+        "docs/team-onprem.md",
+        "pm/pilots.md"
+      ],
+      "acceptance": [
+        "team-onprem.md 含报价档位、交付物、SLA 说明",
+        "pilots.md 记录 ≥1 个书面意向凭证"
+      ],
+      "acceptanceCommands": [
+        "test -f docs/team-onprem.md && echo ONPREM_OK"
+      ],
+      "refs": [],
+      "activity": []
+    },
+    {
+      "id": "W12-02",
+      "title": "12 周复盘 + Phase 3 设计稿",
+      "phase": 2,
+      "week": 12,
+      "priority": "P1",
+      "status": "todo",
+      "progress": 0,
+      "assignee": "heyangyan",
+      "estHours": 4,
+      "deadline": "2026-11-20",
+      "deps": [],
+      "tags": [
+        "retro",
+        "planning"
+      ],
+      "context": "壁垒层进入设计：多仓聚合、跨仓依赖图、规范模板市场。",
+      "goal": "12 周复盘（目标达成率、收入、数据）+ Phase 3 技术设计稿（数据模型、API、里程碑）。",
+      "files": [
+        "pm/retrospective-12w.md",
+        "docs/phase3-design.md"
+      ],
+      "acceptance": [
+        "复盘含三大指标：安装、付费、收入",
+        "设计稿含多仓聚合数据模型与跨仓依赖图方案"
+      ],
+      "acceptanceCommands": [
+        "test -f pm/retrospective-12w.md && test -f docs/phase3-design.md && echo RETRO12_OK"
+      ],
+      "refs": [
+        "docs/market-evaluation/market-evaluation.html"
+      ],
+      "activity": []
+    },
+    {
+      "id": "W13-01",
+      "title": "[backlog] GitHub/Gitee OAuth 云端仓库导入",
+      "phase": 3,
+      "week": 13,
+      "priority": "P0",
+      "status": "todo",
+      "progress": 0,
+      "assignee": "heyangyan",
+      "estHours": 0,
+      "deadline": null,
+      "deps": [
+        "W12-02"
+      ],
+      "tags": [
+        "pro",
+        "web",
+        "backlog"
+      ],
+      "context": "网页版从本机路径升级到云端导入，是 Pro 网页付费锁。",
+      "goal": "OAuth 授权后选择仓库 → 云端生成 → 私密分享链接。",
+      "files": [
+        "web/server.js",
+        "web/lib/"
+      ],
+      "acceptance": [
+        "GitHub 与 Gitee 各可完成一次 OAuth 导入生成"
+      ],
+      "acceptanceCommands": [
+        "echo 'backlog 任务，Phase 3 启动时细化'"
+      ],
+      "refs": [
+        "COMMERCIAL.md"
+      ],
+      "activity": []
+    },
+    {
+      "id": "W13-02",
+      "title": "[backlog] 多仓库聚合门户 + 架构资产台账",
+      "phase": 3,
+      "week": 13,
+      "priority": "P0",
+      "status": "todo",
+      "progress": 0,
+      "assignee": "heyangyan",
+      "estHours": 0,
+      "deadline": null,
+      "deps": [
+        "W13-01"
+      ],
+      "tags": [
+        "moat",
+        "team",
+        "backlog"
+      ],
+      "context": "平台官方不会做的重管理功能：组织级架构资产盘点。",
+      "goal": "多仓视图聚合、资产台账（服务/系统/负责人）、变更历史。",
+      "files": [
+        "web/"
+      ],
+      "acceptance": [
+        "一个组织下 ≥3 仓可聚合浏览"
+      ],
+      "acceptanceCommands": [
+        "echo 'backlog 任务，Phase 3 启动时细化'"
+      ],
+      "refs": [],
+      "activity": []
+    },
+    {
+      "id": "W13-03",
+      "title": "[backlog] 跨仓库依赖图",
+      "phase": 3,
+      "week": 13,
+      "priority": "P1",
+      "status": "todo",
+      "progress": 0,
+      "assignee": "heyangyan",
+      "estHours": 0,
+      "deadline": null,
+      "deps": [
+        "W13-02"
+      ],
+      "tags": [
+        "moat",
+        "backlog"
+      ],
+      "context": "架构组/平台组核心诉求，单仓工具无法覆盖。",
+      "goal": "跨仓服务调用/依赖关系自动生成全局依赖图。",
+      "files": [
+        "lib/",
+        "web/"
+      ],
+      "acceptance": [
+        "跨仓依赖在聚合门户可视化"
+      ],
+      "acceptanceCommands": [
+        "echo 'backlog 任务，Phase 3 启动时细化'"
+      ],
+      "refs": [],
+      "activity": []
+    },
+    {
+      "id": "W13-04",
+      "title": "[backlog] 团队规范模板市场",
+      "phase": 3,
+      "week": 13,
+      "priority": "P2",
+      "status": "todo",
+      "progress": 0,
+      "assignee": "heyangyan",
+      "estHours": 0,
+      "deadline": null,
+      "deps": [
+        "W07-02"
+      ],
+      "tags": [
+        "moat",
+        "community",
+        "backlog"
+      ],
+      "context": "architecture-rules.yaml 的网络效应：行业/框架规范包分享。",
+      "goal": "规范包可发布、订阅、评分。",
+      "files": [
+        "web/"
+      ],
+      "acceptance": [
+        "≥5 个示例规范包可浏览"
+      ],
+      "acceptanceCommands": [
+        "echo 'backlog 任务，Phase 3 启动时细化'"
+      ],
+      "refs": [],
+      "activity": []
+    },
+    {
+      "id": "W13-05",
+      "title": "[backlog] SSO / 私有 LLM / 离线安装包",
+      "phase": 3,
+      "week": 13,
+      "priority": "P1",
+      "status": "todo",
+      "progress": 0,
+      "assignee": "heyangyan",
+      "estHours": 0,
+      "deadline": null,
+      "deps": [
+        "W12-01"
+      ],
+      "tags": [
+        "team",
+        "enterprise",
+        "backlog"
+      ],
+      "context": "企业采购门槛能力；私有化报价的交付内容。",
+      "goal": "SSO 登录、自带模型 Key、一键离线安装包。",
+      "files": [
+        "account/",
+        "web/"
+      ],
+      "acceptance": [
+        "私有化环境无外网完成安装+生成"
+      ],
+      "acceptanceCommands": [
+        "echo 'backlog 任务，Phase 3 启动时细化'"
+      ],
+      "refs": [],
+      "activity": []
+    }
+  ]
+}

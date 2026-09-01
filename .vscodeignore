@@ -1,0 +1,8 @@
+.vscode/**
+.github/**
+.git/**
+eval/**
+test/**
+scripts/**
+*.vsix
+eval/out/**

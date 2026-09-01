@@ -1,0 +1,29 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  test-and-demo:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - name: Unit tests
+        run: node --test test/*.test.js
+      - name: Install Playwright Chromium
+        run: npx playwright install --with-deps chromium
+      - name: E2E smoke
+        run: npx playwright test --reporter=line
+      - name: Init → Generate → check (happy path)
+        run: bash scripts/demo.sh
+      - name: Drift fixture must fail
+        run: |
+          if node lib/cli.js check eval/demo-drift --filled; then
+            echo "demo-drift should fail"
+            exit 1
+          fi
+          echo "CI fail path locked"

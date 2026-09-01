@@ -1,0 +1,16 @@
+---
+description: 更新架构图时只改 6 个 mermaid md，遵守 AGENT.md 渲染协议
+globs: "{c4-context,c4-container,c4-component,block-diagram,class-diagram,deployment-ops,AGENT}.md"
+alwaysApply: false
+---
+
+# 架构图生成与更新
+
+扫描本仓库上级（或工作区根）源码，覆写同目录 6 个图源文件。细则见 `AGENT.md`。
+
+- 只改：`c4-context.md` `c4-container.md` `c4-component.md` `block-diagram.md` `class-diagram.md` `deployment-ops.md`
+- 不改：`architecture_visualized.html`、`architecture.config.js`
+- 每个 `##` 标题后紧跟一个 ` ```mermaid ` 块；C4 的 `Rel()` 两端必须已声明
+- 节点 ID 用英文 snake_case，label 可中文；禁止写入 `.env`、密钥、不存在的服务
+- 顺序：container → component → class → block → deployment → context
+- 先给草稿再写盘（用户要求确认时）

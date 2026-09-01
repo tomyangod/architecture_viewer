@@ -1,0 +1,38 @@
+# 客户仓库可直接复制的漂移红灯模板（与 .github/workflows/architecture-check.yml 同步）
+# 复制命令：
+#   mkdir -p .github/workflows
+#   curl -fsSL https://gitee.com/heyangyan/architecture_viewer/raw/master/templates/architecture-check.yml \
+#     -o .github/workflows/architecture-check.yml
+
+name: Architecture Check
+
+on:
+  pull_request:
+  push:
+    branches: [main, master]
+
+jobs:
+  drift:
+    name: Protocol + drift
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Install Architecture Viewer CLI
+        run: npm i -g architecture-viewer@^0.2.1
+      - name: Ensure kit exists
+        run: |
+          if [ ! -f architecture_viewer/architecture_visualized.html ]; then
+            arch-viewer init . --dir architecture_viewer
+          fi
+      - name: Refresh skeleton diagrams
+        run: arch-viewer generate . --dir architecture_viewer
+      - name: Fail on protocol / placeholder / drift
+        run: arch-viewer check architecture_viewer --filled --drift --repo .
+      - name: How to fix
+        if: failure()
+        run: |
+          echo "::error::架构图与代码漂移或协议失败。本地：npx arch-viewer generate . && npx arch-viewer check architecture_viewer --filled --drift --repo ."
+          exit 1
