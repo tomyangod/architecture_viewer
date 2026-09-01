@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>本地 Pro 上手 — Architecture Viewer</title>
+  <link rel="stylesheet" href="/styles.css" />
+</head>
+<body>
+  <div class="page">
+    <header class="top">
+      <a class="brand" href="/">Architecture Viewer</a>
+      <nav class="nav">
+        <a href="/account.html">控制台</a>
+        <a href="/#pricing">定价</a>
+      </nav>
+    </header>
+    <section class="hero">
+      <p class="eyebrow">不上 GitHub 也能用</p>
+      <h1>本地 Pro 上手（5 步）</h1>
+      <p class="lede">告诉控制台项目在哪个文件夹。图和代码对不上就红灯。试用 7 天含自动检查与企业微信；到期后仍可手动点检查。</p>
+      <div class="cta">
+        <a class="btn primary" href="/account.html">打开控制台</a>
+      </div>
+    </section>
+    <section>
+      <h2>1. 启动网页</h2>
+      <pre><code>cd 本项目目录
+ARCH_PRO_LOCAL=1 npm run web
+# 浏览器打开 http://127.0.0.1:3847/account.html</code></pre>
+      <h2>2. 注册试用 7 天</h2>
+      <p class="section-copy">邮箱 + 至少 8 位密码 →「注册并试用 7 天」。</p>
+      <h2>3. 给自己的项目出图（免费）</h2>
+      <pre><code>cd /Users/你/你的项目
+npx arch-viewer init .
+npx arch-viewer generate .</code></pre>
+      <h2>4. 填文件夹，点「现在检查」</h2>
+      <p class="section-copy">路径要从 <code>/</code> 写起。间隔填 15 会自动再查；填 0 只手动。企业微信群机器人地址可选。</p>
+      <h2>5. 红灯了怎么修</h2>
+      <pre><code>cd /Users/你/你的项目
+npx arch-viewer generate .</code></pre>
+      <p class="section-copy">再回控制台点一次检查。变绿即可。</p>
+      <h2>试用到期</h2>
+      <p class="section-copy">仍可手动「现在检查」和命令行 <code>npx arch-viewer check</code>。自动检查、企业微信推送请在控制台兑换许可证。</p>
+      <p class="section-copy">更细的说明（Finder 拷路径、企微怎么建机器人）见仓库 <code>docs/PRO-LOCAL.md</code>。</p>
+    </section>
+  </div>
+</body>
+</html>

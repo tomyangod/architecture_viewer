@@ -10,6 +10,7 @@ const cryptoUtil = require('./crypto');
 const { runHostedCheck } = require('./host-drift');
 const { formatComment } = require('./comment');
 const { safeClone, cleanup } = require('../clone');
+const local = require('./local');
 
 function clientIp(req) {
   return (req.headers['x-forwarded-for'] || '').split(',')[0].trim() || req.socket && req.socket.remoteAddress || '';
@@ -76,10 +77,13 @@ async function handlePro(req, res, url, rawBuf) {
     if (!user) return json(res, 401, { error: '请先登录' });
     const db = store.load();
     const repos = db.repos.filter((r) => r.userId === user.id).map(repoPublic);
+    const locals = (db.locals || []).filter((p) => p.userId === user.id).map(local.localPublic);
     const events = (db.events || []).filter((e) => e.userId === user.id).slice(0, 15);
     return json(res, 200, {
       user: publicUser(user),
       repos,
+      locals,
+      localEnabled: local.localEnabled(),
       events,
       webhookBase: billing.publicUrl() + '/api/pro/webhook'
     });
@@ -182,6 +186,53 @@ async function handlePro(req, res, url, rawBuf) {
     if (!admin || got !== admin) return json(res, 403, { error: '管理员令牌无效' });
     const key = billing.issueLicense(body.email, body.days || 31);
     return json(res, 200, { key });
+  }
+
+  if (method === 'POST' && pathname === '/api/pro/local') {
+    const user = auth.requireUser(req);
+    const out = local.upsertLocal(user, body);
+    return json(res, 201, {
+      project: local.localPublic(out.rec),
+      limited: !!out.limited,
+      note: out.limited
+        ? '试用已到期：已保存路径，仅可手动「现在检查」。自动检查与企业微信需兑换许可证。'
+        : undefined
+    });
+  }
+
+  if (method === 'DELETE' && pathname.startsWith('/api/pro/local/')) {
+    const user = auth.requireUser(req);
+    const rest = pathname.slice('/api/pro/local/'.length).replace(/\/$/, '');
+    const id = rest.replace(/\/check$/, '');
+    if (rest.endsWith('/check')) return json(res, 405, { error: '请用 POST 执行检查' });
+    const db = store.load();
+    const before = (db.locals || []).length;
+    db.locals = (db.locals || []).filter((p) => !(p.id === id && p.userId === user.id));
+    if (db.locals.length === before) return json(res, 404, { error: '本地项目未找到' });
+    store.save(db);
+    return json(res, 200, { ok: true });
+  }
+
+  if (method === 'POST' && pathname.startsWith('/api/pro/local/') && pathname.endsWith('/check')) {
+    const user = auth.requireUser(req);
+    const id = pathname.slice('/api/pro/local/'.length, -'/check'.length);
+    const db = store.load();
+    const rec = local.findOwned(db, user, id);
+    if (!rec) return json(res, 404, { error: '本地项目未找到' });
+    const wantNotify = body.notify !== false;
+    const active = isActive(user).ok;
+    const notify = wantNotify && active;
+    const out = await local.runLocalCheck(user, rec, { notify });
+    return json(res, 200, {
+      ok: true,
+      checkOk: out.check.ok,
+      notified: out.notified,
+      notifyError: out.notifyError,
+      notifySkipped: wantNotify && !active ? 'expired' : null,
+      project: out.project,
+      markdown: out.check.markdown,
+      note: wantNotify && !active ? '试用已到期：检查结果已写入控制台，企业微信推送需兑换许可证。' : undefined
+    });
   }
 
   if (method === 'POST' && pathname === '/api/pro/webhook') {

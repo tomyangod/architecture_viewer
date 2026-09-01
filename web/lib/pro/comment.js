@@ -53,7 +53,11 @@ function formatComment(result) {
 
   lines.push('');
   lines.push('---');
-  lines.push('*Pro 托管门禁 · 不需要你在仓库里维护 Action。Community 仍可用自托管模板。*');
+  if (result.pr) {
+    lines.push('*Pro 托管门禁 · 不需要你在仓库里维护 Action。Community 仍可用自托管模板。*');
+  } else {
+    lines.push('*Pro 本地检查 · 图与代码对不上时控制台变红，可推企业微信。*');
+  }
   return lines.join('\n');
 }
 

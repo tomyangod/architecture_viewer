@@ -18,7 +18,7 @@
 | 档位 | 价格 | 包含 |
 |------|------|------|
 | **Community** | ¥0 | 开源扩展 / CLI / 本机网页；Init、Generate（骨架）、`--refine`（自带 Key）；**Actions 漂移模板**；Preview、Validate、自托管分享页 |
-| **Pro** | **¥29 / 月** | 账号 + 7 天试用；**托管 PR 漂移评论**；Stripe 或许可证；扩展与网页同一登录 Cookie（自托管域名） |
+| **Pro** | **¥29 / 月** | 账号 + 7 天试用；**本机文件夹检查 + 企业微信提醒**；托管 PR 漂移评论；Stripe 或许可证 |
 | **Team** | **¥999 / 年 / 仓库** | 共享图库、组织规范、CI 门禁托管；私有化另议 |
 
 Community 采用固定免费档，**不会**把单次调用次数当作付费墙。Pro 是固定月费。
@@ -45,7 +45,7 @@ Community 采用固定免费档，**不会**把单次调用次数当作付费墙
 
 ## Pro / Team
 
-- **Pro（本仓库已交付最小闭环）**：`/account.html` 账号与 7 天试用；`POST /api/pro/webhook` 托管 PR 漂移评论；Stripe 或许可证/管理员开通。部署说明见 [docs/PRO-SAAS.md](docs/PRO-SAAS.md)。
+- **Pro**：`/account.html` 账号与 7 天试用；**本地文件夹检查**（不用 GitHub/Gitee）+ 可选企业微信；以及 `POST /api/pro/webhook` 托管 PR 评论。见 [docs/PRO-SAAS.md](docs/PRO-SAAS.md)。
 - 云端增量同步、组织图库、SSO：仍为后续 Team 能力
 - 私有 LLM、离线安装包、审计、发票流程：[docs/invoice.md](docs/invoice.md)、[docs/support.md](docs/support.md)
 

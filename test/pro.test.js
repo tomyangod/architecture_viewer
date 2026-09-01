@@ -230,6 +230,101 @@ describe('Pro HTTP account + webhook', () => {
   it('account page is served', async () => {
     const r = await request('GET', '/account.html');
     assert.equal(r.status, 200);
-    assert.match(r.body, /托管漂移评论/);
+    assert.match(r.body, /本地项目/);
+    const guide = await request('GET', '/local-pro.html');
+    assert.equal(guide.status, 200);
+    assert.match(guide.body, /本地 Pro 上手/);
+  });
+});
+
+describe('Pro Local folder check', () => {
+  let cookie = '';
+  let localId = '';
+
+  before(async () => {
+    const r = await request('POST', '/api/pro/signup', {
+      email: 'local@example.com',
+      password: 'password1'
+    });
+    assert.equal(r.status, 200, r.body);
+    cookie = r.cookie;
+  });
+
+  it('rejects a relative path', async () => {
+    const r = await request('POST', '/api/pro/local', { path: 'eval/demo-drift' }, cookie);
+    assert.equal(r.status, 400);
+  });
+
+  it('adds showcase-shop and checks green', async () => {
+    const folder = path.join(ROOT, 'examples/showcase-shop');
+    const add = await request('POST', '/api/pro/local', { path: folder, intervalMin: 0 }, cookie);
+    assert.equal(add.status, 201, add.body);
+    const d = JSON.parse(add.body);
+    localId = d.project.id;
+    const check = await request('POST', '/api/pro/local/' + localId + '/check', { notify: false }, cookie);
+    assert.equal(check.status, 200, check.body);
+    const c = JSON.parse(check.body);
+    assert.equal(c.checkOk, true);
+    assert.match(c.markdown, /绿灯/);
+  });
+
+  it('demo-drift is a red light and can notify', async () => {
+    const sent = [];
+    global.__AV_NOTIFY = async (url, markdown) => {
+      sent.push({ url, markdown });
+    };
+    const folder = path.join(ROOT, 'eval/demo-drift');
+    const add = await request(
+      'POST',
+      '/api/pro/local',
+      { path: folder, intervalMin: 0, wecomWebhook: 'https://example.test/wecom' },
+      cookie
+    );
+    assert.equal(add.status, 201, add.body);
+    const id = JSON.parse(add.body).project.id;
+    const check = await request('POST', '/api/pro/local/' + id + '/check', { notify: true }, cookie);
+    delete global.__AV_NOTIFY;
+    assert.equal(check.status, 200, check.body);
+    const c = JSON.parse(check.body);
+    assert.equal(c.checkOk, false);
+    assert.equal(c.notified, true);
+    assert.equal(sent.length, 1);
+    assert.match(sent[0].markdown, /红灯/);
+  });
+
+  it('expired trial can still check by hand; notify is skipped', async () => {
+    const store = require('../web/lib/pro/store');
+    const db = store.load();
+    const user = db.users.find((u) => u.email === 'local@example.com');
+    user.trialUntil = new Date(Date.now() - 1000).toISOString();
+    user.plan = 'trial';
+    user.paidUntil = null;
+    store.save(db);
+    const sent = [];
+    global.__AV_NOTIFY = async (url, markdown) => {
+      sent.push({ url, markdown });
+    };
+    const r = await request('POST', '/api/pro/local/' + localId + '/check', { notify: true }, cookie);
+    delete global.__AV_NOTIFY;
+    assert.equal(r.status, 200, r.body);
+    const d = JSON.parse(r.body);
+    assert.equal(d.checkOk, true);
+    assert.equal(d.notified, false);
+    assert.equal(d.notifySkipped, 'expired');
+    assert.equal(sent.length, 0);
+  });
+
+  it('expired trial can save a folder but auto/wecom are stripped', async () => {
+    const folder = path.join(ROOT, 'eval/demo-drift');
+    const r = await request(
+      'POST',
+      '/api/pro/local',
+      { path: folder, intervalMin: 15, wecomWebhook: 'https://example.test/wecom' },
+      cookie
+    );
+    assert.equal(r.status, 201, r.body);
+    const d = JSON.parse(r.body);
+    assert.equal(d.limited, true);
+    assert.equal(d.project.intervalMin, 0);
   });
 });

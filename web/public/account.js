@@ -53,7 +53,60 @@
       (u.active ? (u.entitlement === 'pro' ? 'Pro 已开通' : '试用中') : '已到期') +
       '</strong> · ' +
       esc(u.email) +
-      (until ? ' · 有效期至 ' + esc(until.slice(0, 10)) : '');
+      (until ? ' · 有效期至 ' + esc(until.slice(0, 10)) : '') +
+      (u.active
+        ? ''
+        : '<br><span class="muted">到期后仍可点「现在检查」。自动检查与企业微信推送请兑换许可证。</span>');
+
+    var intervalInput = document.getElementById('local-interval');
+    var wecomInput = document.getElementById('local-wecom');
+    if (intervalInput) {
+      intervalInput.disabled = !u.active;
+      if (!u.active) intervalInput.value = '0';
+    }
+    if (wecomInput) wecomInput.disabled = !u.active;
+
+    var localsEl = document.getElementById('local-list');
+    if (localsEl) {
+      if (me.localEnabled === false) {
+        localsEl.innerHTML = '<p class="muted">本地检查已关闭。本机运行网页或设置 ARCH_PRO_LOCAL=1。</p>';
+      } else {
+        localsEl.innerHTML = (me.locals || [])
+          .map(function (p) {
+            var lamp =
+              p.lastOk === true ? 'lamp-green' : p.lastOk === false ? 'lamp-red' : 'lamp-none';
+            var lampText =
+              p.lastOk === true ? '绿灯' : p.lastOk === false ? '红灯' : '尚未检查';
+            return (
+              '<article class="dl-card" data-local-id="' +
+              esc(p.id) +
+              '" style="margin:1rem 0">' +
+              '<p><strong>' +
+              esc(p.path) +
+              '</strong></p>' +
+              '<p><span class="lamp ' +
+              lamp +
+              '">' +
+              lampText +
+              '</span>' +
+              (p.lastAt ? ' · ' + esc(String(p.lastAt).replace('T', ' ').slice(0, 19)) : '') +
+              ' · 协议问题 ' +
+              esc(p.lastErrors || 0) +
+              ' · 漂移 ' +
+              esc(p.lastMissing || 0) +
+              (p.hasWecom ? ' · 已接企业微信' : '') +
+              ' · 每 ' +
+              esc(p.intervalMin) +
+              ' 分钟自动查</p>' +
+              '<div class="dl-actions">' +
+              '<button type="button" class="btn primary local-check">现在检查</button>' +
+              '<button type="button" class="btn ghost local-del">移除</button>' +
+              '</div></article>'
+            );
+          })
+          .join('') || '<p class="muted">尚未添加本地项目。填上面的文件夹路径即可。</p>';
+      }
+    }
 
     var list = document.getElementById('repo-list');
     list.innerHTML = (me.repos || [])
@@ -86,8 +139,8 @@
         return (
           '<li>' +
           (e.ok ? '绿灯' : '红灯') +
-          ' · PR #' +
-          esc(e.pr || '-') +
+          ' · ' +
+          (e.kind === 'local' ? '本地 ' + esc(e.label || '') : 'PR #' + esc(e.pr || '-')) +
           ' · 漂移 ' +
           esc(e.missing || 0) +
           ' · ' +
@@ -169,6 +222,62 @@
       }
     );
   });
+
+  var localForm = document.getElementById('local-form');
+  if (localForm) {
+    localForm.addEventListener('submit', function (e) {
+      e.preventDefault();
+      api('POST', '/api/pro/local', {
+        path: document.getElementById('local-path').value.trim(),
+        wecomWebhook: document.getElementById('local-wecom').value.trim(),
+        intervalMin: document.getElementById('local-interval').value
+      }).then(function (r) {
+        if (!r.ok) {
+          showTip(tipDash, r.data.error || '保存失败', true);
+          return;
+        }
+        showTip(tipDash, r.data.note || '已保存本地项目。点「现在检查」看红灯/绿灯。', !!r.data.limited);
+        refresh();
+      });
+    });
+  }
+
+  var localList = document.getElementById('local-list');
+  if (localList) {
+    localList.addEventListener('click', function (e) {
+      var checkBtn = e.target.closest && e.target.closest('.local-check');
+      var delBtn = e.target.closest && e.target.closest('.local-del');
+      var card = e.target.closest && e.target.closest('[data-local-id]');
+      if (!card) return;
+      var id = card.getAttribute('data-local-id');
+      if (checkBtn) {
+        api('POST', '/api/pro/local/' + id + '/check', { notify: true }).then(function (r) {
+          if (!r.ok) {
+            showTip(tipDash, r.data.error || '检查失败', true);
+            return;
+          }
+          showTip(
+            tipDash,
+            r.data.note ||
+              (r.data.checkOk ? '绿灯 · 图与代码一致' : '红灯 · 图和代码对不上') +
+                (r.data.notified ? ' · 已推企业微信' : ''),
+            !r.data.checkOk || !!r.data.notifySkipped
+          );
+          refresh();
+        });
+        return;
+      }
+      if (delBtn) {
+        api('DELETE', '/api/pro/local/' + id, {}).then(function (r) {
+          if (!r.ok) {
+            showTip(tipDash, r.data.error || '移除失败', true);
+            return;
+          }
+          refresh();
+        });
+      }
+    });
+  }
 
   document.getElementById('repo-form').addEventListener('submit', function (e) {
     e.preventDefault();

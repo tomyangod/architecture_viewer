@@ -82,7 +82,7 @@ function requireActive(req) {
   const user = requireUser(req);
   const ent = isActive(user);
   if (!ent.ok) {
-    const err = new Error('Pro 试用或订阅已到期，请开通后继续使用托管漂移评论');
+    const err = new Error('试用或订阅已到期。自动检查与企业微信推送需兑换许可证或开通 Pro');
     err.status = 402;
     err.code = 'PAYMENT_REQUIRED';
     throw err;

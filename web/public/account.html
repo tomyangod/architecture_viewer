@@ -19,8 +19,8 @@
 
     <section class="hero" id="gate">
       <p class="eyebrow">Pro · ¥29 / 月</p>
-      <h1>账号 + 托管漂移评论</h1>
-      <p class="lede">注册即开 7 天试用。把仓库 webhook 指到本服务，PR 上自动出现红灯/绿灯评论，不必自己维护 Action。</p>
+      <h1>账号 + 漂移提醒</h1>
+      <p class="lede">注册即开 7 天试用。不上 GitHub 也可以：填本机文件夹，图不对就红灯。试用到期后仍可手动检查；自动检查与企业微信需兑换许可证。</p>
       <form id="auth-form" class="account-form">
         <label>邮箱 <input type="email" id="email" required autocomplete="username" /></label>
         <label>密码 <input type="password" id="password" required minlength="8" autocomplete="current-password" /></label>
@@ -44,7 +44,17 @@
         <button type="submit" class="btn primary">兑换</button>
       </form>
 
-      <h3>接入仓库</h3>
+      <h3>本地项目（不上 GitHub / Gitee）</h3>
+      <p class="section-copy">填本机项目文件夹。点「现在检查」，图和代码对不上控制台变红。选填企业微信机器人，红灯会推一条消息。试用到期后<strong>仍可手动检查</strong>；自动检查与企微推送需兑换许可证。上手见 <a href="/local-pro.html">本地 Pro 教程</a>。</p>
+      <form id="local-form" class="account-form">
+        <label>项目文件夹绝对路径 <input type="text" id="local-path" placeholder="/Users/你/项目" required /></label>
+        <label>企业微信机器人 Webhook（可选） <input type="url" id="local-wecom" placeholder="https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=…" autocomplete="off" /></label>
+        <label>自动检查间隔（分钟，0 = 只手动） <input type="number" id="local-interval" min="0" max="1440" value="15" /></label>
+        <button type="submit" class="btn primary">保存本地项目</button>
+      </form>
+      <div id="local-list"></div>
+
+      <h3>接入 Gitee / GitHub 仓库</h3>
       <form id="repo-form" class="account-form">
         <label>Git 仓库 HTTPS URL <input type="url" id="repo-url" placeholder="https://gitee.com/org/repo" required /></label>
         <label>仓库访问令牌（写 PR 评论） <input type="password" id="repo-token" placeholder="Gitee / GitHub PAT" autocomplete="off" /></label>

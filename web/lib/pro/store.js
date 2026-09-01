@@ -19,7 +19,7 @@ function funnelPath() {
 }
 
 function empty() {
-  return { users: [], sessions: [], repos: [], events: [] };
+  return { users: [], sessions: [], repos: [], locals: [], events: [] };
 }
 
 function load() {

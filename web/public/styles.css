@@ -682,6 +682,17 @@ h2 {
 .tag-cli  { color: var(--accent); border-color: rgba(15, 110, 86, 0.3); background: rgba(15, 110, 86, 0.08); }
 .tag-src  { color: var(--warn);   border-color: rgba(154, 74, 18, 0.3); background: rgba(154, 74, 18, 0.08); }
 
+.lamp {
+  display: inline-block;
+  font-weight: 700;
+  padding: 0.15rem 0.55rem;
+  border-radius: 999px;
+  font-size: 0.8rem;
+}
+.lamp-green { color: #0f6e56; background: rgba(15, 110, 86, 0.12); }
+.lamp-red { color: #9a4a12; background: rgba(154, 74, 18, 0.14); }
+.lamp-none { color: var(--muted); background: rgba(0, 0, 0, 0.04); }
+
 .dl-card p { margin: 0; color: var(--muted); line-height: 1.55; font-size: 0.93rem; }
 .dl-actions {
   display: flex;

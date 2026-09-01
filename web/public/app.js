@@ -68,7 +68,7 @@
       'dl.title': '安装 · 一分钟跑起来',
       'dl.copy': 'Community 永远免费 + 开源（Apache-2.0）。两种方式任选其一。',
       'pricing.title': '出图免费，漂移闭环收费',
-      'pricing.copy': 'Community：Actions 漂移模板自托管免费。Pro：注册试用 7 天，托管 PR 漂移评论（¥29/月）。Team：组织规范与门禁托管。'
+      'pricing.copy': 'Community：Actions 漂移模板自托管免费。Pro：本机文件夹检查、企业微信提醒、托管 PR 评论（¥29/月）。Team：组织规范与门禁托管。'
     },
     en: {
       'brand': 'Architecture Viewer',
@@ -126,7 +126,7 @@
       'dl.title': 'Install · up in one minute',
       'dl.copy': 'Community stays free and open source (Apache-2.0). Pick any path.',
       'pricing.title': 'Diagrams free. Drift loop paid.',
-      'pricing.copy': 'Community: free self-hosted Actions drift template. Pro: 7-day trial and hosted PR drift comments (¥29/mo). Team: org rules and hosted gates.'
+      'pricing.copy': 'Community: free self-hosted Actions drift template. Pro: local folder check, WeCom alert, hosted PR comments (¥29/mo). Team: org rules and hosted gates.'
     }
   };
 

@@ -18,7 +18,13 @@ const { generateToDirAsync, scan, checkKit } = require('../lib');
 const { writeProject, readProject, listProjects, DIAGRAM_FILES } = require('./lib/projects');
 const { safeClone, cleanup } = require('./lib/clone');
 let handlePro = null;
-try { handlePro = require('./lib/pro/routes').handlePro; } catch { handlePro = null; }
+let startLocalTicker = null;
+try {
+  handlePro = require('./lib/pro/routes').handlePro;
+  startLocalTicker = require('./lib/pro/local').startLocalTicker;
+} catch {
+  handlePro = null;
+}
 
 const ROOT = path.join(__dirname, '..');
 const PUBLIC = path.join(__dirname, 'public');
@@ -223,6 +229,7 @@ async function handleApi(req, res, url) {
       },
       llmAvailable: !!process.env.DEEPSEEK_API_KEY,
       pro: true,
+      local: process.env.ARCH_PRO_LOCAL !== '0',
       stripe: !!(process.env.ARCH_STRIPE_SECRET_KEY && process.env.ARCH_STRIPE_PRICE_ID)
     });
   }
@@ -421,7 +428,8 @@ function main() {
     console.log('  Landing   /');
     console.log('  API       /api/health  /api/samples  /api/generate  /api/projects');
     console.log('  Account   /account.html');
-    console.log('  Pro API   /api/pro/signup  /api/pro/webhook  /api/pro/billing/*');
+    console.log('  Pro API   /api/pro/signup  /api/pro/webhook  /api/pro/local  /api/pro/billing/*');
+    if (startLocalTicker) startLocalTicker();
   });
 }
 

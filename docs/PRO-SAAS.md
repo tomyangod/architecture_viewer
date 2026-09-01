@@ -4,7 +4,22 @@ Architecture Viewer **Community** 继续免费。本页说明如何把同一套 
 
 不引入新的 npm 运行时依赖。数据在 `.data/pro/store.json`。
 
-## 客户路径
+## 本地版（不上 GitHub / Gitee）
+
+小白教程：[PRO-LOCAL.md](PRO-LOCAL.md) · 网页版 `/local-pro.html`。
+
+本机运行 `ARCH_PRO_LOCAL=1 npm run web` 后，在 `/account.html`：
+
+1. 注册（7 天试用）。
+2. 填**项目文件夹绝对路径**（不是仓库网址）。
+3. 点 **现在检查**：控制台亮红灯/绿灯。
+4. 可选填企业微信群机器人 Webhook，红灯会推一条 Markdown。
+5. 间隔分钟数 > 0 时，服务在后台按点再查（试用或许可证有效才跑）。
+6. **试用到期后仍可手动「现在检查」**；自动检查与企微推送需兑换许可证。命令行 `npx arch-viewer check` 一直免费。
+
+生产云上的共享主机请设 `ARCH_PRO_LOCAL=0`，避免扫到别人的磁盘。自托管本机设 `ARCH_PRO_LOCAL=1`。可用 `ARCH_PRO_LOCAL_ROOT` 限制允许的根目录。
+
+## 客户路径（Gitee / GitHub 托管评论）
 
 1. 打开 `/account.html` 注册（自动 7 天试用）。
 2. 填仓库 HTTPS URL + 能写评论的 PAT。
