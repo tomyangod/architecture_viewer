@@ -2,7 +2,7 @@
   "name": "arch-viewer",
   "displayName": "Architecture Viewer",
   "description": "从仓库生成 C4 六视图架构图：CLI + 自托管 Web，扫描、生成、漂移校验一站式。",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "publisher": "heyangyan",
   "license": "Apache-2.0",
   "engines": {

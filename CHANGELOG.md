@@ -2,7 +2,17 @@
 
 本文件遵循 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.1.0/)，版本号遵循语义化版本。
 
-## [0.3.1] — 2026-09-01
+## \[0.3.2] — 2026-09-02
+
+### Fixed
+
+- **修复 npm 安装后 CLI 静默退出（hotfix）**：`bin/arch-viewer.js` 仅 `require('../lib/cli.js')`，而 CLI 入口被 `require.main === module` 守卫包裹，经 npm shim 加载时不执行 `main()`，导致 `arch-viewer` 任何命令都无输出、退出码 0。改为显式调用 `main()` 并处理 Promise/异常退出码。
+
+- 新增 `test/cli-bin.test.js`：spawn 真实 CLI 冒烟 4 例（help、未知命令、无 Key 精修、init+generate+check 全流程），防回归。
+
+## \[Unreleased]
+
+## \[0.3.1] — 2026-09-01
 
 ### Added
 
@@ -10,9 +20,7 @@
 
 - **试用到期策略**：手动「现在检查」仍可用；自动检查与企业微信需许可证。小白教程 [docs/PRO-LOCAL.md](docs/PRO-LOCAL.md)、`/local-pro.html`。
 
-## [Unreleased]
-
-## [0.3.0] — 2026-09-01
+## \[0.3.0] — 2026-09-01
 
 ### Added
 
@@ -28,7 +36,7 @@
 
 - CI 漂移模板安装命令统一为 `arch-viewer@^0.2.1`（Community 0.2.1 基线）
 
-## [0.2.1] — 2026-09-01
+## \[0.2.1] — 2026-09-01
 
 ### Added
 
@@ -48,7 +56,7 @@
 
 - AGENT.md：成品图必须删除模板占位页脚
 
-## [0.2.0] — 稳定性与多语言基线
+## \[0.2.0] — 稳定性与多语言基线
 
 ### Added
 
@@ -82,7 +90,7 @@
 
 - **内部开发件（不随发布承诺）**：`eval/`、`pm/`、`scripts/`、`test/` 为开发/评测工具，不属于产品运行时
 
-## [0.1.0] — 2026-08-29
+## \[0.1.0] — 2026-08-29
 
 ### Added
 
