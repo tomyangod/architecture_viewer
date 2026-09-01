@@ -77,7 +77,25 @@ body {
   border-radius: 999px;
   cursor: pointer;
 }
-.lang-toggle:hover { background: rgba(255,255,255,0.7); }
+.account-form {
+  display: grid;
+  gap: 0.75rem;
+  max-width: 32rem;
+  margin: 1rem 0 1.5rem;
+}
+.account-form label {
+  display: grid;
+  gap: 0.35rem;
+  font-size: 0.9rem;
+  color: var(--muted);
+}
+.account-form input {
+  font: inherit;
+  padding: 0.55rem 0.7rem;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #fffdf8;
+}
 
 .hero {
   padding: 3.5rem 0 2.5rem;

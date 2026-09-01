@@ -2,7 +2,7 @@
 
 **The sell is not “generate a diagram once.” It is “fail the PR when diagrams drift.”**  
 Community (Apache-2.0): CLI, self-hosted web, and a free Actions drift template.  
-Pro adds hosted PR drift comments and incremental sync — see [COMMERCIAL.md](COMMERCIAL.md).
+Pro: account + 7-day trial + **hosted PR drift comments** — `/account.html`. See [docs/PRO-SAAS.md](docs/PRO-SAAS.md).
 
 ## Quick Start (60 seconds)
 
@@ -46,7 +46,7 @@ arch-viewer check ./your-repo/architecture_viewer --filled --drift --repo ./your
 | Tier | Price | Includes |
 |------|-------|----------|
 | Community | Free | Extension, CLI, self-hosted web, **Actions drift template** |
-| Pro | ¥29 / month | Unlimited cloud generate, incremental sync, **hosted PR drift comments** |
+| Pro | ¥29 / month | Account, 7-day trial, **hosted PR drift comments**, Stripe or license |
 | Team | ¥999 / year / repo | Shared library, org rules, hosted CI gate |
 
 Mermaid is vendored offline (`vendor/mermaid.min.js`). See [NOTICE](NOTICE).

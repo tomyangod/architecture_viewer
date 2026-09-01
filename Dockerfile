@@ -26,6 +26,7 @@ ENV HOST=0.0.0.0
 # ENV ARCH_WEB_PATH_MODE=1      # 允许服务器本地路径输入
 # ENV ARCH_WEB_PROJECTS_LIST=1  # 允许列出最近生成的项目
 # ENV ARCH_WEB_SAMPLES=1        # 启用样例仓库
+# ENV ARCH_PRO_SECRET=...        # Pro 会话加密（生产必填）
 # ENV DEEPSEEK_API_KEY=sk-...   # 可选：LLM 精修
 
 EXPOSE 3847

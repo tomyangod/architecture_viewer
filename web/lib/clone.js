@@ -61,7 +61,22 @@ function validateUrl(url) {
  * @param {string} url — HTTPS Git URL
  * @returns {Promise<string>} — 克隆后的临时目录路径
  */
-function safeClone(url) {
+function authCloneUrl(httpsUrl, token) {
+  if (!token) return httpsUrl;
+  const u = new URL(httpsUrl);
+  const host = u.hostname.toLowerCase();
+  if (host === 'gitee.com' || host.endsWith('.gitee.com')) {
+    u.username = 'oauth2';
+    u.password = token;
+  } else {
+    u.username = 'x-access-token';
+    u.password = token;
+  }
+  return u.toString();
+}
+
+function safeClone(url, opts) {
+  const options = opts || {};
   const check = validateUrl(url);
   if (!check.valid) {
     const err = new Error(check.error);
@@ -70,15 +85,15 @@ function safeClone(url) {
   }
 
   const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'arch-clone-'));
+  const cloneUrl = authCloneUrl(url, options.token);
+  const args = ['clone', '--depth', '1', '--single-branch'];
+  if (options.branch) {
+    args.push('--branch', String(options.branch));
+  }
+  args.push(cloneUrl, tmp);
 
   return new Promise((resolve, reject) => {
-    const child = spawn('git', [
-      'clone',
-      '--depth', '1',
-      '--single-branch',
-      url,
-      tmp
-    ], {
+    const child = spawn('git', args, {
       stdio: ['ignore', 'pipe', 'pipe'],
       env: { ...process.env, GIT_TERMINAL_PROMPT: '0' }
     });
@@ -161,4 +176,4 @@ function cleanup(dir) {
   }
 }
 
-module.exports = { safeClone, cleanup, validateUrl, MAX_SIZE, TIMEOUT_MS };
+module.exports = { safeClone, cleanup, validateUrl, authCloneUrl, MAX_SIZE, TIMEOUT_MS };

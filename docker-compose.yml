@@ -8,12 +8,14 @@ services:
     ports:
       - "3847:3847"
     environment:
-      # 开启 Git URL 输入（默认开启，核心功能）
       - ARCH_WEB_PROJECTS_LIST=1
-      # 可选：允许服务器本地路径输入（自托管/内网时开启）
-      # - ARCH_WEB_PATH_MODE=1
-      # 可选：LLM 精修（用户自带 Key 或平台 Key）
-      # - DEEPSEEK_API_KEY=sk-xxxxxxxxxxxx
+      - ARCH_PUBLIC_URL=http://localhost:3847
+      # 生产必改：openssl rand -hex 32
+      - ARCH_PRO_SECRET=change-me-in-production
+      # - ARCH_PRO_ADMIN_TOKEN=...
+      # - ARCH_STRIPE_SECRET_KEY=sk_live_...
+      # - ARCH_STRIPE_PRICE_ID=price_...
+      # - DEEPSEEK_API_KEY=sk-...
     volumes:
       - arch-data:/app/.data
     restart: unless-stopped

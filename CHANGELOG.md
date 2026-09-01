@@ -4,6 +4,17 @@
 
 ## [Unreleased]
 
+## [0.3.0] — 2026-09-01
+
+### Added
+- **Pro 最小收费闭环**：账号注册/登录（7 天试用）、仓库 Webhook、托管 `arch-viewer check --filled --drift` 并在 GitHub/Gitee PR 上发表/更新红灯或绿灯评论；Stripe Checkout（可选）与 HMAC 许可证兑换、管理员开通。控制台 `/account.html`。见 [docs/PRO-SAAS.md](docs/PRO-SAAS.md)。
+- 部署骨架：`.env.example`、`Dockerfile`/`docker-compose.yml` 挂载 `ARCH_PRO_SECRET` 等 Pro 环境变量
+
+### Changed
+- `web/lib/clone.js` 新增 OAuth/PAT 带 token 克隆 + 指定分支（Pro 私有仓支持）；`web/server.js` 同时挂载 Community + Pro 路由，`ARCH_PRO_SECRET` 缺失时 `/api/pro/*` 返回 503 而非 crash
+- 落地页定价区「Pro · 规划中」→ 可注册试用；导航与 footer 新增 Pro 控制台/支持入口；README 指向托管评论对接说明
+- CI 漂移模板安装命令统一为 `arch-viewer@^0.2.1`（Community 0.2.1 基线）
+
 ## [0.2.1] — 2026-09-01
 
 ### Added

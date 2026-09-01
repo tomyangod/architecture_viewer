@@ -17,6 +17,8 @@ const { URL } = require('url');
 const { generateToDirAsync, scan, checkKit } = require('../lib');
 const { writeProject, readProject, listProjects, DIAGRAM_FILES } = require('./lib/projects');
 const { safeClone, cleanup } = require('./lib/clone');
+let handlePro = null;
+try { handlePro = require('./lib/pro/routes').handlePro; } catch { handlePro = null; }
 
 const ROOT = path.join(__dirname, '..');
 const PUBLIC = path.join(__dirname, 'public');
@@ -219,8 +221,18 @@ async function handleApi(req, res, url) {
         projectsList: PROJECTS_LIST,
         samples: SAMPLES_ENABLED
       },
-      llmAvailable: !!process.env.DEEPSEEK_API_KEY
+      llmAvailable: !!process.env.DEEPSEEK_API_KEY,
+      pro: true,
+      stripe: !!(process.env.ARCH_STRIPE_SECRET_KEY && process.env.ARCH_STRIPE_PRICE_ID)
     });
+  }
+
+  if (url.pathname.startsWith('/api/pro')) {
+    if (!handlePro) return send(res, 503, { error: 'pro routes not mounted; need web/lib/pro/ + env ARCH_PRO_SECRET' });
+    const raw = req.method === 'GET' || req.method === 'HEAD' ? Buffer.alloc(0) : await readBody(req);
+    const handled = await handlePro(req, res, url, raw);
+    if (handled === null) return send(res, 404, { error: 'not found' });
+    return;
   }
 
   if (req.method === 'GET' && url.pathname === '/api/samples') {
@@ -408,7 +420,8 @@ function main() {
     console.log(`Architecture Viewer Web  http://${HOST}:${PORT}`);
     console.log('  Landing   /');
     console.log('  API       /api/health  /api/samples  /api/generate  /api/projects');
-    console.log('  Share     /p/<id>');
+    console.log('  Account   /account.html');
+    console.log('  Pro API   /api/pro/signup  /api/pro/webhook  /api/pro/billing/*');
   });
 }
 

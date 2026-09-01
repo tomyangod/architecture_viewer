@@ -18,7 +18,7 @@
 | 档位 | 价格 | 包含 |
 |------|------|------|
 | **Community** | ¥0 | 开源扩展 / CLI / 本机网页；Init、Generate（骨架）、`--refine`（自带 Key）；**Actions 漂移模板**；Preview、Validate、自托管分享页 |
-| **Pro** | **¥29 / 月** | **无限云端生成**；增量同步；**PR 漂移评论托管**；扩展与网页同一账户 |
+| **Pro** | **¥29 / 月** | 账号 + 7 天试用；**托管 PR 漂移评论**；Stripe 或许可证；扩展与网页同一登录 Cookie（自托管域名） |
 | **Team** | **¥999 / 年 / 仓库** | 共享图库、组织规范、CI 门禁托管；私有化另议 |
 
 Community 采用固定免费档，**不会**把单次调用次数当作付费墙。Pro 是固定月费。
@@ -43,12 +43,11 @@ Community 采用固定免费档，**不会**把单次调用次数当作付费墙
 | CLI | `node lib/cli.js init \| generate [--refine] \| check` |
 | CI | [templates/architecture-check.yml](templates/architecture-check.yml) + `eval/demo-drift` 坏图必须失败 |
 
-## Pro / Team（未开源，独立交付）
+## Pro / Team
 
-- 云端仓库导入、私密分享、组织图库
-- 增量生成引擎、**CI 漂移门禁托管、PR 评论**
-- `architecture-rules.yaml` 团队规范云端分发
-- 私有 LLM、离线安装包、SSO / 审计、发票
+- **Pro（本仓库已交付最小闭环）**：`/account.html` 账号与 7 天试用；`POST /api/pro/webhook` 托管 PR 漂移评论；Stripe 或许可证/管理员开通。部署说明见 [docs/PRO-SAAS.md](docs/PRO-SAAS.md)。
+- 云端增量同步、组织图库、SSO：仍为后续 Team 能力
+- 私有 LLM、离线安装包、审计、发票流程：[docs/invoice.md](docs/invoice.md)、[docs/support.md](docs/support.md)
 
 Community 扩展与网页**不会**为 Generate/Validate「电检」许可证。Pro 登录是可选增值层。
 

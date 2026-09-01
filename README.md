@@ -30,7 +30,7 @@ npx arch-viewer check architecture_viewer --filled --drift --repo .
 # 坏图 / 占位未清 / Rel 未声明 → exit ≠ 0
 ```
 
-夹具：`eval/demo-drift`（CI 必须失败）。Pro 再在此之上做 **PR 评论 + 增量同步**（¥29/月）。
+夹具：`eval/demo-drift`（CI 必须失败）。**Pro 托管评论**：打开 [/account.html](http://127.0.0.1:3847/account.html) 注册试用，把 Webhook 配到仓库 — [docs/PRO-SAAS.md](docs/PRO-SAAS.md)。
 
 ## 2. 网页版（分享 / 评审）
 

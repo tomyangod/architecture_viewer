@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Pro 控制台 — Architecture Viewer</title>
+  <link rel="stylesheet" href="/styles.css" />
+</head>
+<body>
+  <div class="page">
+    <header class="top">
+      <a class="brand" href="/">Architecture Viewer</a>
+      <nav class="nav">
+        <a href="/#pricing">定价</a>
+        <a href="/account.html">控制台</a>
+        <button type="button" class="lang-toggle" id="logout-btn" hidden>退出</button>
+      </nav>
+    </header>
+
+    <section class="hero" id="gate">
+      <p class="eyebrow">Pro · ¥29 / 月</p>
+      <h1>账号 + 托管漂移评论</h1>
+      <p class="lede">注册即开 7 天试用。把仓库 webhook 指到本服务，PR 上自动出现红灯/绿灯评论，不必自己维护 Action。</p>
+      <form id="auth-form" class="account-form">
+        <label>邮箱 <input type="email" id="email" required autocomplete="username" /></label>
+        <label>密码 <input type="password" id="password" required minlength="8" autocomplete="current-password" /></label>
+        <div class="cta">
+          <button type="submit" class="btn primary" id="login-btn">登录</button>
+          <button type="button" class="btn ghost" id="signup-btn">注册并试用 7 天</button>
+        </div>
+        <p id="auth-tip" class="try-status" hidden></p>
+      </form>
+    </section>
+
+    <section id="dash" hidden>
+      <h2>控制台</h2>
+      <p class="section-copy" id="plan-line"></p>
+      <div class="cta" style="margin: 0 0 1.5rem">
+        <button type="button" class="btn primary" id="pay-btn">用卡支付开通 Pro</button>
+        <button type="button" class="btn ghost" id="redeem-toggle">兑换许可证</button>
+      </div>
+      <form id="redeem-form" class="account-form" hidden>
+        <label>许可证 <input type="text" id="license-key" placeholder="avpro.…" autocomplete="off" /></label>
+        <button type="submit" class="btn primary">兑换</button>
+      </form>
+
+      <h3>接入仓库</h3>
+      <form id="repo-form" class="account-form">
+        <label>Git 仓库 HTTPS URL <input type="url" id="repo-url" placeholder="https://gitee.com/org/repo" required /></label>
+        <label>仓库访问令牌（写 PR 评论） <input type="password" id="repo-token" placeholder="Gitee / GitHub PAT" autocomplete="off" /></label>
+        <button type="submit" class="btn primary">保存并生成 Webhook</button>
+      </form>
+      <div id="repo-list"></div>
+
+      <h3>最近检查</h3>
+      <ul id="event-list" class="feature-list"></ul>
+      <p id="dash-tip" class="try-status" hidden></p>
+    </section>
+  </div>
+  <script src="/account.js"></script>
+</body>
+</html>
