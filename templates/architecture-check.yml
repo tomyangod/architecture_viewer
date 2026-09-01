@@ -21,7 +21,7 @@ jobs:
         with:
           node-version: '20'
       - name: Install Architecture Viewer CLI
-        run: npm i -g architecture-viewer@^0.2.1
+        run: npm i -g arch-viewer@^0.2.1
       - name: Ensure kit exists
         run: |
           if [ ! -f architecture_viewer/architecture_visualized.html ]; then

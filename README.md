@@ -49,7 +49,7 @@ npm run web
 ## 3. CLI（写进仓库）
 
 ```bash
-npm i -g architecture-viewer   # 或: node lib/cli.js …
+npm i -g arch-viewer   # 或: node lib/cli.js …
 arch-viewer init ./your-repo
 arch-viewer generate ./your-repo              # 骨架（默认）
 arch-viewer generate ./your-repo --refine     # 精修（需 DEEPSEEK_API_KEY）
