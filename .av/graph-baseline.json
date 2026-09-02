@@ -1,8 +1,8 @@
 {
   "version": 1,
   "root": "architecture_viewer",
-  "generatedAt": "2026-09-02T11:02:27.748Z",
-  "fingerprint": "32f795b1afab4646",
+  "generatedAt": "2026-09-02T11:14:40.812Z",
+  "fingerprint": "33a805419c22099f",
   "languages": [
     "javascript"
   ],
@@ -10,9 +10,9 @@
     "files": 50,
     "filesParsed": 50,
     "parseErrors": 0,
-    "types": 407,
-    "nodes": 476,
-    "edges": 591,
+    "types": 408,
+    "nodes": 477,
+    "edges": 593,
     "externalPackages": 19
   },
   "nodes": [
@@ -2337,7 +2337,7 @@
       "kind": "function",
       "name": "help",
       "path": "lib/cli.js",
-      "line": 23,
+      "line": 24,
       "layer": "util",
       "lang": "javascript",
       "modifiers": [],
@@ -2352,7 +2352,7 @@
       "kind": "function",
       "name": "parseArgs",
       "path": "lib/cli.js",
-      "line": 51,
+      "line": 52,
       "layer": "util",
       "lang": "javascript",
       "modifiers": [],
@@ -2363,11 +2363,26 @@
       ]
     },
     {
+      "id": "lib/cli#openInBrowser",
+      "kind": "function",
+      "name": "openInBrowser",
+      "path": "lib/cli.js",
+      "line": 68,
+      "layer": "util",
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "lib/cli",
+      "methods": [
+        "openInBrowser"
+      ]
+    },
+    {
       "id": "lib/cli#printIssues",
       "kind": "function",
       "name": "printIssues",
       "path": "lib/cli.js",
-      "line": 66,
+      "line": 82,
       "layer": "util",
       "lang": "javascript",
       "modifiers": [],
@@ -2382,7 +2397,7 @@
       "kind": "function",
       "name": "loadEvalConfig",
       "path": "lib/cli.js",
-      "line": 76,
+      "line": 92,
       "layer": "util",
       "lang": "javascript",
       "modifiers": [],
@@ -2397,7 +2412,7 @@
       "kind": "function",
       "name": "runEval",
       "path": "lib/cli.js",
-      "line": 85,
+      "line": 101,
       "layer": "util",
       "lang": "javascript",
       "modifiers": [],
@@ -2412,7 +2427,7 @@
       "kind": "function",
       "name": "printGenerateResult",
       "path": "lib/cli.js",
-      "line": 131,
+      "line": 147,
       "layer": "util",
       "lang": "javascript",
       "modifiers": [],
@@ -2427,7 +2442,7 @@
       "kind": "function",
       "name": "wantsRefine",
       "path": "lib/cli.js",
-      "line": 144,
+      "line": 160,
       "layer": "util",
       "lang": "javascript",
       "modifiers": [],
@@ -2442,7 +2457,7 @@
       "kind": "function",
       "name": "main",
       "path": "lib/cli.js",
-      "line": 148,
+      "line": 164,
       "layer": "util",
       "lang": "javascript",
       "modifiers": [],
@@ -7665,56 +7680,63 @@
       "to": "file:lib/cli.js",
       "type": "declared-in",
       "file": "lib/cli.js",
-      "line": 23
+      "line": 24
     },
     {
       "from": "lib/cli#parseArgs",
       "to": "file:lib/cli.js",
       "type": "declared-in",
       "file": "lib/cli.js",
-      "line": 51
+      "line": 52
+    },
+    {
+      "from": "lib/cli#openInBrowser",
+      "to": "file:lib/cli.js",
+      "type": "declared-in",
+      "file": "lib/cli.js",
+      "line": 68
     },
     {
       "from": "lib/cli#printIssues",
       "to": "file:lib/cli.js",
       "type": "declared-in",
       "file": "lib/cli.js",
-      "line": 66
+      "line": 82
     },
     {
       "from": "lib/cli#loadEvalConfig",
       "to": "file:lib/cli.js",
       "type": "declared-in",
       "file": "lib/cli.js",
-      "line": 76
+      "line": 92
     },
     {
       "from": "lib/cli#runEval",
       "to": "file:lib/cli.js",
       "type": "declared-in",
       "file": "lib/cli.js",
-      "line": 85
+      "line": 101
     },
     {
       "from": "lib/cli#printGenerateResult",
       "to": "file:lib/cli.js",
       "type": "declared-in",
       "file": "lib/cli.js",
-      "line": 131
+      "line": 147
     },
     {
       "from": "lib/cli#wantsRefine",
       "to": "file:lib/cli.js",
       "type": "declared-in",
       "file": "lib/cli.js",
-      "line": 144
+      "line": 160
     },
     {
       "from": "lib/cli#main",
       "to": "file:lib/cli.js",
       "type": "declared-in",
       "file": "lib/cli.js",
-      "line": 148
+      "line": 164
     },
     {
       "from": "lib/diff-graph#diffGraphs",
@@ -10185,10 +10207,18 @@
     },
     {
       "from": "file:lib/cli.js",
+      "to": "ext:child_process",
+      "type": "uses-external",
+      "file": "lib/cli.js",
+      "line": 6,
+      "builtin": true
+    },
+    {
+      "from": "file:lib/cli.js",
       "to": "file:lib/index.js",
       "type": "import",
       "file": "lib/cli.js",
-      "line": 16,
+      "line": 17,
       "isType": false
     },
     {
@@ -10196,7 +10226,7 @@
       "to": "file:lib/extract-graph.js",
       "type": "import",
       "file": "lib/cli.js",
-      "line": 18,
+      "line": 19,
       "isType": false
     },
     {
@@ -10204,7 +10234,7 @@
       "to": "file:lib/diff-graph.js",
       "type": "import",
       "file": "lib/cli.js",
-      "line": 19,
+      "line": 20,
       "isType": false
     },
     {
@@ -10212,7 +10242,7 @@
       "to": "file:lib/risk-rules.js",
       "type": "import",
       "file": "lib/cli.js",
-      "line": 20,
+      "line": 21,
       "isType": false
     },
     {
@@ -10220,7 +10250,7 @@
       "to": "file:lib/session-report.js",
       "type": "import",
       "file": "lib/cli.js",
-      "line": 21,
+      "line": 22,
       "isType": false
     },
     {
@@ -11016,5 +11046,5 @@
       "builtin": false
     }
   ],
-  "sessionStartedAt": "2026-09-02T11:02:27.749Z"
+  "sessionStartedAt": "2026-09-02T11:14:40.815Z"
 }
