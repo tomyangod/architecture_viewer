@@ -1,43 +1,51 @@
-## 子图1：API 服务组件
+# C4 Component — 组件详情
+
+## 子图1：模块组件
 
 ```mermaid
 C4Component
-    title Coffee Shop · API 服务组件
-    Container(api, "API 服务", "Python", "处理业务逻辑，提供 REST API")
-    ContainerDb(postgres, "PostgreSQL", "关系数据库", "存储菜单、订单等核心数据")
-    ContainerDb(redis, "Redis", "缓存", "缓存热点数据")
-    ContainerDb(mq, "消息队列", "RabbitMQ", "异步任务队列")
+    title Coffee Shop · 咖啡订单平台（Showcase） 模块组件
 
-    Component(main, "App", "main.py", "应用入口，路由注册")
-    Component(order_svc, "OrderService", "services/order_service.py", "订单业务逻辑")
-    Component(payment_svc, "PaymentService", "services/payment_service.py", "支付业务逻辑")
-    Component(inventory_svc, "InventoryService", "services/inventory_service.py", "库存业务逻辑")
+    Container_Boundary(app, "Coffee Shop · 咖啡订单平台（Showcase）") {
+        Component(c_frontend, "frontend", "compose", "module 1")
+        Component(c_api, "api", "compose", "module 2")
+        Component(c_worker, "worker", "compose", "module 3")
+        Component(c_postgres, "postgres", "compose", "module 4")
+        Component(c_redis, "redis", "compose", "module 5")
+        Component(c_mq, "mq", "compose", "module 6")
+    }
 
-    Rel(main, order_svc, "调用")
-    Rel(main, payment_svc, "调用")
-    Rel(main, inventory_svc, "调用")
-    Rel(order_svc, postgres, "读写订单", "SQL")
-    Rel(order_svc, mq, "投递消息", "AMQP")
-    Rel(payment_svc, postgres, "读写支付", "SQL")
-    Rel(inventory_svc, postgres, "读写库存", "SQL")
-    Rel(inventory_svc, redis, "读写缓存", "Redis 协议")
+    Rel(c_frontend, c_api, "依赖")
+    Rel(c_api, c_worker, "依赖")
+    Rel(c_worker, c_postgres, "依赖")
+    Rel(c_postgres, c_redis, "依赖")
+    Rel(c_redis, c_mq, "依赖")
 
     UpdateLayoutConfig($c4ShapeInRow="3", $c4BoundaryInRow="1")
 ```
 
-## 子图2：Worker 组件
+## 子图2：领域类组件
 
 ```mermaid
 C4Component
-    title Coffee Shop · Worker 组件
-    Container(worker, "异步 Worker", "Python", "处理订单通知等异步任务")
-    ContainerDb(mq, "消息队列", "RabbitMQ", "异步任务队列")
-    System_Ext(sms_gateway, "短信网关", "发送订单通知")
+    title 领域类
 
-    Component(worker_main, "Worker", "worker/worker.py", "消费消息并处理")
+    Container_Boundary(domain, "domain") {
+        Component(boundary_api, "API/入口", "iface", "")
+        Component(cls_app, "App", "class", "")
+        Component(cls_inventory_service, "InventoryService", "class", "")
+        Component(cls_order_service, "OrderService", "class", "")
+        Component(cls_payment_service, "PaymentService", "class", "")
+    }
 
-    Rel(worker_main, mq, "消费消息", "AMQP")
-    Rel(worker_main, sms_gateway, "发送通知", "HTTP")
+    Rel(boundary_api, cls_app, "调用")
+    Rel(cls_app, cls_inventory_service, "协作")
+    Rel(cls_inventory_service, cls_order_service, "协作")
+    Rel(cls_order_service, cls_payment_service, "协作")
 
     UpdateLayoutConfig($c4ShapeInRow="3", $c4BoundaryInRow="1")
 ```
+
+---
+
+*由 Architecture Viewer Community Generate 根据仓库扫描生成 · 请人工审阅后提交*

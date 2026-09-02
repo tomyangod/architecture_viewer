@@ -5,7 +5,7 @@ const os = require('os');
 const path = require('path');
 const { checkFile, validateDir } = require('../lib/validate');
 const { generateFiles } = require('../lib/generate');
-const { scan } = require('../lib/scan');
+const { scan, checkDrift } = require('../lib/scan');
 const { generateToDir, checkKit } = require('../lib');
 
 describe('validate Rel declarations', () => {
@@ -36,6 +36,29 @@ C4Container
 
 `;
     const r = checkFile('c4-container.md', md, {});
+    assert.deepEqual(r.errors, []);
+  });
+
+  it('accepts _Ext/Db/Queue C4 declarations (mermaid-legal)', () => {
+    const md = `## 子图1：x
+
+\`\`\`mermaid
+C4Component
+    System_Ext(saas, "saas")
+    Container_Ext(xinference, "Xinference", "模型服务")
+    Component_Ext(extcomp, "外部组件", "n")
+    SystemDb(db, "DB")
+    ContainerQueue(q, "Q")
+    Component(sdk, "sdk", "Python")
+    Rel(sdk, xinference, "调用", "HTTP")
+    Rel(sdk, extcomp, "relay")
+    Rel(sdk, db, "读写")
+    Rel(sdk, q, "publish")
+    Rel(sdk, saas, "sync")
+    UpdateLayoutConfig($c4ShapeInRow="3", $c4BoundaryInRow="1")
+\`\`\`
+`;
+    const r = checkFile('c4-component.md', md, {});
     assert.deepEqual(r.errors, []);
   });
 
@@ -130,5 +153,95 @@ describe('generate + check', () => {
     // 子图2 should use sys_deploy instead
     assert.match(ctx, /System\(sys_deploy,/);
     fs.rmSync(tmp, { recursive: true, force: true });
+  });
+});
+
+describe('drift term matching', () => {
+  const inv = {
+    modules: [
+      { id: 'tools_model_loaders', label: 'tools/model_loaders', kind: 'module' },
+      { id: 'cmd_openim_push', label: 'cmd/openim-push', kind: 'module' },
+      { id: 'pkg_common', label: 'pkg/common', kind: 'module' },
+      { id: 'worker', label: 'worker', kind: 'module' },
+      { id: 'internal_rpc', label: 'internal/rpc', kind: 'module' },
+      { id: 'internal_api', label: 'internal/api', kind: 'module' }
+    ],
+    services: [
+      { id: 'openim_web', label: 'openim-web' },
+      { id: 'openim_admin', label: 'openim-admin' },
+      { id: 'openim_rpc', label: 'openim-rpc' },
+      { id: 'openim_api', label: 'openim-api' }
+    ],
+    entrypoints: []
+  };
+
+  it('accepts leaf-name mention (LLM uses short dir name as node id)', () => {
+    // chatchat case: C4 Component(model_loaders, "模型加载器", ...)
+    const hay = 'Component(model_loaders, "模型加载器", "Python", "加载本地模型")';
+    const r = checkDrift(inv, new Set(['model_loaders']), hay);
+    assert.ok(!r.missing.some((m) => m.term === 'tools_model_loaders'),
+      'leaf-name mention should satisfy tools/model_loaders');
+  });
+
+  it('treats hyphen and underscore as equivalent', () => {
+    // dir openim-push, mermaid id openim_push
+    const hay = 'Container(openim_push, "推送服务", "Go", "")';
+    const r = checkDrift(inv, new Set(['openim_push']), hay);
+    assert.ok(!r.missing.some((m) => m.term === 'cmd_openim_push'),
+      'openim_push should match cmd/openim-push');
+  });
+
+  it('generic leaf names do not mask drift (pkg/common stays missing)', () => {
+    // "common" appears as an unrelated label but pkg/common itself is absent
+    const hay = 'Container(something_common, "通用组件", "Go", "")';
+    const r = checkDrift(inv, new Set(), hay);
+    assert.ok(r.missing.some((m) => m.term === 'pkg_common'),
+      'generic leaf "common" must not satisfy pkg/common');
+  });
+
+  it('word-boundary: worker does not match worker_queue', () => {
+    const hay = 'Container(worker_queue, "任务队列", "Go", "")';
+    const r = checkDrift(inv, new Set(), hay);
+    assert.ok(r.missing.some((m) => m.term === 'worker'),
+      'worker must not match worker_queue substring');
+  });
+
+  it('accepts space-separated English service name (openim-web → "OpenIM Web")', () => {
+    // c4-container renders compose service openim-web as Container(web, "OpenIM Web", ...)
+    const hay = 'Container(web, "OpenIM Web", "Web", "Web 客户端")';
+    const r = checkDrift(inv, new Set(), hay);
+    assert.ok(!r.missing.some((m) => m.term === 'openim_web'),
+      '"OpenIM Web" should satisfy compose service openim-web');
+  });
+
+  it('module internal/rpc is satisfied by deployment-unit name openim-rpc', () => {
+    // C4 names the container "openim-rpc"; repo implementation lives in internal/rpc
+    const hay = 'Container(rpc, "openim-rpc", "Go", "RPC 服务")';
+    const r = checkDrift(inv, new Set(), hay);
+    assert.ok(!r.missing.some((m) => m.term === 'internal_rpc'),
+      '"openim-rpc" container should satisfy module internal/rpc');
+    assert.ok(r.missing.some((m) => m.term === 'internal_api'),
+      'generic leaf "api" must NOT get a service alias (real drift must stay visible)');
+  });
+
+  it('manifest entries (package.json/Cargo.toml) never produce drift terms', () => {
+    // showcase-shop: Python app with a stray root package.json fixture —
+    // manifests are project signals, not architecture units on the diagram.
+    const minv = { services: [], modules: [], entrypoints: ['package.json', 'Cargo.toml'] };
+    const r = checkDrift(minv, new Set(), 'flowchart TB\n  api["🧩 API"]');
+    assert.equal(r.missing.length, 0,
+      'package.json/Cargo.toml must not fire drift (got: ' +
+        r.missing.map((m) => m.term).join(',') + ')');
+  });
+
+  it('nested entry (src/main.rs) is satisfied by path text in the diagram', () => {
+    // id-style term "src_main" cannot match "src/main.rs" (slash separator);
+    // basename alias "main" must match the <small> path citation.
+    const minv = { services: [], modules: [], entrypoints: ['src/main.rs'] };
+    const hay = 'rust_entry["🧩 Rust 入口<br/><small>src/main.rs</small>"]';
+    const r = checkDrift(minv, new Set(), hay);
+    assert.equal(r.missing.length, 0,
+      'src/main.rs should be satisfied by path text (got: ' +
+        r.missing.map((m) => m.term).join(',') + ')');
   });
 });

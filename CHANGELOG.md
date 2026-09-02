@@ -2,16 +2,6 @@
 
 本文件遵循 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.1.0/)，版本号遵循语义化版本。
 
-## \[0.3.2] — 2026-09-02
-
-### Fixed
-
-- **修复 npm 安装后 CLI 静默退出（hotfix）**：`bin/arch-viewer.js` 仅 `require('../lib/cli.js')`，而 CLI 入口被 `require.main === module` 守卫包裹，经 npm shim 加载时不执行 `main()`，导致 `arch-viewer` 任何命令都无输出、退出码 0。改为显式调用 `main()` 并处理 Promise/异常退出码。
-
-- 新增 `test/cli-bin.test.js`：spawn 真实 CLI 冒烟 4 例（help、未知命令、无 Key 精修、init+generate+check 全流程），防回归。
-
-## \[Unreleased]
-
 ## \[0.3.1] — 2026-09-01
 
 ### Added
@@ -19,6 +9,58 @@
 - **Pro 本地版**：控制台登记本机文件夹、手动/定时 `check --drift`、控制台红绿灯、可选企业微信推送。不需要 GitHub/Gitee。
 
 - **试用到期策略**：手动「现在检查」仍可用；自动检查与企业微信需许可证。小白教程 [docs/PRO-LOCAL.md](docs/PRO-LOCAL.md)、`/local-pro.html`。
+
+## \[Unreleased]
+
+### Added
+
+- **产品精修路由** `lib/refine-route.js`：`--refine` / `quality=refine` 按形态自动选管线（Web 应用走读仓画图，网关/桥/通知总线/后端服务走编排）。客户界面仍只有骨架 / 精修，不暴露内部引擎名。读仓画图不可用时自动降级编排。
+
+- **合成 edge 交付路径**：新增 `runOrchEdge` 入口与 CLI `--variant=edge`。走 auto 引擎（shape 高置信/强协议→orch4，形态歧义→orch8 降级）生成架构图，再叠加 deterministicSweep 确定性扫尾修正，最后输出 `edge-quality-report.json`（sHigh/sMed/vHigh/qualityScore/hardGatePass），把 orch4 结构闸门作为软报告内联到流程中，实现「盲评冠军 + 机评门卫」。
+
+- **edge-gating 离线回归守卫**：`test/edge-gating.test.js` + `test/fixtures/edge-gating-fixtures.json`，基于四仓（caddy/ntfy/vaultwarden/zigbee2mqtt）基线 fixture 跑 sweep + 闸门，断言 sHigh=0、vHigh=0、sMed=0、hallu=0；`.github/workflows/ci.yml` 新增 `edge-gating` job 执行，确保闸门迭代不反噬 edge 交付。
+
+- **auto 引擎选择规则**：`shapeDetectWithCandidates` 返回形态候选打分与置信度（high/medium/low + margin）；`runOrchAuto` 按规则路由：high 置信或 strongTop（score≥10 ∧ margin≥3）或强协议（proxy/bridge）→ orch4；其余形态歧义→ orch8；CLI 默认 variant 改为 `auto`。
+
+- **orch8 Agent 探索路径**：通过 `explore.json` 注入 shape/trunkStory/externalSystems；externalSystems 按语义分流为「基础设施（cylinder/storage 层）」与「真外部对端（stadium/角色层）」；bridge 形态协议对端（mqtt broker/zigbee 网络）统一降级为圆柱避免冗余。
+
+### Changed
+
+- **deterministicSweep 新增 sMed 修复 pass**（run.js 1.4/1.5）：
+
+  - 1.4 storage 层非 DB/中间件圆柱（代码包误画圆柱，如 caddy filestorage/stek、z2m st\_cfg）改回矩形；
+
+  - 1.5 API 层 admin→前端 http 的「配置/部署」非推送实线翻转方向，避免逆向边方向误报。
+
+- **pass6 特写链 id 替换**：新增 `safeShortReplace`，跳过 `<small>` 路径内容，仅在标识符位置替换，避免把 `admin.go`/`reverseproxy` 路径中的单词误改成短 id。
+
+- **7s 结构闸门误伤修订**：
+
+  - dup-path：目录路径（无扩展名）、同源文件多职责拆分（分层/关键词不同）豁免；
+
+  - mech-mislabel：语义推送文件名（send/push/notify/broadcast）、节点头 WebSocket/SSE 豁免；
+
+  - frontend-storage：静态文件服务（fileserver→filestorage）豁免；
+
+  - server-client-sdk：服务端内部协议客户端（SDK 引用）豁免。
+
+- **`eval/orch/usage7-sweep.js`** **与产品 run.js 扫尾同口径对齐**：扩展 INFRA\_WORDS（zookeeper/s3/minio），storage 层圆柱兜底判定为真基础设施才保留圆柱，P8 层秩逆流边翻转支持声明式边 `id["head"] -->|label| to`，确保 L1 eval 与产品侧扫尾结果一致。
+
+- `KNOWN_VARIANTS` 追加 `edge`/`auto`，CLI variant 校验通过。
+
+### Fixed
+
+- **orch8 externalSystems 分流根错**：vaultwarden r1 sHigh 清零（explore 注入的基础设施不再被模板 staidum 覆盖冲突）；z2m bridge 协议对端降级圆柱，消除盲评反伤。
+
+- **runOrchEdge** **`importance.info is not a function`**：orch4 内部重写 `state.importance` 为纯字段，入口处调用 `importanceForensics` 重建带 `info` 方法的对象，避免报告阶段 crash。
+
+- **usage7-sweep 声明式边漏判**：`EDGE_RE` / `EDGE_RE_NOLABEL` 支持 `["head"]` 节点声明，P8 翻转不再漏特写块边。
+
+- **deterministicSweep reloc2 幽灵节点**：先删后插导致 worker\_tracker/worker\_recorder 丢失；改为在目标子图 end 前 splice 插入；classDef 匹配兼容尾部分号；Next.js `[websiteId]/(main)` 路径括号/引号剥离，避免误报「undeclared id」。
+
+- **漂移误报：清单文件不算架构入口**：`package.json`/`Cargo.toml` 不再生成漂移 term（showcase-shop 这类 Python 仓根目录带 package.json fixture 时误报红灯；term「package/cargo」过于泛化）；嵌套入口（`src/main.rs`）补 basename 别名，使图中 `<small>src/main.rs</small>` 路径文本能正确命中（斜杠不在 term 分隔符类内）。pro.test.js 20/20 恢复全绿。
+
+- **精修路由 P1-P4 修复**：`championOf(imp)` 改为委托 `chooseRefinePipeline`，评测标签与实际路由同口径（web 无前端/歧义组合不再误标 agent）；agent 管线扫尾改用 `inspectShape` + `findAnchorsV2` 计算真实 anchors，与编排 edge 路径同口径；`findDsh` 去掉 npx 缓存 hash 硬编码，改为 `DSH_BIN` → `which dsh` → npx 缓存动态 glob 三级查找；agent 调用新增产物覆写校验（dsh 空跑/崩溃不再把模板当产物静默返回），降级 catch 收窄为 `AGENT_UNAVAILABLE`，其余错误上抛不吞。
 
 ## \[0.3.0] — 2026-09-01
 

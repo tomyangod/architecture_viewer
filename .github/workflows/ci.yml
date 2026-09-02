@@ -27,3 +27,20 @@ jobs:
             exit 1
           fi
           echo "CI fail path locked"
+
+  edge-gating:
+    # 合成 edge 路径的回归守卫：对 fixture（四仓 usage7s 产物）离线跑 deterministicSweep + 闸门，
+    # 断言 sHigh=0 / vHigh=0 / sMed 不超基线（四仓 baseline sMed=0），
+    # 确保闸门迭代不反噬 edge 交付；有付费 key 的环境再跑 blind-edge-7s-vs-orch4.js 盲评回归。
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - name: Edge-gating offline（fixture → sweep + structureGates/visualGates 断言）
+        run: node --test test/edge-gating.test.js
+        env:
+          # 离线 fixture 不需要 key；无 key 时付费盲评步骤会自动 skip
+          DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
+

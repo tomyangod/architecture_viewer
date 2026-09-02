@@ -8,7 +8,7 @@
 |------|--------|----------------|
 | **规则生成** `arch-viewer generate` | 默认；扫描目录/compose/入口 → 自动归层 | **不需要** |
 | **Cursor + AGENT.md** | 人工审阅、补业务语义 | Cursor 额度即可 |
-| **DeepSeek LLM** `lib/llm-generate.js` | 大仓、要对齐用法1 的分层交付质量 | 需要 `DEEPSEEK_API_KEY`；**block-diagram.md 走 orch4 编排**（重要性取证+结构/视觉闸门+确定性扫尾） |
+| **DeepSeek LLM** `lib/llm-generate.js` | 大仓、要对齐用法1 的分层交付质量 | 需要 `DEEPSEEK_API_KEY`；**精修按仓库形态自动选管线**（Web 应用走读仓画图；网关/桥/通知总线/后端服务走编排）。客户只看见「骨架 / 精修」 |
 
 视觉规范写在 `AGENT.md`（block-diagram 一节）；实现写在 `lib/layers.js`。
 
@@ -33,12 +33,10 @@
 # 任意仓库 → 六视图（分层图走通解模板）
 node lib/cli.js generate /path/to/repo
 
-# 只要更好的中文业务分层图（推荐；block 图使用 orch3 编排引擎）
+# 精修（推荐；按形态自动选管线，需 Key）
 export DEEPSEEK_API_KEY=sk-...
-node lib/llm-generate.js /path/to/repo --only block-diagram.md
-
-# 编排实验对照（可选）
-# node eval/orch/run.js /path/to/repo orch3 /tmp/orch3-out
+arch-viewer generate /path/to/repo --refine
+# 或：node lib/llm-generate.js /path/to/repo --only block-diagram.md
 ```
 
 ## 边界

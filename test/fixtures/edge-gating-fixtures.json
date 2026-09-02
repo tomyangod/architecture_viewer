@@ -1,0 +1,599 @@
+{
+  "caddy": {
+    "mdBefore": "# Block Diagram — 分层模块图\n\n> Caddy 是一个模块化的 Go Web 服务器：HTTP 应用 + TLS/证书自动化 + 本地 PKI，\n> 全部通过统一的模块系统（`caddy.RegisterModule`）注册与装配。\n\n## 子图1：分层全景 — 模块化 Web 服务器架构\n\n```mermaid\nflowchart TB\n    actor_user([\"🧑 用户<br/><small>浏览器</small>\"])\n    actor_user -->|\"访问 Web 界面\"| http\n    subgraph L_frontend[\"🖥️ 前端层 · HTTP 接入\"]\n        direction LR\n        http[\"🌐 HTTP 应用<br/><small>modules/caddyhttp</small>\"]\n        fileserver[\"📄 静态文件服务<br/><small>modules/caddyhttp/fileserver</small>\"]\n        templates[\"🎨 模板渲染<br/><small>modules/caddyhttp/templates</small>\"]\n        encode[\"🗜️ 响应压缩<br/><small>modules/caddyhttp/encode</small>\"]\n    end\n\n    subgraph L_api[\"🔌 API 层 · 业务与网关\"]\n        direction LR\n        admin[\"🛠️ 管理 API<br/><small>admin.go</small>\"]\n        adapter[\"📝 Caddyfile 适配<br/><small>caddyconfig/httpcaddyfile</small>\"]\n        reverseproxy[\"🔀 反向代理<br/><small>modules/caddyhttp/reverseproxy</small>\"]\n        tls[\"🔒 TLS 应用<br/><small>modules/caddytls</small>\"]\n        pki[\"🏛️ PKI 应用<br/><small>modules/caddypki</small>\"]\n    end\n\n    subgraph L_schedule[\"⚙️ 调度层 · 异步与自动化\"]\n        direction LR\n        events[\"📢 事件总线<br/><small>modules/caddyevents</small>\"]\n        automation[\"⏰ 证书自动续期<br/><small>modules/caddytls/automation.go</small>\"]\n        maintain[\"🧹 CA 定期维护<br/><small>modules/caddypki/maintain.go</small>\"]\n    end\n\n    subgraph L_worker[\"🧩 Worker 层 · 证书与上游执行\"]\n        direction LR\n        acmeissuer[\"🎫 ACME 签发器<br/><small>modules/caddytls/acmeissuer.go</small>\"]\n        acmeserver[\"🏢 内建 ACME 服务器<br/><small>modules/caddypki/acmeserver</small>\"]\n        fastcgi[\"⚡ FastCGI 上游<br/><small>modules/caddyhttp/reverseproxy/fastcgi</small>\"]\n    end\n\n    subgraph L_storage[\"💾 存储层\"]\n        direction LR\n        filestorage[(\"💾 文件存储<br/><small>modules/filestorage</small>\")]\n        storage_if[\"🔌 存储接口<br/><small>storage.go</small>\"]\n        stek[(\"🔑 会话密钥存储<br/><small>modules/caddytls/distributedstek</small>\")]\n    end\n\n    subgraph L_monitor[\"🔔 监控层\"]\n        direction LR\n        logging[\"📝 日志模块<br/><small>modules/logging</small>\"]\n        metrics[\"📊 指标模块<br/><small>modules/metrics</small>\"]\n    end\n\n    subgraph L_ops[\"📦 运维层 · 交付与测试\"]\n        direction LR\n        parser[\"🔍 Caddyfile 解析<br/><small>caddyconfig/caddyfile</small>\"]\n        caddytest[\"🧪 集成测试<br/><small>caddytest</small>\"]\n    end\n\n    parser -.->|\"适配为 JSON\"| adapter\n    adapter -->|\"加载配置\"| admin\n    caddytest -.->|\"端到端驱动\"| admin\n\n    admin -->|\"部署应用\"| http\n    admin -->|\"部署 TLS\"| tls\n    admin -->|\"部署 PKI\"| pki\n    http -->|\"静态文件路由\"| fileserver\n    http -->|\"模板路由\"| templates\n    http -->|\"响应压缩\"| encode\n    http -->|\"API 转发\"| reverseproxy\n    http -->|\"TLS 握手\"| tls\n\n    reverseproxy -->|\"FastCGI 转发\"| fastcgi\n    tls -->|\"证书自动化\"| automation\n    tls -->|\"发布事件\"| events\n    pki -->|\"启动定期维护\"| maintain\n\n    automation -->|\"触发签发\"| acmeissuer\n    pki -->|\"提供本地 CA\"| acmeserver\n    acmeserver -->|\"响应签发请求\"| acmeissuer\n\n    acmeissuer -->|\"存取证书\"| storage_if\n    storage_if -->|\"本地实现\"| filestorage\n    fileserver -->|\"读取静态文件\"| filestorage\n    tls -->|\"会话密钥同步\"| stek\n\n    http -->|\"访问日志\"| logging\n    http -->|\"请求指标\"| metrics\n    metrics -->|\"挂载 /metrics\"| admin\n\n    classDef fe fill:#fce4ec,stroke:#c2185b,stroke-width:2px\n    classDef api fill:#ede7f6,stroke:#5e35b1,stroke-width:2px\n    classDef sch fill:#fff3e0,stroke:#ef6c00,stroke-width:2px\n    classDef wkr fill:#e8f5e9,stroke:#2e7d32,stroke-width:2px\n    classDef sto fill:#e0f7fa,stroke:#00838f,stroke-width:2px\n    classDef mon fill:#fffde7,stroke:#f9a825,stroke-width:2px\n    classDef ops fill:#f1f8e9,stroke:#558b2f,stroke-width:2px\n\n    class http,fileserver,templates,encode fe\n    class admin,adapter,reverseproxy,tls,pki api\n    class events,automation,maintain sch\n    class acmeissuer,acmeserver,fastcgi wkr\n    class filestorage,storage_if,stek sto\n    class logging,metrics mon\n    class parser,caddytest ops\n\n    style L_frontend fill:#fce4ec,stroke:#c2185b,stroke-width:3px\n    style L_api fill:#ede7f6,stroke:#5e35b1,stroke-width:2.5px\n    style L_schedule fill:#fff3e0,stroke:#ef6c00,stroke-width:2.5px\n    style L_worker fill:#e8f5e9,stroke:#2e7d32,stroke-width:2px\n    style L_storage fill:#e0f7fa,stroke:#00838f,stroke-width:2px\n    style L_monitor fill:#fffde7,stroke:#f9a825,stroke-width:2px\n    style L_ops fill:#f1f8e9,stroke:#558b2f,stroke-width:2px\n```\n\n## 子图2：主请求链路（LR）\n\n```mermaid\nflowchart LR\n    actor_user([\"🧑 用户<br/><small>浏览器</small>\"])\n    actor_user -->|\"登录 / 查看\"| client\n    client[\"🌐 客户端<br/><small>浏览器</small>\"] -->|\"HTTPS 请求\"| http[\"🌐 HTTP 应用<br/><small>modules/caddyhttp</small>\"]\n    http -->|\"静态文件路由\"| fileserver[\"📄 静态文件服务<br/><small>modules/caddyhttp/fileserver</small>\"]\n    http -->|\"API 转发\"| reverseproxy[\"🔀 反向代理<br/><small>modules/caddyhttp/reverseproxy</small>\"]\n    fileserver -->|\"读取\"| store[(\"💾 文件存储<br/><small>modules/filestorage</small>\")]\n    reverseproxy -->|\"FastCGI 转发\"| fastcgi[\"⚡ FastCGI 上游<br/><small>modules/caddyhttp/reverseproxy/fastcgi</small>\"]\n    http -->|\"TLS 握手\"| tls[\"🔒 TLS 应用<br/><small>modules/caddytls</small>\"]\n    tls -->|\"证书签发\"| acme[\"🎫 ACME 签发器<br/><small>modules/caddytls/acmeissuer.go</small>\"]\n    acme -->|\"存取证书\"| store\n    admin[\"🛠️ 管理 API<br/><small>admin.go</small>\"] -->|\"配置下发\"| http\n```\n",
+    "anchors": [
+      {
+        "path": "modules/caddyhttp/routes.go",
+        "score": 80,
+        "imp": {
+          "heat": 74,
+          "reachable": true,
+          "optional": false,
+          "detached": false,
+          "optReasons": []
+        },
+        "hint": "API / 路由层 / 业务逻辑",
+        "layer": "api",
+        "role": "api"
+      },
+      {
+        "path": "cmd/main.go",
+        "score": 16,
+        "imp": {
+          "heat": 7,
+          "reachable": true,
+          "optional": false,
+          "detached": false,
+          "optReasons": []
+        },
+        "hint": "进程入口",
+        "layer": "api",
+        "role": "entry"
+      },
+      {
+        "path": ".github/workflows/ai.yml",
+        "score": 2,
+        "imp": {
+          "heat": 0,
+          "reachable": false,
+          "optional": false,
+          "detached": false,
+          "optReasons": []
+        },
+        "hint": "交付 / 运维",
+        "layer": "ops",
+        "role": "ops"
+      }
+    ],
+    "importance": {
+      "infoMap": {},
+      "detachedList": [
+        {
+          "path": "notify",
+          "heat": 8
+        }
+      ],
+      "optionalKw": [
+        "integration"
+      ],
+      "emptyLayers": [
+        "frontend"
+      ],
+      "pathCluster": [],
+      "s3Sw": null,
+      "shapeConfidence": "medium",
+      "shapeMargin": 2,
+      "shapeCandidates": [
+        {
+          "kind": "proxy",
+          "score": 9,
+          "signal": ""
+        },
+        {
+          "kind": "api-svc",
+          "score": 7,
+          "signal": "go"
+        },
+        {
+          "kind": "web",
+          "score": 1,
+          "signal": ""
+        },
+        {
+          "kind": "bridge",
+          "score": 0,
+          "signal": ""
+        },
+        {
+          "kind": "notify-bus",
+          "score": 0,
+          "signal": ""
+        }
+      ],
+      "shape": {
+        "kind": "proxy",
+        "name": "反向代理/网关"
+      }
+    },
+    "productTokens": [
+      "caddy"
+    ],
+    "baseline": {
+      "sweptMd": "# Block Diagram — 分层模块图\n\n> Caddy 是一个模块化的 Go Web 服务器：HTTP 应用 + TLS/证书自动化 + 本地 PKI，\n> 全部通过统一的模块系统（`caddy.RegisterModule`）注册与装配。\n\n## 子图1：分层全景 — 模块化 Web 服务器架构\n\n```mermaid\nflowchart TB\n    actor_user([\"🧑 用户<br/><small>浏览器</small>\"])\n    actor_user -->|\"访问 Web 界面\"| http\n    subgraph L_frontend[\"🖥️ 前端层 · HTTP 接入\"]\n        direction LR\n        http[\"🌐 HTTP 应用<br/><small>modules/caddyhttp</small>\"]\n        fileserver[\"📄 静态文件服务<br/><small>modules/caddyhttp/fileserver</small>\"]\n        templates[\"🎨 模板渲染<br/><small>modules/caddyhttp/templates</small>\"]\n        encode[\"🗜️ 响应压缩<br/><small>modules/caddyhttp/encode</small>\"]\n    end\n\n    subgraph L_api[\"🔌 API 层 · 业务与网关\"]\n        direction LR\n        admin[\"🛠️ 管理 API<br/><small>admin.go</small>\"]\n        adapter[\"📝 Caddyfile 适配<br/><small>caddyconfig/httpcaddyfile</small>\"]\n        reverseproxy[\"🔀 反向代理<br/><small>modules/caddyhttp/reverseproxy</small>\"]\n        tls[\"🔒 TLS 应用<br/><small>modules/caddytls</small>\"]\n        pki[\"🏛️ PKI 应用<br/><small>modules/caddypki</small>\"]\n    end\n\n    subgraph L_schedule[\"⚙️ 调度层 · 异步与自动化\"]\n        direction LR\n        events[\"📢 事件总线<br/><small>modules/caddyevents</small>\"]\n        automation[\"⏰ 证书自动续期<br/><small>modules/caddytls/automation.go</small>\"]\n        maintain[\"🧹 CA 定期维护<br/><small>modules/caddypki/maintain.go</small>\"]\n    end\n\n    subgraph L_worker[\"🧩 Worker 层 · 证书与上游执行\"]\n        direction LR\n        acmeissuer[\"🎫 ACME 签发器<br/><small>modules/caddytls/acmeissuer.go</small>\"]\n        acmeserver[\"🏢 内建 ACME 服务器<br/><small>modules/caddypki/acmeserver</small>\"]\n        fastcgi[\"⚡ FastCGI 上游<br/><small>modules/caddyhttp/reverseproxy/fastcgi</small>\"]\n    end\n\n    subgraph L_storage[\"💾 存储层\"]\n        direction LR\n        filestorage[\"💾 文件存储<br/><small>modules/filestorage</small>\"]\n        storage_if[\"🔌 存储接口<br/><small>storage.go</small>\"]\n        stek[\"🔑 会话密钥存储<br/><small>modules/caddytls/distributedstek</small>\"]\n    end\n\n    subgraph L_monitor[\"🔔 监控层\"]\n        direction LR\n        logging[\"📝 日志模块<br/><small>modules/logging</small>\"]\n        metrics[\"📊 指标模块<br/><small>modules/metrics</small>\"]\n    end\n\n    subgraph L_ops[\"📦 运维层 · 交付与测试\"]\n        direction LR\n        parser[\"🔍 Caddyfile 解析<br/><small>caddyconfig/caddyfile</small>\"]\n        caddytest[\"🧪 集成测试<br/><small>caddytest</small>\"]\n    end\n\n    parser -.->|\"适配为 JSON\"| adapter\n    adapter -->|\"加载配置\"| admin\n    caddytest -.->|\"端到端驱动\"| admin\n\n    admin -->|\"部署 TLS\"| tls\n    admin -->|\"部署 PKI\"| pki\n    http -->|\"静态文件路由\"| fileserver\n    http -->|\"模板路由\"| templates\n    http -->|\"响应压缩\"| encode\n    http -->|\"API 转发\"| reverseproxy\n    http -->|\"TLS 握手\"| tls\n\n    reverseproxy -->|\"FastCGI 转发\"| fastcgi\n    tls -->|\"证书自动化\"| automation\n    tls -->|\"发布事件\"| events\n    pki -->|\"启动定期维护\"| maintain\n\n    automation -->|\"触发签发\"| acmeissuer\n    pki -->|\"提供本地 CA\"| acmeserver\n    acmeserver -->|\"响应签发请求\"| acmeissuer\n\n    acmeissuer -->|\"存取证书\"| storage_if\n    storage_if -->|\"本地实现\"| filestorage\n    tls -->|\"会话密钥同步\"| stek\n\n    http -->|\"访问日志\"| logging\n    http -->|\"请求指标\"| metrics\n    metrics -->|\"挂载 /metrics\"| admin\n\n    classDef fe fill:#fce4ec,stroke:#c2185b,stroke-width:2px\n    classDef api fill:#ede7f6,stroke:#5e35b1,stroke-width:2px\n    classDef sch fill:#fff3e0,stroke:#ef6c00,stroke-width:2px\n    classDef wkr fill:#e8f5e9,stroke:#2e7d32,stroke-width:2px\n    classDef sto fill:#e0f7fa,stroke:#00838f,stroke-width:2px\n    classDef mon fill:#fffde7,stroke:#f9a825,stroke-width:2px\n    classDef ops fill:#f1f8e9,stroke:#558b2f,stroke-width:2px\n\n    class http,fileserver,templates,encode fe\n    class admin,adapter,reverseproxy,tls,pki api\n    class events,automation,maintain sch\n    class acmeissuer,acmeserver,fastcgi wkr\n    class filestorage,storage_if,stek sto\n    class logging,metrics mon\n    class parser,caddytest ops\n\n    style L_frontend fill:#fce4ec,stroke:#c2185b,stroke-width:3px\n    style L_api fill:#ede7f6,stroke:#5e35b1,stroke-width:2.5px\n    style L_schedule fill:#fff3e0,stroke:#ef6c00,stroke-width:2.5px\n    style L_worker fill:#e8f5e9,stroke:#2e7d32,stroke-width:2px\n    style L_storage fill:#e0f7fa,stroke:#00838f,stroke-width:2px\n    style L_monitor fill:#fffde7,stroke:#f9a825,stroke-width:2px\n    style L_ops fill:#f1f8e9,stroke:#558b2f,stroke-width:2px\n```\n\n## 子图2：主请求链路（LR）\n\n```mermaid\nflowchart LR\n    A([\"🧑 用户<br/><small>浏览器</small>\"])\n    A -->|\"登录 / 查看\"| client\n    client[\"🌐 客户端<br/><small>浏览器</small>\"] -->|\"HTTPS 请求\"| B[\"🌐 HTTP 应用<br/><small>modules/caddyhttp</small>\"]\n    B -->|\"静态文件路由\"| C[\"📄 静态文件服务<br/><small>modules/caddyhttp/fileserver</small>\"]\n    B -->|\"API 转发\"| D[\"🔀 反向代理<br/><small>modules/caddyhttp/reverseproxy</small>\"]\n    C -->|\"读取\"| store[(\"💾 文件存储<br/><small>modules/filestorage</small>\")]\n    D -->|\"FastCGI 转发\"| E[\"⚡ FastCGI 上游<br/><small>modules/caddyhttp/reverseproxy/fastcgi</small>\"]\n    B -->|\"TLS 握手\"| tls[\"🔒 TLS 应用<br/><small>modules/caddytls</small>\"]\n    tls -->|\"证书签发\"| acme[\"🎫 ACME 签发器<br/><small>modules/caddytls/acmeissuer.go</small>\"]\n    acme -->|\"存取证书\"| store\n    F[\"🛠️ 管理 API<br/><small>admin.go</small>\"] -->|\"配置下发\"| B\n```\n",
+      "sweepActions": [
+        "storage 层非 DB 代码圆柱改矩形（圆柱只给真数据库/中间件）：filestorage,stek",
+        "admin→http 配置类反向边翻转（运行时模块拉取配置，非 API 反推 UI）：admin→http → http→|拉取配置|admin",
+        "删除响应反向边：admin →|\"部署应用\"| http",
+        "删除非法方向边：fileserver →|\"读取静态文件\"| filestorage",
+        "子图2 复用全景长 id，统一改为短 id 特写链：6 个节点"
+      ],
+      "sHigh": 0,
+      "sMed": 0,
+      "sLow": 0,
+      "vHigh": 0,
+      "hallucination": 0,
+      "qualityScore": 10
+    }
+  },
+  "ntfy": {
+    "mdBefore": "# Block Diagram — 分层模块图\n\n> ntfy 是一个用 Go 编写的自托管 pub/sub 推送通知服务器：通过 HTTP API 发布消息，\n> 经主题分发与消息缓存后，以 Web Push / 邮件 / 短信 / 语音等方式投递到订阅端。\n\n## 子图1：分层全景\n\n```mermaid\nflowchart TB\n    actor_user([\"🧑 用户<br/><small>浏览器</small>\"])\n    actor_user -->|\"访问 Web 界面\"| fe_webapp\n    subgraph L_frontend[\"🖥️ 前端\"]\n        fe_webapp[\"🖥️ Web 前端<br/><small>web/src</small>\"]\n        fe_sw[\"📳 Service Worker<br/><small>web/public/sw.js</small>\"]\n        fe_api[\"🔌 前端 API 客户端<br/><small>web/src/app/Api.js</small>\"]\n        fe_cli[\"📤 发布 CLI<br/><small>cmd/publish.go</small>\"]\n    end\n\n    subgraph L_api[\"🧩 API 层\"]\n        api_serve[\"🚀 服务启动<br/><small>cmd/serve.go</small>\"]\n        api_http[\"🌐 HTTP API 服务<br/><small>server/server.go</small>\"]\n        api_topic[\"📢 主题分发<br/><small>server/topic.go</small>\"]\n        api_visitor[\"🛡️ 访问限流<br/><small>server/visitor.go</small>\"]\n        api_auth[\"🔑 认证鉴权<br/><small>server/server_auth.go</small>\"]\n    end\n\n    subgraph L_schedule[\"⏰ 调度层\"]\n        sched_delayed[\"⏰ 延时消息投递<br/><small>server/server.go</small>\"]\n    end\n\n    subgraph L_worker[\"⚙️ 投递 / Worker 层\"]\n        worker_cache[\"📦 消息缓存<br/><small>message/cache.go</small>\"]\n        worker_push[\"🔔 Web Push 订阅<br/><small>webpush/store.go</small>\"]\n        worker_mail[\"✉️ 邮件发送<br/><small>mail/sender.go</small>\"]\n        worker_sms[\"📞 短信 / 语音<br/><small>twilio/client.go</small>\"]\n        worker_s3[\"🗄️ 附件存储<br/><small>s3/client.go</small>\"]\n        worker_ban[\"🚫 封禁判定<br/><small>ban/service.go</small>\"]\n    end\n\n    subgraph L_storage[\"💾 存储层\"]\n        store_db[\"🗃️ 数据库封装<br/><small>db/db.go</small>\"]\n        store_pg[\"🐘 PostgreSQL<br/><small>db/pg/pg.go</small>\"]\n        store_sqlite[(\"💾 SQLite<br/><small>message/cache_sqlite.go</small>\")]\n    end\n\n    subgraph L_monitor[\"📈 监控层\"]\n        mon_metrics[\"📊 Prometheus 指标<br/><small>metrics/metrics.go</small>\"]\n    end\n\n    subgraph L_ops[\"🚀 运维交付\"]\n        ops_docker[\"🐳 容器镜像<br/><small>Dockerfile</small>\"]\n        ops_systemd[\"⚙️ systemd 服务<br/><small>server/ntfy.service</small>\"]\n    end\n\n    fe_cli -->|\"HTTP PUT 发布\"| api_http\n    fe_webapp -->|\"调用\"| fe_api\n    fe_api -->|\"HTTPS 发布 / 订阅\"| api_http\n    fe_sw -->|\"注册推送订阅\"| api_http\n    api_http -->|\"托管 Web 应用\"| fe_webapp\n    api_serve -->|\"加载配置并启动\"| api_http\n    api_http -->|\"鉴权校验\"| api_auth\n    api_http -->|\"限流检查\"| api_visitor\n    api_visitor -->|\"封禁判定\"| worker_ban\n    api_http -->|\"消息路由\"| api_topic\n    api_topic -->|\"写入消息缓存\"| worker_cache\n    sched_delayed -->|\"查询到期消息\"| worker_cache\n    sched_delayed -->|\"到期重新发布\"| api_topic\n    api_topic -->|\"触发推送\"| worker_push\n    worker_push -->|\"Web Push 下发\"| fe_sw\n    api_topic -->|\"发送邮件\"| worker_mail\n    api_topic -->|\"发送短信 / 语音\"| worker_sms\n    api_http -->|\"附件上传\"| worker_s3\n    worker_cache -->|\"消息读写\"| store_db\n    worker_push -->|\"订阅读写\"| store_db\n    api_auth -->|\"用户数据读写\"| store_db\n    store_db -->|\"SQL 读写\"| store_sqlite\n    store_db -->|\"SQL 读写\"| store_pg\n    api_http -->|\"暴露 /metrics\"| mon_metrics\n    ops_docker -.->|\"构建并运行\"| api_serve\n    ops_systemd -.->|\"守护运行\"| api_serve\n\n    classDef frontend fill:#fce4ec,stroke:#f48fb1,color:#333\n    classDef api fill:#ede7f6,stroke:#b39ddb,color:#333\n    classDef schedule fill:#fff3e0,stroke:#ffb74d,color:#333\n    classDef worker fill:#e8f5e9,stroke:#81c784,color:#333\n    classDef storage fill:#e0f7fa,stroke:#4dd0e1,color:#333\n    classDef monitor fill:#fffde7,stroke:#fdd835,color:#333\n    classDef ops fill:#e8f5e9,stroke:#81c784,color:#333\n\n    class fe_webapp,fe_sw,fe_api,fe_cli frontend\n    class api_serve,api_http,api_topic,api_visitor,api_auth api\n    class sched_delayed schedule\n    class worker_cache,worker_push,worker_mail,worker_sms,worker_s3,worker_ban worker\n    class store_db,store_pg,store_sqlite storage\n    class mon_metrics monitor\n    class ops_docker,ops_systemd ops\n\n    style L_frontend fill:#fce4ec,stroke:#f48fb1\n    style L_api fill:#ede7f6,stroke:#b39ddb\n    style L_schedule fill:#fff3e0,stroke:#ffb74d\n    style L_worker fill:#e8f5e9,stroke:#81c784\n    style L_storage fill:#e0f7fa,stroke:#4dd0e1\n    style L_monitor fill:#fffde7,stroke:#fdd835\n    style L_ops fill:#e8f5e9,stroke:#81c784\n```\n\n## 子图2：发布 → 投递主链路\n\n```mermaid\nflowchart LR\n    actor_user([\"🧑 用户<br/><small>浏览器</small>\"])\n    actor_user -->|\"登录 / 查看\"| fe_cli\n    fe_cli[\"📤 发布 CLI<br/><small>cmd/publish.go</small>\"] -->|\"HTTP PUT 发布\"| api_http[\"🌐 HTTP API<br/><small>server/server.go</small>\"]\n    fe_webapp[\"🖥️ Web 前端<br/><small>web/src</small>\"] -->|\"HTTPS 发布 / 订阅\"| api_http\n    api_http -->|\"路由分发\"| api_topic[\"📢 主题分发<br/><small>server/topic.go</small>\"]\n    api_topic -->|\"写入缓存\"| worker_cache[\"📦 消息缓存<br/><small>message/cache.go</small>\"]\n    worker_cache -->|\"SQL 持久化\"| store_sqlite[(\"💾 SQLite<br/><small>message/cache_sqlite.go</small>\")]\n    api_topic -->|\"延时消息入队\"| sched_delayed[\"⏰ 延时调度<br/><small>server/server.go</small>\"]\n    api_topic -->|\"触发投递\"| worker_push[\"🔔 Web Push<br/><small>webpush/store.go</small>\"]\n    worker_push -->|\"推送通知\"| fe_sw[\"📳 Service Worker<br/><small>web/public/sw.js</small>\"]\n    api_topic -->|\"邮件通知\"| worker_mail[\"✉️ 邮件<br/><small>mail/sender.go</small>\"]\n    api_topic -->|\"短信 / 语音\"| worker_sms[\"📞 Twilio<br/><small>twilio/client.go</small>\"]\n```\n",
+    "anchors": [
+      {
+        "path": "web",
+        "score": 288,
+        "imp": {
+          "heat": 275,
+          "reachable": true,
+          "optional": false,
+          "detached": false,
+          "optReasons": []
+        },
+        "hint": "前端页面",
+        "layer": "frontend",
+        "role": "frontend"
+      },
+      {
+        "path": "db",
+        "score": 246,
+        "imp": {
+          "heat": 233,
+          "reachable": true,
+          "optional": false,
+          "detached": false,
+          "optReasons": []
+        },
+        "hint": "数据存储 / 模型",
+        "layer": "storage",
+        "role": "store"
+      },
+      {
+        "path": "util/batching_queue.go",
+        "score": 59,
+        "imp": {
+          "heat": 51,
+          "reachable": true,
+          "optional": false,
+          "detached": false,
+          "optReasons": []
+        },
+        "hint": "任务/消息队列",
+        "layer": "schedule",
+        "role": "queue"
+      },
+      {
+        "path": "client",
+        "score": 55,
+        "imp": {
+          "heat": 42,
+          "reachable": true,
+          "optional": false,
+          "detached": false,
+          "optReasons": []
+        },
+        "hint": "客户端 SDK / 官方客户端库",
+        "layer": "api",
+        "role": "client"
+      },
+      {
+        "path": "server/server.go",
+        "score": 48,
+        "hint": "实时推送（内容核验）",
+        "layer": "monitor",
+        "role": "realtime",
+        "contentVerified": true,
+        "imp": {
+          "heat": 11,
+          "reachable": true,
+          "optional": false,
+          "detached": false,
+          "optReasons": []
+        }
+      },
+      {
+        "path": "cmd",
+        "score": 31,
+        "imp": {
+          "heat": 18,
+          "reachable": true,
+          "optional": false,
+          "detached": false,
+          "optReasons": []
+        },
+        "hint": "CLI 命令行入口（子命令包）",
+        "layer": "api",
+        "role": "cli"
+      },
+      {
+        "path": "server/smtp_server.go",
+        "score": 19,
+        "imp": {
+          "heat": 11,
+          "reachable": true,
+          "optional": false,
+          "detached": false,
+          "optReasons": []
+        },
+        "hint": "通知 / 消息发送 · 入站协议端点（server/listener 类：外部→本服务→内部发布，归 API 层，非出站通知）",
+        "layer": "api",
+        "role": "api"
+      },
+      {
+        "path": "main.go",
+        "score": 18,
+        "imp": {
+          "heat": 0,
+          "reachable": true,
+          "optional": false,
+          "detached": false,
+          "optReasons": []
+        },
+        "hint": "进程入口",
+        "layer": "api",
+        "role": "entry"
+      },
+      {
+        "path": "ban/service.go",
+        "score": 12,
+        "imp": {
+          "heat": 4,
+          "reachable": true,
+          "optional": false,
+          "detached": false,
+          "optReasons": []
+        },
+        "hint": "API / 路由层 / 业务逻辑",
+        "layer": "api",
+        "role": "api"
+      },
+      {
+        "path": "Dockerfile",
+        "score": 6,
+        "imp": {
+          "heat": 0,
+          "reachable": false,
+          "optional": false,
+          "detached": false,
+          "optReasons": []
+        },
+        "hint": "交付 / 运维",
+        "layer": "ops",
+        "role": "ops"
+      }
+    ],
+    "importance": {
+      "infoMap": {},
+      "detachedList": [],
+      "optionalKw": [
+        "examples"
+      ],
+      "emptyLayers": [],
+      "pathCluster": [],
+      "s3Sw": null,
+      "shapeConfidence": "medium",
+      "shapeMargin": 2,
+      "shapeCandidates": [
+        {
+          "kind": "web",
+          "score": 10,
+          "signal": ""
+        },
+        {
+          "kind": "notify-bus",
+          "score": 8,
+          "signal": ""
+        },
+        {
+          "kind": "bridge",
+          "score": 0,
+          "signal": ""
+        },
+        {
+          "kind": "proxy",
+          "score": 0,
+          "signal": ""
+        },
+        {
+          "kind": "api-svc",
+          "score": 0,
+          "signal": "go"
+        }
+      ],
+      "shape": {
+        "kind": "web",
+        "name": "Web 应用（前后端）"
+      }
+    },
+    "productTokens": [
+      "ntfy"
+    ],
+    "baseline": {
+      "sweptMd": "# Block Diagram — 分层模块图\n\n> ntfy 是一个用 Go 编写的自托管 pub/sub 推送通知服务器：通过 HTTP API 发布消息，\n> 经主题分发与消息缓存后，以 Web Push / 邮件 / 短信 / 语音等方式投递到订阅端。\n\n## 子图1：分层全景\n\n```mermaid\nflowchart TB\n    actor_user([\"🧑 用户<br/><small>浏览器</small>\"])\n    actor_user -->|\"访问 Web 界面\"| fe_webapp\n    subgraph L_frontend[\"🖥️ 前端\"]\n        fe_webapp[\"🖥️ Web 前端<br/><small>web/src</small>\"]\n        fe_sw[\"📳 Service Worker<br/><small>web/public/sw.js</small>\"]\n        fe_api[\"🔌 前端 API 客户端<br/><small>web/src/app/Api.js</small>\"]\n        fe_cli[\"📤 发布 CLI<br/><small>cmd/publish.go</small>\"]\n    end\n\n    subgraph L_api[\"🧩 API 层\"]\n        api_serve[\"🚀 服务启动<br/><small>cmd/serve.go</small>\"]\n        api_http[\"🌐 HTTP API 服务<br/><small>server/server.go</small>\"]\n        api_topic[\"📢 主题分发<br/><small>server/topic.go</small>\"]\n        api_visitor[\"🛡️ 访问限流<br/><small>server/visitor.go</small>\"]\n        api_auth[\"🔑 认证鉴权<br/><small>server/server_auth.go</small>\"]\n    end\n\n    subgraph L_schedule[\"⏰ 调度层\"]\n        sched_delayed[\"⏰ 延时消息投递<br/><small>server/server.go</small>\"]\n    end\n\n    subgraph L_worker[\"⚙️ 投递 / Worker 层\"]\n        worker_cache[\"📦 消息缓存<br/><small>message/cache.go</small>\"]\n        worker_push[\"🔔 Web Push 订阅<br/><small>webpush/store.go</small>\"]\n        worker_mail[\"✉️ 邮件发送<br/><small>mail/sender.go</small>\"]\n        worker_sms[\"📞 短信 / 语音<br/><small>twilio/client.go</small>\"]\n        worker_s3[\"🗄️ 附件存储<br/><small>s3/client.go</small>\"]\n        worker_ban[\"🚫 封禁判定<br/><small>ban/service.go</small>\"]\n    end\n\n    subgraph L_storage[\"💾 存储层\"]\n        store_db[\"🗃️ 数据库封装<br/><small>db/db.go</small>\"]\n        store_pg[\"🐘 PostgreSQL<br/><small>db/pg/pg.go</small>\"]\n        store_sqlite[(\"💾 SQLite<br/><small>message/cache_sqlite.go</small>\")]\n    end\n\n    subgraph L_monitor[\"📈 监控层\"]\n        mon_metrics[\"📊 Prometheus 指标<br/><small>metrics/metrics.go</small>\"]\n    end\n\n    subgraph L_ops[\"🚀 运维交付\"]\n        ops_docker[\"🐳 容器镜像<br/><small>Dockerfile</small>\"]\n        ops_systemd[\"⚙️ systemd 服务<br/><small>server/ntfy.service</small>\"]\n    end\n\n    fe_cli -->|\"HTTP PUT 发布\"| api_http\n    fe_webapp -->|\"调用\"| fe_api\n    fe_api -->|\"HTTPS 发布 / 订阅\"| api_http\n    fe_sw -->|\"注册推送订阅\"| api_http\n    api_serve -->|\"加载配置并启动\"| api_http\n    api_http -->|\"鉴权校验\"| api_auth\n    api_http -->|\"限流检查\"| api_visitor\n    api_visitor -->|\"封禁判定\"| worker_ban\n    api_http -->|\"消息路由\"| api_topic\n    api_topic -->|\"写入消息缓存\"| worker_cache\n    sched_delayed -->|\"查询到期消息\"| worker_cache\n    sched_delayed -->|\"到期重新发布\"| api_topic\n    api_topic -->|\"触发推送\"| worker_push\n    worker_push -->|\"Web Push 下发\"| fe_sw\n    api_topic -->|\"发送邮件\"| worker_mail\n    api_topic -->|\"发送短信 / 语音\"| worker_sms\n    api_http -->|\"附件上传\"| worker_s3\n    worker_cache -->|\"消息读写\"| store_db\n    worker_push -->|\"订阅读写\"| store_db\n    api_auth -->|\"用户数据读写\"| store_db\n    store_db -->|\"SQL 读写\"| store_sqlite\n    store_db -->|\"SQL 读写\"| store_pg\n    api_http -->|\"暴露 /metrics\"| mon_metrics\n    ops_docker -.->|\"构建并运行\"| api_serve\n    ops_systemd -.->|\"守护运行\"| api_serve\n\n    classDef frontend fill:#fce4ec,stroke:#f48fb1,color:#333\n    classDef api fill:#ede7f6,stroke:#b39ddb,color:#333\n    classDef schedule fill:#fff3e0,stroke:#ffb74d,color:#333\n    classDef worker fill:#e8f5e9,stroke:#81c784,color:#333\n    classDef storage fill:#e0f7fa,stroke:#4dd0e1,color:#333\n    classDef monitor fill:#fffde7,stroke:#fdd835,color:#333\n    classDef ops fill:#e8f5e9,stroke:#81c784,color:#333\n\n    class fe_webapp,fe_sw,fe_api,fe_cli frontend\n    class api_serve,api_http,api_topic,api_visitor,api_auth api\n    class sched_delayed schedule\n    class worker_cache,worker_push,worker_mail,worker_sms,worker_s3,worker_ban worker\n    class store_db,store_pg,store_sqlite storage\n    class mon_metrics monitor\n    class ops_docker,ops_systemd ops\n\n    style L_frontend fill:#fce4ec,stroke:#f48fb1\n    style L_api fill:#ede7f6,stroke:#b39ddb\n    style L_schedule fill:#fff3e0,stroke:#ffb74d\n    style L_worker fill:#e8f5e9,stroke:#81c784\n    style L_storage fill:#e0f7fa,stroke:#4dd0e1\n    style L_monitor fill:#fffde7,stroke:#fdd835\n    style L_ops fill:#e8f5e9,stroke:#81c784\n```\n\n## 子图2：发布 → 投递主链路\n\n```mermaid\nflowchart LR\n    A([\"🧑 用户<br/><small>浏览器</small>\"])\n    A -->|\"登录 / 查看\"| B\n    B[\"📤 发布 CLI<br/><small>cmd/publish.go</small>\"] -->|\"HTTP PUT 发布\"| C[\"🌐 HTTP API<br/><small>server/server.go</small>\"]\n    D[\"🖥️ Web 前端<br/><small>web/src</small>\"] -->|\"HTTPS 发布 / 订阅\"| C\n    C -->|\"路由分发\"| E[\"📢 主题分发<br/><small>server/topic.go</small>\"]\n    E -->|\"写入缓存\"| F[\"📦 消息缓存<br/><small>message/cache.go</small>\"]\n    F -->|\"SQL 持久化\"| G[(\"💾 SQLite<br/><small>message/cache_sqlite.go</small>\")]\n    E -->|\"延时消息入队\"| H[\"⏰ 延时调度<br/><small>server/server.go</small>\"]\n    E -->|\"触发投递\"| I[\"🔔 Web Push<br/><small>webpush/store.go</small>\"]\n    I -->|\"推送通知\"| J[\"📳 Service Worker<br/><small>web/public/sw.js</small>\"]\n    E -->|\"邮件通知\"| K[\"✉️ 邮件<br/><small>mail/sender.go</small>\"]\n    E -->|\"短信 / 语音\"| L[\"📞 Twilio<br/><small>twilio/client.go</small>\"]\n```\n",
+      "sweepActions": [
+        "删除响应反向边：api_http →|\"托管 Web 应用\"| fe_webapp",
+        "删除平行冗余直连边（已有 X→Y→Z 两跳链）：sched_delayed →|\"查询到期消息\"| worker_cache",
+        "删除平行冗余直连边（已有 X→Y→Z 两跳链）：sched_delayed →|\"查询到期消息\"| worker_cache",
+        "子图2 复用全景长 id，统一改为短 id 特写链：12 个节点"
+      ],
+      "sHigh": 0,
+      "sMed": 0,
+      "sLow": 0,
+      "vHigh": 0,
+      "hallucination": 0,
+      "qualityScore": 10
+    }
+  },
+  "vaultwarden": {
+    "mdBefore": "# Block Diagram — 分层模块图\n\n> Vaultwarden（Rust 实现的 Bitwarden 服务器）技术分层：前端 → API → 调度 → Worker → 存储 → 监控 → 运维。\n\n## 子图1：分层全景\n\n```mermaid\nflowchart TB\n    actor_user([\"🧑 用户<br/><small>浏览器</small>\"])\n    actor_user -->|\"访问 Web 界面\"| FE_ADMIN\n    subgraph L_frontend[\"🖥️ 前端\"]\n        direction LR\n        FE_VAULT[\"🗝️ Web Vault 前端<br/><small>web-vault 官方静态包</small>\"]\n        FE_ADMIN[\"🛠️ 管理后台界面<br/><small>src/static/templates/admin</small>\"]\n    end\n\n    subgraph L_api[\"🔌 API 服务层\"]\n        direction LR\n        API_CORE[\"🔐 核心密码库 API<br/><small>src/api/core</small>\"]\n        API_IDENTITY[\"🎫 身份认证 API<br/><small>src/api/identity.rs</small>\"]\n        API_ADMIN[\"⚙️ 管理后台 API<br/><small>src/api/admin.rs</small>\"]\n        API_WEB[\"📄 网页与静态路由<br/><small>src/api/web.rs</small>\"]\n        API_ICONS[\"🧭 网站图标 API<br/><small>src/api/icons.rs</small>\"]\n        AUTH[\"🛂 鉴权模块 JWT/2FA<br/><small>src/auth.rs</small>\"]\n    end\n\n    subgraph L_schedule[\"⏰ 调度层\"]\n        SCHED[\"⏰ 定时任务调度器<br/><small>src/main.rs</small>\"]\n    end\n\n    subgraph L_worker[\"⚙️ Worker 异步任务\"]\n        direction LR\n        MAIL[\"📧 邮件投递 SMTP<br/><small>src/mail.rs</small>\"]\n        PUSH[\"📲 移动端推送<br/><small>src/api/push.rs</small>\"]\n        WS[\"🔔 WebSocket 实时通知<br/><small>src/api/notifications.rs</small>\"]\n        HTTP[\"🌐 外呼 HTTP 客户端<br/><small>src/http_client.rs</small>\"]\n    end\n\n    subgraph L_storage[\"💾 存储层\"]\n        direction LR\n        ORM[\"🗄️ 数据访问层 Diesel<br/><small>src/db</small>\"]\n        DB[(\"💾 数据库引擎<br/><small>SQLite · MySQL · PostgreSQL</small>\")]\n        ATTACH[\"📎 附件/发送文件存储<br/><small>src/storage.rs</small>\"]\n        MIGR[\"🧬 数据库迁移脚本<br/><small>migrations</small>\"]\n    end\n\n    subgraph L_monitor[\"📊 监控层\"]\n        direction LR\n        ALIVE[\"💓 健康检查端点 /alive<br/><small>src/api/core/mod.rs</small>\"]\n        QLOG[\"🐢 慢查询日志<br/><small>src/db/query_logger.rs</small>\"]\n        LOG[\"📝 请求访问日志<br/><small>src/util.rs</small>\"]\n    end\n\n    subgraph L_ops[\"📦 运维交付\"]\n        direction LR\n        START[\"🚀 容器启动脚本<br/><small>docker/start.sh</small>\"]\n        HC[\"🩺 容器健康检查<br/><small>docker/healthcheck.sh</small>\"]\n        E2E[\"🧪 端到端测试<br/><small>playwright</small>\"]\n    end\n\n    API_WEB -->|\"下发页面与静态资源\"| FE_VAULT\n    FE_VAULT -->|\"登录 /identity\"| API_IDENTITY\n    FE_VAULT -->|\"密码库同步 /api\"| API_CORE\n    API_ADMIN -->|\"渲染后台页面\"| FE_ADMIN\n    API_IDENTITY -->|\"签发/校验 JWT\"| AUTH\n    API_CORE -->|\"鉴权拦截\"| AUTH\n    API_ADMIN -->|\"鉴权拦截\"| AUTH\n\n    SCHED -->|\"定时清理/超时任务\"| ORM\n    SCHED -->|\"触发提醒邮件\"| MAIL\n\n    API_CORE -->|\"发送邮件\"| MAIL\n    API_CORE -->|\"数据变更推送\"| PUSH\n    API_CORE -->|\"实时事件广播\"| WS\n    WS -->|\"WebSocket 实时推送\"| FE_VAULT\n    API_ICONS -->|\"抓取网站图标\"| HTTP\n\n    API_CORE -->|\"上传/下载附件\"| ATTACH\n    API_CORE -->|\"读写业务数据\"| ORM\n    API_ADMIN -->|\"读写运维数据\"| ORM\n    ORM -->|\"SQL 查询\"| DB\n    MIGR -->|\"建表与升级\"| DB\n\n    ALIVE -->|\"SELECT 1 探活\"| ORM\n    ORM -.->|\"慢查询采集\"| QLOG\n    API_WEB -.->|\"访问日志\"| LOG\n\n    START -.->|\"启动服务进程\"| SCHED\n    HC -.->|\"GET /alive\"| ALIVE\n    E2E -.->|\"E2E 回归测试\"| API_CORE\n\n    classDef fe fill:#fce4ec,stroke:#c2185b,stroke-width:2px\n    classDef api fill:#ede7f6,stroke:#5e35b1,stroke-width:2px\n    classDef sch fill:#fff3e0,stroke:#ef6c00,stroke-width:2px\n    classDef wk fill:#e8f5e9,stroke:#2e7d32,stroke-width:2px\n    classDef st fill:#e0f7fa,stroke:#00838f,stroke-width:2px\n    classDef mon fill:#fffde7,stroke:#f9a825,stroke-width:2px\n    classDef ops fill:#e8f5e9,stroke:#2e7d32,stroke-width:2px\n\n    class FE_VAULT,FE_ADMIN fe\n    class API_CORE,API_IDENTITY,API_ADMIN,API_WEB,API_ICONS,AUTH api\n    class SCHED sch\n    class MAIL,PUSH,WS,HTTP wk\n    class ORM,DB,ATTACH,MIGR st\n    class ALIVE,QLOG,LOG mon\n    class START,HC,E2E ops\n\n    style L_frontend fill:#fce4ec,stroke:#c2185b,stroke-width:2.5px\n    style L_api fill:#ede7f6,stroke:#5e35b1,stroke-width:2.5px\n    style L_schedule fill:#fff3e0,stroke:#ef6c00,stroke-width:2.5px\n    style L_worker fill:#e8f5e9,stroke:#2e7d32,stroke-width:2.5px\n    style L_storage fill:#e0f7fa,stroke:#00838f,stroke-width:2.5px\n    style L_monitor fill:#fffde7,stroke:#f9a825,stroke-width:2.5px\n    style L_ops fill:#e8f5e9,stroke:#2e7d32,stroke-width:2.5px\n```\n\n## 子图2：登录与同步主链路\n\n```mermaid\nflowchart LR\n    actor_user([\"🧑 用户<br/><small>浏览器</small>\"])\n    actor_user -->|\"登录 / 查看\"| P_FE\n    P_FE[\"🗝️ Web Vault 前端\"]\n    P_ID[\"🎫 身份认证 API<br/><small>src/api/identity.rs</small>\"]\n    P_CORE[\"🔐 核心密码库 API<br/><small>src/api/core</small>\"]\n    P_ORM[\"🗄️ 数据访问层<br/><small>src/db</small>\"]\n    P_DB[(\"💾 数据库<br/><small>SQLite · MySQL · PostgreSQL</small>\")]\n    P_MAIL[\"📧 邮件投递<br/><small>src/mail.rs</small>\"]\n\n    P_FE -->|\"登录 /identity\"| P_ID\n    P_FE -->|\"同步 /api\"| P_CORE\n    P_ID -->|\"JWT 鉴权\"| P_CORE\n    P_CORE -->|\"读写数据\"| P_ORM\n    P_ORM -->|\"SQL 查询\"| P_DB\n    P_CORE -->|\"发送验证/通知邮件\"| P_MAIL\n\n    classDef pfe fill:#fce4ec,stroke:#c2185b,stroke-width:2px\n    classDef papi fill:#ede7f6,stroke:#5e35b1,stroke-width:2px\n    classDef pst fill:#e0f7fa,stroke:#00838f,stroke-width:2px\n    classDef pwk fill:#e8f5e9,stroke:#2e7d32,stroke-width:2px\n\n    class P_FE pfe\n    class P_ID,P_CORE papi\n    class P_ORM,P_DB pst\n    class P_MAIL pwk\n```\n",
+    "anchors": [
+      {
+        "path": "src/api",
+        "score": 58,
+        "imp": {
+          "heat": 47,
+          "reachable": true,
+          "optional": false,
+          "detached": false,
+          "optReasons": []
+        },
+        "hint": "API / 路由层 / 业务逻辑",
+        "layer": "api",
+        "role": "api"
+      },
+      {
+        "path": "src/db",
+        "score": 58,
+        "imp": {
+          "heat": 47,
+          "reachable": true,
+          "optional": false,
+          "detached": false,
+          "optReasons": []
+        },
+        "hint": "数据存储 / 模型",
+        "layer": "storage",
+        "role": "store"
+      },
+      {
+        "path": "src/main.rs",
+        "score": 16,
+        "imp": {
+          "heat": 0,
+          "reachable": true,
+          "optional": false,
+          "detached": false,
+          "optReasons": []
+        },
+        "hint": "进程入口",
+        "layer": "api",
+        "role": "entry"
+      },
+      {
+        "path": "src/mail.rs",
+        "score": 10,
+        "imp": {
+          "heat": 2,
+          "reachable": true,
+          "optional": false,
+          "detached": false,
+          "optReasons": []
+        },
+        "hint": "通知 / 消息发送",
+        "layer": "monitor",
+        "role": "notify"
+      },
+      {
+        "path": "docker",
+        "score": 9,
+        "imp": {
+          "heat": 0,
+          "reachable": false,
+          "optional": false,
+          "detached": false,
+          "optReasons": []
+        },
+        "hint": "交付 / 运维",
+        "layer": "ops",
+        "role": "ops"
+      }
+    ],
+    "importance": {
+      "infoMap": {},
+      "detachedList": [
+        {
+          "path": "playwright",
+          "heat": 51
+        }
+      ],
+      "optionalKw": [
+        "sso",
+        "notifications",
+        "web"
+      ],
+      "emptyLayers": [
+        "frontend"
+      ],
+      "pathCluster": [],
+      "s3Sw": null,
+      "shapeConfidence": "high",
+      "shapeMargin": 7,
+      "shapeCandidates": [
+        {
+          "kind": "api-svc",
+          "score": 8,
+          "signal": "rust"
+        },
+        {
+          "kind": "web",
+          "score": 1,
+          "signal": ""
+        },
+        {
+          "kind": "bridge",
+          "score": 0,
+          "signal": ""
+        },
+        {
+          "kind": "proxy",
+          "score": 0,
+          "signal": ""
+        },
+        {
+          "kind": "notify-bus",
+          "score": 0,
+          "signal": ""
+        }
+      ],
+      "shape": {
+        "kind": "api-svc",
+        "name": "后端服务（Rust）",
+        "signal": "rust"
+      }
+    },
+    "productTokens": [
+      "vaultwarden",
+      "bitwarden"
+    ],
+    "baseline": {
+      "sweptMd": "# Block Diagram — 分层模块图\n\n> Vaultwarden（Rust 实现的 Bitwarden 服务器）技术分层：前端 → API → 调度 → Worker → 存储 → 监控 → 运维。\n\n## 子图1：分层全景\n\n```mermaid\nflowchart TB\n    actor_user([\"🧑 用户<br/><small>浏览器</small>\"])\n    actor_user -->|\"访问 Web 界面\"| FE_ADMIN\n    subgraph L_frontend[\"🖥️ 前端\"]\n        direction LR\n        FE_VAULT[\"🗝️ Web Vault 前端<br/><small>web-vault 官方静态包</small>\"]\n        FE_ADMIN[\"🛠️ 管理后台界面<br/><small>src/static/templates/admin</small>\"]\n    end\n\n    subgraph L_api[\"🔌 API 服务层\"]\n        direction LR\n        API_CORE[\"🔐 核心密码库 API<br/><small>src/api/core</small>\"]\n        API_IDENTITY[\"🎫 身份认证 API<br/><small>src/api/identity.rs</small>\"]\n        API_ADMIN[\"⚙️ 管理后台 API<br/><small>src/api/admin.rs</small>\"]\n        API_WEB[\"📄 网页与静态路由<br/><small>src/api/web.rs</small>\"]\n        API_ICONS[\"🧭 网站图标 API<br/><small>src/api/icons.rs</small>\"]\n        AUTH[\"🛂 鉴权模块 JWT/2FA<br/><small>src/auth.rs</small>\"]\n    end\n\n    subgraph L_schedule[\"⏰ 调度层\"]\n        SCHED[\"⏰ 定时任务调度器<br/><small>src/main.rs</small>\"]\n    end\n\n    subgraph L_worker[\"⚙️ Worker 异步任务\"]\n        direction LR\n        MAIL[\"📧 邮件投递 SMTP<br/><small>src/mail.rs</small>\"]\n        PUSH[\"📲 移动端推送<br/><small>src/api/push.rs</small>\"]\n        WS[\"🔔 WebSocket 实时通知<br/><small>src/api/notifications.rs</small>\"]\n        HTTP[\"🌐 外呼 HTTP 客户端<br/><small>src/http_client.rs</small>\"]\n    end\n\n    subgraph L_storage[\"💾 存储层\"]\n        direction LR\n        ORM[\"🗄️ 数据访问层 Diesel<br/><small>src/db</small>\"]\n        DB[(\"💾 数据库引擎<br/><small>SQLite · MySQL · PostgreSQL</small>\")]\n        ATTACH[\"📎 附件/发送文件存储<br/><small>src/storage.rs</small>\"]\n        MIGR[\"🧬 数据库迁移脚本<br/><small>migrations</small>\"]\n    end\n\n    subgraph L_monitor[\"📊 监控层\"]\n        direction LR\n        ALIVE[\"💓 健康检查端点 /alive<br/><small>src/api/core/mod.rs</small>\"]\n        QLOG[\"🐢 慢查询日志<br/><small>src/db/query_logger.rs</small>\"]\n        LOG[\"📝 请求访问日志<br/><small>src/util.rs</small>\"]\n    end\n\n    subgraph L_ops[\"📦 运维交付\"]\n        direction LR\n        START[\"🚀 容器启动脚本<br/><small>docker/start.sh</small>\"]\n        HC[\"🩺 容器健康检查<br/><small>docker/healthcheck.sh</small>\"]\n        E2E[\"🧪 端到端测试<br/><small>playwright</small>\"]\n    end\n\n    FE_VAULT -->|\"登录 /identity\"| API_IDENTITY\n    FE_VAULT -->|\"密码库同步 /api\"| API_CORE\n    API_IDENTITY -->|\"签发/校验 JWT\"| AUTH\n    API_CORE -->|\"鉴权拦截\"| AUTH\n    API_ADMIN -->|\"鉴权拦截\"| AUTH\n\n    SCHED -->|\"定时清理/超时任务\"| ORM\n    SCHED -->|\"触发提醒邮件\"| MAIL\n\n    API_CORE -->|\"发送邮件\"| MAIL\n    API_CORE -->|\"数据变更推送\"| PUSH\n    API_CORE -->|\"实时事件广播\"| WS\n    WS -->|\"WebSocket 实时推送\"| FE_VAULT\n    API_ICONS -->|\"抓取网站图标\"| HTTP\n\n    API_CORE -->|\"上传/下载附件\"| ATTACH\n    API_CORE -->|\"读写业务数据\"| ORM\n    API_ADMIN -->|\"读写运维数据\"| ORM\n    ORM -->|\"SQL 查询\"| DB\n    MIGR -->|\"建表与升级\"| DB\n\n    ALIVE -->|\"SELECT 1 探活\"| ORM\n    ORM -.->|\"慢查询采集\"| QLOG\n    API_WEB -.->|\"访问日志\"| LOG\n\n    START -.->|\"启动服务进程\"| SCHED\n    HC -.->|\"GET /alive\"| ALIVE\n    E2E -.->|\"E2E 回归测试\"| API_CORE\n\n    classDef fe fill:#fce4ec,stroke:#c2185b,stroke-width:2px\n    classDef api fill:#ede7f6,stroke:#5e35b1,stroke-width:2px\n    classDef sch fill:#fff3e0,stroke:#ef6c00,stroke-width:2px\n    classDef wk fill:#e8f5e9,stroke:#2e7d32,stroke-width:2px\n    classDef st fill:#e0f7fa,stroke:#00838f,stroke-width:2px\n    classDef mon fill:#fffde7,stroke:#f9a825,stroke-width:2px\n    classDef ops fill:#e8f5e9,stroke:#2e7d32,stroke-width:2px\n\n    class FE_VAULT,FE_ADMIN fe\n    class API_CORE,API_IDENTITY,API_ADMIN,API_WEB,API_ICONS,AUTH api\n    class SCHED sch\n    class MAIL,PUSH,WS,HTTP wk\n    class ORM,DB,ATTACH,MIGR st\n    class ALIVE,QLOG,LOG mon\n    class START,HC,E2E ops\n\n    style L_frontend fill:#fce4ec,stroke:#c2185b,stroke-width:2.5px\n    style L_api fill:#ede7f6,stroke:#5e35b1,stroke-width:2.5px\n    style L_schedule fill:#fff3e0,stroke:#ef6c00,stroke-width:2.5px\n    style L_worker fill:#e8f5e9,stroke:#2e7d32,stroke-width:2.5px\n    style L_storage fill:#e0f7fa,stroke:#00838f,stroke-width:2.5px\n    style L_monitor fill:#fffde7,stroke:#f9a825,stroke-width:2.5px\n    style L_ops fill:#e8f5e9,stroke:#2e7d32,stroke-width:2.5px\n```\n\n## 子图2：登录与同步主链路\n\n```mermaid\nflowchart LR\n    actor_user([\"🧑 用户<br/><small>浏览器</small>\"])\n    actor_user -->|\"登录 / 查看\"| P_FE\n    P_FE[\"🗝️ Web Vault 前端\"]\n    P_ID[\"🎫 身份认证 API<br/><small>src/api/identity.rs</small>\"]\n    P_CORE[\"🔐 核心密码库 API<br/><small>src/api/core</small>\"]\n    P_ORM[\"🗄️ 数据访问层<br/><small>src/db</small>\"]\n    P_DB[(\"💾 数据库<br/><small>SQLite · MySQL · PostgreSQL</small>\")]\n    P_MAIL[\"📧 邮件投递<br/><small>src/mail.rs</small>\"]\n\n    P_FE -->|\"登录 /identity\"| P_ID\n    P_FE -->|\"同步 /api\"| P_CORE\n    P_ID -->|\"JWT 鉴权\"| P_CORE\n    P_CORE -->|\"读写数据\"| P_ORM\n    P_ORM -->|\"SQL 查询\"| P_DB\n    P_CORE -->|\"发送验证/通知邮件\"| P_MAIL\n\n    classDef pfe fill:#fce4ec,stroke:#c2185b,stroke-width:2px\n    classDef papi fill:#ede7f6,stroke:#5e35b1,stroke-width:2px\n    classDef pst fill:#e0f7fa,stroke:#00838f,stroke-width:2px\n    classDef pwk fill:#e8f5e9,stroke:#2e7d32,stroke-width:2px\n\n    class P_FE pfe\n    class P_ID,P_CORE papi\n    class P_ORM,P_DB pst\n    class P_MAIL pwk\n```\n",
+      "sweepActions": [
+        "删除响应反向边：API_WEB →|\"下发页面与静态资源\"| FE_VAULT",
+        "删除响应反向边：API_ADMIN →|\"渲染后台页面\"| FE_ADMIN"
+      ],
+      "sHigh": 0,
+      "sMed": 0,
+      "sLow": 0,
+      "vHigh": 0,
+      "hallucination": 0,
+      "qualityScore": 10
+    }
+  },
+  "zigbee2mqtt": {
+    "mdBefore": "# Block Diagram — 分层模块图\n\n> Zigbee2MQTT：Zigbee ↔ MQTT 桥接器。本图按运行时数据流分层展示：前端 → MQTT/桥接 API → 事件调度 → 扩展 Worker → 存储 → 监控 → 运维交付。\n\n## 子图1：分层全景\n\n```mermaid\nflowchart TB\n    actor_user([\"🧑 用户<br/><small>浏览器</small>\"])\n    actor_user -->|\"访问 Web 界面\"| web_ui\n    subgraph L_frontend[\"🖥️ 前端层\"]\n        web_ui[\"🖥️ Web 控制台<br/><small>zigbee2mqtt-frontend</small>\"]\n        ext_frontend[\"🌐 前端服务<br/><small>lib/extension/frontend.ts</small>\"]\n    end\n\n    subgraph L_api[\"💜 API / 桥接层\"]\n        mqtt_client[\"📡 MQTT 客户端<br/><small>lib/mqtt.ts · mqtt</small>\"]\n        bridge_api[\"🌉 桥接管理 API<br/><small>lib/extension/bridge.ts</small>\"]\n    end\n\n    subgraph L_schedule[\"🕒 调度与事件层\"]\n        controller[\"🧭 主控制器<br/><small>lib/controller.ts</small>\"]\n        event_bus[\"🔄 事件总线<br/><small>lib/eventBus.ts</small>\"]\n    end\n\n    subgraph L_worker[\"🧩 采集 / Worker 层\"]\n        zigbee[\"🔌 Zigbee 网络<br/><small>lib/zigbee.ts · zigbee-herdsman</small>\"]\n        ext_receive[\"📥 上报接收<br/><small>lib/extension/receive.ts</small>\"]\n        ext_publish[\"📤 命令下发<br/><small>lib/extension/publish.ts</small>\"]\n    end\n\n    subgraph L_storage[\"💾 存储层\"]\n        st_state[(\"📦 状态缓存<br/><small>data/ · JSON</small>\")]\n        st_db[(\"🗄️ 网络数据库<br/><small>data/ · SQLite</small>\")]\n        st_cfg[(\"📄 配置文件<br/><small>data/configuration.example.yaml</small>\")]\n    end\n\n    subgraph L_monitor[\"📊 监控层\"]\n        ext_health[\"💓 健康检查<br/><small>lib/extension/health.ts</small>\"]\n        logger[\"📝 日志<br/><small>lib/util/logger.ts · winston</small>\"]\n        sd_notify[\"🛎️ systemd 通知<br/><small>lib/util/sd-notify.ts</small>\"]\n    end\n\n    subgraph L_ops[\"📦 运维交付层\"]\n        entry[\"🚀 入口脚本<br/><small>index.js</small>\"]\n    end\n\n    entry -.->|\"启动·构建检查\"| controller\n    controller -->|\"初始化·装配\"| mqtt_client\n    controller -->|\"初始化·装配\"| zigbee\n    controller -->|\"注册扩展\"| ext_receive\n    controller -->|\"加载配置\"| st_cfg\n    controller -->|\"就绪通知\"| sd_notify\n\n    web_ui -->|\"HTTP/WS 请求\"| ext_frontend\n    ext_frontend -->|\"请求注入 MQTT\"| mqtt_client\n    mqtt_client -->|\"分发 bridge 请求\"| bridge_api\n\n    mqtt_client -->|\"分发 set 命令\"| ext_publish\n    ext_publish -->|\"下发 Zigbee 命令\"| zigbee\n    zigbee -->|\"设备消息事件\"| event_bus\n    event_bus -->|\"派发 deviceMessage\"| ext_receive\n    ext_receive -->|\"发布实体状态\"| mqtt_client\n    ext_receive -->|\"读写状态缓存\"| st_state\n    ext_receive -->|\"记录日志\"| logger\n    zigbee -->|\"读写网络数据库\"| st_db\n    zigbee -->|\"记录日志\"| logger\n    ext_health -->|\"发布 bridge/state\"| mqtt_client\n\n    classDef fe fill:#fce4ec,stroke:#c2185b,stroke-width:2px\n    classDef api fill:#ede7f6,stroke:#5e35b1,stroke-width:2px\n    classDef sch fill:#fff3e0,stroke:#ef6c00,stroke-width:2px\n    classDef wk fill:#e8f5e9,stroke:#2e7d32,stroke-width:2px\n    classDef st fill:#e0f7fa,stroke:#0288d1,stroke-width:2px\n    classDef mon fill:#fffde7,stroke:#f9a825,stroke-width:2px\n    classDef ops fill:#e8f5e9,stroke:#00695c,stroke-width:2px\n\n    class web_ui,ext_frontend fe\n    class mqtt_client,bridge_api api\n    class controller,event_bus sch\n    class zigbee,ext_receive,ext_publish wk\n    class st_state,st_db,st_cfg st\n    class ext_health,logger,sd_notify mon\n    class entry ops\n\n    style L_frontend fill:#fce4ec,stroke:#c2185b,stroke-width:3px\n    style L_api fill:#ede7f6,stroke:#5e35b1,stroke-width:2.5px\n    style L_schedule fill:#fff3e0,stroke:#ef6c00,stroke-width:2.5px\n    style L_worker fill:#e8f5e9,stroke:#2e7d32,stroke-width:2px\n    style L_storage fill:#e0f7fa,stroke:#0288d1,stroke-width:2px\n    style L_monitor fill:#fffde7,stroke:#f9a825,stroke-width:2.5px\n    style L_ops fill:#e8f5e9,stroke:#00695c,stroke-width:2px\n```\n\n## 子图2：主链路数据流\n\n```mermaid\nflowchart LR\n    actor_user([\"🧑 用户<br/><small>浏览器</small>\"])\n    actor_user -->|\"登录 / 查看\"| ext_frontend\n    subgraph L_main[\"🔀 主链路：Web 控制 → Zigbee 执行 → 状态回传\"]\n        web_ui[\"🖥️ Web 控制台<br/><small>zigbee2mqtt-frontend</small>\"]\n        ext_frontend[\"🌐 前端服务<br/><small>lib/extension/frontend.ts</small>\"]\n        mqtt_client[\"📡 MQTT 客户端<br/><small>lib/mqtt.ts</small>\"]\n        ext_publish[\"📤 命令下发<br/><small>lib/extension/publish.ts</small>\"]\n        zigbee[\"🔌 Zigbee 网络<br/><small>lib/zigbee.ts</small>\"]\n        event_bus[\"🔄 事件总线<br/><small>lib/eventBus.ts</small>\"]\n        ext_receive[\"📥 上报接收<br/><small>lib/extension/receive.ts</small>\"]\n        st_state[(\"📦 状态缓存<br/><small>data/ · JSON</small>\")]\n\n        web_ui -->|\"操作请求\"| ext_frontend\n        ext_frontend -->|\"注入 MQTT\"| mqtt_client\n        mqtt_client -->|\"set 命令\"| ext_publish\n        ext_publish -->|\"Zigbee 命令\"| zigbee\n        zigbee -->|\"设备上报\"| event_bus\n        event_bus -->|\"派发消息\"| ext_receive\n        ext_receive -->|\"状态缓存\"| st_state\n        ext_receive -->|\"状态发布\"| mqtt_client\n        mqtt_client -->|\"状态推送\"| ext_frontend\n        ext_frontend -->|\"WS 推送\"| web_ui\n    end\n\n    classDef fe fill:#fce4ec,stroke:#c2185b,stroke-width:2px\n    classDef api fill:#ede7f6,stroke:#5e35b1,stroke-width:2px\n    classDef sch fill:#fff3e0,stroke:#ef6c00,stroke-width:2px\n    classDef wk fill:#e8f5e9,stroke:#2e7d32,stroke-width:2px\n    classDef st fill:#e0f7fa,stroke:#0288d1,stroke-width:2px\n\n    class web_ui,ext_frontend fe\n    class mqtt_client api\n    class event_bus sch\n    class ext_publish,zigbee,ext_receive wk\n    class st_state st\n\n    style L_main fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2.5px\n```\n",
+    "anchors": [
+      {
+        "path": "lib/model",
+        "score": 31,
+        "imp": {
+          "heat": 20,
+          "reachable": true,
+          "optional": false,
+          "detached": false,
+          "optReasons": []
+        },
+        "hint": "数据存储 / 模型",
+        "layer": "storage",
+        "role": "store"
+      },
+      {
+        "path": "lib/controller.ts",
+        "score": 25,
+        "imp": {
+          "heat": 17,
+          "reachable": true,
+          "optional": false,
+          "detached": false,
+          "optReasons": []
+        },
+        "hint": "API / 路由层 / 业务逻辑",
+        "layer": "api",
+        "role": "api"
+      },
+      {
+        "path": "index.js",
+        "score": 14,
+        "imp": {
+          "heat": 1,
+          "reachable": true,
+          "optional": false,
+          "detached": false,
+          "optReasons": []
+        },
+        "hint": "进程入口",
+        "layer": "api",
+        "role": "entry"
+      },
+      {
+        "path": "docker",
+        "score": 9,
+        "imp": {
+          "heat": 0,
+          "reachable": false,
+          "optional": false,
+          "detached": false,
+          "optReasons": []
+        },
+        "hint": "交付 / 运维",
+        "layer": "ops",
+        "role": "ops"
+      }
+    ],
+    "importance": {
+      "infoMap": {},
+      "detachedList": [],
+      "optionalKw": [
+        "homeassistant",
+        "frontend"
+      ],
+      "emptyLayers": [
+        "frontend"
+      ],
+      "pathCluster": [],
+      "s3Sw": null,
+      "shapeConfidence": "medium",
+      "shapeMargin": 3,
+      "shapeCandidates": [
+        {
+          "kind": "bridge",
+          "score": 10,
+          "signal": "mqtt,zigbee"
+        },
+        {
+          "kind": "web",
+          "score": 7,
+          "signal": ""
+        },
+        {
+          "kind": "proxy",
+          "score": 0,
+          "signal": ""
+        },
+        {
+          "kind": "notify-bus",
+          "score": 0,
+          "signal": ""
+        },
+        {
+          "kind": "api-svc",
+          "score": 0,
+          "signal": ""
+        }
+      ],
+      "shape": {
+        "kind": "bridge",
+        "name": "协议桥接",
+        "signal": "mqtt,zigbee"
+      }
+    },
+    "productTokens": [
+      "zigbee2mqtt"
+    ],
+    "baseline": {
+      "sweptMd": "# Block Diagram — 分层模块图\n\n> Zigbee2MQTT：Zigbee ↔ MQTT 桥接器。本图按运行时数据流分层展示：前端 → MQTT/桥接 API → 事件调度 → 扩展 Worker → 存储 → 监控 → 运维交付。\n\n## 子图1：分层全景\n\n```mermaid\nflowchart TB\n    actor_user([\"🧑 用户<br/><small>浏览器</small>\"])\n    actor_user -->|\"访问 Web 界面\"| web_ui\n    subgraph L_frontend[\"🖥️ 前端层\"]\n        web_ui[\"🖥️ Web 控制台<br/><small>zigbee2mqtt-frontend</small>\"]\n        ext_frontend[\"🌐 前端服务<br/><small>lib/extension/frontend.ts</small>\"]\n    end\n    subgraph L_api[\"💜 API / 桥接层\"]\n        mqtt_client[\"📡 MQTT 客户端<br/><small>lib/mqtt.ts · mqtt</small>\"]\n        bridge_api[\"🌉 桥接管理 API<br/><small>lib/extension/bridge.ts</small>\"]\n    end\n    subgraph L_schedule[\"🕒 调度与事件层\"]\n        controller[\"🧭 主控制器<br/><small>lib/controller.ts</small>\"]\n        event_bus[\"🔄 事件总线<br/><small>lib/eventBus.ts</small>\"]\n    end\n    subgraph L_worker[\"🧩 采集 / Worker 层\"]\n        zigbee[\"🔌 Zigbee 网络<br/><small>lib/zigbee.ts · zigbee-herdsman</small>\"]\n        ext_receive[\"📥 上报接收<br/><small>lib/extension/receive.ts</small>\"]\n        ext_publish[\"📤 命令下发<br/><small>lib/extension/publish.ts</small>\"]\n    end\n    subgraph L_storage[\"💾 存储层\"]\n        st_state[\"📦 状态缓存<br/><small>data/ · JSON</small>\"]\n        st_cfg[\"📄 配置文件<br/><small>data/configuration.example.yaml</small>\"]\n    end\n    subgraph L_monitor[\"📊 监控层\"]\n        ext_health[\"💓 健康检查<br/><small>lib/extension/health.ts</small>\"]\n        logger[\"📝 日志<br/><small>lib/util/logger.ts · winston</small>\"]\n        sd_notify[\"🛎️ systemd 通知<br/><small>lib/util/sd-notify.ts</small>\"]\n    end\n    subgraph L_ops[\"📦 运维交付层\"]\n        entry[\"🚀 入口脚本<br/><small>index.js</small>\"]\n    end\n    entry -.->|\"启动·构建检查\"| controller\n    controller -->|\"初始化·装配\"| zigbee\n    controller -->|\"注册扩展\"| ext_receive\n    controller -->|\"加载配置\"| st_cfg\n    controller -->|\"就绪通知\"| sd_notify\n    web_ui -->|\"HTTP/WS 请求\"| ext_frontend\n    ext_frontend -->|\"请求注入 MQTT\"| mqtt_client\n    mqtt_client -->|\"分发 bridge 请求\"| bridge_api\n    mqtt_client -->|\"分发 set 命令\"| ext_publish\n    ext_publish -->|\"下发 Zigbee 命令\"| zigbee\n    zigbee -->|\"设备消息事件\"| event_bus\n    event_bus -->|\"派发 deviceMessage\"| ext_receive\n    ext_receive -->|\"发布实体状态\"| mqtt_client\n    ext_receive -->|\"读写状态缓存\"| st_state\n    ext_receive -->|\"记录日志\"| logger\n    zigbee -->|\"记录日志\"| logger\n    ext_health -->|\"发布 bridge/state\"| mqtt_client\n    classDef fe fill:#fce4ec,stroke:#c2185b,stroke-width:2px\n    classDef api fill:#ede7f6,stroke:#5e35b1,stroke-width:2px\n    classDef sch fill:#fff3e0,stroke:#ef6c00,stroke-width:2px\n    classDef wk fill:#e8f5e9,stroke:#2e7d32,stroke-width:2px\n    classDef st fill:#e0f7fa,stroke:#0288d1,stroke-width:2px\n    classDef mon fill:#fffde7,stroke:#f9a825,stroke-width:2px\n    classDef ops fill:#e8f5e9,stroke:#00695c,stroke-width:2px\n    class web_ui,ext_frontend fe\n    class mqtt_client,bridge_api api\n    class controller,event_bus sch\n    class zigbee,ext_receive,ext_publish wk\n    class st_state,st_cfg st\n    class ext_health,logger,sd_notify mon\n    class entry ops\n    style L_frontend fill:#fce4ec,stroke:#c2185b,stroke-width:3px\n    style L_api fill:#ede7f6,stroke:#5e35b1,stroke-width:2.5px\n    style L_schedule fill:#fff3e0,stroke:#ef6c00,stroke-width:2.5px\n    style L_worker fill:#e8f5e9,stroke:#2e7d32,stroke-width:2px\n    style L_storage fill:#e0f7fa,stroke:#0288d1,stroke-width:2px\n    style L_monitor fill:#fffde7,stroke:#f9a825,stroke-width:2.5px\n    style L_ops fill:#e8f5e9,stroke:#00695c,stroke-width:2px\n```\n\n## 子图2：主链路数据流\n\n```mermaid\nflowchart LR\n    A([\"🧑 用户<br/><small>浏览器</small>\"])\n    A -->|\"登录 / 查看\"| B\n    subgraph L_main[\"🔀 主链路：Web 控制 → Zigbee 执行 → 状态回传\"]\n        C[\"🖥️ Web 控制台<br/><small>zigbee2mqtt-frontend</small>\"]\n        B[\"🌐 前端服务<br/><small>lib/extension/frontend.ts</small>\"]\n        D[\"📡 MQTT 客户端<br/><small>lib/mqtt.ts</small>\"]\n        E[\"📤 命令下发<br/><small>lib/extension/publish.ts</small>\"]\n        F[\"🔌 Zigbee 网络<br/><small>lib/zigbee.ts</small>\"]\n        G[\"🔄 事件总线<br/><small>lib/eventBus.ts</small>\"]\n        H[\"📥 上报接收<br/><small>lib/extension/receive.ts</small>\"]\n        I[(\"📦 状态缓存<br/><small>data/ · JSON</small>\")]\n\n        C -->|\"操作请求\"| B\n        B -->|\"注入 MQTT\"| D\n        D -->|\"set 命令\"| E\n        E -->|\"Zigbee 命令\"| F\n        F -->|\"设备上报\"| G\n        G -->|\"派发消息\"| H\n        H -->|\"状态缓存\"| I\n        H -->|\"状态发布\"| D\n    end\n\n    classDef fe fill:#fce4ec,stroke:#c2185b,stroke-width:2px\n    classDef api fill:#ede7f6,stroke:#5e35b1,stroke-width:2px\n    classDef sch fill:#fff3e0,stroke:#ef6c00,stroke-width:2px\n    classDef wk fill:#e8f5e9,stroke:#2e7d32,stroke-width:2px\n    classDef st fill:#e0f7fa,stroke:#0288d1,stroke-width:2px\n\n    class C,B fe\n    class D api\n    class G sch\n    class E,F,H wk\n    class I st\n\n    style L_main fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2.5px\n```\n",
+      "sweepActions": [
+        "storage 层非 DB 代码圆柱改矩形（圆柱只给真数据库/中间件）：st_state,st_cfg",
+        "删除平行冗余直连边（已有 X→Y→Z 两跳链）：controller →|\"初始化·装配\"| mqtt_client",
+        "删除平行冗余直连边（已有 X→Y→Z 两跳链）：zigbee →|\"读写网络数据库\"| st_db",
+        "删除孤立节点：st_db（🗄️ 网络数据库）",
+        "删环：删除绕回后端的推送边 ext_frontend →|\"WS 推送\"| web_ui",
+        "删环：删除绕回后端的推送边 mqtt_client →|\"状态推送\"| ext_frontend",
+        "子图2 复用全景长 id，统一改为短 id 特写链：9 个节点"
+      ],
+      "sHigh": 0,
+      "sMed": 0,
+      "sLow": 0,
+      "vHigh": 0,
+      "hallucination": 0,
+      "qualityScore": 10
+    }
+  }
+}

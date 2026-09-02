@@ -151,7 +151,7 @@ function generateOptsFromBody(body) {
   if (quality === 'fast' || quality === 'skeleton') {
     return { mode: 'skeleton', apiKey, strict: false, quality: 'fast' };
   }
-  if (quality === 'refine') {
+  if (quality === 'refine' || quality === 'auto') {
     return { mode: 'llm', apiKey, strict: true, quality: 'refine' };
   }
   if (quality) {

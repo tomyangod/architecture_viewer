@@ -70,7 +70,12 @@ function inferLayer2(id, n) {
   const h = n.head || '';
   const pid = id.toLowerCase();
   if (/^(actor|user|visitor|browser|brw|customer)/.test(pid) && /用户|访客|浏览器|管理员|运营|访问者/.test(h)) return 'actor';
-  if (/^(ui|fe|frontend|page|view|spa|m_fe|tracker|recorder)/.test(pid) || /前端|页面|仪表盘|看板|spa|后台|浏览器/.test(h)) return 'frontend';
+  // frontend: 前缀型 / 裸 id=http（HTTP 接入）/fileserver/web/app/www/home
+  //   + head 含 HTTP 接入/页面/静态文件服务/路由（B0 明确 frontend，特写块2 继承）
+  if (
+    /^(ui|fe|frontend|page|view|spa|m_fe|tracker|recorder|http|fileserver|files|web|www|home|app|gateway|ingress|entry_web|p_web|serve)$/.test(pid) ||
+    /前端|页面|仪表盘|看板|spa|后台界面|浏览器|文件服务|静态文件|HTTP 应用|HTTP 接入|Web 应用|Web\b|入口接入|接入层|应用层|路由层|展示|模板渲染|Server\s*Render|SSR|CSR|fileserver/i.test(h)
+  ) return 'frontend';
   if (/^(db|st_|store|cache|redis|mongo|pg|mysql|sqlite|clickhouse)/.test(pid) || /数据库|存储|缓存/.test(h)) return 'storage';
   return 'api';
 }
@@ -81,22 +86,52 @@ function isActorNode(id, n) {
   return false;
 }
 
-// ---------- 圆柱判定 ----------
-const INFRA_WORDS = /PostgreSQL|Postgres|MySQL|SQLite|ClickHouse|MongoDB|MariaDB|Redis|Kafka|Elasticsearch/i;
+// ---------- 圆柱判定（与 lib/orch/run.js 1.4 pass 同口径） ----------
+// 白名单词（真 DB/中间件）。
+// ⚠️ 泛缩写（TLS/MQTT/S3）不能直接放 INFRA_WORDS，否则代码路径（caddytls/mqtt.js/s3client.go）
+//   会被误判为基础设施；改为在 head/特征短语级别匹配它们的"基础设施形态"：
+//   TLS → Certbot/Let's Encrypt/CA/Certificate/证书；MQTT → broker/消息代理；S3 → 对象存储 + 云词
+const INFRA_WORDS = /PostgreSQL|Postgres|MySQL|SQLite|ClickHouse|MongoDB|MariaDB|Redis|Kafka|Elasticsearch|ZooKeeper|Zookeeper|zookeeper|MinIO|Minio|minio|PostGIS|DuckDB|Cassandra|Memcached|RabbitMQ|NATS|etcd|Consul|Vault|LDAP|Samba|NFS|Maria|Certbot|Let's?\s*Encrypt|OpenLDAP|对象存储|S3对象|OSS\s*对象|AWS\s*S3|Azure\s*Blob|GCS|Cloudflare\s*R2|R2\s*存储|SQS|SNS|Kinesis|MQTT\s*(broker|代理|服务器)|MQTT\s*Server|broker/i;
+function isInfraHead(h) {
+  if (!h) return false;
+  // head 含基础设施词 + 不含「访问层/驱动/接口/基类/门面/客户端」语义覆盖层
+  if (INFRA_WORDS.test(h)) {
+    if (/访问层|驱动|接口|基类|门面|客户端|adapter|wrapper|provider|connector|helper|sdk/i.test(h)) return false;
+    return true;
+  }
+  return false;
+}
+// 与 head 不同口径：sig = head+path+id+small，判断整体是否描述基础设施节点
+function signatureInfra(sig) {
+  // 基础白词匹配；另外对 MQTT/S3/TLS 这类极易在代码标识符中出现的缩写，
+  // 要求同时出现"自指基础设施形态词"而非只在路径片段里出现
+  const s = sig || '';
+  if (INFRA_WORDS.test(s)) {
+    if (/访问层|驱动|接口|基类|门面|客户端|adapter|wrapper|provider|connector|helper|sdk|caddytls|caddypki|caddyevents|caddyhttp|caddyadmin|caddytls\.DistributedSTEK/i.test(s)) return false;
+    return true;
+  }
+  // S3/对象存储 云对象形态（必须 head 含对象/存储/桶/bucket，避免 s3client.js 命中）
+  if (/\b(S3|OSS|R2|GCS)\b/.test(s) && /对象存储|存储桶|bucket|云盘|object\s*storage/i.test(s)) return true;
+  // MQTT broker/代理 形态（head 明确 broker/server，避免 mqtt.js/zigbee2mqtt 路径命中）
+  if (/MQTT/i.test(s) && /broker|代理|服务器|消息服务|server/i.test(s)) return true;
+  // TLS 基础设施（证书/CA/Let's Encrypt/ACME，避免 caddytls 包名）
+  if (/TLS|SSL|证书|CA\b|ACME/.test(s) && /颁发|证书|Let'?s\s*Encrypt|Certbot|ACME|Certificate|Authority/i.test(s)) return true;
+  return false;
+}
 function cylinderVerdict(n) {
   if (n.shape !== '[(') return null;
   const h = n.head || '';
   const p = n.path || '';
   const white =
-    (INFRA_WORDS.test(h) && !/访问层|驱动|接口|基类|门面|客户端/.test(h))
+    isInfraHead(h)
     || /\.(db|sqlite|sqlite3)$/i.test(p)
     || /prisma\/schema/i.test(p)
     || (/schema\.sql$/i.test(p) && /仓库|数据库|ClickHouse|Postgre/i.test(h));
   if (white) return 'keep';
   const black =
-    /基类|数据模型|元数据|查询|迁移|驱动|访问层|门面|数据访问/.test(h)
+    /基类|数据模型|元数据|查询|迁移|驱动|访问层|门面|数据访问|SDK|客户端|helper|adapter/i.test(h)
     || /\.(py|js|ts|go|java|rb|php|cs)$/i.test(p)
-    || /(^|\/)(base|queries|migrations?|migration|media|driver)(\/|$)/i.test(p);
+    || /(^|\/)(base|queries|migrations?|migration|media|driver|sdk|client|adapter|helper)(\/|$)/i.test(p);
   return black ? 'rect' : 'keep';
 }
 
@@ -107,9 +142,15 @@ const OPS_PRUNE_RE = /CI\/CD|流水线|GitHub Actions|Netlify|Vercel|托管部�
 const OPS_PRUNE_PATH = /(^|\/)(netlify\.toml|vercel\.json)$|config\.(toml|ya?ml|json)(\.sample)?$/i;
 
 // ---------- 行级工具 ----------
-// 允许行尾带内联声明（B["…"]）或 class 等残余；只取首段 from→to
-const EDGE_RE = /^(\s*)([A-Za-z_]\w*)\s*(<-->|-->|-\.->)\s*\|([^|]*)\|\s*([A-Za-z_]\w*)\b/;
-const EDGE_RE_NOLABEL = /^(\s*)([A-Za-z_]\w*)\s*(<-->|-->|-\.->)\s*([A-Za-z_]\w*)\b/;
+// 允许行尾带内联声明（B["…"]）或 class 等残余；支持：
+//   A -->|"label"| B
+//   A["<b>rich head</b><br/><small>path</small>"] -->|"label"| B
+//   A -->|"label"| B["rich head"]
+// 只取首段 from → arrow → label → to 的裸标识符
+// 形状声明：[(..)] / [..] / (..) / {..}（用非捕获组，允许 inner 含任意非对应结束括号字符，再闭合）
+const _D = '(?:\\s*(?:\\[\\(|\\(\\[|\\[|\\(|\\{)[^\\]\\)\\}]*[\\]\\)\\}])?';
+const EDGE_RE = new RegExp('^(\\s*)([A-Za-z_]\\w*)' + _D + '\\s*(<-->|-->|-\\.->)\\s*\\|([^|]*)\\|\\s*([A-Za-z_]\\w*)' + _D + '\\b');
+const EDGE_RE_NOLABEL = new RegExp('^(\\s*)([A-Za-z_]\\w*)' + _D + '\\s*(<-->|-->|-\\.->)\\s*([A-Za-z_]\\w*)' + _D + '\\b');
 const DECL_RE = /^\s*([A-Za-z_]\w*)\s*(\[\(|\(\[|\[|\(|\{)/;
 const CLASS_RE = /^(\s*)class\s+([A-Za-z_][\w,]*)\s+(\w+)\s*$/;
 const SUBGRAPH_RE = /^(\s*)subgraph\s+([A-Za-z_]\w*)\b(.*)$/;
@@ -419,8 +460,26 @@ function sweepBlock(code, blockIdx, ctx) {
   // P1 圆柱纠正
   {
     const info = analyze(text);
+    const layerOf = (id) => {
+      const n = info.nodes.get(id);
+      if (!n) return null;
+      return block2 ? inferLayer2(id, n) : info.nodeLayer.get(id);
+    };
     for (const [id, n] of info.nodes) {
-      if (cylinderVerdict(n) === 'rect') {
+      if (n.shape !== '[(') continue;
+      const cv = cylinderVerdict(n);
+      // run.js 1.4 pass 兜底：storage 层的圆柱若不是真基础设施 → 改矩形
+      // （代码包 filestorage/stek、配置文件 st_cfg、状态缓存 st_state 都会在这里命中）
+      const layer = layerOf(id);
+      const sig = `${n.head || ''} ${n.path || ''} ${n.small || ''} ${id}`;
+      const isTrueInfra = isInfraHead(n.head || '')
+        || /\.(db|sqlite|sqlite3)$/i.test(n.path || '')
+        || /prisma\/schema/i.test(n.path || '')
+        || signatureInfra(sig);
+      let need = false;
+      if (cv === 'rect') need = true;
+      else if (layer === 'storage' && !isTrueInfra) need = true;
+      if (need) {
         const re = new RegExp('\\b' + escRe(id) + '\\s*\\[\\(("[\\s\\S]*?")\\)\\]', 'g');
         const before = text;
         text = text.replace(re, id + '[$1]');
@@ -625,6 +684,52 @@ function sweepBlock(code, blockIdx, ctx) {
       out.push(line);
     }
     text = out.join('\n');
+  }
+
+  // P8 层秩逆流 实线边 翻转（run.js 1.5 pass 同口径）：
+  //   from-layer 层秩 > to-layer 层秩 的实线边 → 结构闸门算逆流（sMed）。
+  //   但排除：推送/投递/SSE/WebSocket/通知 这类真实下行响应语义的边，
+  //   也排除 虚线（-.->，运维/通知 语义）。其余「渲染/下发/托管/部署/配置」
+  //   这类 FE 请求 API 获得页面/资源的关系，正确方向应是 FE→API，翻转箭头。
+  {
+    const info = analyze(text);
+    const RANK = { frontend: 1, api: 2, schedule: 3, worker: 3, monitor: 4, storage: 5, ops: 6, actor: 0 };
+    const layerOf = (id) => {
+      const n = info.nodes.get(id);
+      if (!n) return null;
+      return block2 ? inferLayer2(id, n) : info.nodeLayer.get(id);
+    };
+    const lines = text.split('\n');
+    for (let i = 0; i < lines.length; i++) {
+      const e = parseEdgeLine(lines[i]);
+      if (!e) continue;
+      if (e.arrow !== '-->') continue; // 只翻实线
+      const from = e.from, to = e.to, label = e.label || '';
+      const fr = RANK[layerOf(from) || ''] || 0;
+      const tr = RANK[layerOf(to) || ''] || 0;
+      if (fr === 0 || tr === 0) continue;
+      if (!(fr > tr)) continue; // 不是逆流跳过
+      // actor/ops 层（rank=0/6）不参与：actor→FE/API 正常，ops→任何层是部署
+      if (layerOf(from) === 'ops' || layerOf(to) === 'ops') continue;
+      if (layerOf(from) === 'actor' || layerOf(to) === 'actor') continue;
+      // 真实下行语义的边（推送/实时/通知/响应）不翻
+      //  ⚠️ 「下发」是歧义词："配置下发/热配置下发"是 FE→API 请求方向（应翻），
+      //    但 "Web Push 下发/消息下发/邮件下发"是真实下行（不应翻）。故只在组合词中排除。
+      const PUSH_RE = /推送|通知|上报|投递|SSE|WebSocket|事件|触发|stream\b|push\b|emit\b|广播|消息|回传|响应|callback|回调|回执|实时|Web\s*Push|WebPush|Mobile|移动端|Mail|邮件|短信|语音|附件|下载|WebHook|Signaling|PostMessage|Push\s*下发|消息\s*下发|告警\s*下发|事件\s*下发|指令下发|控制\s*下发/i;
+      if (PUSH_RE.test(label)) continue;
+      // storage/worker → FE 的数据读取边：若不含"请求"可视为"存储层读文件/资源返回 FE"，不翻
+      // worker_push→fe_sw（Web Push）已被 PUSH_RE 排除，放心；
+      // WS→FE_VAULT（WebSocket 实时推送）被 PUSH_RE 排除；
+      // 仅翻"API→FE"的页面/资源关系（页面渲染/静态资源下发/托管 Web 应用）
+      if (!/渲染|下发|托管|部署|配置|注册|启动|加载|挂载|适配|装配|热加载|reload|静态资源|页面|前端界面|界面渲染|serve|serving|暴露|返回页面|返回静态|提供界面|提供页面/i.test(label)) {
+        // API→FE 且无标签 → 也翻（空标签通常是错误方向的默认边）
+        if (label.length > 0) continue;
+        if (!(layerOf(from) === 'api' && layerOf(to) === 'frontend')) continue;
+      }
+      lines[i] = e.indent + to + ' -->|' + label + '| ' + from;
+      actions.push({ type: 'edge-layer-back-flip', edge: from + '(' + layerOf(from) + ')→' + to + '(' + layerOf(to) + ')', label: label || '(空)', reason: '高秩→低秩实线应为 FE 请求方向' });
+    }
+    text = lines.join('\n');
   }
 
   return { code: text, actions };
