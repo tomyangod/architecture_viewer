@@ -48,5 +48,6 @@ deepseek-harness/
 .av/session-report.*
 .av/habit-gate-log.md
 .av/workspace.json
+.av/layers.suggested.json
 
 *.vsix

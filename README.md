@@ -113,6 +113,22 @@ arch-viewer workspace ...                         # 多仓基线管理
   wiring 边**反向 BFS**（base 与 head 反向边取并集，穿透被改实体集群），
   报告集群边界之外的直接/间接受害者。归属关系边（declared-in）不参与。
 
+## 分层识别：零配置，也可锁定
+
+跨层违规检测依赖「每个文件属于哪一层」。0.9 起分层由四个信号交叉推断，
+不需要手写配置：
+
+1. **`.av/layers.json` 用户配置**（最高优先）——`{ "目录名": "分层名" }`；
+2. **import 框架语义**——import 了 sqlalchemy/gorm/`JpaRepository` → storage，
+   flask/express/gin/`@RestController` → controller，`@Entity` → domain 等；
+3. **目录名/文件名约定**——`services/`、`*Controller.java`、`data_collection/` 等；
+4. **结构位置兜底**——被很多模块依赖且自己不依赖别人 → domain，只出不进 → controller。
+
+每次 `session start` / `extract` 后，推断结果会写入 `.av/layers.suggested.json`
+（按目录聚合，含置信度和判定依据；import 信号与目录名冲突的文件会单列）。
+审阅没问题就不用管；想锁定或纠正，复制为 `.av/layers.json` 即可——它永远优先、
+不会被覆盖。实测 246 文件的 Python 爬虫仓分层覆盖率从 57% 提升到 92%。
+
 ## 经典能力：PR 漂移红灯
 
 图与代码不一致时 CI 失败，坏图进不了主干：
