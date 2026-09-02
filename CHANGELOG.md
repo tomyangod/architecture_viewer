@@ -2,6 +2,13 @@
 
 本文件遵循 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.1.0/)，版本号遵循语义化版本。
 
+## \[Unreleased]
+
+### Added
+
+- **影响面报告导出（C4）**：新增 `impact` 独立命令（`arch-viewer impact <base-dir> <head-dir> [--json]`），不依赖 session 基线，可直接对任意两版代码快照生成影响面报告，适用于 CI/管线中对比 PR 分支；新增 `aggregateImpact` 多仓影响面汇总，`workspace report` 文本输出逐仓显示「影响:被改N 波及M」并给出跨仓聚合总数，`--json` 输出含每仓 impact 摘要；多仓 `reportRepo` 接入 B4 影响面驱动风险分级。
+- **文档**：`docs/IMPACT-REPORT.md` 影响面报告使用文档（概念、三种使用方式、JSON 结构、风险联动、算法说明、边界限制）。
+
 ## \[0.7.0] — 2026-09-02
 
 ### Added
