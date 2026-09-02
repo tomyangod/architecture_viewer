@@ -379,3 +379,56 @@ describe('B1-3 续: 风险引擎边契约（regression）', () => {
     assert.equal(skip.severity, 'high');
   });
 });
+
+describe('guessLayer: 分层识别智能化', () => {
+  it('database/ 内置正则识别为 storage', () => {
+    const dir = makeRepo({
+      'database/db.py': 'class DB:\n    pass\n'
+    });
+    const g = buildGraph(dir);
+    const dbNode = g.nodes.find(n => n.path === 'database/db.py');
+    assert.equal(dbNode.layer, 'storage');
+  });
+
+  it('.av/layers.json 项目级配置覆盖默认分层', () => {
+    const dir = makeRepo({
+      'mydata/store.py': 'class Store:\n    pass\n',
+      'routes/handler.py': 'class Handler:\n    pass\n'
+    });
+    // mydata 不在内置正则中，用配置映射为 storage
+    fs.mkdirSync(path.join(dir, '.av'), { recursive: true });
+    fs.writeFileSync(path.join(dir, '.av', 'layers.json'),
+      JSON.stringify({ mydata: 'storage' }));
+
+    const g = buildGraph(dir);
+    const storeNode = g.nodes.find(n => n.path === 'mydata/store.py');
+    assert.equal(storeNode.layer, 'storage');
+
+    // routes 在内置正则中为 controller，不被配置覆盖
+    const handlerNode = g.nodes.find(n => n.path === 'routes/handler.py');
+    assert.equal(handlerNode.layer, 'controller');
+  });
+
+  it('.av/layers.json 配置优先于内置正则', () => {
+    const dir = makeRepo({
+      'tools/helper.py': 'class Helper:\n    pass\n'
+    });
+    // tools 内置映射为 util，用户配置覆盖为 service
+    fs.mkdirSync(path.join(dir, '.av'), { recursive: true });
+    fs.writeFileSync(path.join(dir, '.av', 'layers.json'),
+      JSON.stringify({ tools: 'service' }));
+
+    const g = buildGraph(dir);
+    const node = g.nodes.find(n => n.path === 'tools/helper.py');
+    assert.equal(node.layer, 'service');
+  });
+
+  it('无 .av/layers.json 时回退内置正则', () => {
+    const dir = makeRepo({
+      'services/svc.py': 'class Svc:\n    pass\n'
+    });
+    const g = buildGraph(dir);
+    const node = g.nodes.find(n => n.path === 'services/svc.py');
+    assert.equal(node.layer, 'service');
+  });
+});
