@@ -10,6 +10,7 @@ const {
   checkKit,
   agentPrompt
 } = require('../lib');
+const { activateSession } = require('./extension-session');
 
 function workspaceRoot() {
   const folder = vscode.workspace.workspaceFolders && vscode.workspace.workspaceFolders[0];
@@ -29,6 +30,9 @@ function requireRoot() {
  * @param {vscode.ExtensionContext} context
  */
 function activate(context) {
+  // 会话模式：基线记录 + 文件监听 + 状态栏角标 + Before/After 报告面板
+  activateSession(context);
+
   context.subscriptions.push(
     vscode.commands.registerCommand('architectureViewer.init', async () => {
       const root = requireRoot();

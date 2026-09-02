@@ -1,18 +1,18 @@
 {
   "version": 1,
   "root": "architecture_viewer",
-  "generatedAt": "2026-09-02T12:01:45.568Z",
-  "fingerprint": "52575805849f7f12",
+  "generatedAt": "2026-09-02T12:28:08.703Z",
+  "fingerprint": "97b4f1c097a92dc1",
   "languages": [
     "javascript"
   ],
   "stats": {
-    "files": 53,
-    "filesParsed": 53,
+    "files": 54,
+    "filesParsed": 54,
     "parseErrors": 0,
-    "types": 424,
-    "nodes": 496,
-    "edges": 620,
+    "types": 441,
+    "nodes": 514,
+    "edges": 647,
     "externalPackages": 19
   },
   "nodes": [
@@ -1706,6 +1706,269 @@
       ]
     },
     {
+      "id": "file:src/extension-session.js",
+      "kind": "file",
+      "name": "extension-session.js",
+      "path": "src/extension-session.js",
+      "layer": null,
+      "lang": "javascript"
+    },
+    {
+      "id": "src/extension-session#rootPath",
+      "kind": "function",
+      "name": "rootPath",
+      "path": "src/extension-session.js",
+      "line": 40,
+      "layer": null,
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "src/extension-session",
+      "methods": [
+        "rootPath"
+      ]
+    },
+    {
+      "id": "src/extension-session#avDir",
+      "kind": "function",
+      "name": "avDir",
+      "path": "src/extension-session.js",
+      "line": 45,
+      "layer": null,
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "src/extension-session",
+      "methods": [
+        "avDir"
+      ]
+    },
+    {
+      "id": "src/extension-session#baselinePath",
+      "kind": "function",
+      "name": "baselinePath",
+      "path": "src/extension-session.js",
+      "line": 48,
+      "layer": null,
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "src/extension-session",
+      "methods": [
+        "baselinePath"
+      ]
+    },
+    {
+      "id": "src/extension-session#reportHtmlPath",
+      "kind": "function",
+      "name": "reportHtmlPath",
+      "path": "src/extension-session.js",
+      "line": 51,
+      "layer": null,
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "src/extension-session",
+      "methods": [
+        "reportHtmlPath"
+      ]
+    },
+    {
+      "id": "src/extension-session#reportJsonPath",
+      "kind": "function",
+      "name": "reportJsonPath",
+      "path": "src/extension-session.js",
+      "line": 54,
+      "layer": null,
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "src/extension-session",
+      "methods": [
+        "reportJsonPath"
+      ]
+    },
+    {
+      "id": "src/extension-session#cfg",
+      "kind": "function",
+      "name": "cfg",
+      "path": "src/extension-session.js",
+      "line": 58,
+      "layer": null,
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "src/extension-session",
+      "methods": [
+        "cfg"
+      ]
+    },
+    {
+      "id": "src/extension-session#isRelevantSource",
+      "kind": "function",
+      "name": "isRelevantSource",
+      "path": "src/extension-session.js",
+      "line": 72,
+      "layer": null,
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "src/extension-session",
+      "methods": [
+        "isRelevantSource"
+      ]
+    },
+    {
+      "id": "src/extension-session#activateSession",
+      "kind": "function",
+      "name": "activateSession",
+      "path": "src/extension-session.js",
+      "line": 98,
+      "layer": null,
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "src/extension-session",
+      "methods": [
+        "activateSession"
+      ]
+    },
+    {
+      "id": "src/extension-session#setupWatcher",
+      "kind": "function",
+      "name": "setupWatcher",
+      "path": "src/extension-session.js",
+      "line": 148,
+      "layer": null,
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "src/extension-session",
+      "methods": [
+        "setupWatcher"
+      ]
+    },
+    {
+      "id": "src/extension-session#scheduleAnalysis",
+      "kind": "function",
+      "name": "scheduleAnalysis",
+      "path": "src/extension-session.js",
+      "line": 178,
+      "layer": null,
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "src/extension-session",
+      "methods": [
+        "scheduleAnalysis"
+      ]
+    },
+    {
+      "id": "src/extension-session#sessionStart",
+      "kind": "function",
+      "name": "sessionStart",
+      "path": "src/extension-session.js",
+      "line": 188,
+      "layer": null,
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "src/extension-session",
+      "methods": [
+        "sessionStart"
+      ]
+    },
+    {
+      "id": "src/extension-session#sessionReport",
+      "kind": "function",
+      "name": "sessionReport",
+      "path": "src/extension-session.js",
+      "line": 221,
+      "layer": null,
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "src/extension-session",
+      "methods": [
+        "sessionReport"
+      ]
+    },
+    {
+      "id": "src/extension-session#runAnalysis",
+      "kind": "function",
+      "name": "runAnalysis",
+      "path": "src/extension-session.js",
+      "line": 253,
+      "layer": null,
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "src/extension-session",
+      "methods": [
+        "runAnalysis"
+      ]
+    },
+    {
+      "id": "src/extension-session#openReportWebview",
+      "kind": "function",
+      "name": "openReportWebview",
+      "path": "src/extension-session.js",
+      "line": 322,
+      "layer": null,
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "src/extension-session",
+      "methods": [
+        "openReportWebview"
+      ]
+    },
+    {
+      "id": "src/extension-session#renderStatus",
+      "kind": "function",
+      "name": "renderStatus",
+      "path": "src/extension-session.js",
+      "line": 348,
+      "layer": null,
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "src/extension-session",
+      "methods": [
+        "renderStatus"
+      ]
+    },
+    {
+      "id": "src/extension-session#tick",
+      "kind": "function",
+      "name": "tick",
+      "path": "src/extension-session.js",
+      "line": 430,
+      "layer": null,
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "src/extension-session",
+      "methods": [
+        "tick"
+      ]
+    },
+    {
+      "id": "src/extension-session#deactivate",
+      "kind": "function",
+      "name": "deactivate",
+      "path": "src/extension-session.js",
+      "line": 434,
+      "layer": null,
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "src/extension-session",
+      "methods": [
+        "deactivate"
+      ]
+    },
+    {
       "id": "file:src/extension.js",
       "kind": "file",
       "name": "extension.js",
@@ -1718,7 +1981,7 @@
       "kind": "function",
       "name": "workspaceRoot",
       "path": "src/extension.js",
-      "line": 14,
+      "line": 15,
       "layer": null,
       "lang": "javascript",
       "modifiers": [],
@@ -1733,7 +1996,7 @@
       "kind": "function",
       "name": "requireRoot",
       "path": "src/extension.js",
-      "line": 19,
+      "line": 20,
       "layer": null,
       "lang": "javascript",
       "modifiers": [],
@@ -1748,7 +2011,7 @@
       "kind": "function",
       "name": "activate",
       "path": "src/extension.js",
-      "line": 31,
+      "line": 32,
       "layer": null,
       "lang": "javascript",
       "modifiers": [],
@@ -1763,7 +2026,7 @@
       "kind": "function",
       "name": "openPreview",
       "path": "src/extension.js",
-      "line": 110,
+      "line": 114,
       "layer": null,
       "lang": "javascript",
       "modifiers": [],
@@ -1778,7 +2041,7 @@
       "kind": "function",
       "name": "buildPreviewHtml",
       "path": "src/extension.js",
-      "line": 127,
+      "line": 131,
       "layer": null,
       "lang": "javascript",
       "modifiers": [],
@@ -1793,7 +2056,7 @@
       "kind": "function",
       "name": "deactivate",
       "path": "src/extension.js",
-      "line": 153,
+      "line": 157,
       "layer": null,
       "lang": "javascript",
       "modifiers": [],
@@ -7695,46 +7958,165 @@
       "line": 50
     },
     {
+      "from": "src/extension-session#rootPath",
+      "to": "file:src/extension-session.js",
+      "type": "declared-in",
+      "file": "src/extension-session.js",
+      "line": 40
+    },
+    {
+      "from": "src/extension-session#avDir",
+      "to": "file:src/extension-session.js",
+      "type": "declared-in",
+      "file": "src/extension-session.js",
+      "line": 45
+    },
+    {
+      "from": "src/extension-session#baselinePath",
+      "to": "file:src/extension-session.js",
+      "type": "declared-in",
+      "file": "src/extension-session.js",
+      "line": 48
+    },
+    {
+      "from": "src/extension-session#reportHtmlPath",
+      "to": "file:src/extension-session.js",
+      "type": "declared-in",
+      "file": "src/extension-session.js",
+      "line": 51
+    },
+    {
+      "from": "src/extension-session#reportJsonPath",
+      "to": "file:src/extension-session.js",
+      "type": "declared-in",
+      "file": "src/extension-session.js",
+      "line": 54
+    },
+    {
+      "from": "src/extension-session#cfg",
+      "to": "file:src/extension-session.js",
+      "type": "declared-in",
+      "file": "src/extension-session.js",
+      "line": 58
+    },
+    {
+      "from": "src/extension-session#isRelevantSource",
+      "to": "file:src/extension-session.js",
+      "type": "declared-in",
+      "file": "src/extension-session.js",
+      "line": 72
+    },
+    {
+      "from": "src/extension-session#activateSession",
+      "to": "file:src/extension-session.js",
+      "type": "declared-in",
+      "file": "src/extension-session.js",
+      "line": 98
+    },
+    {
+      "from": "src/extension-session#setupWatcher",
+      "to": "file:src/extension-session.js",
+      "type": "declared-in",
+      "file": "src/extension-session.js",
+      "line": 148
+    },
+    {
+      "from": "src/extension-session#scheduleAnalysis",
+      "to": "file:src/extension-session.js",
+      "type": "declared-in",
+      "file": "src/extension-session.js",
+      "line": 178
+    },
+    {
+      "from": "src/extension-session#sessionStart",
+      "to": "file:src/extension-session.js",
+      "type": "declared-in",
+      "file": "src/extension-session.js",
+      "line": 188
+    },
+    {
+      "from": "src/extension-session#sessionReport",
+      "to": "file:src/extension-session.js",
+      "type": "declared-in",
+      "file": "src/extension-session.js",
+      "line": 221
+    },
+    {
+      "from": "src/extension-session#runAnalysis",
+      "to": "file:src/extension-session.js",
+      "type": "declared-in",
+      "file": "src/extension-session.js",
+      "line": 253
+    },
+    {
+      "from": "src/extension-session#openReportWebview",
+      "to": "file:src/extension-session.js",
+      "type": "declared-in",
+      "file": "src/extension-session.js",
+      "line": 322
+    },
+    {
+      "from": "src/extension-session#renderStatus",
+      "to": "file:src/extension-session.js",
+      "type": "declared-in",
+      "file": "src/extension-session.js",
+      "line": 348
+    },
+    {
+      "from": "src/extension-session#tick",
+      "to": "file:src/extension-session.js",
+      "type": "declared-in",
+      "file": "src/extension-session.js",
+      "line": 430
+    },
+    {
+      "from": "src/extension-session#deactivate",
+      "to": "file:src/extension-session.js",
+      "type": "declared-in",
+      "file": "src/extension-session.js",
+      "line": 434
+    },
+    {
       "from": "src/extension#workspaceRoot",
       "to": "file:src/extension.js",
       "type": "declared-in",
       "file": "src/extension.js",
-      "line": 14
+      "line": 15
     },
     {
       "from": "src/extension#requireRoot",
       "to": "file:src/extension.js",
       "type": "declared-in",
       "file": "src/extension.js",
-      "line": 19
+      "line": 20
     },
     {
       "from": "src/extension#activate",
       "to": "file:src/extension.js",
       "type": "declared-in",
       "file": "src/extension.js",
-      "line": 31
+      "line": 32
     },
     {
       "from": "src/extension#openPreview",
       "to": "file:src/extension.js",
       "type": "declared-in",
       "file": "src/extension.js",
-      "line": 110
+      "line": 114
     },
     {
       "from": "src/extension#buildPreviewHtml",
       "to": "file:src/extension.js",
       "type": "declared-in",
       "file": "src/extension.js",
-      "line": 127
+      "line": 131
     },
     {
       "from": "src/extension#deactivate",
       "to": "file:src/extension.js",
       "type": "declared-in",
       "file": "src/extension.js",
-      "line": 153
+      "line": 157
     },
     {
       "from": "scripts/bake-samples#bake",
@@ -10398,6 +10780,78 @@
       "builtin": true
     },
     {
+      "from": "file:src/extension-session.js",
+      "to": "ext:vscode",
+      "type": "uses-external",
+      "file": "src/extension-session.js",
+      "line": 15,
+      "builtin": false
+    },
+    {
+      "from": "file:src/extension-session.js",
+      "to": "ext:fs",
+      "type": "uses-external",
+      "file": "src/extension-session.js",
+      "line": 16,
+      "builtin": true
+    },
+    {
+      "from": "file:src/extension-session.js",
+      "to": "ext:path",
+      "type": "uses-external",
+      "file": "src/extension-session.js",
+      "line": 17,
+      "builtin": true
+    },
+    {
+      "from": "file:src/extension-session.js",
+      "to": "file:lib/extract-graph.js",
+      "type": "import",
+      "file": "src/extension-session.js",
+      "line": 19,
+      "isType": false
+    },
+    {
+      "from": "file:src/extension-session.js",
+      "to": "file:lib/diff-graph.js",
+      "type": "import",
+      "file": "src/extension-session.js",
+      "line": 20,
+      "isType": false
+    },
+    {
+      "from": "file:src/extension-session.js",
+      "to": "file:lib/risk-rules.js",
+      "type": "import",
+      "file": "src/extension-session.js",
+      "line": 21,
+      "isType": false
+    },
+    {
+      "from": "file:src/extension-session.js",
+      "to": "file:lib/session-report.js",
+      "type": "import",
+      "file": "src/extension-session.js",
+      "line": 22,
+      "isType": false
+    },
+    {
+      "from": "file:src/extension-session.js",
+      "to": "file:lib/impact.js",
+      "type": "import",
+      "file": "src/extension-session.js",
+      "line": 23,
+      "isType": false
+    },
+    {
+      "from": "file:src/extension-session.js",
+      "to": "file:lib/extract/shared.js",
+      "type": "import",
+      "file": "src/extension-session.js",
+      "line": 24,
+      "isType": false
+    },
+    {
       "from": "file:src/extension.js",
       "to": "ext:vscode",
       "type": "uses-external",
@@ -10427,6 +10881,14 @@
       "type": "import",
       "file": "src/extension.js",
       "line": 12,
+      "isType": false
+    },
+    {
+      "from": "file:src/extension.js",
+      "to": "file:src/extension-session.js",
+      "type": "import",
+      "file": "src/extension.js",
+      "line": 13,
       "isType": false
     },
     {
@@ -11510,5 +11972,5 @@
       "isType": false
     }
   ],
-  "sessionStartedAt": "2026-09-02T12:01:45.569Z"
+  "sessionStartedAt": "2026-09-02T12:28:08.704Z"
 }

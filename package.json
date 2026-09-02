@@ -36,11 +36,7 @@
     "README.en.md"
   ],
   "activationEvents": [
-    "onCommand:architectureViewer.init",
-    "onCommand:architectureViewer.generate",
-    "onCommand:architectureViewer.preview",
-    "onCommand:architectureViewer.validate",
-    "onCommand:architectureViewer.copyAgentPrompt"
+    "onStartupFinished"
   ],
   "main": "./src/extension.js",
   "bin": {
@@ -67,8 +63,36 @@
       {
         "command": "architectureViewer.copyAgentPrompt",
         "title": "Architecture Viewer: Copy Cursor Agent Prompt"
+      },
+      {
+        "command": "architectureViewer.sessionStart",
+        "title": "Architecture Viewer: Session Start（记录架构基线）"
+      },
+      {
+        "command": "architectureViewer.sessionReport",
+        "title": "Architecture Viewer: Session Report（查看架构变更报告）"
+      },
+      {
+        "command": "architectureViewer.sessionRefresh",
+        "title": "Architecture Viewer: Session Refresh（立即重新分析）"
       }
     ],
+    "menus": {
+      "commandPalette": [
+        {
+          "command": "architectureViewer.sessionStart",
+          "category": "Architecture Viewer"
+        },
+        {
+          "command": "architectureViewer.sessionReport",
+          "category": "Architecture Viewer"
+        },
+        {
+          "command": "architectureViewer.sessionRefresh",
+          "category": "Architecture Viewer"
+        }
+      ]
+    },
     "configuration": {
       "title": "Architecture Viewer",
       "properties": {
@@ -76,6 +100,22 @@
           "type": "string",
           "default": "architecture_viewer",
           "description": "Init/Generate 写入目标仓库的相对目录"
+        },
+        "architectureViewer.session.enabled": {
+          "type": "boolean",
+          "default": true,
+          "description": "会话模式：代码变更后自动分析架构变化并显示状态栏角标"
+        },
+        "architectureViewer.session.debounceSeconds": {
+          "type": "number",
+          "default": 30,
+          "minimum": 2,
+          "description": "代码停止变更多少秒后触发架构分析（防抖等待，避免 AI 连续写入时频繁重算）"
+        },
+        "architectureViewer.session.analyzeOnOpen": {
+          "type": "boolean",
+          "default": true,
+          "description": "打开工作区且已有基线时，启动后自动分析一次以刷新角标"
         }
       }
     }

@@ -6,7 +6,10 @@
 
 ### Added
 
+- **VS Code 扩展会话模式（C5）**：新增 `src/extension-session.js`，把会话架构验收能力接入编辑器。新增三个命令——`Architecture Viewer: Session Start`（记录架构基线）、`Session Report`（在侧边 Webview 面板打开 Before/After 架构变更报告）、`Session Refresh`（立即重新分析）。代码变更后 `FileSystemWatcher` 监听源码文件（口径与扫描器一致，忽略 node_modules/docs/.venv 等，仅判断工作区根之内路径），防抖 `debounceSeconds`（默认 30s）后自动重提取 + diff + 影响面 + 风险分级；状态栏角标实时显示 `+新增 -删除 ~修改` 与风险数，高风险红底、中风险黄底，点击直接打开报告。激活事件改为 `onStartupFinished` 以常驻监听；新增 `architectureViewer.session.*` 配置项（enabled / debounceSeconds / analyzeOnOpen）。核心分析全部复用 `lib/`（extract-graph / diff-graph / risk-rules / impact / session-report），扩展层只做 VS Code API 适配，Webview 报告为自包含 HTML 并注入 CSP。
+
 - **影响面报告导出（C4）**：新增 `impact` 独立命令（`arch-viewer impact <base-dir> <head-dir> [--json]`），不依赖 session 基线，可直接对任意两版代码快照生成影响面报告，适用于 CI/管线中对比 PR 分支；新增 `aggregateImpact` 多仓影响面汇总，`workspace report` 文本输出逐仓显示「影响:被改N 波及M」并给出跨仓聚合总数，`--json` 输出含每仓 impact 摘要；多仓 `reportRepo` 接入 B4 影响面驱动风险分级。
+
 - **文档**：`docs/IMPACT-REPORT.md` 影响面报告使用文档（概念、三种使用方式、JSON 结构、风险联动、算法说明、边界限制）。
 
 ## \[0.7.0] — 2026-09-02
@@ -189,3 +192,4 @@
 
 - 静态分享页 `/samples/showcase/` 与漂移红灯页 `/samples/drift-fail/`（`npm run bake:samples`）
 
+<br />
