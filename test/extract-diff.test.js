@@ -8,6 +8,7 @@ const path = require('path');
 
 const { buildGraph, extractGraphTo } = require('../lib/extract-graph');
 const { diffGraphs, formatDiffText } = require('../lib/diff-graph');
+const { buildReportData, generateReport } = require('../lib/session-report');
 
 /* --- 临时仓库 fixture --- */
 function makeRepo(files) {
@@ -196,5 +197,185 @@ describe('diff: 架构图差分', () => {
     const childChange = mod.changes.find(c => c.field === 'childEntities');
     assert.ok(childChange.added.length > 0, 'should have added child entity');
     assert.ok(childChange.removed.length === 0, 'should have no removed child entity');
+  });
+});
+
+describe('B1-3: 报告过滤（高信号优先）', () => {
+  it('文本报告默认折叠归属关系边，提示 --all', () => {
+    const base = makeRepo({
+      'models/order.py': 'class Order:\n    pass\n'
+    });
+    const head = makeRepo({
+      'models/order.py': 'class Order:\n    pass\n',
+      'services/svc.py': 'from models.order import Order\nclass Svc:\n    def use(self, o: Order) -> None:\n        pass\n'
+    });
+    const d = diffGraphs(buildGraph(base), buildGraph(head));
+    // 前提：新增边里确实有归属边
+    const attach = d.addedEdges.filter((e) => ['declared-in', 'defined-in'].includes(e.type));
+    assert.ok(attach.length > 0, 'fixture should produce attachment edges');
+
+    const text = formatDiffText(d);
+    assert.ok(!/--declared-in-->/.test(text), 'default should hide declared-in edges');
+    assert.ok(!/--defined-in-->/.test(text), 'default should hide defined-in edges');
+    assert.match(text, /归属关系/, 'should hint at folded attachment edges');
+    // 依赖边仍然可见
+    assert.match(text, /新增关系/);
+  });
+
+  it('文本报告 --all 展开归属关系边且不再提示', () => {
+    const base = makeRepo({
+      'models/order.py': 'class Order:\n    pass\n'
+    });
+    const head = makeRepo({
+      'models/order.py': 'class Order:\n    pass\n',
+      'services/svc.py': 'from models.order import Order\nclass Svc:\n    def use(self, o: Order) -> None:\n        pass\n'
+    });
+    const d = diffGraphs(buildGraph(base), buildGraph(head));
+    const textAll = formatDiffText(d, { all: true });
+    assert.match(textAll, /--declared-in-->|--defined-in-->/, '--all should list attachment edges');
+    assert.ok(!/--all 查看/.test(textAll), '--all mode should not show the fold hint');
+  });
+
+  // Hand-built graphs/diff for deterministic HTML payload checks
+  function fixtureReport() {
+    const baseGraph = {
+      fingerprint: '0'.repeat(16), root: '/base', stats: {},
+      nodes: [
+        { id: 'cls:SvcOld', name: 'SvcOld', kind: 'class', layer: 'service', path: 'svc.js' },
+        { id: 'cls:Keep', name: 'Keep', kind: 'class', layer: 'util', path: 'keep.js' }
+      ],
+      edges: [{ from: 'cls:SvcOld', to: 'cls:Keep', type: 'import' }]
+    };
+    const headGraph = {
+      fingerprint: '1'.repeat(16), root: '/head', stats: {},
+      nodes: [
+        { id: 'cls:SvcNew', name: 'SvcNew', kind: 'class', layer: 'service', path: 'svc.js' },
+        { id: 'cls:Added', name: 'Added', kind: 'class', layer: 'service', path: 'add.js' },
+        { id: 'cls:Keep', name: 'Keep', kind: 'class', layer: 'util', path: 'keep.js', methods: ['extra'] }
+      ],
+      edges: [
+        { from: 'cls:SvcNew', to: 'cls:Keep', type: 'import' },
+        { from: 'cls:Added', to: 'cls:Keep', type: 'import' },
+        { from: 'cls:Added', to: 'file:add.js', type: 'declared-in' }
+      ]
+    };
+    const diff = {
+      addedNodes: [{ id: 'cls:Added', node: headGraph.nodes[1] }],
+      removedNodes: [],
+      modifiedNodes: [{ id: 'cls:Keep', changes: [{ field: 'methods', added: ['extra'], removed: [] }] }],
+      renamedNodes: [{
+        kind: 'class', oldName: 'SvcOld', newName: 'SvcNew', path: 'svc.js',
+        from: baseGraph.nodes[0], to: headGraph.nodes[0]
+      }],
+      addedEdges: [
+        { from: 'cls:Added', to: 'cls:Keep', type: 'import' },
+        { from: 'cls:Added', to: 'file:add.js', type: 'declared-in' }
+      ],
+      removedEdges: [],
+      addedTypes: [{ node: headGraph.nodes[1] }], removedTypes: [],
+      addedPackages: [], removedPackages: [],
+      addedExternalDeps: [], removedExternalDeps: [], violations: [],
+      summary: {
+        addedNodes: 1, removedNodes: 0, modifiedNodes: 1, renamedNodes: 1,
+        addedEdges: 2, removedEdges: 0, addedTypes: 1, removedTypes: 0,
+        addedPackages: 0, removedPackages: 0, addedExternalDeps: 0,
+        removedExternalDeps: 0, violations: 0, totalChanges: 5, riskLevel: 'low'
+      }
+    };
+    return { baseGraph, headGraph, diff };
+  }
+
+  it('HTML payload: 实体状态分类为 added/renamed/modified，归属边不入图', () => {
+    const { baseGraph, headGraph, diff } = fixtureReport();
+    const data = buildReportData(baseGraph, headGraph, diff, [], 'demo', null);
+    const statusById = Object.fromEntries(data.entities.map((e) => [e.id, e.status]));
+    assert.equal(statusById['cls:Added'], 'added');
+    assert.equal(statusById['cls:SvcNew'], 'renamed');
+    assert.equal(statusById['cls:SvcOld'], 'renamed');
+    assert.equal(statusById['cls:Keep'], 'modified');
+    assert.equal(data.renamed.length, 1);
+    assert.equal(data.renamed[0].newName, 'SvcNew');
+    // 归属边（declared-in）不进入架构图
+    assert.ok(data.edges.every((e) => e.type !== 'declared-in'), 'attachment edges must be excluded');
+    assert.ok(data.edges.some((e) => e.from === 'cls:Added' && e.status === 'added'));
+  });
+
+  it('HTML 默认「仅变更」过滤（未变更项折叠）', () => {
+    const { baseGraph, headGraph, diff } = fixtureReport();
+    const html = generateReport({
+      baseGraph, headGraph, diff, findings: [], repoName: 'demo', sessionStart: null
+    });
+    assert.match(html, /let currentFilter = 'changed'/, 'default filter must be changed');
+    assert.match(html, /class="filter-btn active" data-filter="changed"/, 'changed button must be active');
+    assert.ok(!/data-filter="all"[^>]*class="[^"]*active/.test(html), 'all button must not be active');
+    // 重命名组在前端脚本中有渲染入口
+    assert.match(html, /重命名/);
+  });
+
+  it('HTML 内联脚本必须可解析（浏览器里不能白屏）', () => {
+    const { baseGraph, headGraph, diff } = fixtureReport();
+    const html = generateReport({
+      baseGraph, headGraph, diff, findings: [], repoName: 'demo', sessionStart: null
+    });
+    const m = html.match(/<script>([\s\S]*)<\/script>/);
+    assert.ok(m, 'report must contain an inline <script> block');
+    const vm = require('node:vm');
+    // 模板字符串转义/括号错误会让整个内联脚本在浏览器里 SyntaxError、页面白屏
+    assert.doesNotThrow(() => new vm.Script(m[1]), 'inline script must parse');
+  });
+});
+
+describe('B1-3 续: 风险引擎边契约（regression）', () => {
+  const { evaluateRisk } = require('../lib/risk-rules');
+
+  it('evaluateRisk 在含新增边的真实 diff 上不崩溃（裸边契约）', () => {
+    const base = makeRepo({ 'a.py': 'class A:\n    pass\n' });
+    const head = makeRepo({
+      'a.py': 'class A:\n    pass\n',
+      'b.py': 'from a import A\nclass B:\n    def go(self, a: A) -> None:\n        pass\n'
+    });
+    const bg = buildGraph(base);
+    const hg = buildGraph(head);
+    const d = diffGraphs(bg, hg);
+    assert.ok(d.addedEdges.length > 0, 'fixture must produce added edges');
+    // 旧实现用 e.edge.type 访问裸边，遇到新增边即 TypeError
+    const findings = evaluateRisk(d, hg, bg);
+    assert.ok(Array.isArray(findings));
+  });
+
+  it('孤立实体规则：无架构边的新 class 报 LOW，新 function 不报', () => {
+    const base = makeRepo({ 'keep.py': 'class Keep:\n    pass\n' });
+    const head = makeRepo({
+      'keep.py': 'class Keep:\n    pass\n',
+      'orphans.py': 'class Lonely:\n    pass\n\ndef helper():\n    pass\n'
+    });
+    const bg = buildGraph(base);
+    const hg = buildGraph(head);
+    const d = diffGraphs(bg, hg);
+    const orphans = evaluateRisk(d, hg, bg).filter((f) => f.rule === 'orphan-entity');
+    assert.ok(orphans.some((f) => /Lonely/.test(f.message)), 'unwired class should be flagged');
+    assert.ok(!orphans.some((f) => /helper/.test(f.message)), 'bare function must not be flagged');
+  });
+
+  it('层级穿透：controller 直达 storage 产生 HIGH finding', () => {
+    const headGraph = {
+      nodes: [
+        { id: 'cls:Ctl', name: 'Ctl', kind: 'class', layer: 'controller', path: 'ctl.py' },
+        { id: 'cls:Repo', name: 'Repo', kind: 'class', layer: 'storage', path: 'repo.py' }
+      ],
+      edges: []
+    };
+    const baseGraph = { nodes: [], edges: [] };
+    const diff = {
+      addedNodes: [], removedNodes: [], modifiedNodes: [], renamedNodes: [],
+      addedEdges: [{ from: 'cls:Ctl', to: 'cls:Repo', type: 'import', file: 'ctl.py', line: 1 }],
+      removedEdges: [], addedTypes: [], removedTypes: [],
+      addedPackages: [], removedPackages: [],
+      addedExternalDeps: [], removedExternalDeps: [], violations: [], summary: {}
+    };
+    const findings = evaluateRisk(diff, headGraph, baseGraph);
+    const skip = findings.find((f) => f.rule === 'layer-skip');
+    assert.ok(skip, 'layer-skip finding expected');
+    assert.equal(skip.severity, 'high');
   });
 });
