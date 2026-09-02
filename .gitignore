@@ -47,4 +47,5 @@ deepseek-harness/
 # graph-baseline.json is committed (team baseline); reports are local only
 .av/session-report.*
 .av/habit-gate-log.md
+.av/workspace.json
 

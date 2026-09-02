@@ -1,18 +1,18 @@
 {
   "version": 1,
   "root": "architecture_viewer",
-  "generatedAt": "2026-09-02T11:14:40.812Z",
-  "fingerprint": "33a805419c22099f",
+  "generatedAt": "2026-09-02T11:26:07.069Z",
+  "fingerprint": "bbd18b2e46a8ed0c",
   "languages": [
     "javascript"
   ],
   "stats": {
-    "files": 50,
-    "filesParsed": 50,
+    "files": 51,
+    "filesParsed": 51,
     "parseErrors": 0,
-    "types": 408,
-    "nodes": 477,
-    "edges": 593,
+    "types": 417,
+    "nodes": 487,
+    "edges": 610,
     "externalPackages": 19
   },
   "nodes": [
@@ -2337,7 +2337,7 @@
       "kind": "function",
       "name": "help",
       "path": "lib/cli.js",
-      "line": 24,
+      "line": 25,
       "layer": "util",
       "lang": "javascript",
       "modifiers": [],
@@ -2352,7 +2352,7 @@
       "kind": "function",
       "name": "parseArgs",
       "path": "lib/cli.js",
-      "line": 52,
+      "line": 58,
       "layer": "util",
       "lang": "javascript",
       "modifiers": [],
@@ -2367,7 +2367,7 @@
       "kind": "function",
       "name": "openInBrowser",
       "path": "lib/cli.js",
-      "line": 68,
+      "line": 74,
       "layer": "util",
       "lang": "javascript",
       "modifiers": [],
@@ -2382,7 +2382,7 @@
       "kind": "function",
       "name": "printIssues",
       "path": "lib/cli.js",
-      "line": 82,
+      "line": 88,
       "layer": "util",
       "lang": "javascript",
       "modifiers": [],
@@ -2397,7 +2397,7 @@
       "kind": "function",
       "name": "loadEvalConfig",
       "path": "lib/cli.js",
-      "line": 92,
+      "line": 98,
       "layer": "util",
       "lang": "javascript",
       "modifiers": [],
@@ -2412,7 +2412,7 @@
       "kind": "function",
       "name": "runEval",
       "path": "lib/cli.js",
-      "line": 101,
+      "line": 107,
       "layer": "util",
       "lang": "javascript",
       "modifiers": [],
@@ -2427,7 +2427,7 @@
       "kind": "function",
       "name": "printGenerateResult",
       "path": "lib/cli.js",
-      "line": 147,
+      "line": 153,
       "layer": "util",
       "lang": "javascript",
       "modifiers": [],
@@ -2442,7 +2442,7 @@
       "kind": "function",
       "name": "wantsRefine",
       "path": "lib/cli.js",
-      "line": 160,
+      "line": 166,
       "layer": "util",
       "lang": "javascript",
       "modifiers": [],
@@ -2457,7 +2457,7 @@
       "kind": "function",
       "name": "main",
       "path": "lib/cli.js",
-      "line": 164,
+      "line": 170,
       "layer": "util",
       "lang": "javascript",
       "modifiers": [],
@@ -4204,6 +4204,149 @@
       "module": "lib/validate",
       "methods": [
         "mentionedIds"
+      ]
+    },
+    {
+      "id": "file:lib/workspace.js",
+      "kind": "file",
+      "name": "workspace.js",
+      "path": "lib/workspace.js",
+      "layer": "util",
+      "lang": "javascript"
+    },
+    {
+      "id": "lib/workspace#defaultRegistryPath",
+      "kind": "function",
+      "name": "defaultRegistryPath",
+      "path": "lib/workspace.js",
+      "line": 14,
+      "layer": "util",
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "lib/workspace",
+      "methods": [
+        "defaultRegistryPath"
+      ]
+    },
+    {
+      "id": "lib/workspace#loadRegistry",
+      "kind": "function",
+      "name": "loadRegistry",
+      "path": "lib/workspace.js",
+      "line": 18,
+      "layer": "util",
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "lib/workspace",
+      "methods": [
+        "loadRegistry"
+      ]
+    },
+    {
+      "id": "lib/workspace#saveRegistry",
+      "kind": "function",
+      "name": "saveRegistry",
+      "path": "lib/workspace.js",
+      "line": 25,
+      "layer": "util",
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "lib/workspace",
+      "methods": [
+        "saveRegistry"
+      ]
+    },
+    {
+      "id": "lib/workspace#addRepo",
+      "kind": "function",
+      "name": "addRepo",
+      "path": "lib/workspace.js",
+      "line": 31,
+      "layer": "util",
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "lib/workspace",
+      "methods": [
+        "addRepo"
+      ]
+    },
+    {
+      "id": "lib/workspace#removeRepo",
+      "kind": "function",
+      "name": "removeRepo",
+      "path": "lib/workspace.js",
+      "line": 49,
+      "layer": "util",
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "lib/workspace",
+      "methods": [
+        "removeRepo"
+      ]
+    },
+    {
+      "id": "lib/workspace#initBaseline",
+      "kind": "function",
+      "name": "initBaseline",
+      "path": "lib/workspace.js",
+      "line": 59,
+      "layer": "util",
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "lib/workspace",
+      "methods": [
+        "initBaseline"
+      ]
+    },
+    {
+      "id": "lib/workspace#changeCounts",
+      "kind": "function",
+      "name": "changeCounts",
+      "path": "lib/workspace.js",
+      "line": 68,
+      "layer": "util",
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "lib/workspace",
+      "methods": [
+        "changeCounts"
+      ]
+    },
+    {
+      "id": "lib/workspace#reportRepo",
+      "kind": "function",
+      "name": "reportRepo",
+      "path": "lib/workspace.js",
+      "line": 78,
+      "layer": "util",
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "lib/workspace",
+      "methods": [
+        "reportRepo"
+      ]
+    },
+    {
+      "id": "lib/workspace#reportAll",
+      "kind": "function",
+      "name": "reportAll",
+      "path": "lib/workspace.js",
+      "line": 123,
+      "layer": "util",
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "lib/workspace",
+      "methods": [
+        "reportAll"
       ]
     },
     {
@@ -7680,63 +7823,63 @@
       "to": "file:lib/cli.js",
       "type": "declared-in",
       "file": "lib/cli.js",
-      "line": 24
+      "line": 25
     },
     {
       "from": "lib/cli#parseArgs",
       "to": "file:lib/cli.js",
       "type": "declared-in",
       "file": "lib/cli.js",
-      "line": 52
+      "line": 58
     },
     {
       "from": "lib/cli#openInBrowser",
       "to": "file:lib/cli.js",
       "type": "declared-in",
       "file": "lib/cli.js",
-      "line": 68
+      "line": 74
     },
     {
       "from": "lib/cli#printIssues",
       "to": "file:lib/cli.js",
       "type": "declared-in",
       "file": "lib/cli.js",
-      "line": 82
+      "line": 88
     },
     {
       "from": "lib/cli#loadEvalConfig",
       "to": "file:lib/cli.js",
       "type": "declared-in",
       "file": "lib/cli.js",
-      "line": 92
+      "line": 98
     },
     {
       "from": "lib/cli#runEval",
       "to": "file:lib/cli.js",
       "type": "declared-in",
       "file": "lib/cli.js",
-      "line": 101
+      "line": 107
     },
     {
       "from": "lib/cli#printGenerateResult",
       "to": "file:lib/cli.js",
       "type": "declared-in",
       "file": "lib/cli.js",
-      "line": 147
+      "line": 153
     },
     {
       "from": "lib/cli#wantsRefine",
       "to": "file:lib/cli.js",
       "type": "declared-in",
       "file": "lib/cli.js",
-      "line": 160
+      "line": 166
     },
     {
       "from": "lib/cli#main",
       "to": "file:lib/cli.js",
       "type": "declared-in",
       "file": "lib/cli.js",
-      "line": 164
+      "line": 170
     },
     {
       "from": "lib/diff-graph#diffGraphs",
@@ -8500,6 +8643,69 @@
       "type": "declared-in",
       "file": "lib/validate.js",
       "line": 109
+    },
+    {
+      "from": "lib/workspace#defaultRegistryPath",
+      "to": "file:lib/workspace.js",
+      "type": "declared-in",
+      "file": "lib/workspace.js",
+      "line": 14
+    },
+    {
+      "from": "lib/workspace#loadRegistry",
+      "to": "file:lib/workspace.js",
+      "type": "declared-in",
+      "file": "lib/workspace.js",
+      "line": 18
+    },
+    {
+      "from": "lib/workspace#saveRegistry",
+      "to": "file:lib/workspace.js",
+      "type": "declared-in",
+      "file": "lib/workspace.js",
+      "line": 25
+    },
+    {
+      "from": "lib/workspace#addRepo",
+      "to": "file:lib/workspace.js",
+      "type": "declared-in",
+      "file": "lib/workspace.js",
+      "line": 31
+    },
+    {
+      "from": "lib/workspace#removeRepo",
+      "to": "file:lib/workspace.js",
+      "type": "declared-in",
+      "file": "lib/workspace.js",
+      "line": 49
+    },
+    {
+      "from": "lib/workspace#initBaseline",
+      "to": "file:lib/workspace.js",
+      "type": "declared-in",
+      "file": "lib/workspace.js",
+      "line": 59
+    },
+    {
+      "from": "lib/workspace#changeCounts",
+      "to": "file:lib/workspace.js",
+      "type": "declared-in",
+      "file": "lib/workspace.js",
+      "line": 68
+    },
+    {
+      "from": "lib/workspace#reportRepo",
+      "to": "file:lib/workspace.js",
+      "type": "declared-in",
+      "file": "lib/workspace.js",
+      "line": 78
+    },
+    {
+      "from": "lib/workspace#reportAll",
+      "to": "file:lib/workspace.js",
+      "type": "declared-in",
+      "file": "lib/workspace.js",
+      "line": 123
     },
     {
       "from": "lib/orch/agent-block#findDsh",
@@ -10254,6 +10460,14 @@
       "isType": false
     },
     {
+      "from": "file:lib/cli.js",
+      "to": "file:lib/workspace.js",
+      "type": "import",
+      "file": "lib/cli.js",
+      "line": 23,
+      "isType": false
+    },
+    {
       "from": "file:lib/extract-graph.js",
       "to": "ext:fs",
       "type": "uses-external",
@@ -10627,6 +10841,62 @@
       "type": "import",
       "file": "lib/validate.js",
       "line": 5,
+      "isType": false
+    },
+    {
+      "from": "file:lib/workspace.js",
+      "to": "ext:fs",
+      "type": "uses-external",
+      "file": "lib/workspace.js",
+      "line": 5,
+      "builtin": true
+    },
+    {
+      "from": "file:lib/workspace.js",
+      "to": "ext:os",
+      "type": "uses-external",
+      "file": "lib/workspace.js",
+      "line": 6,
+      "builtin": true
+    },
+    {
+      "from": "file:lib/workspace.js",
+      "to": "ext:path",
+      "type": "uses-external",
+      "file": "lib/workspace.js",
+      "line": 7,
+      "builtin": true
+    },
+    {
+      "from": "file:lib/workspace.js",
+      "to": "file:lib/extract-graph.js",
+      "type": "import",
+      "file": "lib/workspace.js",
+      "line": 9,
+      "isType": false
+    },
+    {
+      "from": "file:lib/workspace.js",
+      "to": "file:lib/diff-graph.js",
+      "type": "import",
+      "file": "lib/workspace.js",
+      "line": 10,
+      "isType": false
+    },
+    {
+      "from": "file:lib/workspace.js",
+      "to": "file:lib/risk-rules.js",
+      "type": "import",
+      "file": "lib/workspace.js",
+      "line": 11,
+      "isType": false
+    },
+    {
+      "from": "file:lib/workspace.js",
+      "to": "file:lib/session-report.js",
+      "type": "import",
+      "file": "lib/workspace.js",
+      "line": 12,
       "isType": false
     },
     {
@@ -11046,5 +11316,5 @@
       "builtin": false
     }
   ],
-  "sessionStartedAt": "2026-09-02T11:14:40.815Z"
+  "sessionStartedAt": "2026-09-02T11:26:07.069Z"
 }
