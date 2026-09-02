@@ -1,18 +1,18 @@
 {
   "version": 1,
   "root": "architecture_viewer",
-  "generatedAt": "2026-09-02T11:26:07.069Z",
-  "fingerprint": "bbd18b2e46a8ed0c",
+  "generatedAt": "2026-09-02T11:41:16.712Z",
+  "fingerprint": "e0d43f87234c7794",
   "languages": [
     "javascript"
   ],
   "stats": {
-    "files": 51,
-    "filesParsed": 51,
+    "files": 53,
+    "filesParsed": 53,
     "parseErrors": 0,
-    "types": 417,
-    "nodes": 487,
-    "edges": 610,
+    "types": 423,
+    "nodes": 495,
+    "edges": 618,
     "externalPackages": 19
   },
   "nodes": [
@@ -2337,7 +2337,7 @@
       "kind": "function",
       "name": "help",
       "path": "lib/cli.js",
-      "line": 25,
+      "line": 26,
       "layer": "util",
       "lang": "javascript",
       "modifiers": [],
@@ -2352,7 +2352,7 @@
       "kind": "function",
       "name": "parseArgs",
       "path": "lib/cli.js",
-      "line": 58,
+      "line": 59,
       "layer": "util",
       "lang": "javascript",
       "modifiers": [],
@@ -2367,7 +2367,7 @@
       "kind": "function",
       "name": "openInBrowser",
       "path": "lib/cli.js",
-      "line": 74,
+      "line": 75,
       "layer": "util",
       "lang": "javascript",
       "modifiers": [],
@@ -2378,11 +2378,26 @@
       ]
     },
     {
+      "id": "lib/cli#formatFindingsText",
+      "kind": "function",
+      "name": "formatFindingsText",
+      "path": "lib/cli.js",
+      "line": 89,
+      "layer": "util",
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "lib/cli",
+      "methods": [
+        "formatFindingsText"
+      ]
+    },
+    {
       "id": "lib/cli#printIssues",
       "kind": "function",
       "name": "printIssues",
       "path": "lib/cli.js",
-      "line": 88,
+      "line": 100,
       "layer": "util",
       "lang": "javascript",
       "modifiers": [],
@@ -2397,7 +2412,7 @@
       "kind": "function",
       "name": "loadEvalConfig",
       "path": "lib/cli.js",
-      "line": 98,
+      "line": 110,
       "layer": "util",
       "lang": "javascript",
       "modifiers": [],
@@ -2412,7 +2427,7 @@
       "kind": "function",
       "name": "runEval",
       "path": "lib/cli.js",
-      "line": 107,
+      "line": 119,
       "layer": "util",
       "lang": "javascript",
       "modifiers": [],
@@ -2427,7 +2442,7 @@
       "kind": "function",
       "name": "printGenerateResult",
       "path": "lib/cli.js",
-      "line": 153,
+      "line": 165,
       "layer": "util",
       "lang": "javascript",
       "modifiers": [],
@@ -2442,7 +2457,7 @@
       "kind": "function",
       "name": "wantsRefine",
       "path": "lib/cli.js",
-      "line": 166,
+      "line": 178,
       "layer": "util",
       "lang": "javascript",
       "modifiers": [],
@@ -2457,7 +2472,7 @@
       "kind": "function",
       "name": "main",
       "path": "lib/cli.js",
-      "line": 170,
+      "line": 182,
       "layer": "util",
       "lang": "javascript",
       "modifiers": [],
@@ -3104,6 +3119,89 @@
       "module": "lib/generate",
       "methods": [
         "generateFiles"
+      ]
+    },
+    {
+      "id": "file:lib/impact.js",
+      "kind": "file",
+      "name": "impact.js",
+      "path": "lib/impact.js",
+      "layer": "util",
+      "lang": "javascript"
+    },
+    {
+      "id": "lib/impact#reverseIndex",
+      "kind": "function",
+      "name": "reverseIndex",
+      "path": "lib/impact.js",
+      "line": 14,
+      "layer": "util",
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "lib/impact",
+      "methods": [
+        "reverseIndex"
+      ]
+    },
+    {
+      "id": "lib/impact#nodeIndex",
+      "kind": "function",
+      "name": "nodeIndex",
+      "path": "lib/impact.js",
+      "line": 24,
+      "layer": "util",
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "lib/impact",
+      "methods": [
+        "nodeIndex"
+      ]
+    },
+    {
+      "id": "lib/impact#changeLabel",
+      "kind": "function",
+      "name": "changeLabel",
+      "path": "lib/impact.js",
+      "line": 30,
+      "layer": "util",
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "lib/impact",
+      "methods": [
+        "changeLabel"
+      ]
+    },
+    {
+      "id": "lib/impact#computeImpact",
+      "kind": "function",
+      "name": "computeImpact",
+      "path": "lib/impact.js",
+      "line": 34,
+      "layer": "util",
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "lib/impact",
+      "methods": [
+        "computeImpact"
+      ]
+    },
+    {
+      "id": "lib/impact#formatImpactText",
+      "kind": "function",
+      "name": "formatImpactText",
+      "path": "lib/impact.js",
+      "line": 102,
+      "layer": "util",
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "lib/impact",
+      "methods": [
+        "formatImpactText"
       ]
     },
     {
@@ -4083,7 +4181,7 @@
       "kind": "function",
       "name": "renderHtml",
       "path": "lib/session-report.js",
-      "line": 208,
+      "line": 221,
       "layer": "util",
       "lang": "javascript",
       "modifiers": [],
@@ -4098,7 +4196,7 @@
       "kind": "function",
       "name": "esc",
       "path": "lib/session-report.js",
-      "line": 231,
+      "line": 244,
       "layer": "util",
       "lang": "javascript",
       "modifiers": [],
@@ -4113,7 +4211,7 @@
       "kind": "function",
       "name": "getStyles",
       "path": "lib/session-report.js",
-      "line": 235,
+      "line": 248,
       "layer": "util",
       "lang": "javascript",
       "modifiers": [],
@@ -4128,7 +4226,7 @@
       "kind": "function",
       "name": "getAppScript",
       "path": "lib/session-report.js",
-      "line": 368,
+      "line": 381,
       "layer": "util",
       "lang": "javascript",
       "modifiers": [],
@@ -6406,7 +6504,7 @@
       "kind": "function",
       "name": "readGitignoreSkips",
       "path": "lib/extract/shared.js",
-      "line": 33,
+      "line": 35,
       "layer": "util",
       "lang": "javascript",
       "modifiers": [],
@@ -6421,7 +6519,7 @@
       "kind": "function",
       "name": "readSafe",
       "path": "lib/extract/shared.js",
-      "line": 70,
+      "line": 72,
       "layer": "util",
       "lang": "javascript",
       "modifiers": [],
@@ -6436,7 +6534,7 @@
       "kind": "function",
       "name": "walkSourceFiles",
       "path": "lib/extract/shared.js",
-      "line": 84,
+      "line": 86,
       "layer": "util",
       "lang": "javascript",
       "modifiers": [],
@@ -6451,7 +6549,7 @@
       "kind": "function",
       "name": "walkFiles",
       "path": "lib/extract/shared.js",
-      "line": 120,
+      "line": 122,
       "layer": "util",
       "lang": "javascript",
       "modifiers": [],
@@ -6466,7 +6564,7 @@
       "kind": "function",
       "name": "findChildByType",
       "path": "lib/extract/shared.js",
-      "line": 148,
+      "line": 150,
       "layer": "util",
       "lang": "javascript",
       "modifiers": [],
@@ -6481,7 +6579,7 @@
       "kind": "function",
       "name": "collectNodes",
       "path": "lib/extract/shared.js",
-      "line": 158,
+      "line": 160,
       "layer": "util",
       "lang": "javascript",
       "modifiers": [],
@@ -6716,6 +6814,14 @@
       "methods": [
         "extractFile"
       ]
+    },
+    {
+      "id": "file:bin/arch-viewer.js",
+      "kind": "file",
+      "name": "arch-viewer.js",
+      "path": "bin/arch-viewer.js",
+      "layer": null,
+      "lang": "javascript"
     },
     {
       "id": "ext:@playwright/test",
@@ -7823,63 +7929,70 @@
       "to": "file:lib/cli.js",
       "type": "declared-in",
       "file": "lib/cli.js",
-      "line": 25
+      "line": 26
     },
     {
       "from": "lib/cli#parseArgs",
       "to": "file:lib/cli.js",
       "type": "declared-in",
       "file": "lib/cli.js",
-      "line": 58
+      "line": 59
     },
     {
       "from": "lib/cli#openInBrowser",
       "to": "file:lib/cli.js",
       "type": "declared-in",
       "file": "lib/cli.js",
-      "line": 74
+      "line": 75
+    },
+    {
+      "from": "lib/cli#formatFindingsText",
+      "to": "file:lib/cli.js",
+      "type": "declared-in",
+      "file": "lib/cli.js",
+      "line": 89
     },
     {
       "from": "lib/cli#printIssues",
       "to": "file:lib/cli.js",
       "type": "declared-in",
       "file": "lib/cli.js",
-      "line": 88
+      "line": 100
     },
     {
       "from": "lib/cli#loadEvalConfig",
       "to": "file:lib/cli.js",
       "type": "declared-in",
       "file": "lib/cli.js",
-      "line": 98
+      "line": 110
     },
     {
       "from": "lib/cli#runEval",
       "to": "file:lib/cli.js",
       "type": "declared-in",
       "file": "lib/cli.js",
-      "line": 107
+      "line": 119
     },
     {
       "from": "lib/cli#printGenerateResult",
       "to": "file:lib/cli.js",
       "type": "declared-in",
       "file": "lib/cli.js",
-      "line": 153
+      "line": 165
     },
     {
       "from": "lib/cli#wantsRefine",
       "to": "file:lib/cli.js",
       "type": "declared-in",
       "file": "lib/cli.js",
-      "line": 166
+      "line": 178
     },
     {
       "from": "lib/cli#main",
       "to": "file:lib/cli.js",
       "type": "declared-in",
       "file": "lib/cli.js",
-      "line": 170
+      "line": 182
     },
     {
       "from": "lib/diff-graph#diffGraphs",
@@ -8167,6 +8280,41 @@
       "type": "declared-in",
       "file": "lib/generate.js",
       "line": 313
+    },
+    {
+      "from": "lib/impact#reverseIndex",
+      "to": "file:lib/impact.js",
+      "type": "declared-in",
+      "file": "lib/impact.js",
+      "line": 14
+    },
+    {
+      "from": "lib/impact#nodeIndex",
+      "to": "file:lib/impact.js",
+      "type": "declared-in",
+      "file": "lib/impact.js",
+      "line": 24
+    },
+    {
+      "from": "lib/impact#changeLabel",
+      "to": "file:lib/impact.js",
+      "type": "declared-in",
+      "file": "lib/impact.js",
+      "line": 30
+    },
+    {
+      "from": "lib/impact#computeImpact",
+      "to": "file:lib/impact.js",
+      "type": "declared-in",
+      "file": "lib/impact.js",
+      "line": 34
+    },
+    {
+      "from": "lib/impact#formatImpactText",
+      "to": "file:lib/impact.js",
+      "type": "declared-in",
+      "file": "lib/impact.js",
+      "line": 102
     },
     {
       "from": "lib/index#haystack",
@@ -8593,28 +8741,28 @@
       "to": "file:lib/session-report.js",
       "type": "declared-in",
       "file": "lib/session-report.js",
-      "line": 208
+      "line": 221
     },
     {
       "from": "lib/session-report#esc",
       "to": "file:lib/session-report.js",
       "type": "declared-in",
       "file": "lib/session-report.js",
-      "line": 231
+      "line": 244
     },
     {
       "from": "lib/session-report#getStyles",
       "to": "file:lib/session-report.js",
       "type": "declared-in",
       "file": "lib/session-report.js",
-      "line": 235
+      "line": 248
     },
     {
       "from": "lib/session-report#getAppScript",
       "to": "file:lib/session-report.js",
       "type": "declared-in",
       "file": "lib/session-report.js",
-      "line": 368
+      "line": 381
     },
     {
       "from": "lib/validate#extractBlocks",
@@ -9636,42 +9784,42 @@
       "to": "file:lib/extract/shared.js",
       "type": "declared-in",
       "file": "lib/extract/shared.js",
-      "line": 33
+      "line": 35
     },
     {
       "from": "lib/extract/shared#readSafe",
       "to": "file:lib/extract/shared.js",
       "type": "declared-in",
       "file": "lib/extract/shared.js",
-      "line": 70
+      "line": 72
     },
     {
       "from": "lib/extract/shared#walkSourceFiles",
       "to": "file:lib/extract/shared.js",
       "type": "declared-in",
       "file": "lib/extract/shared.js",
-      "line": 84
+      "line": 86
     },
     {
       "from": "lib/extract/shared#walkFiles",
       "to": "file:lib/extract/shared.js",
       "type": "declared-in",
       "file": "lib/extract/shared.js",
-      "line": 120
+      "line": 122
     },
     {
       "from": "lib/extract/shared#findChildByType",
       "to": "file:lib/extract/shared.js",
       "type": "declared-in",
       "file": "lib/extract/shared.js",
-      "line": 148
+      "line": 150
     },
     {
       "from": "lib/extract/shared#collectNodes",
       "to": "file:lib/extract/shared.js",
       "type": "declared-in",
       "file": "lib/extract/shared.js",
-      "line": 158
+      "line": 160
     },
     {
       "from": "lib/extract/svelte#extractScriptBlock",
@@ -10461,10 +10609,18 @@
     },
     {
       "from": "file:lib/cli.js",
-      "to": "file:lib/workspace.js",
+      "to": "file:lib/impact.js",
       "type": "import",
       "file": "lib/cli.js",
       "line": 23,
+      "isType": false
+    },
+    {
+      "from": "file:lib/cli.js",
+      "to": "file:lib/workspace.js",
+      "type": "import",
+      "file": "lib/cli.js",
+      "line": 24,
       "isType": false
     },
     {
@@ -11314,7 +11470,15 @@
       "file": "lib/extract/vue.js",
       "line": 10,
       "builtin": false
+    },
+    {
+      "from": "file:bin/arch-viewer.js",
+      "to": "file:lib/cli.js",
+      "type": "import",
+      "file": "bin/arch-viewer.js",
+      "line": 6,
+      "isType": false
     }
   ],
-  "sessionStartedAt": "2026-09-02T11:26:07.069Z"
+  "sessionStartedAt": "2026-09-02T11:41:16.717Z"
 }
