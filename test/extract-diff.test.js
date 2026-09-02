@@ -146,4 +146,55 @@ describe('diff: 架构图差分', () => {
     assert.match(text, /新增类型/);
     assert.match(text, /B/);
   });
+
+  it('重命名检测：同文件同类名相似 → 归入 renamedNodes', () => {
+    const base = makeRepo({
+      'svc.js': 'function generateBlockOrch4() { return 1; }\n'
+    });
+    const head = makeRepo({
+      'svc.js': 'function generateBlockAuto() { return 1; }\n'
+    });
+    const d = diffGraphs(buildGraph(base), buildGraph(head));
+    assert.ok(d.renamedNodes.length > 0, 'should detect rename');
+    assert.equal(d.renamedNodes[0].oldName, 'generateBlockOrch4');
+    assert.equal(d.renamedNodes[0].newName, 'generateBlockAuto');
+    // 归并后不再出现在 added/removed
+    assert.equal(d.summary.removedNodes, 0, 'removed should be 0 after merge');
+    assert.equal(d.summary.addedNodes, 0, 'added should be 0 after merge');
+    assert.ok(d.summary.renamedNodes >= 1);
+    // formatDiffText 输出重命名段
+    const text = formatDiffText(d);
+    assert.match(text, /重命名/);
+  });
+
+  it('重命名不误匹配：完全不同的名字仍报删+增', () => {
+    const base = makeRepo({
+      'svc.js': 'function foo() { return 1; }\n'
+    });
+    const head = makeRepo({
+      'svc.js': 'function bar() { return 2; }\n'
+    });
+    const d = diffGraphs(buildGraph(base), buildGraph(head));
+    assert.equal(d.renamedNodes.length, 0, 'foo→bar should NOT be rename');
+    assert.ok(d.summary.removedNodes > 0);
+    assert.ok(d.summary.addedNodes > 0);
+  });
+
+  it('已有文件内新增函数检测（childEntities）', () => {
+    const base = makeRepo({
+      'svc.js': 'function foo() { return 1; }\n'
+    });
+    const head = makeRepo({
+      'svc.js': 'function foo() { return 1; }\nfunction bar() { return 2; }\n'
+    });
+    const d = diffGraphs(buildGraph(base), buildGraph(head));
+    // foo exists in both, bar is new → should be in modifiedNodes with childEntities
+    const mod = d.modifiedNodes.find(m =>
+      m.changes.some(c => c.field === 'childEntities')
+    );
+    assert.ok(mod, 'should detect childEntities change');
+    const childChange = mod.changes.find(c => c.field === 'childEntities');
+    assert.ok(childChange.added.length > 0, 'should have added child entity');
+    assert.ok(childChange.removed.length === 0, 'should have no removed child entity');
+  });
 });
