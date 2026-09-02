@@ -2,6 +2,12 @@
 
 本文件遵循 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.1.0/)，版本号遵循语义化版本。
 
+## \[0.10.0] — 2026-09-02
+
+### Added
+
+- **MCP Server（Agent 工具化）**：新增 `mcp/server.js`，把 AV 的架构验收能力通过标准 MCP（Model Context Protocol）暴露给 AI Agent（Cursor/Claude/Codex）。暴露且仅暴露 4 个工具：① `av_session_start`（AI 改代码前记录基线 + 自动分层建议）；② `av_session_report`（AI 改完后返回架构 diff + 风险 findings + 影响面 + 退出码语义 HIGH=建议拦截）；③ `av_check_layering`（实时检测当前代码的跨层违规，不需要基线，Agent 改完即可自查）；④ `av_explain_finding`（解释一条违规的结构化事实：谁→谁、哪条边、依据什么分层、修复建议）。刻意不暴露图谱查询工具（谁依赖谁）——那是 codebase-memory-mcp 的主场；AV 给 Agent 的是**判断和结论**，不是原材料。传输协议 stdio JSON-RPC（`2024-11-05`），零依赖、零 API Key、1-2 秒完成。`npm run mcp` 启动；`npx arch-viewer-mcp` 全局可用。13 个测试覆盖工具签名、闭环调用、异常路径和 stdio 协议全链路。
+
 ## \[0.9.0] — 2026-09-02
 
 ### Added
