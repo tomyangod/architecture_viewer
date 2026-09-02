@@ -8,7 +8,7 @@
 
 - **多信号分层推断引擎**：分层识别从「只靠目录名正则」升级为四信号交叉验证——① 用户配置 `.av/layers.json`（最高优先）；② **import 框架语义**（新增 `lib/layer-infer.js`）：sqlalchemy/django.db/mongoose/prisma/gorm/JPA Repository 等判 storage，flask/express/gin/Spring `@RestController`/JAX-RS 等判 controller，`@Entity` 判 domain，`@Service`/celery/NestJS `Injectable` 判 service，pydantic/zod/Bean Validation 判 dto，dotenv/viper/`@Configuration` 判 config；NestJS 按 import 符号区分 `Controller` 与 `Injectable`；③ 目录名/文件名约定（新增 collector/crawler/spider/worker/consumer 词根 → service，dashboard/admin/frontend → component，cache → storage，proxy → util）；④ **结构位置兜底**：高 fan-in 低 fan-out 判 domain、高 fan-out 零 fan-in 判 controller。合并优先级：用户配置 > import(高置信) > 目录名 > import(中置信) > 结构(低置信)；高置信 import 与目录名冲突时以 import 为准并记录 `signalConflicts` 供人工审阅。节点新增 `layerConfidence` / `layerSignal` 字段（不影响指纹算法）。
 
-- **`.av/layers.suggested.json` 自动生成**：`session start` 与 `extract` 后自动写出按目录聚合的分层建议（layer + confidence + signal + 冲突文件清单），小白零配置——审阅无误无需操作，复制为 `layers.json` 即锁定（`layers.json` 永远优先且不会被覆盖）。
+- **`.av/layers.suggested.json`** **自动生成**：`session start` 与 `extract` 后自动写出按目录聚合的分层建议（layer + confidence + signal + 冲突文件清单），小白零配置——审阅无误无需操作，复制为 `layers.json` 即锁定（`layers.json` 永远优先且不会被覆盖）。
 
 - **真实仓验证**：246 文件的 Python 爬虫仓分层覆盖率从 57% 提升至 92%（此前 `data_collection/` 等非标目录大面积漏判）；新增 `test/layer-infer.test.js` 20 个用例覆盖信号规则、投票合并、冲突标注与 buildGraph 集成。
 
@@ -23,7 +23,6 @@
 - **新叙事落地页**：`landing-new.html` 单文件零依赖落地页——「AI 写完代码后，自动看清架构变了什么」，会话门 / PR 评论 / 影响面三段式，含终端仿真、PR 评论卡片与 Before/After SVG 图谱示意。
 
 - **文档**：README 按新叙事重写（三种用法：CLI 会话验收门 / VS Code 扩展状态栏角标 / PR 自动评论；Install、Quick Start、风险与影响面算法说明）。新增小白攻略 `docs/beginner-guide/index.html`、演示仓 `examples/beginner-demo/` 与 `scripts/beginner-demo.sh`（`npm run demo:beginner:step`）。
-
 
 - **VS Code 扩展会话模式（C5）**：新增 `src/extension-session.js`，把会话架构验收能力接入编辑器。新增三个命令——`Architecture Viewer: Session Start`（记录架构基线）、`Session Report`（在侧边 Webview 面板打开 Before/After 架构变更报告）、`Session Refresh`（立即重新分析）。代码变更后 `FileSystemWatcher` 监听源码文件（口径与扫描器一致，忽略 node\_modules/docs/.venv 等，仅判断工作区根之内路径），防抖 `debounceSeconds`（默认 30s）后自动重提取 + diff + 影响面 + 风险分级；状态栏角标实时显示 `+新增 -删除 ~修改` 与风险数，高风险红底、中风险黄底，点击直接打开报告。激活事件改为 `onStartupFinished` 以常驻监听；新增 `architectureViewer.session.*` 配置项（enabled / debounceSeconds / analyzeOnOpen）。核心分析全部复用 `lib/`（extract-graph / diff-graph / risk-rules / impact / session-report），扩展层只做 VS Code API 适配，Webview 报告为自包含 HTML 并注入 CSP。
 
