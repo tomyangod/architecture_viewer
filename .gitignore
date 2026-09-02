@@ -43,3 +43,7 @@ playwright-report/
 # Local harness / agent dumps (not product)
 deepseek-harness/
 
+# Architecture Viewer session artifacts
+# graph-baseline.json is committed (team baseline); reports are local only
+.av/session-report.*
+
