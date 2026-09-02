@@ -2,6 +2,12 @@
 
 本文件遵循 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.1.0/)，版本号遵循语义化版本。
 
+## \[0.7.0] — 2026-09-02
+
+### Added
+
+- **影响面驱动的风险分级（B4）**：`evaluateRisk` 接收 `impact` 参数，新增 broad-impact 规则——被改实体波及 ≥10 下游时产生 MEDIUM finding，≥20 升为 HIGH；removed-type 规则按下游数量升降级（<3 降 LOW，≥10 升 HIGH）。`diff` 与 `session report` 两处调用均自动传入 impact 数据。
+
 ## \[0.6.0] — 2026-09-02
 
 ### Added
