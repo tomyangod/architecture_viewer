@@ -10,9 +10,17 @@
 
 - **试用到期策略**：手动「现在检查」仍可用；自动检查与企业微信需许可证。小白教程 [docs/PRO-LOCAL.md](docs/PRO-LOCAL.md)、`/local-pro.html`。
 
-## \[Unreleased]
+## \[0.5.0] — 2026-09-02
 
 ### Added
+
+- **AI 会话架构可见性（阶段 A/B）**：tree-sitter 多语言结构提取（JS/TS、Python、Go、Java、Vue、Svelte），`arch-viewer extract` 输出代码→架构图谱（文件/类型/函数节点 + import/extends/implements/field-type 等依赖边 + 外部依赖），静态分析保确定性、零 API Key 离线可用。
+
+- **架构 Diff**：`arch-viewer diff <base> <head>` 对比两版图谱，量化节点/边/类型/包/外部依赖增删改与跨层违规；重命名归并（同文件同 kind + 名称相似度配对，避免误报删+增）；已有文件内新增函数检测（子实体集合对比）；开发资产目录（test/eval/examples/docs）与压缩文件自动排除。
+
+- **会话报告**：`arch-viewer session start` 记录基线，`session report` 生成离线自包含 HTML 前后对比报告（分层泳道图、节点状态色：新增绿/删除红/修改黄/重命名青）+ 风险发现（跨层违规、层级穿透、类型删除、新外部依赖、高扇出、孤立实体）。默认「仅变更」高信号视图，未变更项折叠；文本报告默认折叠 declared-in/defined-in 归属边，`--all` 展开，`--open` 自动打开浏览器。
+
+- **习惯门工作流**：基线（`.av/graph-baseline.json`，可提交为团队基线）→ AI 编码 → `session report` 验收 → 确认后 `session start` 刷新基线；报告本地生成不入库。
 
 - **产品精修路由** `lib/refine-route.js`：`--refine` / `quality=refine` 按形态自动选管线（Web 应用走读仓画图，网关/桥/通知总线/后端服务走编排）。客户界面仍只有骨架 / 精修，不暴露内部引擎名。读仓画图不可用时自动降级编排。
 
