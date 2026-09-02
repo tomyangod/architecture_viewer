@@ -1,18 +1,18 @@
 {
   "version": 1,
   "root": "architecture_viewer",
-  "generatedAt": "2026-09-02T12:28:08.703Z",
-  "fingerprint": "97b4f1c097a92dc1",
+  "generatedAt": "2026-09-02T13:35:16.110Z",
+  "fingerprint": "956b3a454e7ca92b",
   "languages": [
     "javascript"
   ],
   "stats": {
-    "files": 54,
-    "filesParsed": 54,
+    "files": 57,
+    "filesParsed": 57,
     "parseErrors": 0,
-    "types": 441,
-    "nodes": 514,
-    "edges": 647,
+    "types": 447,
+    "nodes": 523,
+    "edges": 660,
     "externalPackages": 19
   },
   "nodes": [
@@ -2090,6 +2090,22 @@
       ]
     },
     {
+      "id": "file:scripts/build-vsix.js",
+      "kind": "file",
+      "name": "build-vsix.js",
+      "path": "scripts/build-vsix.js",
+      "layer": null,
+      "lang": "javascript"
+    },
+    {
+      "id": "file:scripts/pr-comment.js",
+      "kind": "file",
+      "name": "pr-comment.js",
+      "path": "scripts/pr-comment.js",
+      "layer": null,
+      "lang": "javascript"
+    },
+    {
       "id": "file:pm/scripts/gitee-webhook.mjs",
       "kind": "file",
       "name": "gitee-webhook.mjs",
@@ -2600,7 +2616,7 @@
       "kind": "function",
       "name": "help",
       "path": "lib/cli.js",
-      "line": 26,
+      "line": 27,
       "layer": "util",
       "lang": "javascript",
       "modifiers": [],
@@ -2615,7 +2631,7 @@
       "kind": "function",
       "name": "parseArgs",
       "path": "lib/cli.js",
-      "line": 60,
+      "line": 62,
       "layer": "util",
       "lang": "javascript",
       "modifiers": [],
@@ -2630,7 +2646,7 @@
       "kind": "function",
       "name": "openInBrowser",
       "path": "lib/cli.js",
-      "line": 76,
+      "line": 78,
       "layer": "util",
       "lang": "javascript",
       "modifiers": [],
@@ -2645,7 +2661,7 @@
       "kind": "function",
       "name": "formatFindingsText",
       "path": "lib/cli.js",
-      "line": 90,
+      "line": 92,
       "layer": "util",
       "lang": "javascript",
       "modifiers": [],
@@ -2660,7 +2676,7 @@
       "kind": "function",
       "name": "printIssues",
       "path": "lib/cli.js",
-      "line": 101,
+      "line": 103,
       "layer": "util",
       "lang": "javascript",
       "modifiers": [],
@@ -2675,7 +2691,7 @@
       "kind": "function",
       "name": "loadEvalConfig",
       "path": "lib/cli.js",
-      "line": 111,
+      "line": 113,
       "layer": "util",
       "lang": "javascript",
       "modifiers": [],
@@ -2690,7 +2706,7 @@
       "kind": "function",
       "name": "runEval",
       "path": "lib/cli.js",
-      "line": 120,
+      "line": 122,
       "layer": "util",
       "lang": "javascript",
       "modifiers": [],
@@ -2705,7 +2721,7 @@
       "kind": "function",
       "name": "printGenerateResult",
       "path": "lib/cli.js",
-      "line": 166,
+      "line": 168,
       "layer": "util",
       "lang": "javascript",
       "modifiers": [],
@@ -2720,7 +2736,7 @@
       "kind": "function",
       "name": "wantsRefine",
       "path": "lib/cli.js",
-      "line": 179,
+      "line": 181,
       "layer": "util",
       "lang": "javascript",
       "modifiers": [],
@@ -2735,7 +2751,7 @@
       "kind": "function",
       "name": "main",
       "path": "lib/cli.js",
-      "line": 183,
+      "line": 185,
       "layer": "util",
       "lang": "javascript",
       "modifiers": [],
@@ -4075,6 +4091,104 @@
       "module": "lib/llm-generate",
       "methods": [
         "main"
+      ]
+    },
+    {
+      "id": "file:lib/pr-comment.js",
+      "kind": "file",
+      "name": "pr-comment.js",
+      "path": "lib/pr-comment.js",
+      "layer": "util",
+      "lang": "javascript"
+    },
+    {
+      "id": "lib/pr-comment#esc",
+      "kind": "function",
+      "name": "esc",
+      "path": "lib/pr-comment.js",
+      "line": 23,
+      "layer": "util",
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "lib/pr-comment",
+      "methods": [
+        "esc"
+      ]
+    },
+    {
+      "id": "lib/pr-comment#code",
+      "kind": "function",
+      "name": "code",
+      "path": "lib/pr-comment.js",
+      "line": 27,
+      "layer": "util",
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "lib/pr-comment",
+      "methods": [
+        "code"
+      ]
+    },
+    {
+      "id": "lib/pr-comment#formatPullRequestComment",
+      "kind": "function",
+      "name": "formatPullRequestComment",
+      "path": "lib/pr-comment.js",
+      "line": 42,
+      "layer": "util",
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "lib/pr-comment",
+      "methods": [
+        "formatPullRequestComment"
+      ]
+    },
+    {
+      "id": "lib/pr-comment#formatFinding",
+      "kind": "function",
+      "name": "formatFinding",
+      "path": "lib/pr-comment.js",
+      "line": 136,
+      "layer": "util",
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "lib/pr-comment",
+      "methods": [
+        "formatFinding"
+      ]
+    },
+    {
+      "id": "lib/pr-comment#footer",
+      "kind": "function",
+      "name": "footer",
+      "path": "lib/pr-comment.js",
+      "line": 143,
+      "layer": "util",
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "lib/pr-comment",
+      "methods": [
+        "footer"
+      ]
+    },
+    {
+      "id": "lib/pr-comment#postPullRequestComment",
+      "kind": "function",
+      "name": "postPullRequestComment",
+      "path": "lib/pr-comment.js",
+      "line": 155,
+      "layer": "util",
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "lib/pr-comment",
+      "methods": [
+        "postPullRequestComment"
       ]
     },
     {
@@ -8326,70 +8440,70 @@
       "to": "file:lib/cli.js",
       "type": "declared-in",
       "file": "lib/cli.js",
-      "line": 26
+      "line": 27
     },
     {
       "from": "lib/cli#parseArgs",
       "to": "file:lib/cli.js",
       "type": "declared-in",
       "file": "lib/cli.js",
-      "line": 60
+      "line": 62
     },
     {
       "from": "lib/cli#openInBrowser",
       "to": "file:lib/cli.js",
       "type": "declared-in",
       "file": "lib/cli.js",
-      "line": 76
+      "line": 78
     },
     {
       "from": "lib/cli#formatFindingsText",
       "to": "file:lib/cli.js",
       "type": "declared-in",
       "file": "lib/cli.js",
-      "line": 90
+      "line": 92
     },
     {
       "from": "lib/cli#printIssues",
       "to": "file:lib/cli.js",
       "type": "declared-in",
       "file": "lib/cli.js",
-      "line": 101
+      "line": 103
     },
     {
       "from": "lib/cli#loadEvalConfig",
       "to": "file:lib/cli.js",
       "type": "declared-in",
       "file": "lib/cli.js",
-      "line": 111
+      "line": 113
     },
     {
       "from": "lib/cli#runEval",
       "to": "file:lib/cli.js",
       "type": "declared-in",
       "file": "lib/cli.js",
-      "line": 120
+      "line": 122
     },
     {
       "from": "lib/cli#printGenerateResult",
       "to": "file:lib/cli.js",
       "type": "declared-in",
       "file": "lib/cli.js",
-      "line": 166
+      "line": 168
     },
     {
       "from": "lib/cli#wantsRefine",
       "to": "file:lib/cli.js",
       "type": "declared-in",
       "file": "lib/cli.js",
-      "line": 179
+      "line": 181
     },
     {
       "from": "lib/cli#main",
       "to": "file:lib/cli.js",
       "type": "declared-in",
       "file": "lib/cli.js",
-      "line": 183
+      "line": 185
     },
     {
       "from": "lib/diff-graph#diffGraphs",
@@ -8978,6 +9092,48 @@
       "type": "declared-in",
       "file": "lib/llm-generate.js",
       "line": 352
+    },
+    {
+      "from": "lib/pr-comment#esc",
+      "to": "file:lib/pr-comment.js",
+      "type": "declared-in",
+      "file": "lib/pr-comment.js",
+      "line": 23
+    },
+    {
+      "from": "lib/pr-comment#code",
+      "to": "file:lib/pr-comment.js",
+      "type": "declared-in",
+      "file": "lib/pr-comment.js",
+      "line": 27
+    },
+    {
+      "from": "lib/pr-comment#formatPullRequestComment",
+      "to": "file:lib/pr-comment.js",
+      "type": "declared-in",
+      "file": "lib/pr-comment.js",
+      "line": 42
+    },
+    {
+      "from": "lib/pr-comment#formatFinding",
+      "to": "file:lib/pr-comment.js",
+      "type": "declared-in",
+      "file": "lib/pr-comment.js",
+      "line": 136
+    },
+    {
+      "from": "lib/pr-comment#footer",
+      "to": "file:lib/pr-comment.js",
+      "type": "declared-in",
+      "file": "lib/pr-comment.js",
+      "line": 143
+    },
+    {
+      "from": "lib/pr-comment#postPullRequestComment",
+      "to": "file:lib/pr-comment.js",
+      "type": "declared-in",
+      "file": "lib/pr-comment.js",
+      "line": 155
     },
     {
       "from": "lib/refine-route#inspectShape",
@@ -10908,6 +11064,46 @@
       "builtin": true
     },
     {
+      "from": "file:scripts/build-vsix.js",
+      "to": "ext:fs",
+      "type": "uses-external",
+      "file": "scripts/build-vsix.js",
+      "line": 6,
+      "builtin": true
+    },
+    {
+      "from": "file:scripts/build-vsix.js",
+      "to": "ext:path",
+      "type": "uses-external",
+      "file": "scripts/build-vsix.js",
+      "line": 7,
+      "builtin": true
+    },
+    {
+      "from": "file:scripts/build-vsix.js",
+      "to": "ext:child_process",
+      "type": "uses-external",
+      "file": "scripts/build-vsix.js",
+      "line": 8,
+      "builtin": true
+    },
+    {
+      "from": "file:scripts/pr-comment.js",
+      "to": "ext:path",
+      "type": "uses-external",
+      "file": "scripts/pr-comment.js",
+      "line": 8,
+      "builtin": true
+    },
+    {
+      "from": "file:scripts/pr-comment.js",
+      "to": "ext:child_process",
+      "type": "uses-external",
+      "file": "scripts/pr-comment.js",
+      "line": 9,
+      "builtin": true
+    },
+    {
       "from": "file:pm/scripts/gitee-webhook.mjs",
       "to": "ext:node:http",
       "type": "uses-external",
@@ -11101,10 +11297,18 @@
     },
     {
       "from": "file:lib/cli.js",
-      "to": "file:lib/workspace.js",
+      "to": "file:lib/pr-comment.js",
       "type": "import",
       "file": "lib/cli.js",
       "line": 24,
+      "isType": false
+    },
+    {
+      "from": "file:lib/cli.js",
+      "to": "file:lib/workspace.js",
+      "type": "import",
+      "file": "lib/cli.js",
+      "line": 25,
       "isType": false
     },
     {
@@ -11402,6 +11606,14 @@
       "file": "lib/llm-generate.js",
       "line": 228,
       "isType": false
+    },
+    {
+      "from": "file:lib/pr-comment.js",
+      "to": "ext:fs",
+      "type": "uses-external",
+      "file": "lib/pr-comment.js",
+      "line": 163,
+      "builtin": true
     },
     {
       "from": "file:lib/refine-route.js",
@@ -11972,5 +12184,5 @@
       "isType": false
     }
   ],
-  "sessionStartedAt": "2026-09-02T12:28:08.704Z"
+  "sessionStartedAt": "2026-09-02T13:35:16.111Z"
 }

@@ -2,6 +2,9 @@
 
 当前你已经可以**不装扩展、不配 API Key**，用浏览器看完核心效果，再决定下一步。
 
+> **零基础请先看**：[小白超详细使用攻略](docs/beginner-guide/index.html)（4 个 Demo + 逐步截图式说明）  
+> **一键体验「AI 改坏架构也能看见」**：`npm run demo:beginner:step`（逐步按回车）或 `npm run demo:beginner`（不停顿）
+
 ---
 
 ## 1. 30 秒打开看效果

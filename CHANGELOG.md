@@ -2,11 +2,20 @@
 
 本文件遵循 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.1.0/)，版本号遵循语义化版本。
 
-## \[Unreleased]
+## \[0.8.0] — 2026-09-02
 
 ### Added
 
-- **VS Code 扩展会话模式（C5）**：新增 `src/extension-session.js`，把会话架构验收能力接入编辑器。新增三个命令——`Architecture Viewer: Session Start`（记录架构基线）、`Session Report`（在侧边 Webview 面板打开 Before/After 架构变更报告）、`Session Refresh`（立即重新分析）。代码变更后 `FileSystemWatcher` 监听源码文件（口径与扫描器一致，忽略 node_modules/docs/.venv 等，仅判断工作区根之内路径），防抖 `debounceSeconds`（默认 30s）后自动重提取 + diff + 影响面 + 风险分级；状态栏角标实时显示 `+新增 -删除 ~修改` 与风险数，高风险红底、中风险黄底，点击直接打开报告。激活事件改为 `onStartupFinished` 以常驻监听；新增 `architectureViewer.session.*` 配置项（enabled / debounceSeconds / analyzeOnOpen）。核心分析全部复用 `lib/`（extract-graph / diff-graph / risk-rules / impact / session-report），扩展层只做 VS Code API 适配，Webview 报告为自包含 HTML 并注入 CSP。
+- **PR 架构影响面自动评论**：新增 `arch-viewer pr-comment <base-dir> <head-dir> [--post]` 命令与 `lib/pr-comment.js`——把结构 diff、风险发现、反向依赖影响面渲染为 PR 评论 Markdown（变更计数表、新增/移除第三方依赖清单、🔴🟠 风险明细、影响面 Top N）；`--post` 通过 GitHub REST 发布评论，以 marker 注释幂等匹配，同一 PR 重复 push 只 PATCH 更新原评论不刷屏，非 PR 环境自动降级为本地预览。新增 `.github/workflows/architecture-diff.yml`（PR opened/synchronize/reopened 触发，worktree 检出 base.sha 双图谱对比）与 `scripts/pr-comment.js` CI 入口（本仓 dogfood 本地代码）。
+
+- **VS Code 扩展打包与上架前置**：新增 `assets/icon.png`（256×256 扩展图标）；`package.json` 补齐 `icon` / `bugs` / `homepage` / `engines.vscode` / 扩展 keywords，`files` 白名单纳入 `src/` 与 `assets/`；新增 `scripts/build-vsix.js`（vsce 打包前临时摘除 `files` 字段、打包后保证恢复，解决 vsce 不允许 `.vscodeignore` 与 `files` 共存的限制）与 `build:vsix` / `publish:vsix` / `publish:ovsx` 脚本；npm `overrides` 统一 tree-sitter 版本，消除 tree-sitter-java peer 声明导致的依赖树冲突；产出的 `.vsix` 内置 tree-sitter 六平台 prebuilds（darwin/linux/win32 × arm64/x64），安装免编译。
+
+- **新叙事落地页**：`landing-new.html` 单文件零依赖落地页——「AI 写完代码后，自动看清架构变了什么」，会话门 / PR 评论 / 影响面三段式，含终端仿真、PR 评论卡片与 Before/After SVG 图谱示意。
+
+- **文档**：README 按新叙事重写（三种用法：CLI 会话验收门 / VS Code 扩展状态栏角标 / PR 自动评论；Install、Quick Start、风险与影响面算法说明）。新增小白攻略 `docs/beginner-guide/index.html`、演示仓 `examples/beginner-demo/` 与 `scripts/beginner-demo.sh`（`npm run demo:beginner:step`）。
+
+
+- **VS Code 扩展会话模式（C5）**：新增 `src/extension-session.js`，把会话架构验收能力接入编辑器。新增三个命令——`Architecture Viewer: Session Start`（记录架构基线）、`Session Report`（在侧边 Webview 面板打开 Before/After 架构变更报告）、`Session Refresh`（立即重新分析）。代码变更后 `FileSystemWatcher` 监听源码文件（口径与扫描器一致，忽略 node\_modules/docs/.venv 等，仅判断工作区根之内路径），防抖 `debounceSeconds`（默认 30s）后自动重提取 + diff + 影响面 + 风险分级；状态栏角标实时显示 `+新增 -删除 ~修改` 与风险数，高风险红底、中风险黄底，点击直接打开报告。激活事件改为 `onStartupFinished` 以常驻监听；新增 `architectureViewer.session.*` 配置项（enabled / debounceSeconds / analyzeOnOpen）。核心分析全部复用 `lib/`（extract-graph / diff-graph / risk-rules / impact / session-report），扩展层只做 VS Code API 适配，Webview 报告为自包含 HTML 并注入 CSP。
 
 - **影响面报告导出（C4）**：新增 `impact` 独立命令（`arch-viewer impact <base-dir> <head-dir> [--json]`），不依赖 session 基线，可直接对任意两版代码快照生成影响面报告，适用于 CI/管线中对比 PR 分支；新增 `aggregateImpact` 多仓影响面汇总，`workspace report` 文本输出逐仓显示「影响:被改N 波及M」并给出跨仓聚合总数，`--json` 输出含每仓 impact 摘要；多仓 `reportRepo` 接入 B4 影响面驱动风险分级。
 
@@ -192,4 +201,3 @@
 
 - 静态分享页 `/samples/showcase/` 与漂移红灯页 `/samples/drift-fail/`（`npm run bake:samples`）
 
-<br />

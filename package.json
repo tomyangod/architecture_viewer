@@ -1,12 +1,14 @@
 {
   "name": "arch-viewer",
   "displayName": "Architecture Viewer",
-  "description": "从仓库生成 C4 六视图架构图：CLI + 自托管 Web，扫描、生成、漂移校验一站式。",
-  "version": "0.7.0",
+  "description": "AI 写完代码后，自动看清架构变了什么：会话基线 → 变更图谱 → 影响面分析，IDE 状态栏 / PR 评论 / CLI 三端可用。",
+  "version": "0.8.0",
   "publisher": "heyangyan",
   "license": "Apache-2.0",
+  "icon": "assets/icon.png",
   "engines": {
-    "node": ">=18"
+    "node": ">=18",
+    "vscode": "^1.75.0"
   },
   "categories": [
     "Visualization",
@@ -14,26 +16,14 @@
   ],
   "keywords": [
     "architecture",
+    "ai-coding",
+    "code-review",
+    "impact-analysis",
     "c4",
     "mermaid",
     "diagram",
-    "code-to-diagram",
-    "drift-detection"
-  ],
-  "files": [
-    "bin/",
-    "lib/",
-    "web/",
-    "vendor/",
-    "architecture_visualized.html",
-    "architecture.config.js",
-    "AGENT.md",
-    "USER_GUIDE.md",
-    "CHANGELOG.md",
-    "LICENSE",
-    "NOTICE",
-    "README.md",
-    "README.en.md"
+    "drift-detection",
+    "pull-request"
   ],
   "activationEvents": [
     "onStartupFinished"
@@ -128,15 +118,25 @@
     "arch:report": "node lib/cli.js session report . --open",
     "arch:report:text": "node lib/cli.js session report .",
     "demo": "bash scripts/demo.sh",
+    "demo:beginner": "AV_DEMO_NOPAUSE=1 bash scripts/beginner-demo.sh",
+    "demo:beginner:step": "bash scripts/beginner-demo.sh",
     "eval": "node lib/cli.js eval",
     "web": "node web/server.js",
     "start": "node web/server.js",
     "bake:samples": "node scripts/bake-samples.js",
     "wbs": "node pm/scripts/wbs.mjs",
+    "build:vsix": "node scripts/build-vsix.js",
+    "publish:vsix": "node scripts/build-vsix.js && vsce publish --packagePath arch-viewer.vsix --no-git-tag-version",
+    "publish:ovsx": "ovsx publish arch-viewer.vsix",
     "prepublishOnly": "node --check lib/cli.js && node --check lib/index.js && node --check web/server.js && node --test test/*.test.js"
   },
   "devDependencies": {
-    "@playwright/test": "^1.62.1"
+    "@playwright/test": "^1.62.1",
+    "@vscode/vsce": "^3.9.2"
+  },
+  "homepage": "https://gitee.com/heyangyan/architecture_viewer",
+  "bugs": {
+    "url": "https://gitee.com/heyangyan/architecture_viewer/issues"
   },
   "repository": {
     "type": "git",
@@ -149,5 +149,25 @@
     "tree-sitter-javascript": "^0.25.0",
     "tree-sitter-python": "^0.25.0",
     "tree-sitter-typescript": "^0.23.2"
-  }
+  },
+  "overrides": {
+    "tree-sitter": "$tree-sitter"
+  },
+  "files": [
+    "bin/",
+    "lib/",
+    "web/",
+    "src/",
+    "assets/",
+    "vendor/",
+    "architecture_visualized.html",
+    "architecture.config.js",
+    "AGENT.md",
+    "USER_GUIDE.md",
+    "CHANGELOG.md",
+    "LICENSE",
+    "NOTICE",
+    "README.md",
+    "README.en.md"
+  ]
 }

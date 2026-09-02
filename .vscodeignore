@@ -1,8 +1,16 @@
 .vscode/**
+.trae/**
+.trae-html-share-packages/**
 .github/**
 .git/**
+docs/**
+deepseek-harness/**
 eval/**
 test/**
 scripts/**
+pm/**
+examples/**
 *.vsix
 eval/out/**
+.gitignore
+.travis.yml

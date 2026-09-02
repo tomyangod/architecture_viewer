@@ -49,3 +49,4 @@ deepseek-harness/
 .av/habit-gate-log.md
 .av/workspace.json
 
+*.vsix

@@ -1,0 +1,51 @@
+# Architecture Viewer — PR 架构变更影响面评论
+#
+# 每个 PR 自动评论：实体新增/删除/修改、风险发现（跨层违规/类型删除/层级穿透/
+# 新外部依赖）、反向依赖影响面（谁会被波及）。同一 PR 重复 push 只更新原评论。
+#
+# —— 复制到你自己的仓库 ——
+# 前置：无需提前 init（评论基于实时代码图谱，不依赖 architecture_viewer/ 目录）。
+# 把下面 "Post comment" 一步替换为已发布的 CLI 即可：
+#
+#   - name: Post architecture impact comment
+#     env:
+#       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#     run: npx --yes arch-viewer@latest pr-comment /tmp/av-base . --post
+#
+# 本仓自身 dogfood：走仓库内本地代码（scripts/pr-comment.js）。
+
+name: Architecture Diff
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  impact-comment:
+    name: Architecture impact comment
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # 需要 base 分支完整历史以检出 base.sha
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: npm install --no-audit --no-fund --legacy-peer-deps
+
+      - name: Checkout PR base into worktree
+        run: git worktree add --detach /tmp/av-base "${{ github.event.pull_request.base.sha }}"
+
+      - name: Post architecture impact comment
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_BASE_REF: ${{ github.event.pull_request.base.sha }}
+          GITHUB_HEAD_REF: ${{ github.event.pull_request.head.sha }}
+        run: node scripts/pr-comment.js /tmp/av-base . --post
