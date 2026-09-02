@@ -1,0 +1,37 @@
+# DeepSeek Harness (dsh) 接入 Architecture Viewer MCP Server 示例配置
+#
+# 把 AV 的 4 个架构验收工具挂到 dsh agent 上：
+#   av_session_start    改代码前记录基线
+#   av_session_report   改完后验收（只报本次变更引入的违规，低噪音）
+#   av_check_layering   全仓跨层违规摸底（存量债，首次用）
+#   av_explain_finding  解释某条违规的结构化事实
+#
+# 用法二选一（取决于你的 dsh 版本）：
+#
+# ── 方式 A：dsh.config.yaml（dsh-plugin-mcp 插件）──
+# plugins:
+#   mcp:
+#     prefixToolNames: true
+#     servers:
+#       arch-viewer:
+#         type: stdio
+#         command: node
+#         args: ["/绝对路径/architecture_viewer/mcp/server.js"]
+#
+# ── 方式 B：cordis.patch.yml（@deepseek-ai/dsh-mcp-client 插件）──
+# 把下面这段 insert 到 ~/.dsh/profiles/web/cordis.patch.yml：
+#
+# - insert:
+#     - id: mcp-arch-viewer
+#       name: '@deepseek-ai/dsh-mcp-client'
+#       config:
+#         serverName: arch-viewer
+#         transport: stdio
+#         command: node
+#         args:
+#           - /绝对路径/architecture_viewer/mcp/server.js
+#
+# 全局安装后也可用 npx（args 换成 ["-y", "arch-viewer-mcp"]）。
+#
+# 验证：在 dsh 对话里输入「列出你可用的工具」，应能看到
+#   mcp__arch-viewer__av_session_start 等 4 个工具。
