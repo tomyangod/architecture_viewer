@@ -30,6 +30,137 @@ function baselinePath(repo) {
   return path.join(avDir(repo), 'graph-baseline.json');
 }
 
+// ─── 自动闭环：文件监听 + 防抖自动报告 ───────────────────────────
+// AI 改代码时文件不断保存，watcher 静默 DEBOUNCE_MS 毫秒后自动跑 diff，
+// 生成报告缓存。AI 调 av_session_report 时直接命中缓存（秒回），
+// 调 av_session_changes 做轻量轮询（不生成文件）。
+
+const DEBOUNCE_MS = 20000; // AI 停下 20 秒后自动出报告
+const WATCH_EXTENSIONS = new Set(['.js', '.ts', '.jsx', '.tsx', '.py', '.go', '.java', '.vue', '.svelte', '.mjs', '.cjs']);
+const IGNORE_DIRS = new Set(['node_modules', '.git', '.av', 'dist', 'build', '.next', 'coverage', '__pycache__', '.idea', '.vscode', '.trae']);
+
+/** repoPath -> { watcher, timer, autoReport, watching, pendingFiles } */
+const watchers = new Map();
+
+function shouldWatchFile(filePath) {
+  const ext = path.extname(filePath);
+  if (!WATCH_EXTENSIONS.has(ext)) return false;
+  const parts = filePath.split(path.sep);
+  return !parts.some((p) => IGNORE_DIRS.has(p));
+}
+
+/**
+ * 核心报告生成逻辑（watcher 和手动调用共用）。
+ * 生成 diff + 风险 + 影响面 + HTML/JSON 文件，返回结构化结果。
+ */
+function generateSessionReport(repo) {
+  const bp = baselinePath(repo);
+  if (!fs.existsSync(bp)) return null;
+
+  const baseline = JSON.parse(fs.readFileSync(bp, 'utf8'));
+  const sessionStart = baseline.sessionStartedAt;
+  const current = buildGraph(repo);
+  const diff = diffGraphs(baseline, current);
+  const impact = computeImpact(diff, baseline, current);
+  const findings = evaluateRisk(diff, current, baseline, impact);
+  const riskSummary = summarizeFindings(findings);
+
+  const dir = avDir(repo);
+  fs.mkdirSync(dir, { recursive: true });
+  const reportJsonPath = path.join(dir, 'session-report.json');
+  const htmlPath = path.join(dir, 'session-report.html');
+  fs.writeFileSync(reportJsonPath, JSON.stringify({ diff, findings, riskSummary, impact }, null, 2));
+  const html = generateReport({
+    baseGraph: baseline, headGraph: current, diff, findings, impact,
+    repoName: path.basename(repo), sessionStart
+  });
+  fs.writeFileSync(htmlPath, html);
+
+  return {
+    generatedAt: Date.now(),
+    summary: {
+      ...diff.summary,
+      baseFingerprint: diff.base.fingerprint,
+      headFingerprint: diff.head.fingerprint,
+      riskLevel: riskSummary.level,
+      riskCount: findings.length,
+      riskCounts: riskSummary.counts
+    },
+    findings: findings.map(formatFinding),
+    impact: formatImpact(impact),
+    reportPaths: { json: reportJsonPath, html: htmlPath },
+    riskLevel: riskSummary.level,
+    findingsCount: findings.length,
+    hasChanges: (diff.summary.totalChanges || 0) > 0,
+    message: riskSummary.level === 'high'
+      ? `🔴 红灯 — ${findings.length} 个问题需要你亲眼看一下，可能改坏了结构，建议先看再提交。`
+      : riskSummary.level === 'medium'
+        ? `🟠 黄灯 — ${findings.length} 个值得注意的地方，建议看一下。`
+        : riskSummary.level === 'low'
+          ? `🔵 蓝灯 — ${findings.length} 个小提示，有空可以看看。`
+          : `✅ 绿灯 — 没发现问题，结构改动正常。`
+  };
+}
+
+/** 启动文件监听：AI 改代码后自动生成报告 */
+function startWatcher(repo) {
+  // 已在监听则先停掉旧的（重新 start 时重置）
+  stopWatcher(repo);
+
+  const state = { watcher: null, timer: null, autoReport: null, watching: true, pendingFiles: 0 };
+
+  try {
+    const watcher = fs.watch(repo, { recursive: true }, (_event, filename) => {
+      if (!filename || !shouldWatchFile(filename)) return;
+      state.pendingFiles++;
+      // 重置防抖计时器
+      if (state.timer) clearTimeout(state.timer);
+      state.timer = setTimeout(() => {
+        state.timer = null;
+        state.pendingFiles = 0;
+        try {
+          const report = generateSessionReport(repo);
+          if (report) state.autoReport = report;
+        } catch (e) {
+          // 自动报告失败不崩溃，手动 report 时会再试
+          state.autoReport = { error: e.message, generatedAt: Date.now() };
+        }
+      }, DEBOUNCE_MS);
+      // 定时器不阻止进程退出（MCP server 靠 stdio 保活）
+      state.timer.unref?.();
+    });
+    // watcher 不阻止进程退出（测试/CLI 场景下不挂住）
+    watcher.unref?.();
+    state.watcher = watcher;
+  } catch (e) {
+    // fs.watch recursive 在某些 Linux 环境不支持——降级为不监听（手动 report 仍可用）
+    state.watching = false;
+    state.watchError = e.message;
+  }
+
+  watchers.set(repo, state);
+  return state;
+}
+
+function stopWatcher(repo) {
+  const state = watchers.get(repo);
+  if (!state) return;
+  if (state.timer) clearTimeout(state.timer);
+  if (state.watcher) {
+    try { state.watcher.close(); } catch { /* ignore */ }
+  }
+  watchers.delete(repo);
+}
+
+function getWatcherState(repo) {
+  return watchers.get(repo) || null;
+}
+
+// 进程退出时清理所有 watcher
+process.on('exit', () => {
+  for (const repo of watchers.keys()) stopWatcher(repo);
+});
+
 function writeLayerSuggestions(repo, graph) {
   const dir = avDir(repo);
   fs.mkdirSync(dir, { recursive: true });
@@ -47,12 +178,12 @@ function formatFinding(f) {
 }
 
 function formatImpact(impact) {
-  if (!impact || !impact.items || impact.items.length === 0) return '无影响面数据';
-  const lines = [`被改实体 ${impact.summary.changed} 个，受影响下游 ${impact.summary.affected} 个`];
+  if (!impact || !impact.items || impact.items.length === 0) return '没有波及范围数据';
+  const lines = [`改了 ${impact.summary.changed} 个地方，会波及 ${impact.summary.affected} 个其他地方`];
   for (const it of impact.items.slice(0, 5)) {
     const direct = (it.direct || []).length;
     const transitive = (it.transitive || []).length;
-    lines.push(`  • [${it.change}] ${it.id} → 直接下游 ${direct}，间接 ${transitive}`);
+    lines.push(`  • [${it.change}] ${it.id} → 直接受影响 ${direct}，间接受影响 ${transitive}`);
   }
   return lines.join('\n');
 }
@@ -66,6 +197,9 @@ function toolSessionStart(args) {
   fs.writeFileSync(baselinePath(repo), JSON.stringify(snapshot, null, 2));
   const suggested = writeLayerSuggestions(repo, graph);
 
+  // 启动文件监听：AI 改代码后自动生成报告，无需手动触发
+  const watchState = startWatcher(repo);
+
   return {
     baseline: {
       files: graph.stats.files,
@@ -75,10 +209,13 @@ function toolSessionStart(args) {
       fingerprint: graph.fingerprint,
       savedTo: baselinePath(repo)
     },
+    autoWatch: watchState.watching
+      ? '已开启自动监听：你改代码时系统会自动检测，停下 20 秒后自动生成架构报告。改完后调 av_session_changes 轻量检查，或直接调 av_session_report 看详情（缓存命中秒回）。'
+      : `自动监听不可用（${watchState.watchError || '当前环境不支持'}），改完代码后请手动调 av_session_report。`,
     layerSuggestions: suggested
-      ? { path: suggested, note: '审阅无误无需操作；复制为 .av/layers.json 可锁定' }
+      ? { path: suggested, note: '工具自动帮你分好了楼层。觉得没问题就不用管；想锁定就复制为 .av/layers.json' }
       : null,
-    message: `基线已记录（${graph.stats.files} 文件, ${graph.stats.types} 类型）。AI 改完代码后调用 av_session_report 验收。`
+    message: `已经拍好了"改之前"的照片（${graph.stats.files} 个文件、${graph.stats.types} 个组件）。现在可以放心改代码，系统会自动盯着结构变化。`
   };
 }
 
@@ -86,45 +223,95 @@ function toolSessionReport(args) {
   const repo = path.resolve(args.repo);
   const bp = baselinePath(repo);
   if (!fs.existsSync(bp)) {
-    return { error: 'NO_BASELINE', message: '未找到基线。请先调用 av_session_start 记录基线。' };
+    return { error: 'NO_BASELINE', message: '还没拍"改之前"的照片。请先调用 av_session_start 再改代码。' };
   }
-  const baseline = JSON.parse(fs.readFileSync(bp, 'utf8'));
-  const sessionStart = baseline.sessionStartedAt;
-  const current = buildGraph(repo);
-  const diff = diffGraphs(baseline, current);
-  const impact = computeImpact(diff, baseline, current);
-  const findings = evaluateRisk(diff, current, baseline, impact);
-  const riskSummary = summarizeFindings(findings);
 
-  const dir = avDir(repo);
-  const reportJsonPath = path.join(dir, 'session-report.json');
-  const htmlPath = path.join(dir, 'session-report.html');
-  fs.writeFileSync(reportJsonPath, JSON.stringify({ diff, findings, riskSummary, impact }, null, 2));
-  const html = generateReport({
-    baseGraph: baseline, headGraph: current, diff, findings, impact,
-    repoName: path.basename(repo), sessionStart
-  });
-  fs.writeFileSync(htmlPath, html);
+  // 优先用 watcher 自动生成的新鲜缓存（10 分钟内），避免重复计算
+  const state = getWatcherState(repo);
+  if (state && state.autoReport && !state.autoReport.error) {
+    const ageMs = Date.now() - state.autoReport.generatedAt;
+    if (ageMs < 10 * 60 * 1000) {
+      return { ...state.autoReport, cached: true, cacheAgeSec: Math.round(ageMs / 1000) };
+    }
+  }
 
+  // 缓存不存在或过期：实时生成
+  const report = generateSessionReport(repo);
+  if (!report) {
+    return { error: 'NO_BASELINE', message: '还没拍"改之前"的照片。请先调用 av_session_start 再改代码。' };
+  }
+  // 更新缓存
+  if (state) state.autoReport = report;
+  return report;
+}
+
+/**
+ * 轻量检查：不生成 HTML 文件，只返回"有没有架构变更、风险等级"。
+ * AI 在每次完成代码修改、回复用户前调用，成本极低。
+ * 如果 watcher 正在防抖（检测到变更但还没跑完），返回 analyzing 状态。
+ */
+function toolSessionChanges(args) {
+  const repo = path.resolve(args.repo);
+  const bp = baselinePath(repo);
+  if (!fs.existsSync(bp)) {
+    return { error: 'NO_BASELINE', message: '还没拍"改之前"的照片。请先调 av_session_start。' };
+  }
+
+  const state = getWatcherState(repo);
+
+  // watcher 正在防抖（检测到文件变更，等待 AI 停下）
+  if (state && state.timer) {
+    return {
+      watching: true,
+      status: 'analyzing',
+      hasChanges: true,
+      message: '检测到代码变更，正在等你停下（20 秒无新改动后自动出报告）。稍等片刻再调 av_session_report 看详情。'
+    };
+  }
+
+  // 有自动生成的报告
+  if (state && state.autoReport && !state.autoReport.error) {
+    const r = state.autoReport;
+    const ageSec = Math.round((Date.now() - r.generatedAt) / 1000);
+    return {
+      watching: true,
+      status: 'ready',
+      hasChanges: r.hasChanges,
+      riskLevel: r.riskLevel,
+      findingsCount: r.findingsCount,
+      summary: r.summary,
+      cacheAgeSec: ageSec,
+      message: r.hasChanges
+        ? `${r.message} 报告已自动生成（${ageSec} 秒前），调 av_session_report 看完整报告和架构图。`
+        : '没有检测到架构变更，结构没变。'
+    };
+  }
+
+  // watcher 在监听但还没检测到变更
+  if (state && state.watching) {
+    return {
+      watching: true,
+      status: 'idle',
+      hasChanges: false,
+      message: '正在监听中，还没检测到代码变更。改完代码后停下 20 秒，系统会自动出报告。'
+    };
+  }
+
+  // 没有 watcher（可能 server 重启过）：实时快速检查
+  const report = generateSessionReport(repo);
+  if (!report) {
+    return { watching: false, status: 'no-baseline', hasChanges: false, message: '请先调 av_session_start。' };
+  }
   return {
-    summary: {
-      ...diff.summary,
-      baseFingerprint: diff.base.fingerprint,
-      headFingerprint: diff.head.fingerprint,
-      riskLevel: riskSummary.level,
-      riskCount: findings.length,
-      riskCounts: riskSummary.counts
-    },
-    findings: findings.map(formatFinding),
-    impact: formatImpact(impact),
-    reportPaths: { json: reportJsonPath, html: htmlPath },
-    message: riskSummary.level === 'high'
-      ? `🔴 HIGH 风险 — ${findings.length} 条发现，建议逐条审查后再提交。`
-      : riskSummary.level === 'medium'
-        ? `🟠 MEDIUM 风险 — ${findings.length} 条发现，请关注。`
-        : riskSummary.level === 'low'
-          ? `🔵 LOW 风险 — ${findings.length} 条提示，可酌情处理。`
-          : `✅ NONE — 无风险发现，结构变更正常。`
+    watching: false,
+    status: 'ready',
+    hasChanges: report.hasChanges,
+    riskLevel: report.riskLevel,
+    findingsCount: report.findingsCount,
+    summary: report.summary,
+    message: report.hasChanges
+      ? `${report.message} 调 av_session_report 看完整报告和架构图。`
+      : '没有检测到架构变更，结构没变。'
   };
 }
 
@@ -159,8 +346,8 @@ function toolCheckLayering(args) {
     riskCount: findings.length,
     findings: findings.map(formatFinding),
     message: riskSummary.level === 'none'
-      ? `✅ 无跨层违规 — ${layered.length}/${total.length} 个实体已分层，覆盖率 ${total.length > 0 ? Math.round(layered.length / total.length * 100) : 0}%。`
-      : `${findings.length} 条风险发现（${riskSummary.level.toUpperCase()}），详见 findings。`
+      ? `✅ 没有串门 — ${layered.length}/${total.length} 个组件已分到楼层（${total.length > 0 ? Math.round(layered.length / total.length * 100) : 0}%）。`
+      : `查到 ${findings.length} 个问题（${riskSummary.level === 'high' ? '红灯' : riskSummary.level === 'medium' ? '黄灯' : '蓝灯'}），这是全楼历史问题，不是这次改出来的。`
   };
 }
 
@@ -212,7 +399,7 @@ function toolExplainFinding(args) {
   }
 
   if (!target) {
-    return { error: 'NOT_FOUND', message: `未找到匹配的违规。当前共 ${findings.length} 条发现。` };
+    return { error: 'NOT_FOUND', message: `没找到对应的红灯。当前共 ${findings.length} 条问题。` };
   }
 
   return buildExplainResult(target, diff, graph);
@@ -246,34 +433,45 @@ function buildExplainResult(target, diff, graph) {
     severity: target.severity,
     edgeEvidence,
     suggestion: target.rule === 'cross-layer-violation' || target.rule === 'layer-skip'
-      ? '在 from 和 to 之间引入 service 层进行中转，或将直接依赖改为通过接口/依赖注入。'
+      ? '不要让前台直接跑去仓库拿东西——中间加一层"中间人"来中转，或者改成走接口。'
       : target.rule === 'removed-type'
-        ? '检查是否有其他代码引用了被删除的类型，必要时保留或提供迁移路径。'
+        ? '检查有没有其他代码用到被删掉的东西，必要的话保留或给个替代方案。'
         : target.rule === 'new-external-dep'
-          ? '确认新依赖是否必要，检查许可证和安全性。'
-          : '请根据具体 finding 内容判断。'
+          ? '确认这个新引入的外购零件是不是真的需要，检查许可证和安全。'
+          : '请根据具体问题内容判断。'
   };
 }
 
 const TOOLS = [
   {
     name: 'av_session_start',
-    description: 'AI 改代码前记录架构基线。在 Agent 开始修改代码之前调用。返回基线指纹和自动分层建议。不需要 API Key，完全离线。',
+    description: '改代码之前拍一张"改之前"的照片（记录当前结构），并开启自动监听。在 Agent 开始改代码之前调用。调用后系统会自动盯着文件变化，AI 停下 20 秒后自动生成架构报告，不需要手动触发。完全离线。',
     inputSchema: {
       type: 'object',
       properties: {
-        repo: { type: 'string', description: '项目仓库的绝对路径' }
+        repo: { type: 'string', description: '项目文件夹的绝对路径' }
+      },
+      required: ['repo']
+    }
+  },
+  {
+    name: 'av_session_changes',
+    description: '轻量检查"有没有架构变更"——不生成文件、秒回。每次你完成一批代码修改、准备回复用户之前调用。如果返回有变更，再调 av_session_report 看完整报告和架构图；如果返回 analyzing 说明还在等防抖，稍等再调。',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        repo: { type: 'string', description: '项目文件夹的绝对路径' }
       },
       required: ['repo']
     }
   },
   {
     name: 'av_session_report',
-    description: 'AI 改完代码后生成架构变更报告。返回新增/删除/修改的节点和边、风险发现、影响面。HIGH 风险建议拦截提交。需要先调用 av_session_start。',
+    description: '看完整架构变更报告（含 Before/After 对比图、风险红灯、影响面）。改完代码后调用。如果自动监听已生成报告会秒回缓存；否则实时生成。红灯建议先看再提交。需要先调 av_session_start。',
     inputSchema: {
       type: 'object',
       properties: {
-        repo: { type: 'string', description: '项目仓库的绝对路径' },
+        repo: { type: 'string', description: '项目文件夹的绝对路径' },
         from: { type: 'string', enum: ['session'], description: '可选：从会话报告取数据' }
       },
       required: ['repo']
@@ -281,24 +479,24 @@ const TOOLS = [
   },
   {
     name: 'av_check_layering',
-    description: '实时检测当前代码的跨层违规，不需要预先记录基线。适合 Agent 改完代码后立刻自查。返回分层覆盖率、每层实体数、违规列表。完全离线，1-2 秒完成。',
+    description: '查全楼所有历史问题（不需要先拍照片）。适合第一次摸底，会列出全部"串门"。日常验收用 av_session_report 而不是这个。完全离线，1-2 秒完成。',
     inputSchema: {
       type: 'object',
       properties: {
-        repo: { type: 'string', description: '项目仓库的绝对路径' }
+        repo: { type: 'string', description: '项目文件夹的绝对路径' }
       },
       required: ['repo']
     }
   },
   {
     name: 'av_explain_finding',
-    description: '解释一条架构违规的结构化事实：谁→谁、哪条边、依据什么分层、修复建议。可按 rule 名或序号定位。',
+    description: '解释某条红灯的详情：谁串了谁的门、跳了哪一层、怎么修。按序号定位。',
     inputSchema: {
       type: 'object',
       properties: {
-        repo: { type: 'string', description: '项目仓库的绝对路径' },
+        repo: { type: 'string', description: '项目文件夹的绝对路径' },
         rule: { type: 'string', description: '规则名（cross-layer-violation, layer-skip, removed-type, new-external-dep）' },
-        index: { type: 'integer', description: 'findings 列表中的序号（0-based）' },
+        index: { type: 'integer', description: '问题列表中的序号（从0开始）' },
         from: { type: 'string', enum: ['session'], description: '可选：从会话报告取数据而非实时检测' }
       },
       required: ['repo']
@@ -310,6 +508,7 @@ function handleToolCall(params) {
   const { name, arguments: args } = params;
   switch (name) {
     case 'av_session_start': return toolSessionStart(args || {});
+    case 'av_session_changes': return toolSessionChanges(args || {});
     case 'av_session_report': return toolSessionReport(args || {});
     case 'av_check_layering': return toolCheckLayering(args || {});
     case 'av_explain_finding': return toolExplainFinding(args || {});
@@ -370,7 +569,7 @@ function createServer() {
   return { rl };
 }
 
-module.exports = { TOOLS, handleToolCall, toolSessionStart, toolSessionReport, toolCheckLayering, toolExplainFinding, buildExplainResult, createServer };
+module.exports = { TOOLS, handleToolCall, toolSessionStart, toolSessionReport, toolSessionChanges, toolCheckLayering, toolExplainFinding, buildExplainResult, createServer, generateSessionReport, startWatcher, stopWatcher, getWatcherState, shouldWatchFile };
 
 if (require.main === module) {
   createServer();

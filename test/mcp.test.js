@@ -1,13 +1,13 @@
 'use strict';
 
-const { describe, it, before } = require('node:test');
+const { describe, it, before, after } = require('node:test');
 const assert = require('node:assert/strict');
 const fs = require('fs');
 const os = require('os');
 const path = require('path');
 const { spawn } = require('child_process');
 
-const { TOOLS, handleToolCall, toolSessionStart, toolSessionReport, toolCheckLayering, toolExplainFinding } = require('../mcp/server');
+const { TOOLS, handleToolCall, toolSessionStart, toolSessionReport, toolSessionChanges, toolCheckLayering, toolExplainFinding, stopWatcher } = require('../mcp/server');
 
 function makeRepo(files) {
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'av-mcp-'));
@@ -60,10 +60,11 @@ def get_async_engine():
 };
 
 describe('MCP Server: tools/list', () => {
-  it('暴露且仅暴露 4 个工具', () => {
+  it('暴露且仅暴露 5 个工具', () => {
     const names = TOOLS.map(t => t.name);
-    assert.equal(names.length, 4);
+    assert.equal(names.length, 5);
     assert.ok(names.includes('av_session_start'));
+    assert.ok(names.includes('av_session_changes'));
     assert.ok(names.includes('av_session_report'));
     assert.ok(names.includes('av_check_layering'));
     assert.ok(names.includes('av_explain_finding'));
@@ -82,13 +83,14 @@ describe('MCP Server: av_session_start', () => {
   let repo;
 
   before(() => { repo = makeRepo(FIXTURE); });
+  after(() => { stopWatcher(repo); });
 
   it('记录基线并生成 layers.suggested.json', () => {
     const result = toolSessionStart({ repo });
     assert.ok(result.baseline.files > 0);
     assert.ok(result.baseline.fingerprint);
     assert.ok(fs.existsSync(path.join(repo, '.av/graph-baseline.json')));
-    assert.ok(result.message.includes('基线已记录'));
+    assert.ok(result.message.includes('拍好了'));
   });
 });
 
@@ -96,6 +98,7 @@ describe('MCP Server: av_session_report', () => {
   let repo;
 
   before(() => { repo = makeRepo(FIXTURE); });
+  after(() => { stopWatcher(repo); });
 
   it('无基线时返回 NO_BASELINE', () => {
     const result = toolSessionReport({ repo });
@@ -110,6 +113,39 @@ describe('MCP Server: av_session_report', () => {
     assert.ok(Array.isArray(result.findings));
     assert.ok(result.reportPaths.json);
     assert.ok(result.reportPaths.html);
+  });
+});
+
+describe('MCP Server: av_session_changes（轻量检查 + 自动闭环）', () => {
+  let repo;
+
+  before(() => { repo = makeRepo(FIXTURE); });
+  after(() => { stopWatcher(repo); });
+
+  it('无基线时返回 NO_BASELINE', () => {
+    const result = toolSessionChanges({ repo });
+    assert.equal(result.error, 'NO_BASELINE');
+  });
+
+  it('start 后进入监听状态（idle）', () => {
+    toolSessionStart({ repo });
+    const result = toolSessionChanges({ repo });
+    assert.equal(result.watching, true);
+    assert.ok(['idle', 'ready'].includes(result.status), `status=${result.status}`);
+  });
+
+  it('改代码后 report 能检测到变更，changes 反映 hasChanges', () => {
+    // 新增一个文件（模拟 AI 改代码）
+    const newFile = path.join(repo, 'src/new-feature.js');
+    fs.mkdirSync(path.dirname(newFile), { recursive: true });
+    fs.writeFileSync(newFile, "export class NewFeature { run() { return 'new'; } }\n");
+    // 手动触发 report（watcher 防抖 20s，测试里直接调）
+    const report = toolSessionReport({ repo });
+    assert.ok(report.hasChanges, '应检测到新增文件');
+    // changes 工具应反映 ready + hasChanges
+    const changes = toolSessionChanges({ repo });
+    assert.equal(changes.status, 'ready');
+    assert.equal(changes.hasChanges, true);
   });
 });
 
@@ -174,12 +210,14 @@ describe('MCP Server: handleToolCall 路由', () => {
     );
   });
 
-  it('正确路由到 4 个工具', () => {
+  it('正确路由到 5 个工具', () => {
     const repo = makeRepo(FIXTURE);
     assert.doesNotThrow(() => handleToolCall({ name: 'av_session_start', arguments: { repo } }));
+    assert.doesNotThrow(() => handleToolCall({ name: 'av_session_changes', arguments: { repo } }));
     assert.doesNotThrow(() => handleToolCall({ name: 'av_check_layering', arguments: { repo } }));
     assert.doesNotThrow(() => handleToolCall({ name: 'av_session_report', arguments: { repo } }));
     assert.doesNotThrow(() => handleToolCall({ name: 'av_explain_finding', arguments: { repo } }));
+    stopWatcher(repo);
   });
 });
 
@@ -223,7 +261,7 @@ describe('MCP Server: stdio JSON-RPC 协议', () => {
 
     send({ jsonrpc: '2.0', id: 2, method: 'tools/list', params: {} });
     const listResp = await waitForResponse(2);
-    assert.equal(listResp.result.tools.length, 4);
+    assert.equal(listResp.result.tools.length, 5);
 
     send({ jsonrpc: '2.0', id: 3, method: 'tools/call', params: { name: 'av_check_layering', arguments: { repo: makeRepo(FIXTURE) } } });
     const callResp = await waitForResponse(3);

@@ -1,37 +1,71 @@
-# DeepSeek Harness (dsh) 接入 Architecture Viewer MCP Server 示例配置
+# DeepSeek Harness (dsh) 接入 Architecture Viewer —— 已验证配置
 #
-# 把 AV 的 4 个架构验收工具挂到 dsh agent 上：
-#   av_session_start    改代码前记录基线
-#   av_session_report   改完后验收（只报本次变更引入的违规，低噪音）
-#   av_check_layering   全仓跨层违规摸底（存量债，首次用）
-#   av_explain_finding  解释某条违规的结构化事实
+# dsh 把 Architecture Viewer 的 5 个架构验收工具挂到 agent 上：
+#   mcp__arch-viewer__av_session_start    改代码前记录基线（拍"改之前"的照片），并开启自动监听
+#   mcp__arch-viewer__av_session_changes  轻量检查"有没有架构变更"（不生成文件、秒回），改完代码回复用户前调用
+#   mcp__arch-viewer__av_session_report   看完整报告（Before/After 对比图 + 风险红灯）；自动监听已生成则秒回缓存
+#   mcp__arch-viewer__av_check_layering   全仓跨层违规摸底（存量债，首次用）
+#   mcp__arch-viewer__av_explain_finding  解释某条违规的结构化事实
 #
-# 用法二选一（取决于你的 dsh 版本）：
+# 自动闭环：av_session_start 后系统自动监听文件变化，AI 停下 20 秒后自动生成
+# 架构报告，无需手动触发。AI 改完代码调 av_session_changes 轻量确认，有变更再调
+# av_session_report 看详情（缓存命中秒回）。
 #
-# ── 方式 A：dsh.config.yaml（dsh-plugin-mcp 插件）──
-# plugins:
-#   mcp:
-#     prefixToolNames: true
-#     servers:
-#       arch-viewer:
-#         type: stdio
-#         command: node
-#         args: ["/绝对路径/architecture_viewer/mcp/server.js"]
+# ── 方式一：一键安装（推荐，自动备份/幂等/保留已有插件）──────────────
+# 在你自己的终端（不是受限沙箱）里跑：
 #
-# ── 方式 B：cordis.patch.yml（@deepseek-ai/dsh-mcp-client 插件）──
-# 把下面这段 insert 到 ~/.dsh/profiles/web/cordis.patch.yml：
+#   node ~/Desktop/architecture_viewer/lib/cli.js setup
 #
-# - insert:
-#     - id: mcp-arch-viewer
-#       name: '@deepseek-ai/dsh-mcp-client'
-#       config:
-#         serverName: arch-viewer
-#         transport: stdio
-#         command: node
-#         args:
-#           - /绝对路径/architecture_viewer/mcp/server.js
+# 会自动检测到 dsh，并把配置写进 web 与 headless 两个 profile 的
+#   ~/.dsh/profiles/<profile>/cordis.patch.yml
+# 已有的其他插件原样保留，原文件备份为 cordis.patch.yml.av-bak。
 #
-# 全局安装后也可用 npx（args 换成 ["-y", "arch-viewer-mcp"]）。
+# 启动方式会自动二选一（无需手动改）：
+#   · 全局装了 arch-viewer-mcp（npm i -g arch-viewer-mcp）→ 用 npx，不依赖仓库路径
+#   · 没装 → 用仓库内 mcp/server.js 的绝对路径（clone 即可用，零网络）
 #
-# 验证：在 dsh 对话里输入「列出你可用的工具」，应能看到
-#   mcp__arch-viewer__av_session_start 等 4 个工具。
+# ── 方式二：手动 ────────────────────────────────────────────────────
+# 把下面这段 insert 合并进（两个 profile 各一份）：
+#   ~/.dsh/profiles/web/cordis.patch.yml
+#   ~/.dsh/profiles/headless/cordis.patch.yml
+# 这两个文件默认是注释 + 一个空的 "[]"，把 "[]" 替换成下面的数组即可；
+# 如果里面已经有别的插件，把 "- insert:" 这一整段作为新数组项追加到末尾。
+#
+# 二选一：
+#   A) npx 方式（推荐，npm 发布后；不用 clone 仓库，换电脑也不怕路径变）：
+#        command: npx
+#        args: ["-y", "arch-viewer-mcp"]
+#      Windows 下 command 用 npx.cmd。
+#   B) 本地仓库方式（当前可用，离线零下载）：
+#        command: node
+#        args: ["/你/的/architecture_viewer/mcp/server.js"]
+
+- insert:
+    - id: mcp-arch-viewer
+      name: '@deepseek-ai/dsh-mcp-client'
+      config:
+        # 工具在模型侧的名字前缀：mcp__<serverName>__<工具名>
+        serverName: arch-viewer
+        transport: stdio
+        # A) npx 方式（发布后推荐）：
+        # command: npx
+        # args:
+        #   - "-y"
+        #   - arch-viewer-mcp
+        # B) 本地仓库方式（当前使用，改成你本机的绝对路径）：
+        command: node
+        args:
+          - /Users/yanheyang/Desktop/architecture_viewer/mcp/server.js
+        # 以下为可选项，省略时用插件默认值（env={}、超时 60s、启动失败不阻断 dsh）
+        # env: {}
+        # toolCallTimeoutMs: 60000
+        # failOnStartupError: false
+
+# ── 验证 ───────────────────────────────────────────────────────────
+# 1) 不跑模型、只看配置树是否加载成功（不需要 API Key）：
+#      dsh --profile headless --dump-config | grep -A6 mcp-arch-viewer
+#    能看到上面的条目即说明 patch 被 dsh 正确加载。
+#
+# 2) 配置好 DEEPSEEK_API_KEY（dsh 网页端 Models 页，或启动前 export DEEPSEEK_API_KEY=sk-...）
+#    然后在 dsh 对话里问「列出你可用的工具」，应能看到：
+#      mcp__arch-viewer__av_session_start 等 5 个工具。
