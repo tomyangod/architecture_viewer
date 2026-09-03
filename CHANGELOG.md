@@ -1,6 +1,24 @@
 # Changelog
 
-本文件遵循 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.1.0/)，版本号遵循语义化版本。
+本文件遵循 [Keep a Changelog](https://keepachangelog.com/zh-cn/1.1.0/)，版本号遵循语义化版本。
+
+## \[0.11.0] — 2026-09-03
+
+### Added
+
+- **MCP 自动闭环（watcher 模式）**：`av_session_start` 后 MCP server 自动监听工作区源码文件（过滤口径与扫描器一致：node\_modules/docs/.venv/dist 等不监听），AI 停下 20 秒（防抖）后**自动生成**架构报告并缓存，无需 Agent 手动触发；新增第 5 个工具 `av_session_changes`——轻量轮询「有没有架构变更」，不生成文件、秒回，Agent 改完代码回复用户前先调它，有变更再调 `av_session_report` 看详情（缓存命中秒回）。新增 `startWatcher` / `stopWatcher` / `getWatcherState` 生命周期管理，工具返回中带 watcher 状态。DeepSeek Harness 示例配置（`mcp/dsh-config.example.yml`）同步更新为自动闭环工作流说明。
+
+- **`arch-viewer setup`** **一键接入**：新增 `lib/setup.js` 与 `setup` 命令——自动检测本机已安装的 AI 工具（Cursor / Claude Code / Claude Desktop / Windsurf / DeepSeek Harness），把 MCP 配置写入对应配置文件，零手工编辑；写入前自动备份原文件（`.bak`），可重复运行、幂等不重复注册；完成后自动打开图文引导页。`npx arch-viewer setup` 是小白推荐入口。
+
+### Changed
+
+- **Before/After 对比图修复**（`lib/session-report.js`）：修复纯新增场景下 Before 视图空白、文件容器布局错位、双图坐标系不统一导致节点位置跳动、changed 过滤器漏过滤、变更边高亮只认单向等问题；变更节点/边在两图中一致高亮。
+
+- **外部依赖 diff 标注 stdlib**（`lib/diff-graph.js`）：新增/移除外部依赖清单携带 `builtin` 标记，Node/Python 标准库模块不再与真第三方依赖混排，「新外部依赖」风险信号噪音降低。
+
+### Docs
+
+- `docs/SESSION-GUIDE.md` 重写为大白话小白指南（拍照片比喻、术语对照表、故意跨层看红灯的分步演示）；README Quick Start 改为 setup 一键入口优先；新增 `docs/MCP-DEMO-publicopinionmonitor.md`（真实仓 MCP 接入演示）与 `docs/welcome.html`（setup 后自动打开的图文引导页）。
 
 ## \[0.10.0] — 2026-09-02
 

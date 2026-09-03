@@ -1,19 +1,19 @@
 {
   "version": 1,
   "root": "architecture_viewer",
-  "generatedAt": "2026-09-02T14:41:57.043Z",
-  "fingerprint": "6236d4491b6abb58",
+  "generatedAt": "2026-09-03T08:36:56.419Z",
+  "fingerprint": "46ab9a8bc010ab0e",
   "languages": [
     "javascript"
   ],
   "stats": {
-    "files": 58,
-    "filesParsed": 58,
+    "files": 60,
+    "filesParsed": 60,
     "parseErrors": 0,
-    "types": 454,
-    "nodes": 531,
-    "edges": 668,
-    "externalPackages": 19
+    "types": 485,
+    "nodes": 565,
+    "edges": 712,
+    "externalPackages": 20
   },
   "nodes": [
     {
@@ -2878,6 +2878,322 @@
       ]
     },
     {
+      "id": "file:mcp/server.js",
+      "kind": "file",
+      "name": "server.js",
+      "path": "mcp/server.js",
+      "layer": "controller",
+      "layerConfidence": "low",
+      "layerSignal": "structure:high-fan-out",
+      "lang": "javascript"
+    },
+    {
+      "id": "mcp/server#avDir",
+      "kind": "function",
+      "name": "avDir",
+      "path": "mcp/server.js",
+      "line": 25,
+      "layer": "controller",
+      "layerConfidence": "low",
+      "layerSignal": "structure:high-fan-out",
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "mcp/server",
+      "methods": [
+        "avDir"
+      ]
+    },
+    {
+      "id": "mcp/server#baselinePath",
+      "kind": "function",
+      "name": "baselinePath",
+      "path": "mcp/server.js",
+      "line": 29,
+      "layer": "controller",
+      "layerConfidence": "low",
+      "layerSignal": "structure:high-fan-out",
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "mcp/server",
+      "methods": [
+        "baselinePath"
+      ]
+    },
+    {
+      "id": "mcp/server#shouldWatchFile",
+      "kind": "function",
+      "name": "shouldWatchFile",
+      "path": "mcp/server.js",
+      "line": 45,
+      "layer": "controller",
+      "layerConfidence": "low",
+      "layerSignal": "structure:high-fan-out",
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "mcp/server",
+      "methods": [
+        "shouldWatchFile"
+      ]
+    },
+    {
+      "id": "mcp/server#generateSessionReport",
+      "kind": "function",
+      "name": "generateSessionReport",
+      "path": "mcp/server.js",
+      "line": 56,
+      "layer": "controller",
+      "layerConfidence": "low",
+      "layerSignal": "structure:high-fan-out",
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "mcp/server",
+      "methods": [
+        "generateSessionReport"
+      ]
+    },
+    {
+      "id": "mcp/server#startWatcher",
+      "kind": "function",
+      "name": "startWatcher",
+      "path": "mcp/server.js",
+      "line": 106,
+      "layer": "controller",
+      "layerConfidence": "low",
+      "layerSignal": "structure:high-fan-out",
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "mcp/server",
+      "methods": [
+        "startWatcher"
+      ]
+    },
+    {
+      "id": "mcp/server#stopWatcher",
+      "kind": "function",
+      "name": "stopWatcher",
+      "path": "mcp/server.js",
+      "line": 145,
+      "layer": "controller",
+      "layerConfidence": "low",
+      "layerSignal": "structure:high-fan-out",
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "mcp/server",
+      "methods": [
+        "stopWatcher"
+      ]
+    },
+    {
+      "id": "mcp/server#getWatcherState",
+      "kind": "function",
+      "name": "getWatcherState",
+      "path": "mcp/server.js",
+      "line": 155,
+      "layer": "controller",
+      "layerConfidence": "low",
+      "layerSignal": "structure:high-fan-out",
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "mcp/server",
+      "methods": [
+        "getWatcherState"
+      ]
+    },
+    {
+      "id": "mcp/server#writeLayerSuggestions",
+      "kind": "function",
+      "name": "writeLayerSuggestions",
+      "path": "mcp/server.js",
+      "line": 164,
+      "layer": "controller",
+      "layerConfidence": "low",
+      "layerSignal": "structure:high-fan-out",
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "mcp/server",
+      "methods": [
+        "writeLayerSuggestions"
+      ]
+    },
+    {
+      "id": "mcp/server#formatFinding",
+      "kind": "function",
+      "name": "formatFinding",
+      "path": "mcp/server.js",
+      "line": 175,
+      "layer": "controller",
+      "layerConfidence": "low",
+      "layerSignal": "structure:high-fan-out",
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "mcp/server",
+      "methods": [
+        "formatFinding"
+      ]
+    },
+    {
+      "id": "mcp/server#formatImpact",
+      "kind": "function",
+      "name": "formatImpact",
+      "path": "mcp/server.js",
+      "line": 180,
+      "layer": "controller",
+      "layerConfidence": "low",
+      "layerSignal": "structure:high-fan-out",
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "mcp/server",
+      "methods": [
+        "formatImpact"
+      ]
+    },
+    {
+      "id": "mcp/server#toolSessionStart",
+      "kind": "function",
+      "name": "toolSessionStart",
+      "path": "mcp/server.js",
+      "line": 191,
+      "layer": "controller",
+      "layerConfidence": "low",
+      "layerSignal": "structure:high-fan-out",
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "mcp/server",
+      "methods": [
+        "toolSessionStart"
+      ]
+    },
+    {
+      "id": "mcp/server#toolSessionReport",
+      "kind": "function",
+      "name": "toolSessionReport",
+      "path": "mcp/server.js",
+      "line": 222,
+      "layer": "controller",
+      "layerConfidence": "low",
+      "layerSignal": "structure:high-fan-out",
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "mcp/server",
+      "methods": [
+        "toolSessionReport"
+      ]
+    },
+    {
+      "id": "mcp/server#toolSessionChanges",
+      "kind": "function",
+      "name": "toolSessionChanges",
+      "path": "mcp/server.js",
+      "line": 253,
+      "layer": "controller",
+      "layerConfidence": "low",
+      "layerSignal": "structure:high-fan-out",
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "mcp/server",
+      "methods": [
+        "toolSessionChanges"
+      ]
+    },
+    {
+      "id": "mcp/server#toolCheckLayering",
+      "kind": "function",
+      "name": "toolCheckLayering",
+      "path": "mcp/server.js",
+      "line": 318,
+      "layer": "controller",
+      "layerConfidence": "low",
+      "layerSignal": "structure:high-fan-out",
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "mcp/server",
+      "methods": [
+        "toolCheckLayering"
+      ]
+    },
+    {
+      "id": "mcp/server#toolExplainFinding",
+      "kind": "function",
+      "name": "toolExplainFinding",
+      "path": "mcp/server.js",
+      "line": 354,
+      "layer": "controller",
+      "layerConfidence": "low",
+      "layerSignal": "structure:high-fan-out",
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "mcp/server",
+      "methods": [
+        "toolExplainFinding"
+      ]
+    },
+    {
+      "id": "mcp/server#buildExplainResult",
+      "kind": "function",
+      "name": "buildExplainResult",
+      "path": "mcp/server.js",
+      "line": 408,
+      "layer": "controller",
+      "layerConfidence": "low",
+      "layerSignal": "structure:high-fan-out",
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "mcp/server",
+      "methods": [
+        "buildExplainResult"
+      ]
+    },
+    {
+      "id": "mcp/server#handleToolCall",
+      "kind": "function",
+      "name": "handleToolCall",
+      "path": "mcp/server.js",
+      "line": 507,
+      "layer": "controller",
+      "layerConfidence": "low",
+      "layerSignal": "structure:high-fan-out",
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "mcp/server",
+      "methods": [
+        "handleToolCall"
+      ]
+    },
+    {
+      "id": "mcp/server#createServer",
+      "kind": "function",
+      "name": "createServer",
+      "path": "mcp/server.js",
+      "line": 519,
+      "layer": "controller",
+      "layerConfidence": "low",
+      "layerSignal": "structure:high-fan-out",
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "mcp/server",
+      "methods": [
+        "createServer"
+      ]
+    },
+    {
       "id": "file:lib/cli.js",
       "kind": "file",
       "name": "cli.js",
@@ -2892,7 +3208,7 @@
       "kind": "function",
       "name": "help",
       "path": "lib/cli.js",
-      "line": 27,
+      "line": 28,
       "layer": "util",
       "layerConfidence": "high",
       "layerSignal": "dir-name",
@@ -2909,7 +3225,7 @@
       "kind": "function",
       "name": "parseArgs",
       "path": "lib/cli.js",
-      "line": 62,
+      "line": 64,
       "layer": "util",
       "layerConfidence": "high",
       "layerSignal": "dir-name",
@@ -2926,7 +3242,7 @@
       "kind": "function",
       "name": "openInBrowser",
       "path": "lib/cli.js",
-      "line": 78,
+      "line": 80,
       "layer": "util",
       "layerConfidence": "high",
       "layerSignal": "dir-name",
@@ -2943,7 +3259,7 @@
       "kind": "function",
       "name": "formatFindingsText",
       "path": "lib/cli.js",
-      "line": 92,
+      "line": 94,
       "layer": "util",
       "layerConfidence": "high",
       "layerSignal": "dir-name",
@@ -2960,7 +3276,7 @@
       "kind": "function",
       "name": "printIssues",
       "path": "lib/cli.js",
-      "line": 103,
+      "line": 105,
       "layer": "util",
       "layerConfidence": "high",
       "layerSignal": "dir-name",
@@ -2977,7 +3293,7 @@
       "kind": "function",
       "name": "loadEvalConfig",
       "path": "lib/cli.js",
-      "line": 113,
+      "line": 115,
       "layer": "util",
       "layerConfidence": "high",
       "layerSignal": "dir-name",
@@ -2994,7 +3310,7 @@
       "kind": "function",
       "name": "runEval",
       "path": "lib/cli.js",
-      "line": 122,
+      "line": 124,
       "layer": "util",
       "layerConfidence": "high",
       "layerSignal": "dir-name",
@@ -3011,7 +3327,7 @@
       "kind": "function",
       "name": "printGenerateResult",
       "path": "lib/cli.js",
-      "line": 168,
+      "line": 170,
       "layer": "util",
       "layerConfidence": "high",
       "layerSignal": "dir-name",
@@ -3028,7 +3344,7 @@
       "kind": "function",
       "name": "writeLayerSuggestions",
       "path": "lib/cli.js",
-      "line": 186,
+      "line": 188,
       "layer": "util",
       "layerConfidence": "high",
       "layerSignal": "dir-name",
@@ -3045,7 +3361,7 @@
       "kind": "function",
       "name": "wantsRefine",
       "path": "lib/cli.js",
-      "line": 200,
+      "line": 202,
       "layer": "util",
       "layerConfidence": "high",
       "layerSignal": "dir-name",
@@ -3062,7 +3378,7 @@
       "kind": "function",
       "name": "main",
       "path": "lib/cli.js",
-      "line": 204,
+      "line": 206,
       "layer": "util",
       "layerConfidence": "high",
       "layerSignal": "dir-name",
@@ -3106,7 +3422,7 @@
       "kind": "function",
       "name": "addedExtDepsCount",
       "path": "lib/diff-graph.js",
-      "line": 235,
+      "line": 237,
       "layer": "util",
       "layerConfidence": "high",
       "layerSignal": "dir-name",
@@ -3123,7 +3439,7 @@
       "kind": "function",
       "name": "edgeKey",
       "path": "lib/diff-graph.js",
-      "line": 239,
+      "line": 241,
       "layer": "util",
       "layerConfidence": "high",
       "layerSignal": "dir-name",
@@ -3140,7 +3456,7 @@
       "kind": "function",
       "name": "isRenamePair",
       "path": "lib/diff-graph.js",
-      "line": 248,
+      "line": 250,
       "layer": "util",
       "layerConfidence": "high",
       "layerSignal": "dir-name",
@@ -3157,7 +3473,7 @@
       "kind": "function",
       "name": "levenshtein",
       "path": "lib/diff-graph.js",
-      "line": 264,
+      "line": 266,
       "layer": "util",
       "layerConfidence": "high",
       "layerSignal": "dir-name",
@@ -3174,7 +3490,7 @@
       "kind": "function",
       "name": "groupByPackage",
       "path": "lib/diff-graph.js",
-      "line": 285,
+      "line": 287,
       "layer": "util",
       "layerConfidence": "high",
       "layerSignal": "dir-name",
@@ -3191,7 +3507,7 @@
       "kind": "function",
       "name": "inferLayer",
       "path": "lib/diff-graph.js",
-      "line": 302,
+      "line": 304,
       "layer": "util",
       "layerConfidence": "high",
       "layerSignal": "dir-name",
@@ -3208,7 +3524,7 @@
       "kind": "function",
       "name": "isReverseDependency",
       "path": "lib/diff-graph.js",
-      "line": 320,
+      "line": 322,
       "layer": "util",
       "layerConfidence": "high",
       "layerSignal": "dir-name",
@@ -3225,7 +3541,7 @@
       "kind": "function",
       "name": "assessRisk",
       "path": "lib/diff-graph.js",
-      "line": 328,
+      "line": 330,
       "layer": "util",
       "layerConfidence": "high",
       "layerSignal": "dir-name",
@@ -3242,7 +3558,7 @@
       "kind": "function",
       "name": "formatDiffText",
       "path": "lib/diff-graph.js",
-      "line": 338,
+      "line": 340,
       "layer": "util",
       "layerConfidence": "high",
       "layerSignal": "dir-name",
@@ -5303,7 +5619,7 @@
       "kind": "function",
       "name": "getAppScript",
       "path": "lib/session-report.js",
-      "line": 381,
+      "line": 401,
       "layer": "util",
       "layerConfidence": "high",
       "layerSignal": "dir-name",
@@ -5313,6 +5629,237 @@
       "module": "lib/session-report",
       "methods": [
         "getAppScript"
+      ]
+    },
+    {
+      "id": "file:lib/setup.js",
+      "kind": "file",
+      "name": "setup.js",
+      "path": "lib/setup.js",
+      "layer": "util",
+      "layerConfidence": "high",
+      "layerSignal": "dir-name",
+      "lang": "javascript"
+    },
+    {
+      "id": "lib/setup#mcpServerPath",
+      "kind": "function",
+      "name": "mcpServerPath",
+      "path": "lib/setup.js",
+      "line": 26,
+      "layer": "util",
+      "layerConfidence": "high",
+      "layerSignal": "dir-name",
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "lib/setup",
+      "methods": [
+        "mcpServerPath"
+      ]
+    },
+    {
+      "id": "lib/setup#isGlobalInstalled",
+      "kind": "function",
+      "name": "isGlobalInstalled",
+      "path": "lib/setup.js",
+      "line": 36,
+      "layer": "util",
+      "layerConfidence": "high",
+      "layerSignal": "dir-name",
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "lib/setup",
+      "methods": [
+        "isGlobalInstalled"
+      ]
+    },
+    {
+      "id": "lib/setup#resolveLauncher",
+      "kind": "function",
+      "name": "resolveLauncher",
+      "path": "lib/setup.js",
+      "line": 56,
+      "layer": "util",
+      "layerConfidence": "high",
+      "layerSignal": "dir-name",
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "lib/setup",
+      "methods": [
+        "resolveLauncher"
+      ]
+    },
+    {
+      "id": "lib/setup#serverConfig",
+      "kind": "function",
+      "name": "serverConfig",
+      "path": "lib/setup.js",
+      "line": 73,
+      "layer": "util",
+      "layerConfidence": "high",
+      "layerSignal": "dir-name",
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "lib/setup",
+      "methods": [
+        "serverConfig"
+      ]
+    },
+    {
+      "id": "lib/setup#home",
+      "kind": "function",
+      "name": "home",
+      "path": "lib/setup.js",
+      "line": 80,
+      "layer": "util",
+      "layerConfidence": "high",
+      "layerSignal": "dir-name",
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "lib/setup",
+      "methods": [
+        "home"
+      ]
+    },
+    {
+      "id": "lib/setup#targets",
+      "kind": "function",
+      "name": "targets",
+      "path": "lib/setup.js",
+      "line": 88,
+      "layer": "util",
+      "layerConfidence": "high",
+      "layerSignal": "dir-name",
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "lib/setup",
+      "methods": [
+        "targets"
+      ]
+    },
+    {
+      "id": "lib/setup#readJsonSafe",
+      "kind": "function",
+      "name": "readJsonSafe",
+      "path": "lib/setup.js",
+      "line": 149,
+      "layer": "util",
+      "layerConfidence": "high",
+      "layerSignal": "dir-name",
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "lib/setup",
+      "methods": [
+        "readJsonSafe"
+      ]
+    },
+    {
+      "id": "lib/setup#dshRoot",
+      "kind": "function",
+      "name": "dshRoot",
+      "path": "lib/setup.js",
+      "line": 167,
+      "layer": "util",
+      "layerConfidence": "high",
+      "layerSignal": "dir-name",
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "lib/setup",
+      "methods": [
+        "dshRoot"
+      ]
+    },
+    {
+      "id": "lib/setup#dshProfiles",
+      "kind": "function",
+      "name": "dshProfiles",
+      "path": "lib/setup.js",
+      "line": 171,
+      "layer": "util",
+      "layerConfidence": "high",
+      "layerSignal": "dir-name",
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "lib/setup",
+      "methods": [
+        "dshProfiles"
+      ]
+    },
+    {
+      "id": "lib/setup#dshPatchBlock",
+      "kind": "function",
+      "name": "dshPatchBlock",
+      "path": "lib/setup.js",
+      "line": 181,
+      "layer": "util",
+      "layerConfidence": "high",
+      "layerSignal": "dir-name",
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "lib/setup",
+      "methods": [
+        "dshPatchBlock"
+      ]
+    },
+    {
+      "id": "lib/setup#writeDshPatch",
+      "kind": "function",
+      "name": "writeDshPatch",
+      "path": "lib/setup.js",
+      "line": 205,
+      "layer": "util",
+      "layerConfidence": "high",
+      "layerSignal": "dir-name",
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "lib/setup",
+      "methods": [
+        "writeDshPatch"
+      ]
+    },
+    {
+      "id": "lib/setup#runSetup",
+      "kind": "function",
+      "name": "runSetup",
+      "path": "lib/setup.js",
+      "line": 244,
+      "layer": "util",
+      "layerConfidence": "high",
+      "layerSignal": "dir-name",
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "lib/setup",
+      "methods": [
+        "runSetup"
+      ]
+    },
+    {
+      "id": "lib/setup#magicPrompt",
+      "kind": "function",
+      "name": "magicPrompt",
+      "path": "lib/setup.js",
+      "line": 323,
+      "layer": "util",
+      "layerConfidence": "high",
+      "layerSignal": "dir-name",
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "lib/setup",
+      "methods": [
+        "magicPrompt"
       ]
     },
     {
@@ -8350,6 +8897,13 @@
       "builtin": true
     },
     {
+      "id": "ext:readline",
+      "kind": "external",
+      "name": "readline",
+      "external": true,
+      "builtin": true
+    },
+    {
       "id": "ext:tree-sitter",
       "kind": "external",
       "name": "tree-sitter",
@@ -9479,81 +10033,207 @@
       "line": 136
     },
     {
+      "from": "mcp/server#avDir",
+      "to": "file:mcp/server.js",
+      "type": "declared-in",
+      "file": "mcp/server.js",
+      "line": 25
+    },
+    {
+      "from": "mcp/server#baselinePath",
+      "to": "file:mcp/server.js",
+      "type": "declared-in",
+      "file": "mcp/server.js",
+      "line": 29
+    },
+    {
+      "from": "mcp/server#shouldWatchFile",
+      "to": "file:mcp/server.js",
+      "type": "declared-in",
+      "file": "mcp/server.js",
+      "line": 45
+    },
+    {
+      "from": "mcp/server#generateSessionReport",
+      "to": "file:mcp/server.js",
+      "type": "declared-in",
+      "file": "mcp/server.js",
+      "line": 56
+    },
+    {
+      "from": "mcp/server#startWatcher",
+      "to": "file:mcp/server.js",
+      "type": "declared-in",
+      "file": "mcp/server.js",
+      "line": 106
+    },
+    {
+      "from": "mcp/server#stopWatcher",
+      "to": "file:mcp/server.js",
+      "type": "declared-in",
+      "file": "mcp/server.js",
+      "line": 145
+    },
+    {
+      "from": "mcp/server#getWatcherState",
+      "to": "file:mcp/server.js",
+      "type": "declared-in",
+      "file": "mcp/server.js",
+      "line": 155
+    },
+    {
+      "from": "mcp/server#writeLayerSuggestions",
+      "to": "file:mcp/server.js",
+      "type": "declared-in",
+      "file": "mcp/server.js",
+      "line": 164
+    },
+    {
+      "from": "mcp/server#formatFinding",
+      "to": "file:mcp/server.js",
+      "type": "declared-in",
+      "file": "mcp/server.js",
+      "line": 175
+    },
+    {
+      "from": "mcp/server#formatImpact",
+      "to": "file:mcp/server.js",
+      "type": "declared-in",
+      "file": "mcp/server.js",
+      "line": 180
+    },
+    {
+      "from": "mcp/server#toolSessionStart",
+      "to": "file:mcp/server.js",
+      "type": "declared-in",
+      "file": "mcp/server.js",
+      "line": 191
+    },
+    {
+      "from": "mcp/server#toolSessionReport",
+      "to": "file:mcp/server.js",
+      "type": "declared-in",
+      "file": "mcp/server.js",
+      "line": 222
+    },
+    {
+      "from": "mcp/server#toolSessionChanges",
+      "to": "file:mcp/server.js",
+      "type": "declared-in",
+      "file": "mcp/server.js",
+      "line": 253
+    },
+    {
+      "from": "mcp/server#toolCheckLayering",
+      "to": "file:mcp/server.js",
+      "type": "declared-in",
+      "file": "mcp/server.js",
+      "line": 318
+    },
+    {
+      "from": "mcp/server#toolExplainFinding",
+      "to": "file:mcp/server.js",
+      "type": "declared-in",
+      "file": "mcp/server.js",
+      "line": 354
+    },
+    {
+      "from": "mcp/server#buildExplainResult",
+      "to": "file:mcp/server.js",
+      "type": "declared-in",
+      "file": "mcp/server.js",
+      "line": 408
+    },
+    {
+      "from": "mcp/server#handleToolCall",
+      "to": "file:mcp/server.js",
+      "type": "declared-in",
+      "file": "mcp/server.js",
+      "line": 507
+    },
+    {
+      "from": "mcp/server#createServer",
+      "to": "file:mcp/server.js",
+      "type": "declared-in",
+      "file": "mcp/server.js",
+      "line": 519
+    },
+    {
       "from": "lib/cli#help",
       "to": "file:lib/cli.js",
       "type": "declared-in",
       "file": "lib/cli.js",
-      "line": 27
+      "line": 28
     },
     {
       "from": "lib/cli#parseArgs",
       "to": "file:lib/cli.js",
       "type": "declared-in",
       "file": "lib/cli.js",
-      "line": 62
+      "line": 64
     },
     {
       "from": "lib/cli#openInBrowser",
       "to": "file:lib/cli.js",
       "type": "declared-in",
       "file": "lib/cli.js",
-      "line": 78
+      "line": 80
     },
     {
       "from": "lib/cli#formatFindingsText",
       "to": "file:lib/cli.js",
       "type": "declared-in",
       "file": "lib/cli.js",
-      "line": 92
+      "line": 94
     },
     {
       "from": "lib/cli#printIssues",
       "to": "file:lib/cli.js",
       "type": "declared-in",
       "file": "lib/cli.js",
-      "line": 103
+      "line": 105
     },
     {
       "from": "lib/cli#loadEvalConfig",
       "to": "file:lib/cli.js",
       "type": "declared-in",
       "file": "lib/cli.js",
-      "line": 113
+      "line": 115
     },
     {
       "from": "lib/cli#runEval",
       "to": "file:lib/cli.js",
       "type": "declared-in",
       "file": "lib/cli.js",
-      "line": 122
+      "line": 124
     },
     {
       "from": "lib/cli#printGenerateResult",
       "to": "file:lib/cli.js",
       "type": "declared-in",
       "file": "lib/cli.js",
-      "line": 168
+      "line": 170
     },
     {
       "from": "lib/cli#writeLayerSuggestions",
       "to": "file:lib/cli.js",
       "type": "declared-in",
       "file": "lib/cli.js",
-      "line": 186
+      "line": 188
     },
     {
       "from": "lib/cli#wantsRefine",
       "to": "file:lib/cli.js",
       "type": "declared-in",
       "file": "lib/cli.js",
-      "line": 200
+      "line": 202
     },
     {
       "from": "lib/cli#main",
       "to": "file:lib/cli.js",
       "type": "declared-in",
       "file": "lib/cli.js",
-      "line": 204
+      "line": 206
     },
     {
       "from": "lib/diff-graph#diffGraphs",
@@ -9567,63 +10247,63 @@
       "to": "file:lib/diff-graph.js",
       "type": "declared-in",
       "file": "lib/diff-graph.js",
-      "line": 235
+      "line": 237
     },
     {
       "from": "lib/diff-graph#edgeKey",
       "to": "file:lib/diff-graph.js",
       "type": "declared-in",
       "file": "lib/diff-graph.js",
-      "line": 239
+      "line": 241
     },
     {
       "from": "lib/diff-graph#isRenamePair",
       "to": "file:lib/diff-graph.js",
       "type": "declared-in",
       "file": "lib/diff-graph.js",
-      "line": 248
+      "line": 250
     },
     {
       "from": "lib/diff-graph#levenshtein",
       "to": "file:lib/diff-graph.js",
       "type": "declared-in",
       "file": "lib/diff-graph.js",
-      "line": 264
+      "line": 266
     },
     {
       "from": "lib/diff-graph#groupByPackage",
       "to": "file:lib/diff-graph.js",
       "type": "declared-in",
       "file": "lib/diff-graph.js",
-      "line": 285
+      "line": 287
     },
     {
       "from": "lib/diff-graph#inferLayer",
       "to": "file:lib/diff-graph.js",
       "type": "declared-in",
       "file": "lib/diff-graph.js",
-      "line": 302
+      "line": 304
     },
     {
       "from": "lib/diff-graph#isReverseDependency",
       "to": "file:lib/diff-graph.js",
       "type": "declared-in",
       "file": "lib/diff-graph.js",
-      "line": 320
+      "line": 322
     },
     {
       "from": "lib/diff-graph#assessRisk",
       "to": "file:lib/diff-graph.js",
       "type": "declared-in",
       "file": "lib/diff-graph.js",
-      "line": 328
+      "line": 330
     },
     {
       "from": "lib/diff-graph#formatDiffText",
       "to": "file:lib/diff-graph.js",
       "type": "declared-in",
       "file": "lib/diff-graph.js",
-      "line": 338
+      "line": 340
     },
     {
       "from": "lib/extract-graph#isJdkImport",
@@ -10414,7 +11094,98 @@
       "to": "file:lib/session-report.js",
       "type": "declared-in",
       "file": "lib/session-report.js",
-      "line": 381
+      "line": 401
+    },
+    {
+      "from": "lib/setup#mcpServerPath",
+      "to": "file:lib/setup.js",
+      "type": "declared-in",
+      "file": "lib/setup.js",
+      "line": 26
+    },
+    {
+      "from": "lib/setup#isGlobalInstalled",
+      "to": "file:lib/setup.js",
+      "type": "declared-in",
+      "file": "lib/setup.js",
+      "line": 36
+    },
+    {
+      "from": "lib/setup#resolveLauncher",
+      "to": "file:lib/setup.js",
+      "type": "declared-in",
+      "file": "lib/setup.js",
+      "line": 56
+    },
+    {
+      "from": "lib/setup#serverConfig",
+      "to": "file:lib/setup.js",
+      "type": "declared-in",
+      "file": "lib/setup.js",
+      "line": 73
+    },
+    {
+      "from": "lib/setup#home",
+      "to": "file:lib/setup.js",
+      "type": "declared-in",
+      "file": "lib/setup.js",
+      "line": 80
+    },
+    {
+      "from": "lib/setup#targets",
+      "to": "file:lib/setup.js",
+      "type": "declared-in",
+      "file": "lib/setup.js",
+      "line": 88
+    },
+    {
+      "from": "lib/setup#readJsonSafe",
+      "to": "file:lib/setup.js",
+      "type": "declared-in",
+      "file": "lib/setup.js",
+      "line": 149
+    },
+    {
+      "from": "lib/setup#dshRoot",
+      "to": "file:lib/setup.js",
+      "type": "declared-in",
+      "file": "lib/setup.js",
+      "line": 167
+    },
+    {
+      "from": "lib/setup#dshProfiles",
+      "to": "file:lib/setup.js",
+      "type": "declared-in",
+      "file": "lib/setup.js",
+      "line": 171
+    },
+    {
+      "from": "lib/setup#dshPatchBlock",
+      "to": "file:lib/setup.js",
+      "type": "declared-in",
+      "file": "lib/setup.js",
+      "line": 181
+    },
+    {
+      "from": "lib/setup#writeDshPatch",
+      "to": "file:lib/setup.js",
+      "type": "declared-in",
+      "file": "lib/setup.js",
+      "line": 205
+    },
+    {
+      "from": "lib/setup#runSetup",
+      "to": "file:lib/setup.js",
+      "type": "declared-in",
+      "file": "lib/setup.js",
+      "line": 244
+    },
+    {
+      "from": "lib/setup#magicPrompt",
+      "to": "file:lib/setup.js",
+      "type": "declared-in",
+      "file": "lib/setup.js",
+      "line": 323
     },
     {
       "from": "lib/validate#extractBlocks",
@@ -12316,6 +13087,70 @@
       "isType": false
     },
     {
+      "from": "file:mcp/server.js",
+      "to": "ext:fs",
+      "type": "uses-external",
+      "file": "mcp/server.js",
+      "line": 16,
+      "builtin": true
+    },
+    {
+      "from": "file:mcp/server.js",
+      "to": "ext:path",
+      "type": "uses-external",
+      "file": "mcp/server.js",
+      "line": 17,
+      "builtin": true
+    },
+    {
+      "from": "file:mcp/server.js",
+      "to": "ext:readline",
+      "type": "uses-external",
+      "file": "mcp/server.js",
+      "line": 18,
+      "builtin": true
+    },
+    {
+      "from": "file:mcp/server.js",
+      "to": "file:lib/extract-graph.js",
+      "type": "import",
+      "file": "mcp/server.js",
+      "line": 19,
+      "isType": false
+    },
+    {
+      "from": "file:mcp/server.js",
+      "to": "file:lib/diff-graph.js",
+      "type": "import",
+      "file": "mcp/server.js",
+      "line": 20,
+      "isType": false
+    },
+    {
+      "from": "file:mcp/server.js",
+      "to": "file:lib/risk-rules.js",
+      "type": "import",
+      "file": "mcp/server.js",
+      "line": 21,
+      "isType": false
+    },
+    {
+      "from": "file:mcp/server.js",
+      "to": "file:lib/impact.js",
+      "type": "import",
+      "file": "mcp/server.js",
+      "line": 22,
+      "isType": false
+    },
+    {
+      "from": "file:mcp/server.js",
+      "to": "file:lib/session-report.js",
+      "type": "import",
+      "file": "mcp/server.js",
+      "line": 23,
+      "isType": false
+    },
+    {
       "from": "file:lib/cli.js",
       "to": "ext:fs",
       "type": "uses-external",
@@ -12401,6 +13236,14 @@
       "type": "import",
       "file": "lib/cli.js",
       "line": 25,
+      "isType": false
+    },
+    {
+      "from": "file:lib/cli.js",
+      "to": "file:lib/setup.js",
+      "type": "import",
+      "file": "lib/cli.js",
+      "line": 26,
       "isType": false
     },
     {
@@ -12770,6 +13613,38 @@
       "file": "lib/session-report.js",
       "line": 8,
       "isType": false
+    },
+    {
+      "from": "file:lib/setup.js",
+      "to": "ext:fs",
+      "type": "uses-external",
+      "file": "lib/setup.js",
+      "line": 14,
+      "builtin": true
+    },
+    {
+      "from": "file:lib/setup.js",
+      "to": "ext:os",
+      "type": "uses-external",
+      "file": "lib/setup.js",
+      "line": 15,
+      "builtin": true
+    },
+    {
+      "from": "file:lib/setup.js",
+      "to": "ext:path",
+      "type": "uses-external",
+      "file": "lib/setup.js",
+      "line": 16,
+      "builtin": true
+    },
+    {
+      "from": "file:lib/setup.js",
+      "to": "ext:child_process",
+      "type": "uses-external",
+      "file": "lib/setup.js",
+      "line": 17,
+      "builtin": true
     },
     {
       "from": "file:lib/validate.js",
@@ -13321,11 +14196,17 @@
       "signal": "structure:high-fan-in",
       "files": 5
     },
+    "mcp": {
+      "layer": "controller",
+      "confidence": "low",
+      "signal": "structure:high-fan-out",
+      "files": 1
+    },
     "lib": {
       "layer": "util",
       "confidence": "high",
       "signal": "dir-name",
-      "files": 18
+      "files": 19
     },
     "lib/orch": {
       "layer": "util",
@@ -13340,5 +14221,5 @@
       "files": 7
     }
   },
-  "sessionStartedAt": "2026-09-02T14:41:57.043Z"
+  "sessionStartedAt": "2026-09-03T08:36:56.420Z"
 }
