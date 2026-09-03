@@ -5,6 +5,9 @@
 会话基线 → 变更图谱 → 影响面分析：IDE 状态栏 / PR 评论 / CLI 三端可用。
 免费开源（Apache-2.0），零配置、秒级出图，不依赖 LLM。
 
+> **新手入门**：如果你不太懂技术术语，先看 [小白超详细攻略](docs/beginner-guide/index.html)（图文版）
+> 或 [会话验收指南](docs/SESSION-GUIDE.md)（大白话版，无技术术语）。
+>
 > 痛点：AI 编码会话一次改动几十个文件，**合入前没人说得清架构到底变了什么**——
 > 删了哪个被广泛依赖的类型？有没有跨层调用？新引入了哪些第三方包？谁会被波及？
 > Architecture Viewer 在会话结束时给出 Before/After 架构对比和风险分级，红灯只亮在刀刃上。
@@ -87,11 +90,21 @@ npm i -g arch-viewer        # CLI 全局安装
 
 ## Quick Start（30 秒）
 
+**最省事的方式（推荐小白）**——一条命令自动接入 Cursor / Claude，不用编辑任何配置文件：
+
 ```bash
-npx arch-viewer session start .        # 在你的项目根目录记录基线
-echo '// 随便改点代码：新增/删除一个类或改个 import' 
-npx arch-viewer session report .       # 看变更报告（加 --open 直接开 HTML 对比图）
+npx arch-viewer setup          # 自动装好、自动打开图文引导页，之后只需对 AI 说人话
 ```
+
+**手动方式**：
+
+```bash
+npx arch-viewer session start .        # ① 改代码之前：拍"改之前"的结构照片
+echo '// 随便改点代码：新增/删除一个类或改个 import'
+npx arch-viewer session report .       # ② 改完后：对比前后照片，看有没有改坏（加 --open 浏览器看对比图）
+```
+
+> **不懂技术术语？** 拍照片 = 记录改之前的结构。对比照片 = 看 AI 改了什么、有没有"串门"（跨层引用）。红灯 = 可能改坏了，绿灯 = 没问题。详见 [术语对照表](docs/SESSION-GUIDE.md#术语对照表遇到看不懂的词查这里)。
 
 其他常用命令：
 
