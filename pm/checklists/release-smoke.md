@@ -7,19 +7,23 @@
 - [ ] `node lib/cli.js extract .` 正常输出 fingerprint + 节点/边统计
 - [ ] `node lib/cli.js session start .` 输出 baseline recorded + fingerprint
 - [ ] `node lib/cli.js session report .` 输出变更报告（零变更场景显示 NONE）
+- [ ] `node lib/cli.js session report . --renderer builtin` 强制内置渲染器出 HTML
+- [ ] `node lib/cli.js archify-export . --scope changed` 产出 `.av/archify-*.json` 三件套（无 archify CLI 时优雅提示回退）
 - [ ] `npm test` 全绿（0 fail）
 
 ## MCP 冒烟
 
 - [ ] `node mcp/server.js` 能启动，stdin 读取不崩
-- [ ] tools/list 返回 5 个工具（av_session_start / av_session_changes / av_session_report / av_check_layering / av_explain_finding）
+- [ ] tools/list 返回 6 个工具（av_session_start / av_session_changes / av_session_report / av_check_layering / av_explain_finding / av_archify_export）
 - [ ] av_session_start 对临时仓返回 baseline JSON
 - [ ] av_session_report 对同一临时仓返回变更报告
+- [ ] av_archify_export 返回 scopeUsed / 组件连接计数 / 文件路径
 
 ## 扩展冒烟
 
-- [ ] `node scripts/build-vsix.js` 成功产出 .vsix
-- [ ] .vsix 解压后含 `src/`、`assets/`、`lib/`、`package.json`
+- [ ] `node scripts/build-vsix.js` 成功产出 .vsix（需 `node_modules/.bin` 在 PATH）
+- [ ] .vsix 体积合理（约 9 MB），含 `src/`、`lib/`、`assets/`、`vendor/mermaid.min.js`、NOTICE、LICENSE、六视图模板 `c4-*.md`/`class/block/deployment-ops.md`、`Dockerfile`
+- [ ] .vsix **不含** `.data/`、`archify-main/`、`web/`、`.av/`、`eval/`、`test/`、`pm/`（.vscodeignore 生效）
 - [ ] VS Code 安装 .vsix 后命令面板可见 `AV: Session Start` 等命令
 - [ ] 状态栏角标正常显示
 

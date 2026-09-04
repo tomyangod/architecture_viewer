@@ -7,10 +7,39 @@ docs/**
 deepseek-harness/**
 eval/**
 test/**
+test-results/**
+playwright-report/**
 scripts/**
 pm/**
 examples/**
+
+# 本地产物 / 数据（绝不入包）
+.data/**
+.av/**
+dist/**
 *.vsix
+*.zip
 eval/out/**
+
+# 第三方参考副本（非产品代码；正式渲染层走 vendor/ 钉版本）
+archify-main/**
+
+# 设计稿 / 独立交付物（扩展运行时不需要）
+architecture-viewer-concept/**
+web/**
+.cursor/**
+sample-usage.html
+playwright.config.js
+
+# 根目录散落的纯文档/草稿（0 运行时引用；六视图模板 c4-*.md / class/block/deployment
+# 与 Dockerfile / docker-compose.yml 是 init 模板，必须保留，勿排）
+landing-new.html
+MVP.md
+DEMO.md
+COMMERCIAL.md
+COMMERCIAL-v2.md
+readme.md
+
+# 杂项
 .gitignore
 .travis.yml
