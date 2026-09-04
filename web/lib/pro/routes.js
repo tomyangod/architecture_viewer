@@ -233,9 +233,13 @@ async function handlePro(req, res, url, rawBuf) {
     const db = store.load();
     const user = auth.findUserByEmail(db, body.email);
     if (!user) return json(res, 404, { error: '用户不存在' });
-    billing.grantPro(user, body.days || 31, 'admin');
+    if (body.plan === 'team') {
+      billing.grantTeam(user, body.days || 365, 'admin', body.repoUrl);
+    } else {
+      billing.grantPro(user, body.days || 31, 'admin');
+    }
     store.save(db);
-    store.track('pay', { userId: user.id, source: 'admin' });
+    store.track('pay', { userId: user.id, source: 'admin', plan: user.plan });
     return json(res, 200, { user: publicUser(user) });
   }
 

@@ -37,6 +37,7 @@
     var dash = document.getElementById('dash');
     var logout = document.getElementById('logout-btn');
     if (!me || !me.user) {
+      window.__avMe = null;
       gate.hidden = false;
       dash.hidden = true;
       logout.hidden = true;
@@ -45,6 +46,7 @@
     gate.hidden = true;
     dash.hidden = false;
     logout.hidden = false;
+    window.__avMe = me;
     var u = me.user;
     var line = document.getElementById('plan-line');
     var until = u.paidUntil || u.trialUntil || '';
@@ -57,6 +59,30 @@
       (u.active
         ? ''
         : '<br><span class="muted">到期后仍可点「现在检查」。自动检查与企业微信推送请兑换许可证。</span>');
+    var teamBox = document.getElementById('team-feature-list');
+    if (teamBox) {
+      var tf = u.teamFeatures || { ok: false, items: [] };
+      var repos = (u.teamRepos || [])
+        .map(function (r) { return '<li>' + esc(r.url) + '</li>'; })
+        .join('');
+      teamBox.innerHTML =
+        '<p class="section-copy">' +
+        (tf.ok ? 'Team 已开通。' : '尚未开通 Team。下单后沙箱/运营开通。') +
+        '</p><ul class="feature-list">' +
+        (tf.items || [])
+          .map(function (f) {
+            return (
+              '<li>' +
+              (f.unlocked ? '✔ ' : '○ ') +
+              esc(f.title) +
+              (f.placeholder ? '（占位）' : '') +
+              '</li>'
+            );
+          })
+          .join('') +
+        '</ul>' +
+        (repos ? '<p class="section-copy">已绑定仓库</p><ul class="feature-list">' + repos + '</ul>' : '');
+    }
 
     var intervalInput = document.getElementById('local-interval');
     var wecomInput = document.getElementById('local-wecom');
@@ -310,6 +336,28 @@
       refresh();
     });
   });
+
+  var teamOrderForm = document.getElementById('team-order-form');
+  if (teamOrderForm) {
+    teamOrderForm.addEventListener('submit', function (e) {
+      e.preventDefault();
+      var email = (window.__avMe && window.__avMe.user && window.__avMe.user.email) || '';
+      api('POST', '/api/billing/team-order', {
+        email: email,
+        repoUrl: document.getElementById('team-repo').value.trim(),
+        channel: 'lemon'
+      }).then(function (r) {
+        var tip = document.getElementById('team-order-tip');
+        if (!r.ok) {
+          showTip(tip, r.data.error || '下单失败', true);
+          return;
+        }
+        showTip(tip, '订单 ' + r.data.orderId + (r.data.granted ? ' · 沙箱已开通' : ' · 请完成结账'), false);
+        if (r.data.checkoutUrl && !r.data.granted) window.open(r.data.checkoutUrl, '_blank', 'noopener');
+        refresh();
+      });
+    });
+  }
 
   if (/paid=1/.test(location.search)) showTip(tipDash, '支付完成，正在刷新权益…', false);
   refresh();

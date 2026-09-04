@@ -43,6 +43,15 @@
         <a class="btn ghost" id="pay-lemon" href="https://arch-viewer.lemonsqueezy.com/" target="_blank" rel="noopener">Lemon</a>
       </div>
       <p class="section-copy" style="margin-top:-0.5rem">国内爱发电 / 微信、海外 Lemon：先付款再人工开通，步骤见 <a href="https://gitee.com/heyangyan/architecture_viewer/blob/master/docs/billing.md" target="_blank" rel="noopener">docs/billing.md</a>。</p>
+      <h3>Team · ¥999 / 年 / 仓库</h3>
+      <p class="section-copy">按仓库开通：CI 托管评论、规范包；共享图库为占位。先下单再按 <a href="https://gitee.com/heyangyan/architecture_viewer/blob/master/docs/billing.md" target="_blank" rel="noopener">SOP</a> 核验，或走 <a href="https://gitee.com/heyangyan/architecture_viewer/blob/master/docs/invoice.md" target="_blank" rel="noopener">对公开票</a>。</p>
+      <form id="team-order-form" class="account-form">
+        <label>仓库 HTTPS URL <input type="url" id="team-repo" required placeholder="https://gitee.com/org/repo" /></label>
+        <button type="submit" class="btn primary">下单 Team</button>
+      </form>
+      <p id="team-order-tip" class="try-status" hidden></p>
+      <div id="team-feature-list"></div>
+
       <form id="redeem-form" class="account-form" hidden>
         <label>许可证 <input type="text" id="license-key" placeholder="avpro.…" autocomplete="off" /></label>
         <button type="submit" class="btn primary">兑换</button>

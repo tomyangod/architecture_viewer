@@ -75,6 +75,24 @@ function grantPro(user, days, source) {
   return user;
 }
 
+function grantTeam(user, days, source, repoUrl) {
+  const d = days || 365;
+  user.plan = 'team';
+  user.paidUntil = new Date(Date.now() + d * 24 * 3600 * 1000).toISOString();
+  user.paidSource = source || 'manual';
+  user.teamRepos = Array.isArray(user.teamRepos) ? user.teamRepos : [];
+  const url = String(repoUrl || '').trim();
+  if (url && !user.teamRepos.some((r) => r.url === url)) {
+    user.teamRepos.push({
+      id: store.id(),
+      url,
+      features: { ciHosted: true, rulesPack: true, gallery: false },
+      addedAt: new Date().toISOString()
+    });
+  }
+  return user;
+}
+
 function licenseSecret() {
   return process.env.ARCH_PRO_LICENSE_SECRET || process.env.ARCH_PRO_SECRET || '';
 }
@@ -161,6 +179,7 @@ module.exports = {
   createCheckout,
   verifyStripeSig,
   grantPro,
+  grantTeam,
   issueLicense,
   redeemLicense,
   applyStripeEvent,

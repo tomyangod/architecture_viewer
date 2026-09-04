@@ -358,11 +358,46 @@
     applyLang(currentLang);
     updateModeBadge();
     if (h.billing) {
-      var map = { 'pay-afdian': h.billing.afdian, 'pay-wechat': h.billing.wechat, 'pay-lemon': h.billing.lemon };
+      var map = {
+        'pay-afdian': h.billing.afdian,
+        'pay-wechat': h.billing.wechat,
+        'pay-lemon': h.billing.lemon,
+        'pay-lemon-team': h.billing.lemonTeam
+      };
       Object.keys(map).forEach(function (id) {
         var el = document.getElementById(id);
         if (el && map[id]) el.setAttribute('href', map[id]);
       });
     }
   }).catch(function () { /* ignore */ });
+
+  var teamForm = document.getElementById('team-order');
+  if (teamForm) {
+    teamForm.addEventListener('submit', function (e) {
+      e.preventDefault();
+      var tip = document.getElementById('team-order-tip');
+      var email = (document.getElementById('team-email') || {}).value || '';
+      var repoUrl = (document.getElementById('team-repo') || {}).value || '';
+      fetch('/api/billing/team-order', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: email.trim(), repoUrl: repoUrl.trim(), channel: 'lemon' })
+      })
+        .then(function (r) { return r.json().then(function (d) { return { ok: r.ok, data: d }; }); })
+        .then(function (res) {
+          if (!res.ok) {
+            if (tip) { tip.hidden = false; tip.textContent = res.data.error || '下单失败'; tip.classList.add('error'); }
+            return;
+          }
+          var msg = '订单 ' + res.data.orderId + ' · ¥' + res.data.priceCny + '/年/仓';
+          if (res.data.granted) msg += ' · 沙箱已开通';
+          else msg += ' · 请前往结账页付款后等运营开通';
+          if (tip) { tip.hidden = false; tip.textContent = msg; tip.classList.remove('error'); }
+          if (res.data.checkoutUrl && !res.data.granted) window.open(res.data.checkoutUrl, '_blank', 'noopener');
+        })
+        .catch(function () {
+          if (tip) { tip.hidden = false; tip.textContent = '网络错误'; tip.classList.add('error'); }
+        });
+    });
+  }
 })();

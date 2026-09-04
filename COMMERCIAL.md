@@ -19,9 +19,9 @@
 |------|------|------|
 | **Community** | ¥0 | 开源扩展 / CLI / 本机网页；Init、Generate（骨架）、`--refine`（自带 Key）；**Actions 漂移模板**；Preview、Validate、自托管分享页 |
 | **Pro** | **¥29 / 月** | 账号 + 7 天试用；**本机文件夹检查 + 企业微信提醒**；托管 PR 漂移评论；Stripe 或许可证 |
-| **Team** | **¥999 / 年 / 仓库** | 共享图库、组织规范、CI 门禁托管；私有化另议 |
+| **Team** | **¥999 / 年 / 仓库** | **按仓库年费**（非席位）：CI 托管评论、`architecture-rules` 规范包、共享图库占位；落地页可下单（Lemon 沙箱 / 对公）；私有化另议 |
 
-Community 采用固定免费档，**不会**把单次调用次数当作付费墙。Pro 是固定月费。
+Community 采用固定免费档，**不会**把单次调用次数当作付费墙。Pro 是固定月费；Team 按仓库年付。下单：落地页 `/#pricing` 或 `POST /api/billing/team-order`，开通见 [docs/billing.md](docs/billing.md)。
 
 ## 双产品形态
 
@@ -46,7 +46,8 @@ Community 采用固定免费档，**不会**把单次调用次数当作付费墙
 ## Pro / Team
 
 - **Pro**：`/account.html` 账号与 7 天试用；**本地文件夹检查**（不用 GitHub/Gitee）+ 可选企业微信；以及 `POST /api/pro/webhook` 托管 PR 评论。见 [docs/PRO-SAAS.md](docs/PRO-SAAS.md)。
-- 云端增量同步、组织图库、SSO：仍为后续 Team 能力
+- **Team**：¥999 / 年 / 仓库。购买后账号 `plan=team`，绑定该仓库的 CI 托管评论与规范包；共享图库为占位（控制台可见未就绪项）。下单 API：`POST /api/billing/team-order`。
+- 云端增量同步、SSO、组织级多仓聚合：仍为后续能力
 - 私有 LLM、离线安装包、审计、发票流程：[docs/invoice.md](docs/invoice.md)、[docs/support.md](docs/support.md)
 
 Community 扩展与网页**不会**为 Generate/Validate「电检」许可证。Pro 登录是可选增值层。

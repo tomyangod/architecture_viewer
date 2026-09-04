@@ -315,16 +315,22 @@ npm install
           </p>
         </article>
         <article>
-          <h3>Team · 规划中</h3>
+          <h3>Team</h3>
           <p class="price">¥999<span>/年/仓库</span></p>
           <ul>
-            <li>组织图库 + 制图规范</li>
-            <li>CI 门禁托管 + 多仓聚合</li>
-            <li>私有化部署</li>
+            <li><strong>CI 托管评论</strong>（按仓库）</li>
+            <li>architecture-rules 规范包</li>
+            <li>共享图库占位 · 私有化另议</li>
           </ul>
-          <div class="price-cta">
-            <a class="btn ghost" href="https://gitee.com/heyangyan/architecture_viewer" target="_blank" rel="noopener">提 Issue 预约</a>
-          </div>
+          <form id="team-order" class="account-form" style="margin-top:0.75rem">
+            <label>工作邮箱 <input type="email" id="team-email" required autocomplete="email" placeholder="you@company.com" /></label>
+            <label>仓库 HTTPS URL <input type="url" id="team-repo" required placeholder="https://gitee.com/org/repo" /></label>
+            <div class="price-cta">
+              <button type="submit" class="btn primary" id="team-order-btn">下单 Team</button>
+              <a class="btn ghost" id="pay-lemon-team" href="https://arch-viewer.lemonsqueezy.com/checkout/buy/team-repo-year" target="_blank" rel="noopener">Lemon 沙箱</a>
+            </div>
+            <p id="team-order-tip" class="try-status" hidden></p>
+          </form>
         </article>
       </div>
     </section>
@@ -332,7 +338,7 @@ npm install
     <footer class="foot">
       <span>Architecture Viewer · v<span id="ver">0.1.0</span> · Apache-2.0</span>
       <span>
-        <a href="/account.html">Pro</a> · <a href="/api/health">API</a> · <a href="https://gitee.com/heyangyan/architecture_viewer/blob/master/docs/billing.md" target="_blank" rel="noopener">收款开通</a> · <a href="https://gitee.com/heyangyan/architecture_viewer/blob/master/docs/support.md" target="_blank" rel="noopener">支持</a> · <a href="https://gitee.com/heyangyan/architecture_viewer/blob/master/COMMERCIAL.md" target="_blank" rel="noopener">商业说明</a>
+        <a href="/account.html">Pro</a> · <a href="/api/health">API</a> · <a href="https://gitee.com/heyangyan/architecture_viewer/blob/master/docs/billing.md" target="_blank" rel="noopener">收款开通</a> · <a href="https://gitee.com/heyangyan/architecture_viewer/blob/master/docs/support.md" target="_blank" rel="noopener">支持</a> · <a href="https://gitee.com/heyangyan/architecture_viewer/blob/master/docs/invoice.md" target="_blank" rel="noopener">发票</a> · <a href="https://gitee.com/heyangyan/architecture_viewer/blob/master/COMMERCIAL.md" target="_blank" rel="noopener">商业说明</a>
       </span>
     </footer>
   </div>

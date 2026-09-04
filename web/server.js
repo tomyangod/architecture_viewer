@@ -241,6 +241,20 @@ async function handleApi(req, res, url) {
     return send(res, 200, paymentLinks());
   }
 
+  if (req.method === 'POST' && url.pathname === '/api/billing/team-order') {
+    const { createTeamOrder } = require('./lib/billing');
+    const raw = await readBody(req);
+    let body = {};
+    try {
+      body = raw.length ? JSON.parse(raw.toString('utf8')) : {};
+    } catch {
+      const err = new Error('invalid JSON');
+      err.status = 400;
+      throw err;
+    }
+    return send(res, 200, createTeamOrder(body));
+  }
+
   if (url.pathname.startsWith('/api/pro')) {
     if (!handlePro) return send(res, 503, { error: 'pro routes not mounted; need web/lib/pro/ + env ARCH_PRO_SECRET' });
     const raw = req.method === 'GET' || req.method === 'HEAD' ? Buffer.alloc(0) : await readBody(req);

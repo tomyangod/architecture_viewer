@@ -1327,8 +1327,8 @@
       "phase": 2,
       "week": 9,
       "priority": "P1",
-      "status": "todo",
-      "progress": 0,
+      "status": "done",
+      "progress": 100,
       "assignee": "heyangyan",
       "estHours": 2,
       "deadline": "2026-10-30",
@@ -1353,7 +1353,18 @@
         "test -f docs/support.md && test -f docs/invoice.md && echo SUPPORT_OK"
       ],
       "refs": [],
-      "activity": []
+      "activity": [
+        {
+          "date": "2026-09-04",
+          "action": "状态变更 todo→doing",
+          "detail": "开工：客服 FAQ + 发票 SOP 从落地页可达"
+        },
+        {
+          "date": "2026-09-04",
+          "action": "状态变更 doing→done",
+          "detail": "support.md FAQ≥17 + 工单/时效；invoice.md 开票信息表+Team grant；落地页页脚可达。SUPPORT_OK。"
+        }
+      ]
     },
     {
       "id": "W09-03",
@@ -1468,8 +1479,8 @@
       "phase": 2,
       "week": 11,
       "priority": "P0",
-      "status": "todo",
-      "progress": 0,
+      "status": "done",
+      "progress": 100,
       "assignee": "heyangyan",
       "estHours": 5,
       "deadline": "2026-11-13",
@@ -1498,7 +1509,18 @@
       "refs": [
         "COMMERCIAL.md"
       ],
-      "activity": []
+      "activity": [
+        {
+          "date": "2026-09-04",
+          "action": "状态变更 todo→doing",
+          "detail": "开工：Team ¥999/年/仓库下单与权益占位"
+        },
+        {
+          "date": "2026-09-04",
+          "action": "状态变更 doing→done",
+          "detail": "落地页 Team ¥999/年/仓库可下单；POST /api/billing/team-order 沙箱可开通；admin grant plan=team；COMMERCIAL.md 同步。TEAM_OK。"
+        }
+      ]
     },
     {
       "id": "W11-02",
