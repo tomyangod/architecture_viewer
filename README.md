@@ -12,6 +12,8 @@
 > **新手入门**：如果你不太懂技术术语，先看 [小白超详细攻略](docs/beginner-guide/index.html)（图文版）
 > 或 [会话验收指南](docs/SESSION-GUIDE.md)（大白话版，无技术术语）。
 >
+> **实战文**：[用 AI 自动生成架构图，还能在 PR 里抓漂移](docs/blog/2026-09-ai-architecture-drift.md) · [60 秒 Demo 分镜](docs/demo-script.md)
+>
 > 痛点：AI 编码会话一次改动几十个文件，**合入前没人说得清架构到底变了什么**——
 > 删了哪个被广泛依赖的类型？有没有跨层调用？新引入了哪些第三方包？谁会被波及？
 > Architecture Viewer 在会话结束时给出 Before/After 架构对比和风险分级，红灯只亮在刀刃上。
