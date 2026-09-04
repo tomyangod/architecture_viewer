@@ -43,6 +43,10 @@ playwright-report/
 # Local harness / agent dumps (not product)
 deepseek-harness/
 
+# Archify reference copy (local spike only, not product code)
+archify-main/
+.archify-*/
+
 # Architecture Viewer session artifacts
 # graph-baseline.json is committed (team baseline); reports are local only
 .av/session-report.*

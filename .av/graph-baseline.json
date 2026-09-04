@@ -1,18 +1,18 @@
 {
   "version": 1,
   "root": "architecture_viewer",
-  "generatedAt": "2026-09-03T08:36:56.419Z",
-  "fingerprint": "46ab9a8bc010ab0e",
+  "generatedAt": "2026-09-04T11:41:46.050Z",
+  "fingerprint": "6db257763463c884",
   "languages": [
     "javascript"
   ],
   "stats": {
-    "files": 60,
-    "filesParsed": 60,
+    "files": 63,
+    "filesParsed": 63,
     "parseErrors": 0,
-    "types": 485,
-    "nodes": 565,
-    "edges": 712,
+    "types": 508,
+    "nodes": 591,
+    "edges": 748,
     "externalPackages": 20
   },
   "nodes": [
@@ -2340,6 +2340,29 @@
       "lang": "javascript"
     },
     {
+      "id": "file:scripts/build-web-dist.mjs",
+      "kind": "file",
+      "name": "build-web-dist.mjs",
+      "path": "scripts/build-web-dist.mjs",
+      "layer": null,
+      "lang": "javascript"
+    },
+    {
+      "id": "scripts/build-web-dist#copyDir",
+      "kind": "function",
+      "name": "copyDir",
+      "path": "scripts/build-web-dist.mjs",
+      "line": 31,
+      "layer": null,
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "scripts/build-web-dist",
+      "methods": [
+        "copyDir"
+      ]
+    },
+    {
       "id": "file:scripts/pr-comment.js",
       "kind": "file",
       "name": "pr-comment.js",
@@ -2892,7 +2915,7 @@
       "kind": "function",
       "name": "avDir",
       "path": "mcp/server.js",
-      "line": 25,
+      "line": 27,
       "layer": "controller",
       "layerConfidence": "low",
       "layerSignal": "structure:high-fan-out",
@@ -2909,7 +2932,7 @@
       "kind": "function",
       "name": "baselinePath",
       "path": "mcp/server.js",
-      "line": 29,
+      "line": 31,
       "layer": "controller",
       "layerConfidence": "low",
       "layerSignal": "structure:high-fan-out",
@@ -2926,7 +2949,7 @@
       "kind": "function",
       "name": "shouldWatchFile",
       "path": "mcp/server.js",
-      "line": 45,
+      "line": 47,
       "layer": "controller",
       "layerConfidence": "low",
       "layerSignal": "structure:high-fan-out",
@@ -2943,7 +2966,7 @@
       "kind": "function",
       "name": "generateSessionReport",
       "path": "mcp/server.js",
-      "line": 56,
+      "line": 58,
       "layer": "controller",
       "layerConfidence": "low",
       "layerSignal": "structure:high-fan-out",
@@ -2960,7 +2983,7 @@
       "kind": "function",
       "name": "startWatcher",
       "path": "mcp/server.js",
-      "line": 106,
+      "line": 113,
       "layer": "controller",
       "layerConfidence": "low",
       "layerSignal": "structure:high-fan-out",
@@ -2977,7 +3000,7 @@
       "kind": "function",
       "name": "stopWatcher",
       "path": "mcp/server.js",
-      "line": 145,
+      "line": 152,
       "layer": "controller",
       "layerConfidence": "low",
       "layerSignal": "structure:high-fan-out",
@@ -2994,7 +3017,7 @@
       "kind": "function",
       "name": "getWatcherState",
       "path": "mcp/server.js",
-      "line": 155,
+      "line": 162,
       "layer": "controller",
       "layerConfidence": "low",
       "layerSignal": "structure:high-fan-out",
@@ -3011,7 +3034,7 @@
       "kind": "function",
       "name": "writeLayerSuggestions",
       "path": "mcp/server.js",
-      "line": 164,
+      "line": 171,
       "layer": "controller",
       "layerConfidence": "low",
       "layerSignal": "structure:high-fan-out",
@@ -3028,7 +3051,7 @@
       "kind": "function",
       "name": "formatFinding",
       "path": "mcp/server.js",
-      "line": 175,
+      "line": 182,
       "layer": "controller",
       "layerConfidence": "low",
       "layerSignal": "structure:high-fan-out",
@@ -3045,7 +3068,7 @@
       "kind": "function",
       "name": "formatImpact",
       "path": "mcp/server.js",
-      "line": 180,
+      "line": 187,
       "layer": "controller",
       "layerConfidence": "low",
       "layerSignal": "structure:high-fan-out",
@@ -3062,7 +3085,7 @@
       "kind": "function",
       "name": "toolSessionStart",
       "path": "mcp/server.js",
-      "line": 191,
+      "line": 198,
       "layer": "controller",
       "layerConfidence": "low",
       "layerSignal": "structure:high-fan-out",
@@ -3079,7 +3102,7 @@
       "kind": "function",
       "name": "toolSessionReport",
       "path": "mcp/server.js",
-      "line": 222,
+      "line": 229,
       "layer": "controller",
       "layerConfidence": "low",
       "layerSignal": "structure:high-fan-out",
@@ -3096,7 +3119,7 @@
       "kind": "function",
       "name": "toolSessionChanges",
       "path": "mcp/server.js",
-      "line": 253,
+      "line": 260,
       "layer": "controller",
       "layerConfidence": "low",
       "layerSignal": "structure:high-fan-out",
@@ -3113,7 +3136,7 @@
       "kind": "function",
       "name": "toolCheckLayering",
       "path": "mcp/server.js",
-      "line": 318,
+      "line": 325,
       "layer": "controller",
       "layerConfidence": "low",
       "layerSignal": "structure:high-fan-out",
@@ -3130,7 +3153,7 @@
       "kind": "function",
       "name": "toolExplainFinding",
       "path": "mcp/server.js",
-      "line": 354,
+      "line": 361,
       "layer": "controller",
       "layerConfidence": "low",
       "layerSignal": "structure:high-fan-out",
@@ -3147,7 +3170,7 @@
       "kind": "function",
       "name": "buildExplainResult",
       "path": "mcp/server.js",
-      "line": 408,
+      "line": 415,
       "layer": "controller",
       "layerConfidence": "low",
       "layerSignal": "structure:high-fan-out",
@@ -3160,11 +3183,28 @@
       ]
     },
     {
+      "id": "mcp/server#toolArchifyExport",
+      "kind": "function",
+      "name": "toolArchifyExport",
+      "path": "mcp/server.js",
+      "line": 458,
+      "layer": "controller",
+      "layerConfidence": "low",
+      "layerSignal": "structure:high-fan-out",
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "mcp/server",
+      "methods": [
+        "toolArchifyExport"
+      ]
+    },
+    {
       "id": "mcp/server#handleToolCall",
       "kind": "function",
       "name": "handleToolCall",
       "path": "mcp/server.js",
-      "line": 507,
+      "line": 566,
       "layer": "controller",
       "layerConfidence": "low",
       "layerSignal": "structure:high-fan-out",
@@ -3181,7 +3221,7 @@
       "kind": "function",
       "name": "createServer",
       "path": "mcp/server.js",
-      "line": 519,
+      "line": 579,
       "layer": "controller",
       "layerConfidence": "low",
       "layerSignal": "structure:high-fan-out",
@@ -3191,6 +3231,135 @@
       "module": "mcp/server",
       "methods": [
         "createServer"
+      ]
+    },
+    {
+      "id": "file:lib/archify-export.js",
+      "kind": "file",
+      "name": "archify-export.js",
+      "path": "lib/archify-export.js",
+      "layer": "util",
+      "layerConfidence": "high",
+      "layerSignal": "dir-name",
+      "lang": "javascript"
+    },
+    {
+      "id": "lib/archify-export#baselinePath",
+      "kind": "function",
+      "name": "baselinePath",
+      "path": "lib/archify-export.js",
+      "line": 29,
+      "layer": "util",
+      "layerConfidence": "high",
+      "layerSignal": "dir-name",
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "lib/archify-export",
+      "methods": [
+        "baselinePath"
+      ]
+    },
+    {
+      "id": "lib/archify-export#findArchifyCli",
+      "kind": "function",
+      "name": "findArchifyCli",
+      "path": "lib/archify-export.js",
+      "line": 41,
+      "layer": "util",
+      "layerConfidence": "high",
+      "layerSignal": "dir-name",
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "lib/archify-export",
+      "methods": [
+        "findArchifyCli"
+      ]
+    },
+    {
+      "id": "lib/archify-export#runArchifyValidate",
+      "kind": "function",
+      "name": "runArchifyValidate",
+      "path": "lib/archify-export.js",
+      "line": 64,
+      "layer": "util",
+      "layerConfidence": "high",
+      "layerSignal": "dir-name",
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "lib/archify-export",
+      "methods": [
+        "runArchifyValidate"
+      ]
+    },
+    {
+      "id": "lib/archify-export#exportArchify",
+      "kind": "function",
+      "name": "exportArchify",
+      "path": "lib/archify-export.js",
+      "line": 101,
+      "layer": "util",
+      "layerConfidence": "high",
+      "layerSignal": "dir-name",
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "lib/archify-export",
+      "methods": [
+        "exportArchify"
+      ]
+    },
+    {
+      "id": "lib/archify-export#runArchifyCompare",
+      "kind": "function",
+      "name": "runArchifyCompare",
+      "path": "lib/archify-export.js",
+      "line": 170,
+      "layer": "util",
+      "layerConfidence": "high",
+      "layerSignal": "dir-name",
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "lib/archify-export",
+      "methods": [
+        "runArchifyCompare"
+      ]
+    },
+    {
+      "id": "lib/archify-export#tryRenderArchify",
+      "kind": "function",
+      "name": "tryRenderArchify",
+      "path": "lib/archify-export.js",
+      "line": 198,
+      "layer": "util",
+      "layerConfidence": "high",
+      "layerSignal": "dir-name",
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "lib/archify-export",
+      "methods": [
+        "tryRenderArchify"
+      ]
+    },
+    {
+      "id": "lib/archify-export#finalizeSessionHtml",
+      "kind": "function",
+      "name": "finalizeSessionHtml",
+      "path": "lib/archify-export.js",
+      "line": 259,
+      "layer": "util",
+      "layerConfidence": "high",
+      "layerSignal": "dir-name",
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "lib/archify-export",
+      "methods": [
+        "finalizeSessionHtml"
       ]
     },
     {
@@ -3208,7 +3377,7 @@
       "kind": "function",
       "name": "help",
       "path": "lib/cli.js",
-      "line": 28,
+      "line": 29,
       "layer": "util",
       "layerConfidence": "high",
       "layerSignal": "dir-name",
@@ -3225,7 +3394,7 @@
       "kind": "function",
       "name": "parseArgs",
       "path": "lib/cli.js",
-      "line": 64,
+      "line": 74,
       "layer": "util",
       "layerConfidence": "high",
       "layerSignal": "dir-name",
@@ -3242,7 +3411,7 @@
       "kind": "function",
       "name": "openInBrowser",
       "path": "lib/cli.js",
-      "line": 80,
+      "line": 90,
       "layer": "util",
       "layerConfidence": "high",
       "layerSignal": "dir-name",
@@ -3259,7 +3428,7 @@
       "kind": "function",
       "name": "formatFindingsText",
       "path": "lib/cli.js",
-      "line": 94,
+      "line": 104,
       "layer": "util",
       "layerConfidence": "high",
       "layerSignal": "dir-name",
@@ -3276,7 +3445,7 @@
       "kind": "function",
       "name": "printIssues",
       "path": "lib/cli.js",
-      "line": 105,
+      "line": 115,
       "layer": "util",
       "layerConfidence": "high",
       "layerSignal": "dir-name",
@@ -3293,7 +3462,7 @@
       "kind": "function",
       "name": "loadEvalConfig",
       "path": "lib/cli.js",
-      "line": 115,
+      "line": 125,
       "layer": "util",
       "layerConfidence": "high",
       "layerSignal": "dir-name",
@@ -3310,7 +3479,7 @@
       "kind": "function",
       "name": "runEval",
       "path": "lib/cli.js",
-      "line": 124,
+      "line": 134,
       "layer": "util",
       "layerConfidence": "high",
       "layerSignal": "dir-name",
@@ -3327,7 +3496,7 @@
       "kind": "function",
       "name": "printGenerateResult",
       "path": "lib/cli.js",
-      "line": 170,
+      "line": 180,
       "layer": "util",
       "layerConfidence": "high",
       "layerSignal": "dir-name",
@@ -3344,7 +3513,7 @@
       "kind": "function",
       "name": "writeLayerSuggestions",
       "path": "lib/cli.js",
-      "line": 188,
+      "line": 198,
       "layer": "util",
       "layerConfidence": "high",
       "layerSignal": "dir-name",
@@ -3361,7 +3530,7 @@
       "kind": "function",
       "name": "wantsRefine",
       "path": "lib/cli.js",
-      "line": 202,
+      "line": 212,
       "layer": "util",
       "layerConfidence": "high",
       "layerSignal": "dir-name",
@@ -3378,7 +3547,7 @@
       "kind": "function",
       "name": "main",
       "path": "lib/cli.js",
-      "line": 206,
+      "line": 216,
       "layer": "util",
       "layerConfidence": "high",
       "layerSignal": "dir-name",
@@ -3568,6 +3737,254 @@
       "module": "lib/diff-graph",
       "methods": [
         "formatDiffText"
+      ]
+    },
+    {
+      "id": "file:lib/export-archify.js",
+      "kind": "file",
+      "name": "export-archify.js",
+      "path": "lib/export-archify.js",
+      "layer": "util",
+      "layerConfidence": "high",
+      "layerSignal": "dir-name",
+      "lang": "javascript"
+    },
+    {
+      "id": "lib/export-archify#shortHash",
+      "kind": "function",
+      "name": "shortHash",
+      "path": "lib/export-archify.js",
+      "line": 47,
+      "layer": "util",
+      "layerConfidence": "high",
+      "layerSignal": "dir-name",
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "lib/export-archify",
+      "methods": [
+        "shortHash"
+      ]
+    },
+    {
+      "id": "lib/export-archify#cleanToken",
+      "kind": "function",
+      "name": "cleanToken",
+      "path": "lib/export-archify.js",
+      "line": 55,
+      "layer": "util",
+      "layerConfidence": "high",
+      "layerSignal": "dir-name",
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "lib/export-archify",
+      "methods": [
+        "cleanToken"
+      ]
+    },
+    {
+      "id": "lib/export-archify#makeIdAllocator",
+      "kind": "function",
+      "name": "makeIdAllocator",
+      "path": "lib/export-archify.js",
+      "line": 65,
+      "layer": "util",
+      "layerConfidence": "high",
+      "layerSignal": "dir-name",
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "lib/export-archify",
+      "methods": [
+        "makeIdAllocator"
+      ]
+    },
+    {
+      "id": "lib/export-archify#layerRow",
+      "kind": "function",
+      "name": "layerRow",
+      "path": "lib/export-archify.js",
+      "line": 84,
+      "layer": "util",
+      "layerConfidence": "high",
+      "layerSignal": "dir-name",
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "lib/export-archify",
+      "methods": [
+        "layerRow"
+      ]
+    },
+    {
+      "id": "lib/export-archify#componentTypeFor",
+      "kind": "function",
+      "name": "componentTypeFor",
+      "path": "lib/export-archify.js",
+      "line": 89,
+      "layer": "util",
+      "layerConfidence": "high",
+      "layerSignal": "dir-name",
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "lib/export-archify",
+      "methods": [
+        "componentTypeFor"
+      ]
+    },
+    {
+      "id": "lib/export-archify#graphIndex",
+      "kind": "function",
+      "name": "graphIndex",
+      "path": "lib/export-archify.js",
+      "line": 101,
+      "layer": "util",
+      "layerConfidence": "high",
+      "layerSignal": "dir-name",
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "lib/export-archify",
+      "methods": [
+        "graphIndex"
+      ]
+    },
+    {
+      "id": "lib/export-archify#selectVisible",
+      "kind": "function",
+      "name": "selectVisible",
+      "path": "lib/export-archify.js",
+      "line": 130,
+      "layer": "util",
+      "layerConfidence": "high",
+      "layerSignal": "dir-name",
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "lib/export-archify",
+      "methods": [
+        "selectVisible"
+      ]
+    },
+    {
+      "id": "lib/export-archify#computeLayout",
+      "kind": "function",
+      "name": "computeLayout",
+      "path": "lib/export-archify.js",
+      "line": 233,
+      "layer": "util",
+      "layerConfidence": "high",
+      "layerSignal": "dir-name",
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "lib/export-archify",
+      "methods": [
+        "computeLayout"
+      ]
+    },
+    {
+      "id": "lib/export-archify#violationPairs",
+      "kind": "function",
+      "name": "violationPairs",
+      "path": "lib/export-archify.js",
+      "line": 263,
+      "layer": "util",
+      "layerConfidence": "high",
+      "layerSignal": "dir-name",
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "lib/export-archify",
+      "methods": [
+        "violationPairs"
+      ]
+    },
+    {
+      "id": "lib/export-archify#buildConnections",
+      "kind": "function",
+      "name": "buildConnections",
+      "path": "lib/export-archify.js",
+      "line": 282,
+      "layer": "util",
+      "layerConfidence": "high",
+      "layerSignal": "dir-name",
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "lib/export-archify",
+      "methods": [
+        "buildConnections"
+      ]
+    },
+    {
+      "id": "lib/export-archify#buildComponents",
+      "kind": "function",
+      "name": "buildComponents",
+      "path": "lib/export-archify.js",
+      "line": 390,
+      "layer": "util",
+      "layerConfidence": "high",
+      "layerSignal": "dir-name",
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "lib/export-archify",
+      "methods": [
+        "buildComponents"
+      ]
+    },
+    {
+      "id": "lib/export-archify#buildIR",
+      "kind": "function",
+      "name": "buildIR",
+      "path": "lib/export-archify.js",
+      "line": 444,
+      "layer": "util",
+      "layerConfidence": "high",
+      "layerSignal": "dir-name",
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "lib/export-archify",
+      "methods": [
+        "buildIR"
+      ]
+    },
+    {
+      "id": "lib/export-archify#countEmitted",
+      "kind": "function",
+      "name": "countEmitted",
+      "path": "lib/export-archify.js",
+      "line": 503,
+      "layer": "util",
+      "layerConfidence": "high",
+      "layerSignal": "dir-name",
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "lib/export-archify",
+      "methods": [
+        "countEmitted"
+      ]
+    },
+    {
+      "id": "lib/export-archify#buildArchifyPair",
+      "kind": "function",
+      "name": "buildArchifyPair",
+      "path": "lib/export-archify.js",
+      "line": 519,
+      "layer": "util",
+      "layerConfidence": "high",
+      "layerSignal": "dir-name",
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "lib/export-archify",
+      "methods": [
+        "buildArchifyPair"
       ]
     },
     {
@@ -8442,7 +8859,7 @@
       "kind": "function",
       "name": "readGitignoreSkips",
       "path": "lib/extract/shared.js",
-      "line": 35,
+      "line": 37,
       "layer": "util",
       "layerConfidence": "high",
       "layerSignal": "dir-name",
@@ -8459,7 +8876,7 @@
       "kind": "function",
       "name": "readSafe",
       "path": "lib/extract/shared.js",
-      "line": 72,
+      "line": 74,
       "layer": "util",
       "layerConfidence": "high",
       "layerSignal": "dir-name",
@@ -8476,7 +8893,7 @@
       "kind": "function",
       "name": "walkSourceFiles",
       "path": "lib/extract/shared.js",
-      "line": 86,
+      "line": 88,
       "layer": "util",
       "layerConfidence": "high",
       "layerSignal": "dir-name",
@@ -8493,7 +8910,7 @@
       "kind": "function",
       "name": "walkFiles",
       "path": "lib/extract/shared.js",
-      "line": 122,
+      "line": 124,
       "layer": "util",
       "layerConfidence": "high",
       "layerSignal": "dir-name",
@@ -8510,7 +8927,7 @@
       "kind": "function",
       "name": "findChildByType",
       "path": "lib/extract/shared.js",
-      "line": 150,
+      "line": 152,
       "layer": "util",
       "layerConfidence": "high",
       "layerSignal": "dir-name",
@@ -8527,7 +8944,7 @@
       "kind": "function",
       "name": "collectNodes",
       "path": "lib/extract/shared.js",
-      "line": 160,
+      "line": 162,
       "layer": "util",
       "layerConfidence": "high",
       "layerSignal": "dir-name",
@@ -9837,6 +10254,13 @@
       "line": 24
     },
     {
+      "from": "scripts/build-web-dist#copyDir",
+      "to": "file:scripts/build-web-dist.mjs",
+      "type": "declared-in",
+      "file": "scripts/build-web-dist.mjs",
+      "line": 31
+    },
+    {
       "from": "pm/scripts/gitee-webhook#appendLog",
       "to": "file:pm/scripts/gitee-webhook.mjs",
       "type": "declared-in",
@@ -10037,203 +10461,259 @@
       "to": "file:mcp/server.js",
       "type": "declared-in",
       "file": "mcp/server.js",
-      "line": 25
+      "line": 27
     },
     {
       "from": "mcp/server#baselinePath",
       "to": "file:mcp/server.js",
       "type": "declared-in",
       "file": "mcp/server.js",
-      "line": 29
+      "line": 31
     },
     {
       "from": "mcp/server#shouldWatchFile",
       "to": "file:mcp/server.js",
       "type": "declared-in",
       "file": "mcp/server.js",
-      "line": 45
+      "line": 47
     },
     {
       "from": "mcp/server#generateSessionReport",
       "to": "file:mcp/server.js",
       "type": "declared-in",
       "file": "mcp/server.js",
-      "line": 56
+      "line": 58
     },
     {
       "from": "mcp/server#startWatcher",
       "to": "file:mcp/server.js",
       "type": "declared-in",
       "file": "mcp/server.js",
-      "line": 106
+      "line": 113
     },
     {
       "from": "mcp/server#stopWatcher",
       "to": "file:mcp/server.js",
       "type": "declared-in",
       "file": "mcp/server.js",
-      "line": 145
+      "line": 152
     },
     {
       "from": "mcp/server#getWatcherState",
       "to": "file:mcp/server.js",
       "type": "declared-in",
       "file": "mcp/server.js",
-      "line": 155
+      "line": 162
     },
     {
       "from": "mcp/server#writeLayerSuggestions",
       "to": "file:mcp/server.js",
       "type": "declared-in",
       "file": "mcp/server.js",
-      "line": 164
+      "line": 171
     },
     {
       "from": "mcp/server#formatFinding",
       "to": "file:mcp/server.js",
       "type": "declared-in",
       "file": "mcp/server.js",
-      "line": 175
+      "line": 182
     },
     {
       "from": "mcp/server#formatImpact",
       "to": "file:mcp/server.js",
       "type": "declared-in",
       "file": "mcp/server.js",
-      "line": 180
+      "line": 187
     },
     {
       "from": "mcp/server#toolSessionStart",
       "to": "file:mcp/server.js",
       "type": "declared-in",
       "file": "mcp/server.js",
-      "line": 191
+      "line": 198
     },
     {
       "from": "mcp/server#toolSessionReport",
       "to": "file:mcp/server.js",
       "type": "declared-in",
       "file": "mcp/server.js",
-      "line": 222
+      "line": 229
     },
     {
       "from": "mcp/server#toolSessionChanges",
       "to": "file:mcp/server.js",
       "type": "declared-in",
       "file": "mcp/server.js",
-      "line": 253
+      "line": 260
     },
     {
       "from": "mcp/server#toolCheckLayering",
       "to": "file:mcp/server.js",
       "type": "declared-in",
       "file": "mcp/server.js",
-      "line": 318
+      "line": 325
     },
     {
       "from": "mcp/server#toolExplainFinding",
       "to": "file:mcp/server.js",
       "type": "declared-in",
       "file": "mcp/server.js",
-      "line": 354
+      "line": 361
     },
     {
       "from": "mcp/server#buildExplainResult",
       "to": "file:mcp/server.js",
       "type": "declared-in",
       "file": "mcp/server.js",
-      "line": 408
+      "line": 415
+    },
+    {
+      "from": "mcp/server#toolArchifyExport",
+      "to": "file:mcp/server.js",
+      "type": "declared-in",
+      "file": "mcp/server.js",
+      "line": 458
     },
     {
       "from": "mcp/server#handleToolCall",
       "to": "file:mcp/server.js",
       "type": "declared-in",
       "file": "mcp/server.js",
-      "line": 507
+      "line": 566
     },
     {
       "from": "mcp/server#createServer",
       "to": "file:mcp/server.js",
       "type": "declared-in",
       "file": "mcp/server.js",
-      "line": 519
+      "line": 579
+    },
+    {
+      "from": "lib/archify-export#baselinePath",
+      "to": "file:lib/archify-export.js",
+      "type": "declared-in",
+      "file": "lib/archify-export.js",
+      "line": 29
+    },
+    {
+      "from": "lib/archify-export#findArchifyCli",
+      "to": "file:lib/archify-export.js",
+      "type": "declared-in",
+      "file": "lib/archify-export.js",
+      "line": 41
+    },
+    {
+      "from": "lib/archify-export#runArchifyValidate",
+      "to": "file:lib/archify-export.js",
+      "type": "declared-in",
+      "file": "lib/archify-export.js",
+      "line": 64
+    },
+    {
+      "from": "lib/archify-export#exportArchify",
+      "to": "file:lib/archify-export.js",
+      "type": "declared-in",
+      "file": "lib/archify-export.js",
+      "line": 101
+    },
+    {
+      "from": "lib/archify-export#runArchifyCompare",
+      "to": "file:lib/archify-export.js",
+      "type": "declared-in",
+      "file": "lib/archify-export.js",
+      "line": 170
+    },
+    {
+      "from": "lib/archify-export#tryRenderArchify",
+      "to": "file:lib/archify-export.js",
+      "type": "declared-in",
+      "file": "lib/archify-export.js",
+      "line": 198
+    },
+    {
+      "from": "lib/archify-export#finalizeSessionHtml",
+      "to": "file:lib/archify-export.js",
+      "type": "declared-in",
+      "file": "lib/archify-export.js",
+      "line": 259
     },
     {
       "from": "lib/cli#help",
       "to": "file:lib/cli.js",
       "type": "declared-in",
       "file": "lib/cli.js",
-      "line": 28
+      "line": 29
     },
     {
       "from": "lib/cli#parseArgs",
       "to": "file:lib/cli.js",
       "type": "declared-in",
       "file": "lib/cli.js",
-      "line": 64
+      "line": 74
     },
     {
       "from": "lib/cli#openInBrowser",
       "to": "file:lib/cli.js",
       "type": "declared-in",
       "file": "lib/cli.js",
-      "line": 80
+      "line": 90
     },
     {
       "from": "lib/cli#formatFindingsText",
       "to": "file:lib/cli.js",
       "type": "declared-in",
       "file": "lib/cli.js",
-      "line": 94
+      "line": 104
     },
     {
       "from": "lib/cli#printIssues",
       "to": "file:lib/cli.js",
       "type": "declared-in",
       "file": "lib/cli.js",
-      "line": 105
+      "line": 115
     },
     {
       "from": "lib/cli#loadEvalConfig",
       "to": "file:lib/cli.js",
       "type": "declared-in",
       "file": "lib/cli.js",
-      "line": 115
+      "line": 125
     },
     {
       "from": "lib/cli#runEval",
       "to": "file:lib/cli.js",
       "type": "declared-in",
       "file": "lib/cli.js",
-      "line": 124
+      "line": 134
     },
     {
       "from": "lib/cli#printGenerateResult",
       "to": "file:lib/cli.js",
       "type": "declared-in",
       "file": "lib/cli.js",
-      "line": 170
+      "line": 180
     },
     {
       "from": "lib/cli#writeLayerSuggestions",
       "to": "file:lib/cli.js",
       "type": "declared-in",
       "file": "lib/cli.js",
-      "line": 188
+      "line": 198
     },
     {
       "from": "lib/cli#wantsRefine",
       "to": "file:lib/cli.js",
       "type": "declared-in",
       "file": "lib/cli.js",
-      "line": 202
+      "line": 212
     },
     {
       "from": "lib/cli#main",
       "to": "file:lib/cli.js",
       "type": "declared-in",
       "file": "lib/cli.js",
-      "line": 206
+      "line": 216
     },
     {
       "from": "lib/diff-graph#diffGraphs",
@@ -10304,6 +10784,104 @@
       "type": "declared-in",
       "file": "lib/diff-graph.js",
       "line": 340
+    },
+    {
+      "from": "lib/export-archify#shortHash",
+      "to": "file:lib/export-archify.js",
+      "type": "declared-in",
+      "file": "lib/export-archify.js",
+      "line": 47
+    },
+    {
+      "from": "lib/export-archify#cleanToken",
+      "to": "file:lib/export-archify.js",
+      "type": "declared-in",
+      "file": "lib/export-archify.js",
+      "line": 55
+    },
+    {
+      "from": "lib/export-archify#makeIdAllocator",
+      "to": "file:lib/export-archify.js",
+      "type": "declared-in",
+      "file": "lib/export-archify.js",
+      "line": 65
+    },
+    {
+      "from": "lib/export-archify#layerRow",
+      "to": "file:lib/export-archify.js",
+      "type": "declared-in",
+      "file": "lib/export-archify.js",
+      "line": 84
+    },
+    {
+      "from": "lib/export-archify#componentTypeFor",
+      "to": "file:lib/export-archify.js",
+      "type": "declared-in",
+      "file": "lib/export-archify.js",
+      "line": 89
+    },
+    {
+      "from": "lib/export-archify#graphIndex",
+      "to": "file:lib/export-archify.js",
+      "type": "declared-in",
+      "file": "lib/export-archify.js",
+      "line": 101
+    },
+    {
+      "from": "lib/export-archify#selectVisible",
+      "to": "file:lib/export-archify.js",
+      "type": "declared-in",
+      "file": "lib/export-archify.js",
+      "line": 130
+    },
+    {
+      "from": "lib/export-archify#computeLayout",
+      "to": "file:lib/export-archify.js",
+      "type": "declared-in",
+      "file": "lib/export-archify.js",
+      "line": 233
+    },
+    {
+      "from": "lib/export-archify#violationPairs",
+      "to": "file:lib/export-archify.js",
+      "type": "declared-in",
+      "file": "lib/export-archify.js",
+      "line": 263
+    },
+    {
+      "from": "lib/export-archify#buildConnections",
+      "to": "file:lib/export-archify.js",
+      "type": "declared-in",
+      "file": "lib/export-archify.js",
+      "line": 282
+    },
+    {
+      "from": "lib/export-archify#buildComponents",
+      "to": "file:lib/export-archify.js",
+      "type": "declared-in",
+      "file": "lib/export-archify.js",
+      "line": 390
+    },
+    {
+      "from": "lib/export-archify#buildIR",
+      "to": "file:lib/export-archify.js",
+      "type": "declared-in",
+      "file": "lib/export-archify.js",
+      "line": 444
+    },
+    {
+      "from": "lib/export-archify#countEmitted",
+      "to": "file:lib/export-archify.js",
+      "type": "declared-in",
+      "file": "lib/export-archify.js",
+      "line": 503
+    },
+    {
+      "from": "lib/export-archify#buildArchifyPair",
+      "to": "file:lib/export-archify.js",
+      "type": "declared-in",
+      "file": "lib/export-archify.js",
+      "line": 519
     },
     {
       "from": "lib/extract-graph#isJdkImport",
@@ -12207,42 +12785,42 @@
       "to": "file:lib/extract/shared.js",
       "type": "declared-in",
       "file": "lib/extract/shared.js",
-      "line": 35
+      "line": 37
     },
     {
       "from": "lib/extract/shared#readSafe",
       "to": "file:lib/extract/shared.js",
       "type": "declared-in",
       "file": "lib/extract/shared.js",
-      "line": 72
+      "line": 74
     },
     {
       "from": "lib/extract/shared#walkSourceFiles",
       "to": "file:lib/extract/shared.js",
       "type": "declared-in",
       "file": "lib/extract/shared.js",
-      "line": 86
+      "line": 88
     },
     {
       "from": "lib/extract/shared#walkFiles",
       "to": "file:lib/extract/shared.js",
       "type": "declared-in",
       "file": "lib/extract/shared.js",
-      "line": 122
+      "line": 124
     },
     {
       "from": "lib/extract/shared#findChildByType",
       "to": "file:lib/extract/shared.js",
       "type": "declared-in",
       "file": "lib/extract/shared.js",
-      "line": 150
+      "line": 152
     },
     {
       "from": "lib/extract/shared#collectNodes",
       "to": "file:lib/extract/shared.js",
       "type": "declared-in",
       "file": "lib/extract/shared.js",
-      "line": 160
+      "line": 162
     },
     {
       "from": "lib/extract/svelte#extractScriptBlock",
@@ -12951,6 +13529,38 @@
       "builtin": true
     },
     {
+      "from": "file:scripts/build-web-dist.mjs",
+      "to": "ext:fs",
+      "type": "uses-external",
+      "file": "scripts/build-web-dist.mjs",
+      "line": 12,
+      "builtin": true
+    },
+    {
+      "from": "file:scripts/build-web-dist.mjs",
+      "to": "ext:path",
+      "type": "uses-external",
+      "file": "scripts/build-web-dist.mjs",
+      "line": 13,
+      "builtin": true
+    },
+    {
+      "from": "file:scripts/build-web-dist.mjs",
+      "to": "ext:child_process",
+      "type": "uses-external",
+      "file": "scripts/build-web-dist.mjs",
+      "line": 14,
+      "builtin": true
+    },
+    {
+      "from": "file:scripts/build-web-dist.mjs",
+      "to": "ext:url",
+      "type": "uses-external",
+      "file": "scripts/build-web-dist.mjs",
+      "line": 15,
+      "builtin": true
+    },
+    {
       "from": "file:scripts/pr-comment.js",
       "to": "ext:path",
       "type": "uses-external",
@@ -13091,7 +13701,7 @@
       "to": "ext:fs",
       "type": "uses-external",
       "file": "mcp/server.js",
-      "line": 16,
+      "line": 17,
       "builtin": true
     },
     {
@@ -13099,7 +13709,7 @@
       "to": "ext:path",
       "type": "uses-external",
       "file": "mcp/server.js",
-      "line": 17,
+      "line": 18,
       "builtin": true
     },
     {
@@ -13107,7 +13717,7 @@
       "to": "ext:readline",
       "type": "uses-external",
       "file": "mcp/server.js",
-      "line": 18,
+      "line": 19,
       "builtin": true
     },
     {
@@ -13115,7 +13725,7 @@
       "to": "file:lib/extract-graph.js",
       "type": "import",
       "file": "mcp/server.js",
-      "line": 19,
+      "line": 20,
       "isType": false
     },
     {
@@ -13123,7 +13733,7 @@
       "to": "file:lib/diff-graph.js",
       "type": "import",
       "file": "mcp/server.js",
-      "line": 20,
+      "line": 21,
       "isType": false
     },
     {
@@ -13131,7 +13741,7 @@
       "to": "file:lib/risk-rules.js",
       "type": "import",
       "file": "mcp/server.js",
-      "line": 21,
+      "line": 22,
       "isType": false
     },
     {
@@ -13139,7 +13749,7 @@
       "to": "file:lib/impact.js",
       "type": "import",
       "file": "mcp/server.js",
-      "line": 22,
+      "line": 23,
       "isType": false
     },
     {
@@ -13147,7 +13757,63 @@
       "to": "file:lib/session-report.js",
       "type": "import",
       "file": "mcp/server.js",
+      "line": 24,
+      "isType": false
+    },
+    {
+      "from": "file:mcp/server.js",
+      "to": "file:lib/archify-export.js",
+      "type": "import",
+      "file": "mcp/server.js",
+      "line": 25,
+      "isType": false
+    },
+    {
+      "from": "file:lib/archify-export.js",
+      "to": "ext:fs",
+      "type": "uses-external",
+      "file": "lib/archify-export.js",
+      "line": 19,
+      "builtin": true
+    },
+    {
+      "from": "file:lib/archify-export.js",
+      "to": "ext:path",
+      "type": "uses-external",
+      "file": "lib/archify-export.js",
+      "line": 20,
+      "builtin": true
+    },
+    {
+      "from": "file:lib/archify-export.js",
+      "to": "ext:child_process",
+      "type": "uses-external",
+      "file": "lib/archify-export.js",
+      "line": 21,
+      "builtin": true
+    },
+    {
+      "from": "file:lib/archify-export.js",
+      "to": "file:lib/extract-graph.js",
+      "type": "import",
+      "file": "lib/archify-export.js",
       "line": 23,
+      "isType": false
+    },
+    {
+      "from": "file:lib/archify-export.js",
+      "to": "file:lib/diff-graph.js",
+      "type": "import",
+      "file": "lib/archify-export.js",
+      "line": 24,
+      "isType": false
+    },
+    {
+      "from": "file:lib/archify-export.js",
+      "to": "file:lib/export-archify.js",
+      "type": "import",
+      "file": "lib/archify-export.js",
+      "line": 25,
       "isType": false
     },
     {
@@ -13245,6 +13911,22 @@
       "file": "lib/cli.js",
       "line": 26,
       "isType": false
+    },
+    {
+      "from": "file:lib/cli.js",
+      "to": "file:lib/archify-export.js",
+      "type": "import",
+      "file": "lib/cli.js",
+      "line": 27,
+      "isType": false
+    },
+    {
+      "from": "file:lib/export-archify.js",
+      "to": "ext:crypto",
+      "type": "uses-external",
+      "file": "lib/export-archify.js",
+      "line": 21,
+      "builtin": true
     },
     {
       "from": "file:lib/extract-graph.js",
@@ -14206,7 +14888,7 @@
       "layer": "util",
       "confidence": "high",
       "signal": "dir-name",
-      "files": 19
+      "files": 21
     },
     "lib/orch": {
       "layer": "util",
@@ -14221,5 +14903,5 @@
       "files": 7
     }
   },
-  "sessionStartedAt": "2026-09-03T08:36:56.420Z"
+  "sessionStartedAt": "2026-09-04T11:41:46.051Z"
 }
