@@ -2,8 +2,12 @@
 
 **AI 写完代码后，自动看清架构变了什么。**
 
-会话基线 → 变更图谱 → 影响面分析：IDE 状态栏 / PR 评论 / CLI 三端可用。
+会话基线 → 变更图谱 → 影响面分析：CLI / MCP / 网页 / PR 评论四端可用。
 免费开源（Apache-2.0），零配置、秒级出图，不依赖 LLM。
+
+![demo](docs/demo.gif)
+
+> **English**: [README.en.md](README.en.md)
 
 > **新手入门**：如果你不太懂技术术语，先看 [小白超详细攻略](docs/beginner-guide/index.html)（图文版）
 > 或 [会话验收指南](docs/SESSION-GUIDE.md)（大白话版，无技术术语）。
@@ -14,7 +18,7 @@
 
 ---
 
-## 三种用法
+## 四种用法
 
 ### 1. CLI 会话验收门（AI 编码会话收尾）
 
@@ -30,17 +34,14 @@ npx arch-viewer session start        # ③ 确认变更符合预期：刷新基�
 并生成可分享的 HTML 前后对比图（`.av/session-report.html`）。
 高风险时退出码为 1，可直接卡进 AI 编码工作流（规则示例见 `.trae/rules/`）。
 
-### 2. VS Code 扩展（状态栏角标）
+### 2. 一键接入 AI 工具（Cursor / Claude / DeepSeek）
 
-命令面板（⇧⌘P）执行：
+```bash
+npx arch-viewer setup          # 自动装好、自动打开图文引导页，之后只需对 AI 说人话
+```
 
-- `Architecture Viewer: Session Start（记录架构基线）`
-- `Architecture Viewer: Session Report（查看架构变更报告）` — Webview 内展示报告
-- `Architecture Viewer: Session Refresh（立即重新分析）`
-
-保存文件时自动增量分析，状态栏角标实时显示风险等级（🟢/🟠/🔴）。
-
-安装：VS Code 扩展市场搜索 `arch-viewer`，或下载 [Release](https://gitee.com/heyangyan/architecture_viewer/releases) 中的 `.vsix` 后「从 VSIX 安装」。
+自动检测已安装的 AI 编程工具（Cursor、Claude、DeepSeek Harness），把架构检查规则
+写进它们的配置目录。之后对 AI 说「改代码前先拍照，改完检查有没有改坏」即可。
 
 ### 3. PR 自动评论（GitHub Actions）
 
@@ -114,6 +115,8 @@ arch-viewer diff <base-dir> <head-dir> --json    # 结构 diff（JSON）
 arch-viewer impact <base-dir> <head-dir>         # 影响面文本报告
 arch-viewer pr-comment <base-dir> <head-dir>     # PR 评论 Markdown（--post 直接发）
 arch-viewer workspace ...                         # 多仓基线管理
+arch-viewer auth login [email]                    # 邮箱验证码登录（Pro 账号）
+arch-viewer auth whoami                           # 查看当前登录邮箱与 Pro 状态
 ```
 
 ---
@@ -168,22 +171,47 @@ npm run web    # http://127.0.0.1:3847 — 粘贴仓库 URL 生成六视图，/p
 ## 目录
 
 ```
-├── lib/                              # 扫描 / diff / 影响面 / 风险规则 / 报告（CLI · 扩展 · Web 共用）
-├── src/extension*.js                 # VS Code 扩展：会话命令 + 状态栏 + Webview
-├── scripts/build-vsix.js             # 扩展打包（vsce）
+├── lib/                              # 扫描 / diff / 影响面 / 风险规则 / 报告 / 遥测（CLI · MCP · Web 共用）
+│   └── pro/                          # Pro 核心：账号 / 权益 / 存储 / CLI auth client
+├── src/extension*.js                 # VS Code 扩展：会话命令 + 状态栏 + Webview（暂缓）
+├── scripts/build-vsix.js             # 扩展打包 vsce（暂缓）
 ├── scripts/pr-comment.js             # CI 评论入口
-├── web/                              # 落地页 + API + /p/<id> 分享页
+├── web/                              # 落地页 + API + /p/<id> 分享页 + Pro 路由
 ├── .github/workflows/                # architecture-check（漂移红灯）+ architecture-diff（PR 评论）
 ├── templates/                        # 可复制的套件与 CI 模板
 └── eval/                             # 多语言解析夹具与评测
 ```
 
+## Pro 账号
+
+```bash
+arch-viewer auth login you@example.com    # 输入邮箱，收到 6 位验证码，输入后登录
+arch-viewer auth whoami                  # 查看当前登录邮箱与 Pro 状态
+arch-viewer auth logout                  # 退出登录
+```
+
+首次登录自动建档为 7 天 Pro 试用。token 存于 `~/.config/arch-viewer/auth.json`（权限 0600），
+重启终端仍登录。详见 [lib/pro/README.md](lib/pro/README.md)。
+
+## 隐私与遥测
+
+CLI 遥测**默认关闭**，企业友好。开启方式：
+
+```bash
+export ARCH_TELEMETRY=1    # 开启
+# 或设 DO_NOT_TRACK=1 永久关闭（优先级最高）
+```
+
+开启后仅记录：事件名（CLI 命令名）、耗时（毫秒）、退出码、CLI 版本、操作系统类型。
+**不记录**：文件路径、代码内容、仓库名/URL、用户邮箱。数据落本地
+`~/.config/arch-viewer/telemetry.log`（JSONL），可随时查看或删除。
+
 ## 定价摘要
 
 | 档位 | 价格 | 要点 |
 |------|------|------|
-| Community | ¥0 | CLI 会话门 + 自托管 Actions（漂移红灯 + PR 评论）+ 扩展 |
-| Pro | ¥29/月 | 托管 PR 评论 + 增量同步 |
+| Community | ¥0 | CLI 会话门 + 自托管 Actions（漂移红灯 + PR 评论） |
+| Pro | ¥29/月 | 托管 PR 评论 + 增量同步 + 邮箱账号 |
 | Team | ¥999/年/仓 | 组织规范 + 门禁托管 |
 
 详见 [COMMERCIAL.md](COMMERCIAL.md)。

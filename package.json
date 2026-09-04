@@ -31,6 +31,9 @@
   "activationEvents": [
     "onStartupFinished"
   ],
+  "telemetry": {
+    "enabled": false
+  },
   "main": "./src/extension.js",
   "bin": {
     "arch-viewer": "bin/arch-viewer.js",
