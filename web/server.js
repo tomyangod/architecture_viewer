@@ -218,6 +218,7 @@ async function generateFromPath(repoPath, sourceLabel, opts) {
 
 async function handleApi(req, res, url) {
   if (req.method === 'GET' && url.pathname === '/api/health') {
+    const { paymentLinks } = require('./lib/billing');
     return send(res, 200, {
       ok: true,
       product: 'architecture-viewer-web',
@@ -230,8 +231,14 @@ async function handleApi(req, res, url) {
       llmAvailable: !!process.env.DEEPSEEK_API_KEY,
       pro: true,
       local: process.env.ARCH_PRO_LOCAL !== '0',
-      stripe: !!(process.env.ARCH_STRIPE_SECRET_KEY && process.env.ARCH_STRIPE_PRICE_ID)
+      stripe: !!(process.env.ARCH_STRIPE_SECRET_KEY && process.env.ARCH_STRIPE_PRICE_ID),
+      billing: paymentLinks()
     });
+  }
+
+  if (req.method === 'GET' && url.pathname === '/api/billing/links') {
+    const { paymentLinks } = require('./lib/billing');
+    return send(res, 200, paymentLinks());
   }
 
   if (url.pathname.startsWith('/api/pro')) {

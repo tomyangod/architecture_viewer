@@ -313,4 +313,12 @@
 
   if (/paid=1/.test(location.search)) showTip(tipDash, '支付完成，正在刷新权益…', false);
   refresh();
+  api('GET', '/api/billing/links').then(function (r) {
+    if (!r.ok || !r.data) return;
+    var map = { 'pay-afdian': r.data.afdian, 'pay-wechat': r.data.wechat, 'pay-lemon': r.data.lemon };
+    Object.keys(map).forEach(function (id) {
+      var el = document.getElementById(id);
+      if (el && map[id]) el.setAttribute('href', map[id]);
+    });
+  });
 })();

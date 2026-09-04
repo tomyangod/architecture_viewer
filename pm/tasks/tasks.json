@@ -874,8 +874,8 @@
       "phase": 1,
       "week": 5,
       "priority": "P1",
-      "status": "todo",
-      "progress": 0,
+      "status": "done",
+      "progress": 100,
       "assignee": "heyangyan",
       "estHours": 5,
       "deadline": "2026-10-02",
@@ -903,7 +903,18 @@
       "refs": [
         "COMMERCIAL.md"
       ],
-      "activity": []
+      "activity": [
+        {
+          "date": "2026-09-04",
+          "action": "状态变更 todo→doing",
+          "detail": "开工：爱发电/微信收款 + Lemon 占位 + billing SOP"
+        },
+        {
+          "date": "2026-09-04",
+          "action": "状态变更 doing→done",
+          "detail": "docs/billing.md 付款→核验→开通 SOP；定价页/控制台可点爱发电·微信·Lemon；web/lib/billing.js + /api/billing/links；BILLING_OK。"
+        }
+      ]
     },
     {
       "id": "W05-03",

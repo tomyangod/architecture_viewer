@@ -357,5 +357,12 @@
     // applyLang 的 hintKey() 会据 serverLlm 自动选择底部提示文案
     applyLang(currentLang);
     updateModeBadge();
+    if (h.billing) {
+      var map = { 'pay-afdian': h.billing.afdian, 'pay-wechat': h.billing.wechat, 'pay-lemon': h.billing.lemon };
+      Object.keys(map).forEach(function (id) {
+        var el = document.getElementById(id);
+        if (el && map[id]) el.setAttribute('href', map[id]);
+      });
+    }
   }).catch(function () { /* ignore */ });
 })();

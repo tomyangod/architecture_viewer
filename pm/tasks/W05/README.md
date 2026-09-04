@@ -2,7 +2,7 @@
 
 > 阶段：Phase 1 ｜ 周期：2026-09-28 ~ 2026-10-02 ｜ 周截止：2026-10-02
 >
-> 完成度：1/3 ███░░░░░░░ 33%
+> 完成度：2/3 ███████░░░ 67%
 
 > 本文件由 `node pm/scripts/wbs-cards.mjs` 自动生成，请勿手改；状态请改 `pm/tasks/tasks.json` 或用 `node pm/scripts/wbs.mjs set <任务号> <状态>`。
 
@@ -44,12 +44,12 @@
 
 ---
 
-### <a id="w05-02"></a>⬜ W05-02 · 支付通道接入（爱发电/微信 + Lemon Squeezy 占位） 
+### <a id="w05-02"></a>✅ W05-02 · 支付通道接入（爱发电/微信 + Lemon Squeezy 占位） 
 
 | 字段 | 内容 |
 |---|---|
 | 优先级 | **P1** |
-| 状态 | 未开始（进度 0%） |
+| 状态 | 已完成（进度 100%） |
 | 工时预估 | 5h |
 | 截止 | 2026-10-02 |
 | 依赖 | [W05-01](../W05/README.md#w05-01) |
@@ -76,7 +76,8 @@
 **参考文档**：`COMMERCIAL.md`
 
 **活动记录**：
-  - （暂无）
+  - 2026-09-04 状态变更 todo→doing：开工：爱发电/微信收款 + Lemon 占位 + billing SOP
+  - 2026-09-04 状态变更 doing→done：docs/billing.md 付款→核验→开通 SOP；定价页/控制台可点爱发电·微信·Lemon；web/lib/billing.js + /api/billing/links；BILLING_OK。
 
 ---
 
