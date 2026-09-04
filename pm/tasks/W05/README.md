@@ -2,17 +2,17 @@
 
 > 阶段：Phase 1 ｜ 周期：2026-09-28 ~ 2026-10-02 ｜ 周截止：2026-10-02
 >
-> 完成度：0/3 ░░░░░░░░░░ 0%
+> 完成度：1/3 ███░░░░░░░ 33%
 
 > 本文件由 `node pm/scripts/wbs-cards.mjs` 自动生成，请勿手改；状态请改 `pm/tasks/tasks.json` 或用 `node pm/scripts/wbs.mjs set <任务号> <状态>`。
 
 
-### <a id="w05-01"></a>⬜ W05-01 · Free/Pro 门禁可演示 
+### <a id="w05-01"></a>✅ W05-01 · Free/Pro 门禁可演示 
 
 | 字段 | 内容 |
 |---|---|
 | 优先级 | **P0** |
-| 状态 | 未开始（进度 0%） |
+| 状态 | 已完成（进度 100%） |
 | 工时预估 | 5h |
 | 截止 | 2026-10-02 |
 | 依赖 | [W02-06](../W02/README.md#w02-06)、[W03-01](../W03/README.md#w03-01) |
@@ -39,7 +39,8 @@
 **参考文档**：`COMMERCIAL.md`
 
 **活动记录**：
-  - （暂无）
+  - 2026-09-04 状态变更 todo→doing：开工：Free/Pro 门禁（云端精修 + 增量同步占位）
+  - 2026-09-04 状态变更 doing→done：Free/Pro 门禁可演示：requirePro/requireProFeature，未登录 CLI pro refine|sync 提示升级+定价页；试用/Pro 放行；ARCH_PRO_FEATURES 可关特性；Community generate/check/session/--refine 永不登录墙。GATE_OK + test/pro-gate.test.js。
 
 ---
 

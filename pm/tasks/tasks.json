@@ -655,8 +655,8 @@
       "phase": 1,
       "week": 4,
       "priority": "P0",
-      "status": "todo",
-      "progress": 0,
+      "status": "done",
+      "progress": 100,
       "assignee": "heyangyan",
       "estHours": 6,
       "deadline": "2026-09-25",
@@ -684,7 +684,18 @@
       "refs": [
         "docs/market-evaluation/market-evaluation.html"
       ],
-      "activity": []
+      "activity": [
+        {
+          "date": "2026-09-04",
+          "action": "状态变更 todo→doing",
+          "detail": "开工：实战教程文 + demo 脚本"
+        },
+        {
+          "date": "2026-09-04",
+          "action": "状态变更 doing→done",
+          "detail": "成文 docs/blog/2026-09-ai-architecture-drift.md（痛点/60秒上手/漂移/定价）+ docs/demo-script.md；demo.gif 可访问；头部记录 Gitee/GitHub README 与掘金/知乎发布位（外发 URL 待人工发帖回填）；README 已链到实战文。验收 BLOG_OK。"
+        }
+      ]
     },
     {
       "id": "W04-02",
@@ -814,8 +825,8 @@
       "phase": 1,
       "week": 5,
       "priority": "P0",
-      "status": "todo",
-      "progress": 0,
+      "status": "done",
+      "progress": 100,
       "assignee": "heyangyan",
       "estHours": 5,
       "deadline": "2026-10-02",
@@ -844,7 +855,18 @@
       "refs": [
         "COMMERCIAL.md"
       ],
-      "activity": []
+      "activity": [
+        {
+          "date": "2026-09-04",
+          "action": "状态变更 todo→doing",
+          "detail": "开工：Free/Pro 门禁（云端精修 + 增量同步占位）"
+        },
+        {
+          "date": "2026-09-04",
+          "action": "状态变更 doing→done",
+          "detail": "Free/Pro 门禁可演示：requirePro/requireProFeature，未登录 CLI pro refine|sync 提示升级+定价页；试用/Pro 放行；ARCH_PRO_FEATURES 可关特性；Community generate/check/session/--refine 永不登录墙。GATE_OK + test/pro-gate.test.js。"
+        }
+      ]
     },
     {
       "id": "W05-02",

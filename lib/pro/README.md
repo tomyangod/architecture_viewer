@@ -51,14 +51,24 @@ HTTP 端点（远程模式 / 网页共用，路由在 `web/lib/pro/routes.js`）
 
 ## Pro 门禁用法
 
-后续 Pro 命令在执行前调用：
+Pro 命令（云端精修、增量同步）用 `requirePro`，未登录 / 过期会提示升级并带定价页链接：
 
 ```js
-const auth = require('./pro/auth-client');      // 从 lib/ 内引用
-const user = await auth.requireUser(); // 未登录抛 AUTH_REQUIRED，提示先 login，不崩溃
+const auth = require('./pro/auth-client');
+const user = await auth.requirePro({ feature: 'cloud_refine' });
 ```
 
-未登录时错误信息为「该功能需要登录：请先运行 arch-viewer auth login」。
+```bash
+arch-viewer pro refine [repo]   # 需登录，试用或 Pro
+arch-viewer pro sync [repo]
+```
+
+Community 的 `generate` / `check` / `session` / `--refine`（自带 Key）**不要**调用门禁。
+
+特性开关（服务端）：`ARCH_PRO_FEATURES='{"cloud_refine":false}'` 或 `ARCH_PRO_FEATURES_OFF=incremental_sync`。  
+定价链接：`ARCH_PRICING_URL`（默认 COMMERCIAL.md）。
+
+`requireUser()` 只检查登录态，不谈升级；网页路由用 `auth.requireProFeature(req, feature)`。
 
 ## 安全说明
 

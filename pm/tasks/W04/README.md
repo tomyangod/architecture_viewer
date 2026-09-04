@@ -2,17 +2,17 @@
 
 > 阶段：Phase 1 ｜ 周期：2026-09-21 ~ 2026-09-25 ｜ 周截止：2026-09-25
 >
-> 完成度：3/4 ████████░░ 75%
+> 完成度：4/4 ██████████ 100%
 
 > 本文件由 `node pm/scripts/wbs-cards.mjs` 自动生成，请勿手改；状态请改 `pm/tasks/tasks.json` 或用 `node pm/scripts/wbs.mjs set <任务号> <状态>`。
 
 
-### <a id="w04-01"></a>⬜ W04-01 · 实战教程文 + 60 秒 demo（掘金/知乎/GitHub） 
+### <a id="w04-01"></a>✅ W04-01 · 实战教程文 + 60 秒 demo（掘金/知乎/GitHub） 
 
 | 字段 | 内容 |
 |---|---|
 | 优先级 | **P0** |
-| 状态 | 未开始（进度 0%） |
+| 状态 | 已完成（进度 100%） |
 | 工时预估 | 6h |
 | 截止 | 2026-09-25 |
 | 依赖 | [W03-01](../W03/README.md#w03-01) |
@@ -39,7 +39,8 @@
 **参考文档**：`docs/market-evaluation/market-evaluation.html`
 
 **活动记录**：
-  - （暂无）
+  - 2026-09-04 状态变更 todo→doing：开工：实战教程文 + demo 脚本
+  - 2026-09-04 状态变更 doing→done：成文 docs/blog/2026-09-ai-architecture-drift.md（痛点/60秒上手/漂移/定价）+ docs/demo-script.md；demo.gif 可访问；头部记录 Gitee/GitHub README 与掘金/知乎发布位（外发 URL 待人工发帖回填）；README 已链到实战文。验收 BLOG_OK。
 
 ---
 

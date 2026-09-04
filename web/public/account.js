@@ -194,6 +194,23 @@
     });
   });
 
+  function runProFeature(path) {
+    return api('POST', path, {}).then(function (r) {
+      var tip = document.getElementById('pro-feature-tip');
+      if (!r.ok) {
+        var extra = r.data.pricingUrl ? ' 定价：' + r.data.pricingUrl : '';
+        showTip(tip, (r.data.error || '需要升级') + extra, true);
+        return;
+      }
+      showTip(tip, r.data.message || '已受理', false);
+    });
+  }
+
+  var refineBtn = document.getElementById('pro-refine-btn');
+  var syncBtn = document.getElementById('pro-sync-btn');
+  if (refineBtn) refineBtn.addEventListener('click', function () { runProFeature('/api/pro/refine'); });
+  if (syncBtn) syncBtn.addEventListener('click', function () { runProFeature('/api/pro/sync'); });
+
   document.getElementById('pay-btn').addEventListener('click', function () {
     api('POST', '/api/pro/billing/checkout', {}).then(function (r) {
       if (r.ok && r.data.url) {

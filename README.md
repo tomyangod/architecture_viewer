@@ -190,10 +190,12 @@ npm run web    # http://127.0.0.1:3847 — 粘贴仓库 URL 生成六视图，/p
 arch-viewer auth login you@example.com    # 输入邮箱，收到 6 位验证码，输入后登录
 arch-viewer auth whoami                  # 查看当前登录邮箱与 Pro 状态
 arch-viewer auth logout                  # 退出登录
+arch-viewer pro refine                   # 云端精修（需登录；未登录会提示升级 + 定价页）
+arch-viewer pro sync                     # 增量同步占位（同上）
 ```
 
 首次登录自动建档为 7 天 Pro 试用。token 存于 `~/.config/arch-viewer/auth.json`（权限 0600），
-重启终端仍登录。详见 [lib/pro/README.md](lib/pro/README.md)。
+重启终端仍登录。`generate` / `check` / `session` / `--refine`（自带 Key）属 Community，**永不要求登录**。详见 [lib/pro/README.md](lib/pro/README.md)、[COMMERCIAL.md](COMMERCIAL.md)。
 
 ## 隐私与遥测
 

@@ -415,7 +415,8 @@ async function handler(req, res) {
     return send(res, 200, fs.readFileSync(filePath), { 'Content-Type': contentType(filePath) });
   } catch (err) {
     const status = err.status || 500;
-    return send(res, status, { error: err.message || String(err) });
+    const extra = err.payload && typeof err.payload === 'object' ? err.payload : {};
+    return send(res, status, Object.assign({ error: err.message || String(err), code: err.code || null }, extra));
   }
 }
 

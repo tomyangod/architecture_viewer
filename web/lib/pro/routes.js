@@ -66,6 +66,37 @@ async function handlePro(req, res, url, rawBuf) {
     });
   }
 
+  if (method === 'GET' && pathname === '/api/pro/features') {
+    const features = require('../../../lib/pro/features');
+    return json(res, 200, {
+      features: features.listFeatures(),
+      pricingUrl: features.pricingUrl(),
+      communityAlways: features.COMMUNITY_ALWAYS
+    });
+  }
+
+  if (method === 'POST' && pathname === '/api/pro/refine') {
+    const user = auth.requireProFeature(req, 'cloud_refine');
+    return json(res, 200, {
+      ok: true,
+      placeholder: true,
+      feature: 'cloud_refine',
+      message: '云端精修已受理（占位）：将使用托管模型重绘变动模块。本机 generate --refine（自带 Key）仍属 Community。',
+      user: publicUser(user)
+    });
+  }
+
+  if (method === 'POST' && pathname === '/api/pro/sync') {
+    const user = auth.requireProFeature(req, 'incremental_sync');
+    return json(res, 200, {
+      ok: true,
+      placeholder: true,
+      feature: 'incremental_sync',
+      message: '增量同步已排队（占位）：仅重生成变动模块。全量 generate 仍属 Community。',
+      user: publicUser(user)
+    });
+  }
+
   if (method === 'POST' && pathname === '/api/pro/signup') {
     const out = auth.signup(body.email, body.password, clientIp(req));
     return setSession(res, out.token, { user: out.user });
