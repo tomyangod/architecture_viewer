@@ -2,7 +2,28 @@
 
 本文件遵循 [Keep a Changelog](https://keepachangelog.com/zh-cn/1.1.0/)，版本号遵循语义化版本。
 
-## \[0.11.0] — 2026-09-03
+## \[Unreleased\]
+
+### Added
+
+- **Archify IR 适配器**（`lib/export-archify.js`）：把内部图谱转换为 Archify JSON IR（零 I/O 纯函数模块）。id 清洗 `^[a-zA-Z][a-zA-Z0-9_-]*$`；grid 自带 row/col（不依赖自动布局）；稀疏 scope（changed / violations / layers），超限自动降级 layers；不写 sources；connection 稳定 id（base/head 共用 allocator）；boundary 用 kind+label。支持 Before/After 配对导出 + sidecar 元数据（scopeUsed、降级原因、组件/连接计数）。
+
+- **CLI `archify-export` 子命令**：`arch-viewer archify-export [repo] [--scope changed|violations|layers] [--validate] [--archify <path>] [--json]`。导出 IR 三件套（`.base` / `.head` / `.sidecar`）到 `.av/`；可选 `--validate` 调本地 archify CLI 做 `validate` + `compare`。CLI 发现顺序：`--archify` → `ARCHIFY_CLI` 环境变量 → PATH → 仓内 vendor 副本；找不到不报错，提示回退内置渲染器。
+
+- **MCP 工具 `av_archify_export`**：第 6 个 MCP 工具，参数 `repo` / `scope` / `validate`，返回 scopeUsed、是否降级、组件/连接计数、文件路径；校验失败带 `fallback` 提示。
+
+- **渲染器开关**（`lib/archify-export.js`）：`session report` 默认 `--renderer auto`——先导出 IR → validate → compare，成功则主报告换成 Archify HTML，失败静默回退内置渲染器。`--renderer builtin` 可强制内置。CLI 和 MCP 的 `generateSessionReport`（含 watcher 自动报告）走同一条 `finalizeSessionHtml`。内置副本始终保留在 `.av/session-report.builtin.html`。
+
+- **测试 16 条新增**：export-archify 单测 9 条（id 合规、layout、稀疏降级、sidecar 字段）；archify-export 集成测试 7 条（编排、validate、finalize、fallback）；CLI 端到端 3 条；MCP 工具表 5→6 扩充 3 条。全量 260 项 0 失败。
+
+### Docs
+
+- `pm/plans/archify-integration-plan.md`：三模式集成方案（IR 导出 / vendor 渲染 / 生态分发），Phase 1-2 已完成，Phase 3 含 DSH 插件生态（模式 D）。
+- `pm/reports/ARCHIFY-COMPARISON-2026-09-04.md`：与 Archify 逐维度对比。
+- `pm/reports/STATUS-2026-09-04.md`：项目现状归档（0.11.0 已发 + 0.12 候选）。
+- `COMMERCIAL-v2.md`：商业模式修订（学分发不学赞助当主业 / 不改整仓 GPL / 分析不进付费墙）。
+
+## \[0.11.0\] — 2026-09-03
 
 ### Added
 
