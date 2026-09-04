@@ -5,9 +5,11 @@ const assert = require('node:assert/strict');
 const http = require('http');
 const path = require('path');
 const fs = require('fs');
+const os = require('os');
 
 process.env.NODE_ENV = 'test';
 process.env.ARCH_PRO_SECRET = process.env.ARCH_PRO_SECRET || 'test-secret-billing';
+process.env.ARCH_PRO_DATA = process.env.ARCH_PRO_DATA || fs.mkdtempSync(path.join(os.tmpdir(), 'av-billing-'));
 delete process.env.ARCH_PAY_AFDIAN_URL;
 delete process.env.ARCH_PAY_WECHAT_URL;
 delete process.env.ARCH_PAY_LEMON_URL;
