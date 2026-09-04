@@ -1,8 +1,9 @@
 'use strict';
 
 const crypto = require('crypto');
-const store = require('./store');
-const { findUserByEmail } = require('./auth');
+// Pro 核心逻辑（账号/存储/权益）已下沉至 lib/pro，web 侧只保留交付层
+const store = require('../../../lib/pro/store');
+const { findUserByEmail } = require('../../../lib/pro/auth');
 
 function stripeEnabled() {
   return !!(process.env.ARCH_STRIPE_SECRET_KEY && process.env.ARCH_STRIPE_PRICE_ID);

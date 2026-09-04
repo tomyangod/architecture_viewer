@@ -1,12 +1,13 @@
 'use strict';
 
 const crypto = require('crypto');
-const store = require('./store');
-const auth = require('./auth');
-const { publicUser, isActive } = require('./entitlement');
+// Pro 核心逻辑（账号/存储/权益/加密）位于 lib/pro，供 CLI / MCP / web 三方复用
+const store = require('../../../lib/pro/store');
+const auth = require('../../../lib/pro/auth');
+const { publicUser, isActive } = require('../../../lib/pro/entitlement');
+const cryptoUtil = require('../../../lib/pro/crypto');
 const billing = require('./billing');
 const providers = require('./providers');
-const cryptoUtil = require('./crypto');
 const { runHostedCheck } = require('./host-drift');
 const { formatComment } = require('./comment');
 const { safeClone, cleanup } = require('../clone');
@@ -14,6 +15,11 @@ const local = require('./local');
 
 function clientIp(req) {
   return (req.headers['x-forwarded-for'] || '').split(',')[0].trim() || req.socket && req.socket.remoteAddress || '';
+}
+
+function bearerToken(req) {
+  const m = /^Bearer\s+(.+)$/i.exec(String(req.headers['authorization'] || ''));
+  return m ? m[1].trim() : null;
 }
 
 function json(res, status, body, extraHeaders) {
@@ -87,6 +93,28 @@ async function handlePro(req, res, url, rawBuf) {
       events,
       webhookBase: billing.publicUrl() + '/api/pro/webhook'
     });
+  }
+
+  // 邮箱验证码（passwordless）登录：CLI 与网页共用
+  if (method === 'POST' && pathname === '/api/pro/auth/request-code') {
+    const out = auth.requestLoginCode(body.email, clientIp(req));
+    return json(res, 200, { ok: true, expiresInSec: out.expiresInSec, devCode: out.devCode });
+  }
+  if (method === 'POST' && pathname === '/api/pro/auth/verify-code') {
+    const out = auth.verifyLoginCode(body.email, body.code);
+    // 同时下发 cookie（浏览器）与 token（CLI Bearer）
+    return setSession(res, out.token, { token: out.token, user: out.user });
+  }
+  if (method === 'GET' && pathname === '/api/pro/auth/me') {
+    const token = bearerToken(req) || auth.parseCookies(req.headers && req.headers.cookie).av_session;
+    const user = token ? auth.sessionByToken(token) : null;
+    if (!user) return json(res, 401, { error: '请先登录' });
+    return json(res, 200, { user: publicUser(user) });
+  }
+  if (method === 'POST' && pathname === '/api/pro/auth/logout') {
+    const token = bearerToken(req) || auth.parseCookies(req.headers && req.headers.cookie).av_session;
+    if (token) auth.logoutToken(token);
+    return json(res, 200, { ok: true }, { 'Set-Cookie': auth.clearCookie() });
   }
 
   if (method === 'POST' && pathname === '/api/pro/repos') {

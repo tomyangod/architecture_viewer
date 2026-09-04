@@ -2,9 +2,9 @@
 
 const fs = require('fs');
 const path = require('path');
-const store = require('./store');
-const { isActive } = require('./entitlement');
-const { encrypt, decrypt } = require('./crypto');
+const store = require('../../../lib/pro/store');
+const { isActive } = require('../../../lib/pro/entitlement');
+const { encrypt, decrypt } = require('../../../lib/pro/crypto');
 const { runHostedCheck } = require('./host-drift');
 const { sendWecom, assertNotifyUrl } = require('./notify');
 

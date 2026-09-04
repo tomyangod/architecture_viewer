@@ -17,7 +17,7 @@ process.env.ARCH_PRO_FIXTURE = '1';
 process.env.NODE_ENV = 'test';
 process.env.ARCH_PUBLIC_URL = 'http://127.0.0.1:3847';
 
-const { isActive, trialUntilFrom } = require('../web/lib/pro/entitlement');
+const { isActive, trialUntilFrom } = require('../lib/pro/entitlement');
 const { formatComment } = require('../web/lib/pro/comment');
 const { parseWebhook, parseRepoUrl } = require('../web/lib/pro/providers');
 const { runHostedCheck } = require('../web/lib/pro/host-drift');
@@ -293,7 +293,7 @@ describe('Pro Local folder check', () => {
   });
 
   it('expired trial can still check by hand; notify is skipped', async () => {
-    const store = require('../web/lib/pro/store');
+    const store = require('../lib/pro/store');
     const db = store.load();
     const user = db.users.find((u) => u.email === 'local@example.com');
     user.trialUntil = new Date(Date.now() - 1000).toISOString();
