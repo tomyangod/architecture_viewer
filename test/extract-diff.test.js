@@ -134,6 +134,70 @@ describe('diff: 架构图差分', () => {
     assert.ok(methodChange.added.includes('bar'));
   });
 
+  it('仅 path/layer 变化归为 moved，不入 modified', () => {
+    const base = {
+      fingerprint: 'b', root: '/r', stats: {},
+      nodes: [{ id: 'cls:A', name: 'A', kind: 'class', path: 'old/a.py', layer: 'util', methods: ['x'], modifiers: [] }],
+      edges: []
+    };
+    const head = {
+      fingerprint: 'h', root: '/r', stats: {},
+      nodes: [{ id: 'cls:A', name: 'A', kind: 'class', path: 'new/a.py', layer: 'service', methods: ['x'], modifiers: [] }],
+      edges: []
+    };
+    const d = diffGraphs(base, head);
+    assert.equal(d.modifiedNodes.length, 0);
+    assert.equal(d.movedNodes.length, 1);
+    assert.equal(d.movedNodes[0].id, 'cls:A');
+    assert.ok(d.movedNodes[0].changes.some((c) => c.field === 'path'));
+    assert.ok(d.movedNodes[0].changes.some((c) => c.field === 'layer'));
+    assert.equal(d.summary.movedNodes, 1);
+    const text = formatDiffText(d);
+    assert.match(text, /移动/);
+  });
+
+  it('methods 顺序不同不产生 modified（canonical）', () => {
+    const base = {
+      fingerprint: 'b', root: '/r', stats: {},
+      nodes: [{ id: 'cls:A', name: 'A', kind: 'class', path: 'a.py', layer: 'util', methods: ['b', 'a'], modifiers: [] }],
+      edges: []
+    };
+    const head = {
+      fingerprint: 'h', root: '/r', stats: {},
+      nodes: [{ id: 'cls:A', name: 'A', kind: 'class', path: 'a.py', layer: 'util', methods: ['a', 'b'], modifiers: [] }],
+      edges: []
+    };
+    const d = diffGraphs(base, head);
+    assert.equal(d.modifiedNodes.length, 0);
+    assert.equal(d.movedNodes.length, 0);
+  });
+
+  it('同端点边类型变更归为 rerouted', () => {
+    const base = {
+      fingerprint: 'b', root: '/r', stats: {},
+      nodes: [
+        { id: 'cls:A', name: 'A', kind: 'class', path: 'a.py', layer: 'service' },
+        { id: 'cls:B', name: 'B', kind: 'class', path: 'b.py', layer: 'domain' }
+      ],
+      edges: [{ from: 'cls:A', to: 'cls:B', type: 'implements' }]
+    };
+    const head = {
+      fingerprint: 'h', root: '/r', stats: {},
+      nodes: [
+        { id: 'cls:A', name: 'A', kind: 'class', path: 'a.py', layer: 'service' },
+        { id: 'cls:B', name: 'B', kind: 'class', path: 'b.py', layer: 'domain' }
+      ],
+      edges: [{ from: 'cls:A', to: 'cls:B', type: 'import' }]
+    };
+    const d = diffGraphs(base, head);
+    assert.equal(d.addedEdges.length, 0);
+    assert.equal(d.removedEdges.length, 0);
+    assert.equal(d.reroutedEdges.length, 1);
+    assert.equal(d.reroutedEdges[0].fromType, 'implements');
+    assert.equal(d.reroutedEdges[0].toType, 'import');
+    assert.match(formatDiffText(d), /重连/);
+  });
+
   it('formatDiffText 输出中文报告', () => {
     const base = makeRepo({ 'a.py': 'class A:\n    pass\n' });
     const head = makeRepo({
@@ -179,6 +243,35 @@ describe('diff: 架构图差分', () => {
     assert.equal(d.renamedNodes.length, 0, 'foo→bar should NOT be rename');
     assert.ok(d.summary.removedNodes > 0);
     assert.ok(d.summary.addedNodes > 0);
+  });
+
+  it('跨目录移动检测：同名 + 同文件 basename + 路径变化 → moved 配对，不报删+增', () => {
+    const base = makeRepo({
+      'web/lib/pro/auth.js': 'function requestLoginCode() { return 1; }\n'
+    });
+    const head = makeRepo({
+      'lib/pro/auth.js': 'function requestLoginCode() { return 1; }\n'
+    });
+    const d = diffGraphs(buildGraph(base), buildGraph(head));
+    const moves = d.renamedNodes.filter((r) => r.moved);
+    assert.ok(moves.length >= 2, 'file + function should be paired as moves');
+    assert.ok(moves.every((m) => m.fromPath.includes('web/lib/pro') && m.toPath === m.fromPath.replace('web/lib/pro', 'lib/pro')));
+    // 随文件迁移的函数不再报为类型删除/新增
+    assert.equal(d.removedTypes.filter((t) => t.node.name === 'requestLoginCode').length, 0);
+    assert.equal(d.addedTypes.filter((t) => t.node.name === 'requestLoginCode').length, 0);
+    const text = formatDiffText(d);
+    assert.match(text, /移动（跨目录/);
+  });
+
+  it('跨目录移动不误匹配：basename 不同的同名实体仍报删+增', () => {
+    const base = makeRepo({
+      'web/foo.js': 'function load() { return 1; }\n'
+    });
+    const head = makeRepo({
+      'lib/bar.js': 'function load() { return 2; }\n'
+    });
+    const d = diffGraphs(buildGraph(base), buildGraph(head));
+    assert.equal(d.renamedNodes.filter((r) => r.moved).length, 0);
   });
 
   it('已有文件内新增函数检测（childEntities）', () => {
@@ -263,6 +356,7 @@ describe('B1-3: 报告过滤（高信号优先）', () => {
       addedNodes: [{ id: 'cls:Added', node: headGraph.nodes[1] }],
       removedNodes: [],
       modifiedNodes: [{ id: 'cls:Keep', changes: [{ field: 'methods', added: ['extra'], removed: [] }] }],
+      movedNodes: [],
       renamedNodes: [{
         kind: 'class', oldName: 'SvcOld', newName: 'SvcNew', path: 'svc.js',
         from: baseGraph.nodes[0], to: headGraph.nodes[0]
@@ -272,12 +366,13 @@ describe('B1-3: 报告过滤（高信号优先）', () => {
         { from: 'cls:Added', to: 'file:add.js', type: 'declared-in' }
       ],
       removedEdges: [],
+      reroutedEdges: [],
       addedTypes: [{ node: headGraph.nodes[1] }], removedTypes: [],
       addedPackages: [], removedPackages: [],
       addedExternalDeps: [], removedExternalDeps: [], violations: [],
       summary: {
-        addedNodes: 1, removedNodes: 0, modifiedNodes: 1, renamedNodes: 1,
-        addedEdges: 2, removedEdges: 0, addedTypes: 1, removedTypes: 0,
+        addedNodes: 1, removedNodes: 0, modifiedNodes: 1, movedNodes: 0, renamedNodes: 1,
+        addedEdges: 2, removedEdges: 0, reroutedEdges: 0, addedTypes: 1, removedTypes: 0,
         addedPackages: 0, removedPackages: 0, addedExternalDeps: 0,
         removedExternalDeps: 0, violations: 0, totalChanges: 5, riskLevel: 'low'
       }
@@ -310,6 +405,8 @@ describe('B1-3: 报告过滤（高信号优先）', () => {
     assert.ok(!/data-filter="all"[^>]*class="[^"]*active/.test(html), 'all button must not be active');
     // 重命名组在前端脚本中有渲染入口
     assert.match(html, /重命名/);
+    assert.match(html, /id="graph-delta"/, 'must include Delta middle panel');
+    assert.match(html, /Before \/ Delta \/ After/);
   });
 
   it('HTML 内联脚本必须可解析（浏览器里不能白屏）', () => {

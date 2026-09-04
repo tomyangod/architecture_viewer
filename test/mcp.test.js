@@ -321,3 +321,40 @@ describe('MCP Server: av_archify_export', () => {
     }
   });
 });
+
+describe('MCP Server: 输入 schema 校验（fail-closed）', () => {
+  const { validateToolArgs } = require('../mcp/server');
+
+  it('缺 repo 直接报 INVALID_ARGS', () => {
+    assert.throws(
+      () => validateToolArgs('av_session_start', {}),
+      (e) => e.code === 'INVALID_ARGS' && /repo/.test(e.message)
+    );
+  });
+
+  it('非法 enum 拒绝', () => {
+    assert.throws(
+      () => validateToolArgs('av_archify_export', { repo: '/tmp/x', scope: 'all' }),
+      /INVALID_ARGS|scope/
+    );
+  });
+
+  it('未知字段拒绝', () => {
+    assert.throws(
+      () => validateToolArgs('av_session_report', { repo: '/tmp/x', hack: true }),
+      /unexpected property/
+    );
+  });
+
+  it('合法参数通过', () => {
+    const v = validateToolArgs('av_archify_export', { repo: '/tmp/x', scope: 'layers', validate: false });
+    assert.equal(v.scope, 'layers');
+  });
+
+  it('handleToolCall 非法参数不执行工具', () => {
+    assert.throws(
+      () => handleToolCall({ name: 'av_session_start', arguments: { repo: '' } }),
+      /INVALID_ARGS/
+    );
+  });
+});

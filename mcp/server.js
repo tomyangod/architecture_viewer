@@ -563,15 +563,85 @@ const TOOLS = [
   }
 ];
 
+function validateToolArgs(name, args) {
+  const tool = TOOLS.find((t) => t.name === name);
+  if (!tool) throw new Error(`Unknown tool: ${name}`);
+  const schema = tool.inputSchema || { type: 'object' };
+  const input = args && typeof args === 'object' ? args : {};
+  const errors = [];
+
+  function typeOf(v) {
+    if (v === null) return 'null';
+    if (Array.isArray(v)) return 'array';
+    return typeof v;
+  }
+
+  function check(value, sch, path) {
+    if (!sch) return;
+    if (sch.type === 'object') {
+      if (typeOf(value) !== 'object') {
+        errors.push(`${path}: expected object, got ${typeOf(value)}`);
+        return;
+      }
+      const required = sch.required || [];
+      for (const key of required) {
+        if (value[key] === undefined || value[key] === null || value[key] === '') {
+          errors.push(`${path}.${key}: required`);
+        }
+      }
+      const props = sch.properties || {};
+      for (const [key, propSch] of Object.entries(props)) {
+        if (value[key] === undefined) continue;
+        check(value[key], propSch, `${path}.${key}`);
+      }
+      // Fail closed on unknown keys at the top level of tool args
+      if (path === 'args') {
+        for (const key of Object.keys(value)) {
+          if (!props[key]) errors.push(`${path}.${key}: unexpected property`);
+        }
+      }
+      return;
+    }
+    if (sch.type === 'string') {
+      if (typeof value !== 'string') errors.push(`${path}: expected string`);
+      else if (sch.enum && !sch.enum.includes(value)) {
+        errors.push(`${path}: must be one of ${sch.enum.join('|')}`);
+      }
+      return;
+    }
+    if (sch.type === 'boolean') {
+      if (typeof value !== 'boolean') errors.push(`${path}: expected boolean`);
+      return;
+    }
+    if (sch.type === 'integer') {
+      if (!Number.isInteger(value)) errors.push(`${path}: expected integer`);
+      return;
+    }
+    if (sch.type === 'number') {
+      if (typeof value !== 'number' || Number.isNaN(value)) errors.push(`${path}: expected number`);
+    }
+  }
+
+  check(input, schema, 'args');
+  if (errors.length) {
+    const err = new Error(`INVALID_ARGS: ${errors.join('; ')}`);
+    err.code = 'INVALID_ARGS';
+    err.errors = errors;
+    throw err;
+  }
+  return input;
+}
+
 function handleToolCall(params) {
   const { name, arguments: args } = params;
+  const validated = validateToolArgs(name, args || {});
   switch (name) {
-    case 'av_session_start': return toolSessionStart(args || {});
-    case 'av_session_changes': return toolSessionChanges(args || {});
-    case 'av_session_report': return toolSessionReport(args || {});
-    case 'av_check_layering': return toolCheckLayering(args || {});
-    case 'av_explain_finding': return toolExplainFinding(args || {});
-    case 'av_archify_export': return toolArchifyExport(args || {});
+    case 'av_session_start': return toolSessionStart(validated);
+    case 'av_session_changes': return toolSessionChanges(validated);
+    case 'av_session_report': return toolSessionReport(validated);
+    case 'av_check_layering': return toolCheckLayering(validated);
+    case 'av_explain_finding': return toolExplainFinding(validated);
+    case 'av_archify_export': return toolArchifyExport(validated);
     default: throw new Error(`Unknown tool: ${name}`);
   }
 }
@@ -629,7 +699,7 @@ function createServer() {
   return { rl };
 }
 
-module.exports = { TOOLS, handleToolCall, toolSessionStart, toolSessionReport, toolSessionChanges, toolCheckLayering, toolExplainFinding, toolArchifyExport, buildExplainResult, createServer, generateSessionReport, startWatcher, stopWatcher, getWatcherState, shouldWatchFile };
+module.exports = { TOOLS, handleToolCall, validateToolArgs, toolSessionStart, toolSessionReport, toolSessionChanges, toolCheckLayering, toolExplainFinding, toolArchifyExport, buildExplainResult, createServer, generateSessionReport, startWatcher, stopWatcher, getWatcherState, shouldWatchFile };
 
 if (require.main === module) {
   createServer();
