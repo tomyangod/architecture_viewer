@@ -576,8 +576,8 @@
       "phase": 1,
       "week": 3,
       "priority": "P0",
-      "status": "todo",
-      "progress": 0,
+      "status": "done",
+      "progress": 100,
       "assignee": "heyangyan",
       "estHours": 4,
       "deadline": "2026-09-18",
@@ -605,7 +605,13 @@
       "refs": [
         "eval/REPORT.md"
       ],
-      "activity": []
+      "activity": [
+        {
+          "date": "2026-09-04",
+          "action": "状态变更 todo→done",
+          "detail": "eval/repos.json 扩到 5 仓：保留既有 Python/Node 三仓，新增仓内夹具 shop-frontend（Vue/TS）与 order-go；eval 5/5 通过，demo-drift 红灯。test/eval-repos.test.js 锁覆盖。"
+        }
+      ]
     },
     {
       "id": "W03-03",

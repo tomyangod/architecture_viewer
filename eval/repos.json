@@ -2,15 +2,28 @@
   "repos": [
     {
       "id": "berkshire",
-      "path": "../../ai-berkshire-valuation-monitor"
+      "path": "../../ai-berkshire-valuation-monitor",
+      "kind": "python"
     },
     {
       "id": "publicopinion",
-      "path": "../../publicopinionmonitor_v2"
+      "path": "../../publicopinionmonitor_v2",
+      "kind": "python"
     },
     {
       "id": "v18",
-      "path": "../../v18"
+      "path": "../../v18",
+      "kind": "python-node"
+    },
+    {
+      "id": "shop-frontend",
+      "path": "fixtures/shop-frontend",
+      "kind": "frontend"
+    },
+    {
+      "id": "order-go",
+      "path": "fixtures/order-go",
+      "kind": "go"
     }
   ]
 }

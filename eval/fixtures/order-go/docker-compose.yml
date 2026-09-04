@@ -1,0 +1,7 @@
+services:
+  ordersvc:
+    build: .
+    ports:
+      - "8080:8080"
+  postgres:
+    image: postgres:16
