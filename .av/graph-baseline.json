@@ -1,19 +1,19 @@
 {
   "version": 1,
   "root": "architecture_viewer",
-  "generatedAt": "2026-09-04T11:41:46.050Z",
-  "fingerprint": "6db257763463c884",
+  "generatedAt": "2026-09-04T13:49:21.541Z",
+  "fingerprint": "68514d898f153c2c",
   "languages": [
     "javascript"
   ],
   "stats": {
-    "files": 63,
-    "filesParsed": 63,
+    "files": 66,
+    "filesParsed": 66,
     "parseErrors": 0,
-    "types": 508,
-    "nodes": 591,
-    "edges": 748,
-    "externalPackages": 20
+    "types": 545,
+    "nodes": 632,
+    "edges": 800,
+    "externalPackages": 21
   },
   "nodes": [
     {
@@ -580,220 +580,6 @@
       ]
     },
     {
-      "id": "file:web/lib/pro/auth.js",
-      "kind": "file",
-      "name": "auth.js",
-      "path": "web/lib/pro/auth.js",
-      "layer": "controller",
-      "layerConfidence": "high",
-      "layerSignal": "dir-name",
-      "lang": "javascript"
-    },
-    {
-      "id": "web/lib/pro/auth#rateLimit",
-      "kind": "function",
-      "name": "rateLimit",
-      "path": "web/lib/pro/auth.js",
-      "line": 10,
-      "layer": "controller",
-      "layerConfidence": "high",
-      "layerSignal": "dir-name",
-      "lang": "javascript",
-      "modifiers": [],
-      "exported": false,
-      "module": "web/lib/pro/auth",
-      "methods": [
-        "rateLimit"
-      ]
-    },
-    {
-      "id": "web/lib/pro/auth#parseCookies",
-      "kind": "function",
-      "name": "parseCookies",
-      "path": "web/lib/pro/auth.js",
-      "line": 27,
-      "layer": "controller",
-      "layerConfidence": "high",
-      "layerSignal": "dir-name",
-      "lang": "javascript",
-      "modifiers": [],
-      "exported": false,
-      "module": "web/lib/pro/auth",
-      "methods": [
-        "parseCookies"
-      ]
-    },
-    {
-      "id": "web/lib/pro/auth#sessionCookie",
-      "kind": "function",
-      "name": "sessionCookie",
-      "path": "web/lib/pro/auth.js",
-      "line": 39,
-      "layer": "controller",
-      "layerConfidence": "high",
-      "layerSignal": "dir-name",
-      "lang": "javascript",
-      "modifiers": [],
-      "exported": false,
-      "module": "web/lib/pro/auth",
-      "methods": [
-        "sessionCookie"
-      ]
-    },
-    {
-      "id": "web/lib/pro/auth#clearCookie",
-      "kind": "function",
-      "name": "clearCookie",
-      "path": "web/lib/pro/auth.js",
-      "line": 51,
-      "layer": "controller",
-      "layerConfidence": "high",
-      "layerSignal": "dir-name",
-      "lang": "javascript",
-      "modifiers": [],
-      "exported": false,
-      "module": "web/lib/pro/auth",
-      "methods": [
-        "clearCookie"
-      ]
-    },
-    {
-      "id": "web/lib/pro/auth#findUserByEmail",
-      "kind": "function",
-      "name": "findUserByEmail",
-      "path": "web/lib/pro/auth.js",
-      "line": 55,
-      "layer": "controller",
-      "layerConfidence": "high",
-      "layerSignal": "dir-name",
-      "lang": "javascript",
-      "modifiers": [],
-      "exported": false,
-      "module": "web/lib/pro/auth",
-      "methods": [
-        "findUserByEmail"
-      ]
-    },
-    {
-      "id": "web/lib/pro/auth#currentUser",
-      "kind": "function",
-      "name": "currentUser",
-      "path": "web/lib/pro/auth.js",
-      "line": 60,
-      "layer": "controller",
-      "layerConfidence": "high",
-      "layerSignal": "dir-name",
-      "lang": "javascript",
-      "modifiers": [],
-      "exported": false,
-      "module": "web/lib/pro/auth",
-      "methods": [
-        "currentUser"
-      ]
-    },
-    {
-      "id": "web/lib/pro/auth#requireUser",
-      "kind": "function",
-      "name": "requireUser",
-      "path": "web/lib/pro/auth.js",
-      "line": 71,
-      "layer": "controller",
-      "layerConfidence": "high",
-      "layerSignal": "dir-name",
-      "lang": "javascript",
-      "modifiers": [],
-      "exported": false,
-      "module": "web/lib/pro/auth",
-      "methods": [
-        "requireUser"
-      ]
-    },
-    {
-      "id": "web/lib/pro/auth#requireActive",
-      "kind": "function",
-      "name": "requireActive",
-      "path": "web/lib/pro/auth.js",
-      "line": 81,
-      "layer": "controller",
-      "layerConfidence": "high",
-      "layerSignal": "dir-name",
-      "lang": "javascript",
-      "modifiers": [],
-      "exported": false,
-      "module": "web/lib/pro/auth",
-      "methods": [
-        "requireActive"
-      ]
-    },
-    {
-      "id": "web/lib/pro/auth#createSession",
-      "kind": "function",
-      "name": "createSession",
-      "path": "web/lib/pro/auth.js",
-      "line": 93,
-      "layer": "controller",
-      "layerConfidence": "high",
-      "layerSignal": "dir-name",
-      "lang": "javascript",
-      "modifiers": [],
-      "exported": false,
-      "module": "web/lib/pro/auth",
-      "methods": [
-        "createSession"
-      ]
-    },
-    {
-      "id": "web/lib/pro/auth#signup",
-      "kind": "function",
-      "name": "signup",
-      "path": "web/lib/pro/auth.js",
-      "line": 101,
-      "layer": "controller",
-      "layerConfidence": "high",
-      "layerSignal": "dir-name",
-      "lang": "javascript",
-      "modifiers": [],
-      "exported": false,
-      "module": "web/lib/pro/auth",
-      "methods": [
-        "signup"
-      ]
-    },
-    {
-      "id": "web/lib/pro/auth#login",
-      "kind": "function",
-      "name": "login",
-      "path": "web/lib/pro/auth.js",
-      "line": 139,
-      "layer": "controller",
-      "layerConfidence": "high",
-      "layerSignal": "dir-name",
-      "lang": "javascript",
-      "modifiers": [],
-      "exported": false,
-      "module": "web/lib/pro/auth",
-      "methods": [
-        "login"
-      ]
-    },
-    {
-      "id": "web/lib/pro/auth#logout",
-      "kind": "function",
-      "name": "logout",
-      "path": "web/lib/pro/auth.js",
-      "line": 154,
-      "layer": "controller",
-      "layerConfidence": "high",
-      "layerSignal": "dir-name",
-      "lang": "javascript",
-      "modifiers": [],
-      "exported": false,
-      "module": "web/lib/pro/auth",
-      "methods": [
-        "logout"
-      ]
-    },
-    {
       "id": "file:web/lib/pro/billing.js",
       "kind": "file",
       "name": "billing.js",
@@ -808,7 +594,7 @@
       "kind": "function",
       "name": "stripeEnabled",
       "path": "web/lib/pro/billing.js",
-      "line": 7,
+      "line": 8,
       "layer": "controller",
       "layerConfidence": "high",
       "layerSignal": "dir-name",
@@ -825,7 +611,7 @@
       "kind": "function",
       "name": "publicUrl",
       "path": "web/lib/pro/billing.js",
-      "line": 11,
+      "line": 12,
       "layer": "controller",
       "layerConfidence": "high",
       "layerSignal": "dir-name",
@@ -842,7 +628,7 @@
       "kind": "function",
       "name": "createCheckout",
       "path": "web/lib/pro/billing.js",
-      "line": 15,
+      "line": 16,
       "layer": "controller",
       "layerConfidence": "high",
       "layerSignal": "dir-name",
@@ -859,7 +645,7 @@
       "kind": "function",
       "name": "verifyStripeSig",
       "path": "web/lib/pro/billing.js",
-      "line": 48,
+      "line": 49,
       "layer": "controller",
       "layerConfidence": "high",
       "layerSignal": "dir-name",
@@ -876,7 +662,7 @@
       "kind": "function",
       "name": "grantPro",
       "path": "web/lib/pro/billing.js",
-      "line": 69,
+      "line": 70,
       "layer": "controller",
       "layerConfidence": "high",
       "layerSignal": "dir-name",
@@ -893,7 +679,7 @@
       "kind": "function",
       "name": "licenseSecret",
       "path": "web/lib/pro/billing.js",
-      "line": 77,
+      "line": 78,
       "layer": "controller",
       "layerConfidence": "high",
       "layerSignal": "dir-name",
@@ -910,7 +696,7 @@
       "kind": "function",
       "name": "issueLicense",
       "path": "web/lib/pro/billing.js",
-      "line": 81,
+      "line": 82,
       "layer": "controller",
       "layerConfidence": "high",
       "layerSignal": "dir-name",
@@ -927,7 +713,7 @@
       "kind": "function",
       "name": "redeemLicense",
       "path": "web/lib/pro/billing.js",
-      "line": 99,
+      "line": 100,
       "layer": "controller",
       "layerConfidence": "high",
       "layerSignal": "dir-name",
@@ -944,7 +730,7 @@
       "kind": "function",
       "name": "applyStripeEvent",
       "path": "web/lib/pro/billing.js",
-      "line": 144,
+      "line": 145,
       "layer": "controller",
       "layerConfidence": "high",
       "layerSignal": "dir-name",
@@ -981,230 +767,6 @@
       "module": "web/lib/pro/comment",
       "methods": [
         "formatComment"
-      ]
-    },
-    {
-      "id": "file:web/lib/pro/crypto.js",
-      "kind": "file",
-      "name": "crypto.js",
-      "path": "web/lib/pro/crypto.js",
-      "layer": "controller",
-      "layerConfidence": "high",
-      "layerSignal": "dir-name",
-      "lang": "javascript"
-    },
-    {
-      "id": "web/lib/pro/crypto#secret",
-      "kind": "function",
-      "name": "secret",
-      "path": "web/lib/pro/crypto.js",
-      "line": 5,
-      "layer": "controller",
-      "layerConfidence": "high",
-      "layerSignal": "dir-name",
-      "lang": "javascript",
-      "modifiers": [],
-      "exported": false,
-      "module": "web/lib/pro/crypto",
-      "methods": [
-        "secret"
-      ]
-    },
-    {
-      "id": "web/lib/pro/crypto#key32",
-      "kind": "function",
-      "name": "key32",
-      "path": "web/lib/pro/crypto.js",
-      "line": 16,
-      "layer": "controller",
-      "layerConfidence": "high",
-      "layerSignal": "dir-name",
-      "lang": "javascript",
-      "modifiers": [],
-      "exported": false,
-      "module": "web/lib/pro/crypto",
-      "methods": [
-        "key32"
-      ]
-    },
-    {
-      "id": "web/lib/pro/crypto#hashPassword",
-      "kind": "function",
-      "name": "hashPassword",
-      "path": "web/lib/pro/crypto.js",
-      "line": 20,
-      "layer": "controller",
-      "layerConfidence": "high",
-      "layerSignal": "dir-name",
-      "lang": "javascript",
-      "modifiers": [],
-      "exported": false,
-      "module": "web/lib/pro/crypto",
-      "methods": [
-        "hashPassword"
-      ]
-    },
-    {
-      "id": "web/lib/pro/crypto#verifyPassword",
-      "kind": "function",
-      "name": "verifyPassword",
-      "path": "web/lib/pro/crypto.js",
-      "line": 26,
-      "layer": "controller",
-      "layerConfidence": "high",
-      "layerSignal": "dir-name",
-      "lang": "javascript",
-      "modifiers": [],
-      "exported": false,
-      "module": "web/lib/pro/crypto",
-      "methods": [
-        "verifyPassword"
-      ]
-    },
-    {
-      "id": "web/lib/pro/crypto#encrypt",
-      "kind": "function",
-      "name": "encrypt",
-      "path": "web/lib/pro/crypto.js",
-      "line": 36,
-      "layer": "controller",
-      "layerConfidence": "high",
-      "layerSignal": "dir-name",
-      "lang": "javascript",
-      "modifiers": [],
-      "exported": false,
-      "module": "web/lib/pro/crypto",
-      "methods": [
-        "encrypt"
-      ]
-    },
-    {
-      "id": "web/lib/pro/crypto#decrypt",
-      "kind": "function",
-      "name": "decrypt",
-      "path": "web/lib/pro/crypto.js",
-      "line": 45,
-      "layer": "controller",
-      "layerConfidence": "high",
-      "layerSignal": "dir-name",
-      "lang": "javascript",
-      "modifiers": [],
-      "exported": false,
-      "module": "web/lib/pro/crypto",
-      "methods": [
-        "decrypt"
-      ]
-    },
-    {
-      "id": "web/lib/pro/crypto#hmacHex",
-      "kind": "function",
-      "name": "hmacHex",
-      "path": "web/lib/pro/crypto.js",
-      "line": 57,
-      "layer": "controller",
-      "layerConfidence": "high",
-      "layerSignal": "dir-name",
-      "lang": "javascript",
-      "modifiers": [],
-      "exported": false,
-      "module": "web/lib/pro/crypto",
-      "methods": [
-        "hmacHex"
-      ]
-    },
-    {
-      "id": "web/lib/pro/crypto#randomToken",
-      "kind": "function",
-      "name": "randomToken",
-      "path": "web/lib/pro/crypto.js",
-      "line": 61,
-      "layer": "controller",
-      "layerConfidence": "high",
-      "layerSignal": "dir-name",
-      "lang": "javascript",
-      "modifiers": [],
-      "exported": false,
-      "module": "web/lib/pro/crypto",
-      "methods": [
-        "randomToken"
-      ]
-    },
-    {
-      "id": "file:web/lib/pro/entitlement.js",
-      "kind": "file",
-      "name": "entitlement.js",
-      "path": "web/lib/pro/entitlement.js",
-      "layer": "controller",
-      "layerConfidence": "high",
-      "layerSignal": "dir-name",
-      "lang": "javascript"
-    },
-    {
-      "id": "web/lib/pro/entitlement#now",
-      "kind": "function",
-      "name": "now",
-      "path": "web/lib/pro/entitlement.js",
-      "line": 5,
-      "layer": "controller",
-      "layerConfidence": "high",
-      "layerSignal": "dir-name",
-      "lang": "javascript",
-      "modifiers": [],
-      "exported": false,
-      "module": "web/lib/pro/entitlement",
-      "methods": [
-        "now"
-      ]
-    },
-    {
-      "id": "web/lib/pro/entitlement#trialUntilFrom",
-      "kind": "function",
-      "name": "trialUntilFrom",
-      "path": "web/lib/pro/entitlement.js",
-      "line": 9,
-      "layer": "controller",
-      "layerConfidence": "high",
-      "layerSignal": "dir-name",
-      "lang": "javascript",
-      "modifiers": [],
-      "exported": false,
-      "module": "web/lib/pro/entitlement",
-      "methods": [
-        "trialUntilFrom"
-      ]
-    },
-    {
-      "id": "web/lib/pro/entitlement#isActive",
-      "kind": "function",
-      "name": "isActive",
-      "path": "web/lib/pro/entitlement.js",
-      "line": 14,
-      "layer": "controller",
-      "layerConfidence": "high",
-      "layerSignal": "dir-name",
-      "lang": "javascript",
-      "modifiers": [],
-      "exported": false,
-      "module": "web/lib/pro/entitlement",
-      "methods": [
-        "isActive"
-      ]
-    },
-    {
-      "id": "web/lib/pro/entitlement#publicUser",
-      "kind": "function",
-      "name": "publicUser",
-      "path": "web/lib/pro/entitlement.js",
-      "line": 27,
-      "layer": "controller",
-      "layerConfidence": "high",
-      "layerSignal": "dir-name",
-      "lang": "javascript",
-      "modifiers": [],
-      "exported": false,
-      "module": "web/lib/pro/entitlement",
-      "methods": [
-        "publicUser"
       ]
     },
     {
@@ -1704,7 +1266,7 @@
       "kind": "function",
       "name": "clientIp",
       "path": "web/lib/pro/routes.js",
-      "line": 15,
+      "line": 16,
       "layer": "controller",
       "layerConfidence": "high",
       "layerSignal": "dir-name",
@@ -1717,11 +1279,28 @@
       ]
     },
     {
+      "id": "web/lib/pro/routes#bearerToken",
+      "kind": "function",
+      "name": "bearerToken",
+      "path": "web/lib/pro/routes.js",
+      "line": 20,
+      "layer": "controller",
+      "layerConfidence": "high",
+      "layerSignal": "dir-name",
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "web/lib/pro/routes",
+      "methods": [
+        "bearerToken"
+      ]
+    },
+    {
       "id": "web/lib/pro/routes#json",
       "kind": "function",
       "name": "json",
       "path": "web/lib/pro/routes.js",
-      "line": 19,
+      "line": 25,
       "layer": "controller",
       "layerConfidence": "high",
       "layerSignal": "dir-name",
@@ -1738,7 +1317,7 @@
       "kind": "function",
       "name": "setSession",
       "path": "web/lib/pro/routes.js",
-      "line": 25,
+      "line": 31,
       "layer": "controller",
       "layerConfidence": "high",
       "layerSignal": "dir-name",
@@ -1755,7 +1334,7 @@
       "kind": "function",
       "name": "repoPublic",
       "path": "web/lib/pro/routes.js",
-      "line": 29,
+      "line": 35,
       "layer": "controller",
       "layerConfidence": "high",
       "layerSignal": "dir-name",
@@ -1772,7 +1351,7 @@
       "kind": "function",
       "name": "handlePro",
       "path": "web/lib/pro/routes.js",
-      "line": 42,
+      "line": 48,
       "layer": "controller",
       "layerConfidence": "high",
       "layerSignal": "dir-name",
@@ -1789,7 +1368,7 @@
       "kind": "function",
       "name": "handleIncomingWebhook",
       "path": "web/lib/pro/routes.js",
-      "line": 245,
+      "line": 273,
       "layer": "controller",
       "layerConfidence": "high",
       "layerSignal": "dir-name",
@@ -1799,152 +1378,6 @@
       "module": "web/lib/pro/routes",
       "methods": [
         "handleIncomingWebhook"
-      ]
-    },
-    {
-      "id": "file:web/lib/pro/store.js",
-      "kind": "file",
-      "name": "store.js",
-      "path": "web/lib/pro/store.js",
-      "layer": "controller",
-      "layerConfidence": "high",
-      "layerSignal": "dir-name",
-      "lang": "javascript"
-    },
-    {
-      "id": "web/lib/pro/store#dataDir",
-      "kind": "function",
-      "name": "dataDir",
-      "path": "web/lib/pro/store.js",
-      "line": 9,
-      "layer": "controller",
-      "layerConfidence": "high",
-      "layerSignal": "dir-name",
-      "lang": "javascript",
-      "modifiers": [],
-      "exported": false,
-      "module": "web/lib/pro/store",
-      "methods": [
-        "dataDir"
-      ]
-    },
-    {
-      "id": "web/lib/pro/store#storePath",
-      "kind": "function",
-      "name": "storePath",
-      "path": "web/lib/pro/store.js",
-      "line": 13,
-      "layer": "controller",
-      "layerConfidence": "high",
-      "layerSignal": "dir-name",
-      "lang": "javascript",
-      "modifiers": [],
-      "exported": false,
-      "module": "web/lib/pro/store",
-      "methods": [
-        "storePath"
-      ]
-    },
-    {
-      "id": "web/lib/pro/store#funnelPath",
-      "kind": "function",
-      "name": "funnelPath",
-      "path": "web/lib/pro/store.js",
-      "line": 17,
-      "layer": "controller",
-      "layerConfidence": "high",
-      "layerSignal": "dir-name",
-      "lang": "javascript",
-      "modifiers": [],
-      "exported": false,
-      "module": "web/lib/pro/store",
-      "methods": [
-        "funnelPath"
-      ]
-    },
-    {
-      "id": "web/lib/pro/store#empty",
-      "kind": "function",
-      "name": "empty",
-      "path": "web/lib/pro/store.js",
-      "line": 21,
-      "layer": "controller",
-      "layerConfidence": "high",
-      "layerSignal": "dir-name",
-      "lang": "javascript",
-      "modifiers": [],
-      "exported": false,
-      "module": "web/lib/pro/store",
-      "methods": [
-        "empty"
-      ]
-    },
-    {
-      "id": "web/lib/pro/store#load",
-      "kind": "function",
-      "name": "load",
-      "path": "web/lib/pro/store.js",
-      "line": 25,
-      "layer": "controller",
-      "layerConfidence": "high",
-      "layerSignal": "dir-name",
-      "lang": "javascript",
-      "modifiers": [],
-      "exported": false,
-      "module": "web/lib/pro/store",
-      "methods": [
-        "load"
-      ]
-    },
-    {
-      "id": "web/lib/pro/store#save",
-      "kind": "function",
-      "name": "save",
-      "path": "web/lib/pro/store.js",
-      "line": 38,
-      "layer": "controller",
-      "layerConfidence": "high",
-      "layerSignal": "dir-name",
-      "lang": "javascript",
-      "modifiers": [],
-      "exported": false,
-      "module": "web/lib/pro/store",
-      "methods": [
-        "save"
-      ]
-    },
-    {
-      "id": "web/lib/pro/store#id",
-      "kind": "function",
-      "name": "id",
-      "path": "web/lib/pro/store.js",
-      "line": 46,
-      "layer": "controller",
-      "layerConfidence": "high",
-      "layerSignal": "dir-name",
-      "lang": "javascript",
-      "modifiers": [],
-      "exported": false,
-      "module": "web/lib/pro/store",
-      "methods": [
-        "id"
-      ]
-    },
-    {
-      "id": "web/lib/pro/store#track",
-      "kind": "function",
-      "name": "track",
-      "path": "web/lib/pro/store.js",
-      "line": 50,
-      "layer": "controller",
-      "layerConfidence": "high",
-      "layerSignal": "dir-name",
-      "lang": "javascript",
-      "modifiers": [],
-      "exported": false,
-      "module": "web/lib/pro/store",
-      "methods": [
-        "track"
       ]
     },
     {
@@ -3200,11 +2633,28 @@
       ]
     },
     {
+      "id": "mcp/server#validateToolArgs",
+      "kind": "function",
+      "name": "validateToolArgs",
+      "path": "mcp/server.js",
+      "line": 566,
+      "layer": "controller",
+      "layerConfidence": "low",
+      "layerSignal": "structure:high-fan-out",
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "mcp/server",
+      "methods": [
+        "validateToolArgs"
+      ]
+    },
+    {
       "id": "mcp/server#handleToolCall",
       "kind": "function",
       "name": "handleToolCall",
       "path": "mcp/server.js",
-      "line": 566,
+      "line": 635,
       "layer": "controller",
       "layerConfidence": "low",
       "layerSignal": "structure:high-fan-out",
@@ -3221,7 +2671,7 @@
       "kind": "function",
       "name": "createServer",
       "path": "mcp/server.js",
-      "line": 579,
+      "line": 649,
       "layer": "controller",
       "layerConfidence": "low",
       "layerSignal": "structure:high-fan-out",
@@ -3394,7 +2844,7 @@
       "kind": "function",
       "name": "parseArgs",
       "path": "lib/cli.js",
-      "line": 74,
+      "line": 79,
       "layer": "util",
       "layerConfidence": "high",
       "layerSignal": "dir-name",
@@ -3411,7 +2861,7 @@
       "kind": "function",
       "name": "openInBrowser",
       "path": "lib/cli.js",
-      "line": 90,
+      "line": 95,
       "layer": "util",
       "layerConfidence": "high",
       "layerSignal": "dir-name",
@@ -3428,7 +2878,7 @@
       "kind": "function",
       "name": "formatFindingsText",
       "path": "lib/cli.js",
-      "line": 104,
+      "line": 109,
       "layer": "util",
       "layerConfidence": "high",
       "layerSignal": "dir-name",
@@ -3445,7 +2895,7 @@
       "kind": "function",
       "name": "printIssues",
       "path": "lib/cli.js",
-      "line": 115,
+      "line": 120,
       "layer": "util",
       "layerConfidence": "high",
       "layerSignal": "dir-name",
@@ -3462,7 +2912,7 @@
       "kind": "function",
       "name": "loadEvalConfig",
       "path": "lib/cli.js",
-      "line": 125,
+      "line": 130,
       "layer": "util",
       "layerConfidence": "high",
       "layerSignal": "dir-name",
@@ -3479,7 +2929,7 @@
       "kind": "function",
       "name": "runEval",
       "path": "lib/cli.js",
-      "line": 134,
+      "line": 139,
       "layer": "util",
       "layerConfidence": "high",
       "layerSignal": "dir-name",
@@ -3496,7 +2946,7 @@
       "kind": "function",
       "name": "printGenerateResult",
       "path": "lib/cli.js",
-      "line": 180,
+      "line": 185,
       "layer": "util",
       "layerConfidence": "high",
       "layerSignal": "dir-name",
@@ -3513,7 +2963,7 @@
       "kind": "function",
       "name": "writeLayerSuggestions",
       "path": "lib/cli.js",
-      "line": 198,
+      "line": 203,
       "layer": "util",
       "layerConfidence": "high",
       "layerSignal": "dir-name",
@@ -3530,7 +2980,7 @@
       "kind": "function",
       "name": "wantsRefine",
       "path": "lib/cli.js",
-      "line": 212,
+      "line": 217,
       "layer": "util",
       "layerConfidence": "high",
       "layerSignal": "dir-name",
@@ -3547,7 +2997,7 @@
       "kind": "function",
       "name": "main",
       "path": "lib/cli.js",
-      "line": 216,
+      "line": 221,
       "layer": "util",
       "layerConfidence": "high",
       "layerSignal": "dir-name",
@@ -3570,11 +3020,79 @@
       "lang": "javascript"
     },
     {
+      "id": "lib/diff-graph#canonical",
+      "kind": "function",
+      "name": "canonical",
+      "path": "lib/diff-graph.js",
+      "line": 17,
+      "layer": "util",
+      "layerConfidence": "high",
+      "layerSignal": "dir-name",
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "lib/diff-graph",
+      "methods": [
+        "canonical"
+      ]
+    },
+    {
+      "id": "lib/diff-graph#canonicalEqual",
+      "kind": "function",
+      "name": "canonicalEqual",
+      "path": "lib/diff-graph.js",
+      "line": 33,
+      "layer": "util",
+      "layerConfidence": "high",
+      "layerSignal": "dir-name",
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "lib/diff-graph",
+      "methods": [
+        "canonicalEqual"
+      ]
+    },
+    {
+      "id": "lib/diff-graph#collectNodeFieldChanges",
+      "kind": "function",
+      "name": "collectNodeFieldChanges",
+      "path": "lib/diff-graph.js",
+      "line": 40,
+      "layer": "util",
+      "layerConfidence": "high",
+      "layerSignal": "dir-name",
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "lib/diff-graph",
+      "methods": [
+        "collectNodeFieldChanges"
+      ]
+    },
+    {
+      "id": "lib/diff-graph#classifyNodeChanges",
+      "kind": "function",
+      "name": "classifyNodeChanges",
+      "path": "lib/diff-graph.js",
+      "line": 62,
+      "layer": "util",
+      "layerConfidence": "high",
+      "layerSignal": "dir-name",
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "lib/diff-graph",
+      "methods": [
+        "classifyNodeChanges"
+      ]
+    },
+    {
       "id": "lib/diff-graph#diffGraphs",
       "kind": "function",
       "name": "diffGraphs",
       "path": "lib/diff-graph.js",
-      "line": 3,
+      "line": 70,
       "layer": "util",
       "layerConfidence": "high",
       "layerSignal": "dir-name",
@@ -3591,7 +3109,7 @@
       "kind": "function",
       "name": "addedExtDepsCount",
       "path": "lib/diff-graph.js",
-      "line": 237,
+      "line": 353,
       "layer": "util",
       "layerConfidence": "high",
       "layerSignal": "dir-name",
@@ -3608,7 +3126,7 @@
       "kind": "function",
       "name": "edgeKey",
       "path": "lib/diff-graph.js",
-      "line": 241,
+      "line": 357,
       "layer": "util",
       "layerConfidence": "high",
       "layerSignal": "dir-name",
@@ -3621,11 +3139,28 @@
       ]
     },
     {
+      "id": "lib/diff-graph#baseName",
+      "kind": "function",
+      "name": "baseName",
+      "path": "lib/diff-graph.js",
+      "line": 368,
+      "layer": "util",
+      "layerConfidence": "high",
+      "layerSignal": "dir-name",
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "lib/diff-graph",
+      "methods": [
+        "baseName"
+      ]
+    },
+    {
       "id": "lib/diff-graph#isRenamePair",
       "kind": "function",
       "name": "isRenamePair",
       "path": "lib/diff-graph.js",
-      "line": 250,
+      "line": 374,
       "layer": "util",
       "layerConfidence": "high",
       "layerSignal": "dir-name",
@@ -3642,7 +3177,7 @@
       "kind": "function",
       "name": "levenshtein",
       "path": "lib/diff-graph.js",
-      "line": 266,
+      "line": 390,
       "layer": "util",
       "layerConfidence": "high",
       "layerSignal": "dir-name",
@@ -3659,7 +3194,7 @@
       "kind": "function",
       "name": "groupByPackage",
       "path": "lib/diff-graph.js",
-      "line": 287,
+      "line": 411,
       "layer": "util",
       "layerConfidence": "high",
       "layerSignal": "dir-name",
@@ -3676,7 +3211,7 @@
       "kind": "function",
       "name": "inferLayer",
       "path": "lib/diff-graph.js",
-      "line": 304,
+      "line": 428,
       "layer": "util",
       "layerConfidence": "high",
       "layerSignal": "dir-name",
@@ -3693,7 +3228,7 @@
       "kind": "function",
       "name": "isReverseDependency",
       "path": "lib/diff-graph.js",
-      "line": 322,
+      "line": 446,
       "layer": "util",
       "layerConfidence": "high",
       "layerSignal": "dir-name",
@@ -3710,7 +3245,7 @@
       "kind": "function",
       "name": "assessRisk",
       "path": "lib/diff-graph.js",
-      "line": 330,
+      "line": 454,
       "layer": "util",
       "layerConfidence": "high",
       "layerSignal": "dir-name",
@@ -3727,7 +3262,7 @@
       "kind": "function",
       "name": "formatDiffText",
       "path": "lib/diff-graph.js",
-      "line": 340,
+      "line": 464,
       "layer": "util",
       "layerConfidence": "high",
       "layerSignal": "dir-name",
@@ -4634,7 +4169,7 @@
       "kind": "function",
       "name": "formatImpactText",
       "path": "lib/impact.js",
-      "line": 102,
+      "line": 103,
       "layer": "util",
       "layerConfidence": "high",
       "layerSignal": "dir-name",
@@ -4651,7 +4186,7 @@
       "kind": "function",
       "name": "aggregateImpact",
       "path": "lib/impact.js",
-      "line": 127,
+      "line": 128,
       "layer": "util",
       "layerConfidence": "high",
       "layerSignal": "dir-name",
@@ -5662,6 +5197,50 @@
       ]
     },
     {
+      "id": "file:lib/report-contract.js",
+      "kind": "file",
+      "name": "report-contract.js",
+      "path": "lib/report-contract.js",
+      "layer": "util",
+      "layerConfidence": "high",
+      "layerSignal": "dir-name",
+      "lang": "javascript"
+    },
+    {
+      "id": "lib/report-contract#assertReportContract",
+      "kind": "function",
+      "name": "assertReportContract",
+      "path": "lib/report-contract.js",
+      "line": 21,
+      "layer": "util",
+      "layerConfidence": "high",
+      "layerSignal": "dir-name",
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "lib/report-contract",
+      "methods": [
+        "assertReportContract"
+      ]
+    },
+    {
+      "id": "lib/report-contract#normalizeReportForGolden",
+      "kind": "function",
+      "name": "normalizeReportForGolden",
+      "path": "lib/report-contract.js",
+      "line": 51,
+      "layer": "util",
+      "layerConfidence": "high",
+      "layerSignal": "dir-name",
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "lib/report-contract",
+      "methods": [
+        "normalizeReportForGolden"
+      ]
+    },
+    {
       "id": "file:lib/risk-rules.js",
       "kind": "file",
       "name": "risk-rules.js",
@@ -5951,7 +5530,7 @@
       "kind": "function",
       "name": "generateReport",
       "path": "lib/session-report.js",
-      "line": 39,
+      "line": 42,
       "layer": "util",
       "layerConfidence": "high",
       "layerSignal": "dir-name",
@@ -5968,7 +5547,7 @@
       "kind": "function",
       "name": "buildReportData",
       "path": "lib/session-report.js",
-      "line": 47,
+      "line": 52,
       "layer": "util",
       "layerConfidence": "high",
       "layerSignal": "dir-name",
@@ -5985,7 +5564,7 @@
       "kind": "function",
       "name": "renderHtml",
       "path": "lib/session-report.js",
-      "line": 221,
+      "line": 268,
       "layer": "util",
       "layerConfidence": "high",
       "layerSignal": "dir-name",
@@ -6002,7 +5581,7 @@
       "kind": "function",
       "name": "esc",
       "path": "lib/session-report.js",
-      "line": 244,
+      "line": 291,
       "layer": "util",
       "layerConfidence": "high",
       "layerSignal": "dir-name",
@@ -6019,7 +5598,7 @@
       "kind": "function",
       "name": "getStyles",
       "path": "lib/session-report.js",
-      "line": 248,
+      "line": 295,
       "layer": "util",
       "layerConfidence": "high",
       "layerSignal": "dir-name",
@@ -6036,7 +5615,7 @@
       "kind": "function",
       "name": "getAppScript",
       "path": "lib/session-report.js",
-      "line": 401,
+      "line": 454,
       "layer": "util",
       "layerConfidence": "high",
       "layerSignal": "dir-name",
@@ -6280,6 +5859,169 @@
       ]
     },
     {
+      "id": "file:lib/telemetry.js",
+      "kind": "file",
+      "name": "telemetry.js",
+      "path": "lib/telemetry.js",
+      "layer": "util",
+      "layerConfidence": "high",
+      "layerSignal": "dir-name",
+      "lang": "javascript"
+    },
+    {
+      "id": "lib/telemetry#envFlag",
+      "kind": "function",
+      "name": "envFlag",
+      "path": "lib/telemetry.js",
+      "line": 11,
+      "layer": "util",
+      "layerConfidence": "high",
+      "layerSignal": "dir-name",
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "lib/telemetry",
+      "methods": [
+        "envFlag"
+      ]
+    },
+    {
+      "id": "lib/telemetry#pkgEnabled",
+      "kind": "function",
+      "name": "pkgEnabled",
+      "path": "lib/telemetry.js",
+      "line": 16,
+      "layer": "util",
+      "layerConfidence": "high",
+      "layerSignal": "dir-name",
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "lib/telemetry",
+      "methods": [
+        "pkgEnabled"
+      ]
+    },
+    {
+      "id": "lib/telemetry#isEnabled",
+      "kind": "function",
+      "name": "isEnabled",
+      "path": "lib/telemetry.js",
+      "line": 20,
+      "layer": "util",
+      "layerConfidence": "high",
+      "layerSignal": "dir-name",
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "lib/telemetry",
+      "methods": [
+        "isEnabled"
+      ]
+    },
+    {
+      "id": "lib/telemetry#configDir",
+      "kind": "function",
+      "name": "configDir",
+      "path": "lib/telemetry.js",
+      "line": 26,
+      "layer": "util",
+      "layerConfidence": "high",
+      "layerSignal": "dir-name",
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "lib/telemetry",
+      "methods": [
+        "configDir"
+      ]
+    },
+    {
+      "id": "lib/telemetry#logPath",
+      "kind": "function",
+      "name": "logPath",
+      "path": "lib/telemetry.js",
+      "line": 32,
+      "layer": "util",
+      "layerConfidence": "high",
+      "layerSignal": "dir-name",
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "lib/telemetry",
+      "methods": [
+        "logPath"
+      ]
+    },
+    {
+      "id": "lib/telemetry#safePlatform",
+      "kind": "function",
+      "name": "safePlatform",
+      "path": "lib/telemetry.js",
+      "line": 36,
+      "layer": "util",
+      "layerConfidence": "high",
+      "layerSignal": "dir-name",
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "lib/telemetry",
+      "methods": [
+        "safePlatform"
+      ]
+    },
+    {
+      "id": "lib/telemetry#isSensitive",
+      "kind": "function",
+      "name": "isSensitive",
+      "path": "lib/telemetry.js",
+      "line": 48,
+      "layer": "util",
+      "layerConfidence": "high",
+      "layerSignal": "dir-name",
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "lib/telemetry",
+      "methods": [
+        "isSensitive"
+      ]
+    },
+    {
+      "id": "lib/telemetry#track",
+      "kind": "function",
+      "name": "track",
+      "path": "lib/telemetry.js",
+      "line": 52,
+      "layer": "util",
+      "layerConfidence": "high",
+      "layerSignal": "dir-name",
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "lib/telemetry",
+      "methods": [
+        "track"
+      ]
+    },
+    {
+      "id": "lib/telemetry#wrap",
+      "kind": "function",
+      "name": "wrap",
+      "path": "lib/telemetry.js",
+      "line": 95,
+      "layer": "util",
+      "layerConfidence": "high",
+      "layerSignal": "dir-name",
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "lib/telemetry",
+      "methods": [
+        "wrap"
+      ]
+    },
+    {
       "id": "file:lib/validate.js",
       "kind": "file",
       "name": "validate.js",
@@ -6518,6 +6260,923 @@
       "module": "lib/workspace",
       "methods": [
         "reportAll"
+      ]
+    },
+    {
+      "id": "file:lib/pro/auth-client.js",
+      "kind": "file",
+      "name": "auth-client.js",
+      "path": "lib/pro/auth-client.js",
+      "layer": "util",
+      "layerConfidence": "high",
+      "layerSignal": "dir-name",
+      "lang": "javascript"
+    },
+    {
+      "id": "lib/pro/auth-client#configDir",
+      "kind": "function",
+      "name": "configDir",
+      "path": "lib/pro/auth-client.js",
+      "line": 24,
+      "layer": "util",
+      "layerConfidence": "high",
+      "layerSignal": "dir-name",
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "lib/pro/auth-client",
+      "methods": [
+        "configDir"
+      ]
+    },
+    {
+      "id": "lib/pro/auth-client#authPath",
+      "kind": "function",
+      "name": "authPath",
+      "path": "lib/pro/auth-client.js",
+      "line": 28,
+      "layer": "util",
+      "layerConfidence": "high",
+      "layerSignal": "dir-name",
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "lib/pro/auth-client",
+      "methods": [
+        "authPath"
+      ]
+    },
+    {
+      "id": "lib/pro/auth-client#loadAuth",
+      "kind": "function",
+      "name": "loadAuth",
+      "path": "lib/pro/auth-client.js",
+      "line": 32,
+      "layer": "util",
+      "layerConfidence": "high",
+      "layerSignal": "dir-name",
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "lib/pro/auth-client",
+      "methods": [
+        "loadAuth"
+      ]
+    },
+    {
+      "id": "lib/pro/auth-client#saveAuth",
+      "kind": "function",
+      "name": "saveAuth",
+      "path": "lib/pro/auth-client.js",
+      "line": 40,
+      "layer": "util",
+      "layerConfidence": "high",
+      "layerSignal": "dir-name",
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "lib/pro/auth-client",
+      "methods": [
+        "saveAuth"
+      ]
+    },
+    {
+      "id": "lib/pro/auth-client#clearAuth",
+      "kind": "function",
+      "name": "clearAuth",
+      "path": "lib/pro/auth-client.js",
+      "line": 52,
+      "layer": "util",
+      "layerConfidence": "high",
+      "layerSignal": "dir-name",
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "lib/pro/auth-client",
+      "methods": [
+        "clearAuth"
+      ]
+    },
+    {
+      "id": "lib/pro/auth-client#ask",
+      "kind": "function",
+      "name": "ask",
+      "path": "lib/pro/auth-client.js",
+      "line": 60,
+      "layer": "util",
+      "layerConfidence": "high",
+      "layerSignal": "dir-name",
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "lib/pro/auth-client",
+      "methods": [
+        "ask"
+      ]
+    },
+    {
+      "id": "lib/pro/auth-client#localTransport",
+      "kind": "function",
+      "name": "localTransport",
+      "path": "lib/pro/auth-client.js",
+      "line": 72,
+      "layer": "util",
+      "layerConfidence": "high",
+      "layerSignal": "dir-name",
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "lib/pro/auth-client",
+      "methods": [
+        "localTransport"
+      ]
+    },
+    {
+      "id": "lib/pro/auth-client#httpTransport",
+      "kind": "function",
+      "name": "httpTransport",
+      "path": "lib/pro/auth-client.js",
+      "line": 97,
+      "layer": "util",
+      "layerConfidence": "high",
+      "layerSignal": "dir-name",
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "lib/pro/auth-client",
+      "methods": [
+        "httpTransport"
+      ]
+    },
+    {
+      "id": "lib/pro/auth-client#transport",
+      "kind": "function",
+      "name": "transport",
+      "path": "lib/pro/auth-client.js",
+      "line": 135,
+      "layer": "util",
+      "layerConfidence": "high",
+      "layerSignal": "dir-name",
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "lib/pro/auth-client",
+      "methods": [
+        "transport"
+      ]
+    },
+    {
+      "id": "lib/pro/auth-client#loginFlow",
+      "kind": "function",
+      "name": "loginFlow",
+      "path": "lib/pro/auth-client.js",
+      "line": 142,
+      "layer": "util",
+      "layerConfidence": "high",
+      "layerSignal": "dir-name",
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "lib/pro/auth-client",
+      "methods": [
+        "loginFlow"
+      ]
+    },
+    {
+      "id": "lib/pro/auth-client#whoamiAsync",
+      "kind": "function",
+      "name": "whoamiAsync",
+      "path": "lib/pro/auth-client.js",
+      "line": 167,
+      "layer": "util",
+      "layerConfidence": "high",
+      "layerSignal": "dir-name",
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "lib/pro/auth-client",
+      "methods": [
+        "whoamiAsync"
+      ]
+    },
+    {
+      "id": "lib/pro/auth-client#logoutFlow",
+      "kind": "function",
+      "name": "logoutFlow",
+      "path": "lib/pro/auth-client.js",
+      "line": 184,
+      "layer": "util",
+      "layerConfidence": "high",
+      "layerSignal": "dir-name",
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "lib/pro/auth-client",
+      "methods": [
+        "logoutFlow"
+      ]
+    },
+    {
+      "id": "lib/pro/auth-client#requireUser",
+      "kind": "function",
+      "name": "requireUser",
+      "path": "lib/pro/auth-client.js",
+      "line": 201,
+      "layer": "util",
+      "layerConfidence": "high",
+      "layerSignal": "dir-name",
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "lib/pro/auth-client",
+      "methods": [
+        "requireUser"
+      ]
+    },
+    {
+      "id": "file:lib/pro/auth.js",
+      "kind": "file",
+      "name": "auth.js",
+      "path": "lib/pro/auth.js",
+      "layer": "util",
+      "layerConfidence": "high",
+      "layerSignal": "dir-name",
+      "lang": "javascript"
+    },
+    {
+      "id": "lib/pro/auth#rateLimit",
+      "kind": "function",
+      "name": "rateLimit",
+      "path": "lib/pro/auth.js",
+      "line": 13,
+      "layer": "util",
+      "layerConfidence": "high",
+      "layerSignal": "dir-name",
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "lib/pro/auth",
+      "methods": [
+        "rateLimit"
+      ]
+    },
+    {
+      "id": "lib/pro/auth#parseCookies",
+      "kind": "function",
+      "name": "parseCookies",
+      "path": "lib/pro/auth.js",
+      "line": 30,
+      "layer": "util",
+      "layerConfidence": "high",
+      "layerSignal": "dir-name",
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "lib/pro/auth",
+      "methods": [
+        "parseCookies"
+      ]
+    },
+    {
+      "id": "lib/pro/auth#sessionCookie",
+      "kind": "function",
+      "name": "sessionCookie",
+      "path": "lib/pro/auth.js",
+      "line": 42,
+      "layer": "util",
+      "layerConfidence": "high",
+      "layerSignal": "dir-name",
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "lib/pro/auth",
+      "methods": [
+        "sessionCookie"
+      ]
+    },
+    {
+      "id": "lib/pro/auth#clearCookie",
+      "kind": "function",
+      "name": "clearCookie",
+      "path": "lib/pro/auth.js",
+      "line": 54,
+      "layer": "util",
+      "layerConfidence": "high",
+      "layerSignal": "dir-name",
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "lib/pro/auth",
+      "methods": [
+        "clearCookie"
+      ]
+    },
+    {
+      "id": "lib/pro/auth#findUserByEmail",
+      "kind": "function",
+      "name": "findUserByEmail",
+      "path": "lib/pro/auth.js",
+      "line": 58,
+      "layer": "util",
+      "layerConfidence": "high",
+      "layerSignal": "dir-name",
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "lib/pro/auth",
+      "methods": [
+        "findUserByEmail"
+      ]
+    },
+    {
+      "id": "lib/pro/auth#currentUser",
+      "kind": "function",
+      "name": "currentUser",
+      "path": "lib/pro/auth.js",
+      "line": 63,
+      "layer": "util",
+      "layerConfidence": "high",
+      "layerSignal": "dir-name",
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "lib/pro/auth",
+      "methods": [
+        "currentUser"
+      ]
+    },
+    {
+      "id": "lib/pro/auth#requireUser",
+      "kind": "function",
+      "name": "requireUser",
+      "path": "lib/pro/auth.js",
+      "line": 74,
+      "layer": "util",
+      "layerConfidence": "high",
+      "layerSignal": "dir-name",
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "lib/pro/auth",
+      "methods": [
+        "requireUser"
+      ]
+    },
+    {
+      "id": "lib/pro/auth#requireActive",
+      "kind": "function",
+      "name": "requireActive",
+      "path": "lib/pro/auth.js",
+      "line": 84,
+      "layer": "util",
+      "layerConfidence": "high",
+      "layerSignal": "dir-name",
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "lib/pro/auth",
+      "methods": [
+        "requireActive"
+      ]
+    },
+    {
+      "id": "lib/pro/auth#createSession",
+      "kind": "function",
+      "name": "createSession",
+      "path": "lib/pro/auth.js",
+      "line": 96,
+      "layer": "util",
+      "layerConfidence": "high",
+      "layerSignal": "dir-name",
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "lib/pro/auth",
+      "methods": [
+        "createSession"
+      ]
+    },
+    {
+      "id": "lib/pro/auth#signup",
+      "kind": "function",
+      "name": "signup",
+      "path": "lib/pro/auth.js",
+      "line": 104,
+      "layer": "util",
+      "layerConfidence": "high",
+      "layerSignal": "dir-name",
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "lib/pro/auth",
+      "methods": [
+        "signup"
+      ]
+    },
+    {
+      "id": "lib/pro/auth#login",
+      "kind": "function",
+      "name": "login",
+      "path": "lib/pro/auth.js",
+      "line": 142,
+      "layer": "util",
+      "layerConfidence": "high",
+      "layerSignal": "dir-name",
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "lib/pro/auth",
+      "methods": [
+        "login"
+      ]
+    },
+    {
+      "id": "lib/pro/auth#logout",
+      "kind": "function",
+      "name": "logout",
+      "path": "lib/pro/auth.js",
+      "line": 157,
+      "layer": "util",
+      "layerConfidence": "high",
+      "layerSignal": "dir-name",
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "lib/pro/auth",
+      "methods": [
+        "logout"
+      ]
+    },
+    {
+      "id": "lib/pro/auth#stubMode",
+      "kind": "function",
+      "name": "stubMode",
+      "path": "lib/pro/auth.js",
+      "line": 170,
+      "layer": "util",
+      "layerConfidence": "high",
+      "layerSignal": "dir-name",
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "lib/pro/auth",
+      "methods": [
+        "stubMode"
+      ]
+    },
+    {
+      "id": "lib/pro/auth#sendLoginCode",
+      "kind": "function",
+      "name": "sendLoginCode",
+      "path": "lib/pro/auth.js",
+      "line": 174,
+      "layer": "util",
+      "layerConfidence": "high",
+      "layerSignal": "dir-name",
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "lib/pro/auth",
+      "methods": [
+        "sendLoginCode"
+      ]
+    },
+    {
+      "id": "lib/pro/auth#requestLoginCode",
+      "kind": "function",
+      "name": "requestLoginCode",
+      "path": "lib/pro/auth.js",
+      "line": 184,
+      "layer": "util",
+      "layerConfidence": "high",
+      "layerSignal": "dir-name",
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "lib/pro/auth",
+      "methods": [
+        "requestLoginCode"
+      ]
+    },
+    {
+      "id": "lib/pro/auth#verifyLoginCode",
+      "kind": "function",
+      "name": "verifyLoginCode",
+      "path": "lib/pro/auth.js",
+      "line": 225,
+      "layer": "util",
+      "layerConfidence": "high",
+      "layerSignal": "dir-name",
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "lib/pro/auth",
+      "methods": [
+        "verifyLoginCode"
+      ]
+    },
+    {
+      "id": "lib/pro/auth#sessionByToken",
+      "kind": "function",
+      "name": "sessionByToken",
+      "path": "lib/pro/auth.js",
+      "line": 260,
+      "layer": "util",
+      "layerConfidence": "high",
+      "layerSignal": "dir-name",
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "lib/pro/auth",
+      "methods": [
+        "sessionByToken"
+      ]
+    },
+    {
+      "id": "lib/pro/auth#logoutToken",
+      "kind": "function",
+      "name": "logoutToken",
+      "path": "lib/pro/auth.js",
+      "line": 269,
+      "layer": "util",
+      "layerConfidence": "high",
+      "layerSignal": "dir-name",
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "lib/pro/auth",
+      "methods": [
+        "logoutToken"
+      ]
+    },
+    {
+      "id": "file:lib/pro/crypto.js",
+      "kind": "file",
+      "name": "crypto.js",
+      "path": "lib/pro/crypto.js",
+      "layer": "util",
+      "layerConfidence": "high",
+      "layerSignal": "dir-name",
+      "lang": "javascript"
+    },
+    {
+      "id": "lib/pro/crypto#secret",
+      "kind": "function",
+      "name": "secret",
+      "path": "lib/pro/crypto.js",
+      "line": 5,
+      "layer": "util",
+      "layerConfidence": "high",
+      "layerSignal": "dir-name",
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "lib/pro/crypto",
+      "methods": [
+        "secret"
+      ]
+    },
+    {
+      "id": "lib/pro/crypto#key32",
+      "kind": "function",
+      "name": "key32",
+      "path": "lib/pro/crypto.js",
+      "line": 16,
+      "layer": "util",
+      "layerConfidence": "high",
+      "layerSignal": "dir-name",
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "lib/pro/crypto",
+      "methods": [
+        "key32"
+      ]
+    },
+    {
+      "id": "lib/pro/crypto#hashPassword",
+      "kind": "function",
+      "name": "hashPassword",
+      "path": "lib/pro/crypto.js",
+      "line": 20,
+      "layer": "util",
+      "layerConfidence": "high",
+      "layerSignal": "dir-name",
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "lib/pro/crypto",
+      "methods": [
+        "hashPassword"
+      ]
+    },
+    {
+      "id": "lib/pro/crypto#verifyPassword",
+      "kind": "function",
+      "name": "verifyPassword",
+      "path": "lib/pro/crypto.js",
+      "line": 26,
+      "layer": "util",
+      "layerConfidence": "high",
+      "layerSignal": "dir-name",
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "lib/pro/crypto",
+      "methods": [
+        "verifyPassword"
+      ]
+    },
+    {
+      "id": "lib/pro/crypto#encrypt",
+      "kind": "function",
+      "name": "encrypt",
+      "path": "lib/pro/crypto.js",
+      "line": 36,
+      "layer": "util",
+      "layerConfidence": "high",
+      "layerSignal": "dir-name",
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "lib/pro/crypto",
+      "methods": [
+        "encrypt"
+      ]
+    },
+    {
+      "id": "lib/pro/crypto#decrypt",
+      "kind": "function",
+      "name": "decrypt",
+      "path": "lib/pro/crypto.js",
+      "line": 45,
+      "layer": "util",
+      "layerConfidence": "high",
+      "layerSignal": "dir-name",
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "lib/pro/crypto",
+      "methods": [
+        "decrypt"
+      ]
+    },
+    {
+      "id": "lib/pro/crypto#hmacHex",
+      "kind": "function",
+      "name": "hmacHex",
+      "path": "lib/pro/crypto.js",
+      "line": 57,
+      "layer": "util",
+      "layerConfidence": "high",
+      "layerSignal": "dir-name",
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "lib/pro/crypto",
+      "methods": [
+        "hmacHex"
+      ]
+    },
+    {
+      "id": "lib/pro/crypto#randomToken",
+      "kind": "function",
+      "name": "randomToken",
+      "path": "lib/pro/crypto.js",
+      "line": 61,
+      "layer": "util",
+      "layerConfidence": "high",
+      "layerSignal": "dir-name",
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "lib/pro/crypto",
+      "methods": [
+        "randomToken"
+      ]
+    },
+    {
+      "id": "file:lib/pro/entitlement.js",
+      "kind": "file",
+      "name": "entitlement.js",
+      "path": "lib/pro/entitlement.js",
+      "layer": "util",
+      "layerConfidence": "high",
+      "layerSignal": "dir-name",
+      "lang": "javascript"
+    },
+    {
+      "id": "lib/pro/entitlement#now",
+      "kind": "function",
+      "name": "now",
+      "path": "lib/pro/entitlement.js",
+      "line": 5,
+      "layer": "util",
+      "layerConfidence": "high",
+      "layerSignal": "dir-name",
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "lib/pro/entitlement",
+      "methods": [
+        "now"
+      ]
+    },
+    {
+      "id": "lib/pro/entitlement#trialUntilFrom",
+      "kind": "function",
+      "name": "trialUntilFrom",
+      "path": "lib/pro/entitlement.js",
+      "line": 9,
+      "layer": "util",
+      "layerConfidence": "high",
+      "layerSignal": "dir-name",
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "lib/pro/entitlement",
+      "methods": [
+        "trialUntilFrom"
+      ]
+    },
+    {
+      "id": "lib/pro/entitlement#isActive",
+      "kind": "function",
+      "name": "isActive",
+      "path": "lib/pro/entitlement.js",
+      "line": 14,
+      "layer": "util",
+      "layerConfidence": "high",
+      "layerSignal": "dir-name",
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "lib/pro/entitlement",
+      "methods": [
+        "isActive"
+      ]
+    },
+    {
+      "id": "lib/pro/entitlement#publicUser",
+      "kind": "function",
+      "name": "publicUser",
+      "path": "lib/pro/entitlement.js",
+      "line": 27,
+      "layer": "util",
+      "layerConfidence": "high",
+      "layerSignal": "dir-name",
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "lib/pro/entitlement",
+      "methods": [
+        "publicUser"
+      ]
+    },
+    {
+      "id": "file:lib/pro/store.js",
+      "kind": "file",
+      "name": "store.js",
+      "path": "lib/pro/store.js",
+      "layer": "util",
+      "layerConfidence": "high",
+      "layerSignal": "dir-name",
+      "lang": "javascript"
+    },
+    {
+      "id": "lib/pro/store#dataDir",
+      "kind": "function",
+      "name": "dataDir",
+      "path": "lib/pro/store.js",
+      "line": 9,
+      "layer": "util",
+      "layerConfidence": "high",
+      "layerSignal": "dir-name",
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "lib/pro/store",
+      "methods": [
+        "dataDir"
+      ]
+    },
+    {
+      "id": "lib/pro/store#storePath",
+      "kind": "function",
+      "name": "storePath",
+      "path": "lib/pro/store.js",
+      "line": 13,
+      "layer": "util",
+      "layerConfidence": "high",
+      "layerSignal": "dir-name",
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "lib/pro/store",
+      "methods": [
+        "storePath"
+      ]
+    },
+    {
+      "id": "lib/pro/store#funnelPath",
+      "kind": "function",
+      "name": "funnelPath",
+      "path": "lib/pro/store.js",
+      "line": 17,
+      "layer": "util",
+      "layerConfidence": "high",
+      "layerSignal": "dir-name",
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "lib/pro/store",
+      "methods": [
+        "funnelPath"
+      ]
+    },
+    {
+      "id": "lib/pro/store#empty",
+      "kind": "function",
+      "name": "empty",
+      "path": "lib/pro/store.js",
+      "line": 21,
+      "layer": "util",
+      "layerConfidence": "high",
+      "layerSignal": "dir-name",
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "lib/pro/store",
+      "methods": [
+        "empty"
+      ]
+    },
+    {
+      "id": "lib/pro/store#load",
+      "kind": "function",
+      "name": "load",
+      "path": "lib/pro/store.js",
+      "line": 25,
+      "layer": "util",
+      "layerConfidence": "high",
+      "layerSignal": "dir-name",
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "lib/pro/store",
+      "methods": [
+        "load"
+      ]
+    },
+    {
+      "id": "lib/pro/store#save",
+      "kind": "function",
+      "name": "save",
+      "path": "lib/pro/store.js",
+      "line": 38,
+      "layer": "util",
+      "layerConfidence": "high",
+      "layerSignal": "dir-name",
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "lib/pro/store",
+      "methods": [
+        "save"
+      ]
+    },
+    {
+      "id": "lib/pro/store#id",
+      "kind": "function",
+      "name": "id",
+      "path": "lib/pro/store.js",
+      "line": 46,
+      "layer": "util",
+      "layerConfidence": "high",
+      "layerSignal": "dir-name",
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "lib/pro/store",
+      "methods": [
+        "id"
+      ]
+    },
+    {
+      "id": "lib/pro/store#track",
+      "kind": "function",
+      "name": "track",
+      "path": "lib/pro/store.js",
+      "line": 50,
+      "layer": "util",
+      "layerConfidence": "high",
+      "layerSignal": "dir-name",
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "lib/pro/store",
+      "methods": [
+        "track"
       ]
     },
     {
@@ -9321,6 +9980,13 @@
       "builtin": true
     },
     {
+      "id": "ext:https",
+      "kind": "external",
+      "name": "https",
+      "external": true,
+      "builtin": true
+    },
+    {
       "id": "ext:tree-sitter",
       "kind": "external",
       "name": "tree-sitter",
@@ -9568,151 +10234,67 @@
       "line": 65
     },
     {
-      "from": "web/lib/pro/auth#rateLimit",
-      "to": "file:web/lib/pro/auth.js",
-      "type": "declared-in",
-      "file": "web/lib/pro/auth.js",
-      "line": 10
-    },
-    {
-      "from": "web/lib/pro/auth#parseCookies",
-      "to": "file:web/lib/pro/auth.js",
-      "type": "declared-in",
-      "file": "web/lib/pro/auth.js",
-      "line": 27
-    },
-    {
-      "from": "web/lib/pro/auth#sessionCookie",
-      "to": "file:web/lib/pro/auth.js",
-      "type": "declared-in",
-      "file": "web/lib/pro/auth.js",
-      "line": 39
-    },
-    {
-      "from": "web/lib/pro/auth#clearCookie",
-      "to": "file:web/lib/pro/auth.js",
-      "type": "declared-in",
-      "file": "web/lib/pro/auth.js",
-      "line": 51
-    },
-    {
-      "from": "web/lib/pro/auth#findUserByEmail",
-      "to": "file:web/lib/pro/auth.js",
-      "type": "declared-in",
-      "file": "web/lib/pro/auth.js",
-      "line": 55
-    },
-    {
-      "from": "web/lib/pro/auth#currentUser",
-      "to": "file:web/lib/pro/auth.js",
-      "type": "declared-in",
-      "file": "web/lib/pro/auth.js",
-      "line": 60
-    },
-    {
-      "from": "web/lib/pro/auth#requireUser",
-      "to": "file:web/lib/pro/auth.js",
-      "type": "declared-in",
-      "file": "web/lib/pro/auth.js",
-      "line": 71
-    },
-    {
-      "from": "web/lib/pro/auth#requireActive",
-      "to": "file:web/lib/pro/auth.js",
-      "type": "declared-in",
-      "file": "web/lib/pro/auth.js",
-      "line": 81
-    },
-    {
-      "from": "web/lib/pro/auth#createSession",
-      "to": "file:web/lib/pro/auth.js",
-      "type": "declared-in",
-      "file": "web/lib/pro/auth.js",
-      "line": 93
-    },
-    {
-      "from": "web/lib/pro/auth#signup",
-      "to": "file:web/lib/pro/auth.js",
-      "type": "declared-in",
-      "file": "web/lib/pro/auth.js",
-      "line": 101
-    },
-    {
-      "from": "web/lib/pro/auth#login",
-      "to": "file:web/lib/pro/auth.js",
-      "type": "declared-in",
-      "file": "web/lib/pro/auth.js",
-      "line": 139
-    },
-    {
-      "from": "web/lib/pro/auth#logout",
-      "to": "file:web/lib/pro/auth.js",
-      "type": "declared-in",
-      "file": "web/lib/pro/auth.js",
-      "line": 154
-    },
-    {
       "from": "web/lib/pro/billing#stripeEnabled",
       "to": "file:web/lib/pro/billing.js",
       "type": "declared-in",
       "file": "web/lib/pro/billing.js",
-      "line": 7
+      "line": 8
     },
     {
       "from": "web/lib/pro/billing#publicUrl",
       "to": "file:web/lib/pro/billing.js",
       "type": "declared-in",
       "file": "web/lib/pro/billing.js",
-      "line": 11
+      "line": 12
     },
     {
       "from": "web/lib/pro/billing#createCheckout",
       "to": "file:web/lib/pro/billing.js",
       "type": "declared-in",
       "file": "web/lib/pro/billing.js",
-      "line": 15
+      "line": 16
     },
     {
       "from": "web/lib/pro/billing#verifyStripeSig",
       "to": "file:web/lib/pro/billing.js",
       "type": "declared-in",
       "file": "web/lib/pro/billing.js",
-      "line": 48
+      "line": 49
     },
     {
       "from": "web/lib/pro/billing#grantPro",
       "to": "file:web/lib/pro/billing.js",
       "type": "declared-in",
       "file": "web/lib/pro/billing.js",
-      "line": 69
+      "line": 70
     },
     {
       "from": "web/lib/pro/billing#licenseSecret",
       "to": "file:web/lib/pro/billing.js",
       "type": "declared-in",
       "file": "web/lib/pro/billing.js",
-      "line": 77
+      "line": 78
     },
     {
       "from": "web/lib/pro/billing#issueLicense",
       "to": "file:web/lib/pro/billing.js",
       "type": "declared-in",
       "file": "web/lib/pro/billing.js",
-      "line": 81
+      "line": 82
     },
     {
       "from": "web/lib/pro/billing#redeemLicense",
       "to": "file:web/lib/pro/billing.js",
       "type": "declared-in",
       "file": "web/lib/pro/billing.js",
-      "line": 99
+      "line": 100
     },
     {
       "from": "web/lib/pro/billing#applyStripeEvent",
       "to": "file:web/lib/pro/billing.js",
       "type": "declared-in",
       "file": "web/lib/pro/billing.js",
-      "line": 144
+      "line": 145
     },
     {
       "from": "web/lib/pro/comment#formatComment",
@@ -9720,90 +10302,6 @@
       "type": "declared-in",
       "file": "web/lib/pro/comment.js",
       "line": 5
-    },
-    {
-      "from": "web/lib/pro/crypto#secret",
-      "to": "file:web/lib/pro/crypto.js",
-      "type": "declared-in",
-      "file": "web/lib/pro/crypto.js",
-      "line": 5
-    },
-    {
-      "from": "web/lib/pro/crypto#key32",
-      "to": "file:web/lib/pro/crypto.js",
-      "type": "declared-in",
-      "file": "web/lib/pro/crypto.js",
-      "line": 16
-    },
-    {
-      "from": "web/lib/pro/crypto#hashPassword",
-      "to": "file:web/lib/pro/crypto.js",
-      "type": "declared-in",
-      "file": "web/lib/pro/crypto.js",
-      "line": 20
-    },
-    {
-      "from": "web/lib/pro/crypto#verifyPassword",
-      "to": "file:web/lib/pro/crypto.js",
-      "type": "declared-in",
-      "file": "web/lib/pro/crypto.js",
-      "line": 26
-    },
-    {
-      "from": "web/lib/pro/crypto#encrypt",
-      "to": "file:web/lib/pro/crypto.js",
-      "type": "declared-in",
-      "file": "web/lib/pro/crypto.js",
-      "line": 36
-    },
-    {
-      "from": "web/lib/pro/crypto#decrypt",
-      "to": "file:web/lib/pro/crypto.js",
-      "type": "declared-in",
-      "file": "web/lib/pro/crypto.js",
-      "line": 45
-    },
-    {
-      "from": "web/lib/pro/crypto#hmacHex",
-      "to": "file:web/lib/pro/crypto.js",
-      "type": "declared-in",
-      "file": "web/lib/pro/crypto.js",
-      "line": 57
-    },
-    {
-      "from": "web/lib/pro/crypto#randomToken",
-      "to": "file:web/lib/pro/crypto.js",
-      "type": "declared-in",
-      "file": "web/lib/pro/crypto.js",
-      "line": 61
-    },
-    {
-      "from": "web/lib/pro/entitlement#now",
-      "to": "file:web/lib/pro/entitlement.js",
-      "type": "declared-in",
-      "file": "web/lib/pro/entitlement.js",
-      "line": 5
-    },
-    {
-      "from": "web/lib/pro/entitlement#trialUntilFrom",
-      "to": "file:web/lib/pro/entitlement.js",
-      "type": "declared-in",
-      "file": "web/lib/pro/entitlement.js",
-      "line": 9
-    },
-    {
-      "from": "web/lib/pro/entitlement#isActive",
-      "to": "file:web/lib/pro/entitlement.js",
-      "type": "declared-in",
-      "file": "web/lib/pro/entitlement.js",
-      "line": 14
-    },
-    {
-      "from": "web/lib/pro/entitlement#publicUser",
-      "to": "file:web/lib/pro/entitlement.js",
-      "type": "declared-in",
-      "file": "web/lib/pro/entitlement.js",
-      "line": 27
     },
     {
       "from": "web/lib/pro/host-drift#runHostedCheck",
@@ -9992,98 +10490,49 @@
       "to": "file:web/lib/pro/routes.js",
       "type": "declared-in",
       "file": "web/lib/pro/routes.js",
-      "line": 15
+      "line": 16
+    },
+    {
+      "from": "web/lib/pro/routes#bearerToken",
+      "to": "file:web/lib/pro/routes.js",
+      "type": "declared-in",
+      "file": "web/lib/pro/routes.js",
+      "line": 20
     },
     {
       "from": "web/lib/pro/routes#json",
       "to": "file:web/lib/pro/routes.js",
       "type": "declared-in",
       "file": "web/lib/pro/routes.js",
-      "line": 19
+      "line": 25
     },
     {
       "from": "web/lib/pro/routes#setSession",
       "to": "file:web/lib/pro/routes.js",
       "type": "declared-in",
       "file": "web/lib/pro/routes.js",
-      "line": 25
+      "line": 31
     },
     {
       "from": "web/lib/pro/routes#repoPublic",
       "to": "file:web/lib/pro/routes.js",
       "type": "declared-in",
       "file": "web/lib/pro/routes.js",
-      "line": 29
+      "line": 35
     },
     {
       "from": "web/lib/pro/routes#handlePro",
       "to": "file:web/lib/pro/routes.js",
       "type": "declared-in",
       "file": "web/lib/pro/routes.js",
-      "line": 42
+      "line": 48
     },
     {
       "from": "web/lib/pro/routes#handleIncomingWebhook",
       "to": "file:web/lib/pro/routes.js",
       "type": "declared-in",
       "file": "web/lib/pro/routes.js",
-      "line": 245
-    },
-    {
-      "from": "web/lib/pro/store#dataDir",
-      "to": "file:web/lib/pro/store.js",
-      "type": "declared-in",
-      "file": "web/lib/pro/store.js",
-      "line": 9
-    },
-    {
-      "from": "web/lib/pro/store#storePath",
-      "to": "file:web/lib/pro/store.js",
-      "type": "declared-in",
-      "file": "web/lib/pro/store.js",
-      "line": 13
-    },
-    {
-      "from": "web/lib/pro/store#funnelPath",
-      "to": "file:web/lib/pro/store.js",
-      "type": "declared-in",
-      "file": "web/lib/pro/store.js",
-      "line": 17
-    },
-    {
-      "from": "web/lib/pro/store#empty",
-      "to": "file:web/lib/pro/store.js",
-      "type": "declared-in",
-      "file": "web/lib/pro/store.js",
-      "line": 21
-    },
-    {
-      "from": "web/lib/pro/store#load",
-      "to": "file:web/lib/pro/store.js",
-      "type": "declared-in",
-      "file": "web/lib/pro/store.js",
-      "line": 25
-    },
-    {
-      "from": "web/lib/pro/store#save",
-      "to": "file:web/lib/pro/store.js",
-      "type": "declared-in",
-      "file": "web/lib/pro/store.js",
-      "line": 38
-    },
-    {
-      "from": "web/lib/pro/store#id",
-      "to": "file:web/lib/pro/store.js",
-      "type": "declared-in",
-      "file": "web/lib/pro/store.js",
-      "line": 46
-    },
-    {
-      "from": "web/lib/pro/store#track",
-      "to": "file:web/lib/pro/store.js",
-      "type": "declared-in",
-      "file": "web/lib/pro/store.js",
-      "line": 50
+      "line": 273
     },
     {
       "from": "src/extension-session#rootPath",
@@ -10576,18 +11025,25 @@
       "line": 458
     },
     {
-      "from": "mcp/server#handleToolCall",
+      "from": "mcp/server#validateToolArgs",
       "to": "file:mcp/server.js",
       "type": "declared-in",
       "file": "mcp/server.js",
       "line": 566
     },
     {
+      "from": "mcp/server#handleToolCall",
+      "to": "file:mcp/server.js",
+      "type": "declared-in",
+      "file": "mcp/server.js",
+      "line": 635
+    },
+    {
       "from": "mcp/server#createServer",
       "to": "file:mcp/server.js",
       "type": "declared-in",
       "file": "mcp/server.js",
-      "line": 579
+      "line": 649
     },
     {
       "from": "lib/archify-export#baselinePath",
@@ -10650,140 +11106,175 @@
       "to": "file:lib/cli.js",
       "type": "declared-in",
       "file": "lib/cli.js",
-      "line": 74
+      "line": 79
     },
     {
       "from": "lib/cli#openInBrowser",
       "to": "file:lib/cli.js",
       "type": "declared-in",
       "file": "lib/cli.js",
-      "line": 90
+      "line": 95
     },
     {
       "from": "lib/cli#formatFindingsText",
       "to": "file:lib/cli.js",
       "type": "declared-in",
       "file": "lib/cli.js",
-      "line": 104
+      "line": 109
     },
     {
       "from": "lib/cli#printIssues",
       "to": "file:lib/cli.js",
       "type": "declared-in",
       "file": "lib/cli.js",
-      "line": 115
+      "line": 120
     },
     {
       "from": "lib/cli#loadEvalConfig",
       "to": "file:lib/cli.js",
       "type": "declared-in",
       "file": "lib/cli.js",
-      "line": 125
+      "line": 130
     },
     {
       "from": "lib/cli#runEval",
       "to": "file:lib/cli.js",
       "type": "declared-in",
       "file": "lib/cli.js",
-      "line": 134
+      "line": 139
     },
     {
       "from": "lib/cli#printGenerateResult",
       "to": "file:lib/cli.js",
       "type": "declared-in",
       "file": "lib/cli.js",
-      "line": 180
+      "line": 185
     },
     {
       "from": "lib/cli#writeLayerSuggestions",
       "to": "file:lib/cli.js",
       "type": "declared-in",
       "file": "lib/cli.js",
-      "line": 198
+      "line": 203
     },
     {
       "from": "lib/cli#wantsRefine",
       "to": "file:lib/cli.js",
       "type": "declared-in",
       "file": "lib/cli.js",
-      "line": 212
+      "line": 217
     },
     {
       "from": "lib/cli#main",
       "to": "file:lib/cli.js",
       "type": "declared-in",
       "file": "lib/cli.js",
-      "line": 216
+      "line": 221
+    },
+    {
+      "from": "lib/diff-graph#canonical",
+      "to": "file:lib/diff-graph.js",
+      "type": "declared-in",
+      "file": "lib/diff-graph.js",
+      "line": 17
+    },
+    {
+      "from": "lib/diff-graph#canonicalEqual",
+      "to": "file:lib/diff-graph.js",
+      "type": "declared-in",
+      "file": "lib/diff-graph.js",
+      "line": 33
+    },
+    {
+      "from": "lib/diff-graph#collectNodeFieldChanges",
+      "to": "file:lib/diff-graph.js",
+      "type": "declared-in",
+      "file": "lib/diff-graph.js",
+      "line": 40
+    },
+    {
+      "from": "lib/diff-graph#classifyNodeChanges",
+      "to": "file:lib/diff-graph.js",
+      "type": "declared-in",
+      "file": "lib/diff-graph.js",
+      "line": 62
     },
     {
       "from": "lib/diff-graph#diffGraphs",
       "to": "file:lib/diff-graph.js",
       "type": "declared-in",
       "file": "lib/diff-graph.js",
-      "line": 3
+      "line": 70
     },
     {
       "from": "lib/diff-graph#addedExtDepsCount",
       "to": "file:lib/diff-graph.js",
       "type": "declared-in",
       "file": "lib/diff-graph.js",
-      "line": 237
+      "line": 353
     },
     {
       "from": "lib/diff-graph#edgeKey",
       "to": "file:lib/diff-graph.js",
       "type": "declared-in",
       "file": "lib/diff-graph.js",
-      "line": 241
+      "line": 357
+    },
+    {
+      "from": "lib/diff-graph#baseName",
+      "to": "file:lib/diff-graph.js",
+      "type": "declared-in",
+      "file": "lib/diff-graph.js",
+      "line": 368
     },
     {
       "from": "lib/diff-graph#isRenamePair",
       "to": "file:lib/diff-graph.js",
       "type": "declared-in",
       "file": "lib/diff-graph.js",
-      "line": 250
+      "line": 374
     },
     {
       "from": "lib/diff-graph#levenshtein",
       "to": "file:lib/diff-graph.js",
       "type": "declared-in",
       "file": "lib/diff-graph.js",
-      "line": 266
+      "line": 390
     },
     {
       "from": "lib/diff-graph#groupByPackage",
       "to": "file:lib/diff-graph.js",
       "type": "declared-in",
       "file": "lib/diff-graph.js",
-      "line": 287
+      "line": 411
     },
     {
       "from": "lib/diff-graph#inferLayer",
       "to": "file:lib/diff-graph.js",
       "type": "declared-in",
       "file": "lib/diff-graph.js",
-      "line": 304
+      "line": 428
     },
     {
       "from": "lib/diff-graph#isReverseDependency",
       "to": "file:lib/diff-graph.js",
       "type": "declared-in",
       "file": "lib/diff-graph.js",
-      "line": 322
+      "line": 446
     },
     {
       "from": "lib/diff-graph#assessRisk",
       "to": "file:lib/diff-graph.js",
       "type": "declared-in",
       "file": "lib/diff-graph.js",
-      "line": 330
+      "line": 454
     },
     {
       "from": "lib/diff-graph#formatDiffText",
       "to": "file:lib/diff-graph.js",
       "type": "declared-in",
       "file": "lib/diff-graph.js",
-      "line": 340
+      "line": 464
     },
     {
       "from": "lib/export-archify#shortHash",
@@ -11140,14 +11631,14 @@
       "to": "file:lib/impact.js",
       "type": "declared-in",
       "file": "lib/impact.js",
-      "line": 102
+      "line": 103
     },
     {
       "from": "lib/impact#aggregateImpact",
       "to": "file:lib/impact.js",
       "type": "declared-in",
       "file": "lib/impact.js",
-      "line": 127
+      "line": 128
     },
     {
       "from": "lib/index#haystack",
@@ -11528,6 +12019,20 @@
       "line": 71
     },
     {
+      "from": "lib/report-contract#assertReportContract",
+      "to": "file:lib/report-contract.js",
+      "type": "declared-in",
+      "file": "lib/report-contract.js",
+      "line": 21
+    },
+    {
+      "from": "lib/report-contract#normalizeReportForGolden",
+      "to": "file:lib/report-contract.js",
+      "type": "declared-in",
+      "file": "lib/report-contract.js",
+      "line": 51
+    },
+    {
       "from": "lib/risk-rules#evaluateRisk",
       "to": "file:lib/risk-rules.js",
       "type": "declared-in",
@@ -11637,42 +12142,42 @@
       "to": "file:lib/session-report.js",
       "type": "declared-in",
       "file": "lib/session-report.js",
-      "line": 39
+      "line": 42
     },
     {
       "from": "lib/session-report#buildReportData",
       "to": "file:lib/session-report.js",
       "type": "declared-in",
       "file": "lib/session-report.js",
-      "line": 47
+      "line": 52
     },
     {
       "from": "lib/session-report#renderHtml",
       "to": "file:lib/session-report.js",
       "type": "declared-in",
       "file": "lib/session-report.js",
-      "line": 221
+      "line": 268
     },
     {
       "from": "lib/session-report#esc",
       "to": "file:lib/session-report.js",
       "type": "declared-in",
       "file": "lib/session-report.js",
-      "line": 244
+      "line": 291
     },
     {
       "from": "lib/session-report#getStyles",
       "to": "file:lib/session-report.js",
       "type": "declared-in",
       "file": "lib/session-report.js",
-      "line": 248
+      "line": 295
     },
     {
       "from": "lib/session-report#getAppScript",
       "to": "file:lib/session-report.js",
       "type": "declared-in",
       "file": "lib/session-report.js",
-      "line": 401
+      "line": 454
     },
     {
       "from": "lib/setup#mcpServerPath",
@@ -11766,6 +12271,69 @@
       "line": 323
     },
     {
+      "from": "lib/telemetry#envFlag",
+      "to": "file:lib/telemetry.js",
+      "type": "declared-in",
+      "file": "lib/telemetry.js",
+      "line": 11
+    },
+    {
+      "from": "lib/telemetry#pkgEnabled",
+      "to": "file:lib/telemetry.js",
+      "type": "declared-in",
+      "file": "lib/telemetry.js",
+      "line": 16
+    },
+    {
+      "from": "lib/telemetry#isEnabled",
+      "to": "file:lib/telemetry.js",
+      "type": "declared-in",
+      "file": "lib/telemetry.js",
+      "line": 20
+    },
+    {
+      "from": "lib/telemetry#configDir",
+      "to": "file:lib/telemetry.js",
+      "type": "declared-in",
+      "file": "lib/telemetry.js",
+      "line": 26
+    },
+    {
+      "from": "lib/telemetry#logPath",
+      "to": "file:lib/telemetry.js",
+      "type": "declared-in",
+      "file": "lib/telemetry.js",
+      "line": 32
+    },
+    {
+      "from": "lib/telemetry#safePlatform",
+      "to": "file:lib/telemetry.js",
+      "type": "declared-in",
+      "file": "lib/telemetry.js",
+      "line": 36
+    },
+    {
+      "from": "lib/telemetry#isSensitive",
+      "to": "file:lib/telemetry.js",
+      "type": "declared-in",
+      "file": "lib/telemetry.js",
+      "line": 48
+    },
+    {
+      "from": "lib/telemetry#track",
+      "to": "file:lib/telemetry.js",
+      "type": "declared-in",
+      "file": "lib/telemetry.js",
+      "line": 52
+    },
+    {
+      "from": "lib/telemetry#wrap",
+      "to": "file:lib/telemetry.js",
+      "type": "declared-in",
+      "file": "lib/telemetry.js",
+      "line": 95
+    },
+    {
       "from": "lib/validate#extractBlocks",
       "to": "file:lib/validate.js",
       "type": "declared-in",
@@ -11855,6 +12423,363 @@
       "type": "declared-in",
       "file": "lib/workspace.js",
       "line": 127
+    },
+    {
+      "from": "lib/pro/auth-client#configDir",
+      "to": "file:lib/pro/auth-client.js",
+      "type": "declared-in",
+      "file": "lib/pro/auth-client.js",
+      "line": 24
+    },
+    {
+      "from": "lib/pro/auth-client#authPath",
+      "to": "file:lib/pro/auth-client.js",
+      "type": "declared-in",
+      "file": "lib/pro/auth-client.js",
+      "line": 28
+    },
+    {
+      "from": "lib/pro/auth-client#loadAuth",
+      "to": "file:lib/pro/auth-client.js",
+      "type": "declared-in",
+      "file": "lib/pro/auth-client.js",
+      "line": 32
+    },
+    {
+      "from": "lib/pro/auth-client#saveAuth",
+      "to": "file:lib/pro/auth-client.js",
+      "type": "declared-in",
+      "file": "lib/pro/auth-client.js",
+      "line": 40
+    },
+    {
+      "from": "lib/pro/auth-client#clearAuth",
+      "to": "file:lib/pro/auth-client.js",
+      "type": "declared-in",
+      "file": "lib/pro/auth-client.js",
+      "line": 52
+    },
+    {
+      "from": "lib/pro/auth-client#ask",
+      "to": "file:lib/pro/auth-client.js",
+      "type": "declared-in",
+      "file": "lib/pro/auth-client.js",
+      "line": 60
+    },
+    {
+      "from": "lib/pro/auth-client#localTransport",
+      "to": "file:lib/pro/auth-client.js",
+      "type": "declared-in",
+      "file": "lib/pro/auth-client.js",
+      "line": 72
+    },
+    {
+      "from": "lib/pro/auth-client#httpTransport",
+      "to": "file:lib/pro/auth-client.js",
+      "type": "declared-in",
+      "file": "lib/pro/auth-client.js",
+      "line": 97
+    },
+    {
+      "from": "lib/pro/auth-client#transport",
+      "to": "file:lib/pro/auth-client.js",
+      "type": "declared-in",
+      "file": "lib/pro/auth-client.js",
+      "line": 135
+    },
+    {
+      "from": "lib/pro/auth-client#loginFlow",
+      "to": "file:lib/pro/auth-client.js",
+      "type": "declared-in",
+      "file": "lib/pro/auth-client.js",
+      "line": 142
+    },
+    {
+      "from": "lib/pro/auth-client#whoamiAsync",
+      "to": "file:lib/pro/auth-client.js",
+      "type": "declared-in",
+      "file": "lib/pro/auth-client.js",
+      "line": 167
+    },
+    {
+      "from": "lib/pro/auth-client#logoutFlow",
+      "to": "file:lib/pro/auth-client.js",
+      "type": "declared-in",
+      "file": "lib/pro/auth-client.js",
+      "line": 184
+    },
+    {
+      "from": "lib/pro/auth-client#requireUser",
+      "to": "file:lib/pro/auth-client.js",
+      "type": "declared-in",
+      "file": "lib/pro/auth-client.js",
+      "line": 201
+    },
+    {
+      "from": "lib/pro/auth#rateLimit",
+      "to": "file:lib/pro/auth.js",
+      "type": "declared-in",
+      "file": "lib/pro/auth.js",
+      "line": 13
+    },
+    {
+      "from": "lib/pro/auth#parseCookies",
+      "to": "file:lib/pro/auth.js",
+      "type": "declared-in",
+      "file": "lib/pro/auth.js",
+      "line": 30
+    },
+    {
+      "from": "lib/pro/auth#sessionCookie",
+      "to": "file:lib/pro/auth.js",
+      "type": "declared-in",
+      "file": "lib/pro/auth.js",
+      "line": 42
+    },
+    {
+      "from": "lib/pro/auth#clearCookie",
+      "to": "file:lib/pro/auth.js",
+      "type": "declared-in",
+      "file": "lib/pro/auth.js",
+      "line": 54
+    },
+    {
+      "from": "lib/pro/auth#findUserByEmail",
+      "to": "file:lib/pro/auth.js",
+      "type": "declared-in",
+      "file": "lib/pro/auth.js",
+      "line": 58
+    },
+    {
+      "from": "lib/pro/auth#currentUser",
+      "to": "file:lib/pro/auth.js",
+      "type": "declared-in",
+      "file": "lib/pro/auth.js",
+      "line": 63
+    },
+    {
+      "from": "lib/pro/auth#requireUser",
+      "to": "file:lib/pro/auth.js",
+      "type": "declared-in",
+      "file": "lib/pro/auth.js",
+      "line": 74
+    },
+    {
+      "from": "lib/pro/auth#requireActive",
+      "to": "file:lib/pro/auth.js",
+      "type": "declared-in",
+      "file": "lib/pro/auth.js",
+      "line": 84
+    },
+    {
+      "from": "lib/pro/auth#createSession",
+      "to": "file:lib/pro/auth.js",
+      "type": "declared-in",
+      "file": "lib/pro/auth.js",
+      "line": 96
+    },
+    {
+      "from": "lib/pro/auth#signup",
+      "to": "file:lib/pro/auth.js",
+      "type": "declared-in",
+      "file": "lib/pro/auth.js",
+      "line": 104
+    },
+    {
+      "from": "lib/pro/auth#login",
+      "to": "file:lib/pro/auth.js",
+      "type": "declared-in",
+      "file": "lib/pro/auth.js",
+      "line": 142
+    },
+    {
+      "from": "lib/pro/auth#logout",
+      "to": "file:lib/pro/auth.js",
+      "type": "declared-in",
+      "file": "lib/pro/auth.js",
+      "line": 157
+    },
+    {
+      "from": "lib/pro/auth#stubMode",
+      "to": "file:lib/pro/auth.js",
+      "type": "declared-in",
+      "file": "lib/pro/auth.js",
+      "line": 170
+    },
+    {
+      "from": "lib/pro/auth#sendLoginCode",
+      "to": "file:lib/pro/auth.js",
+      "type": "declared-in",
+      "file": "lib/pro/auth.js",
+      "line": 174
+    },
+    {
+      "from": "lib/pro/auth#requestLoginCode",
+      "to": "file:lib/pro/auth.js",
+      "type": "declared-in",
+      "file": "lib/pro/auth.js",
+      "line": 184
+    },
+    {
+      "from": "lib/pro/auth#verifyLoginCode",
+      "to": "file:lib/pro/auth.js",
+      "type": "declared-in",
+      "file": "lib/pro/auth.js",
+      "line": 225
+    },
+    {
+      "from": "lib/pro/auth#sessionByToken",
+      "to": "file:lib/pro/auth.js",
+      "type": "declared-in",
+      "file": "lib/pro/auth.js",
+      "line": 260
+    },
+    {
+      "from": "lib/pro/auth#logoutToken",
+      "to": "file:lib/pro/auth.js",
+      "type": "declared-in",
+      "file": "lib/pro/auth.js",
+      "line": 269
+    },
+    {
+      "from": "lib/pro/crypto#secret",
+      "to": "file:lib/pro/crypto.js",
+      "type": "declared-in",
+      "file": "lib/pro/crypto.js",
+      "line": 5
+    },
+    {
+      "from": "lib/pro/crypto#key32",
+      "to": "file:lib/pro/crypto.js",
+      "type": "declared-in",
+      "file": "lib/pro/crypto.js",
+      "line": 16
+    },
+    {
+      "from": "lib/pro/crypto#hashPassword",
+      "to": "file:lib/pro/crypto.js",
+      "type": "declared-in",
+      "file": "lib/pro/crypto.js",
+      "line": 20
+    },
+    {
+      "from": "lib/pro/crypto#verifyPassword",
+      "to": "file:lib/pro/crypto.js",
+      "type": "declared-in",
+      "file": "lib/pro/crypto.js",
+      "line": 26
+    },
+    {
+      "from": "lib/pro/crypto#encrypt",
+      "to": "file:lib/pro/crypto.js",
+      "type": "declared-in",
+      "file": "lib/pro/crypto.js",
+      "line": 36
+    },
+    {
+      "from": "lib/pro/crypto#decrypt",
+      "to": "file:lib/pro/crypto.js",
+      "type": "declared-in",
+      "file": "lib/pro/crypto.js",
+      "line": 45
+    },
+    {
+      "from": "lib/pro/crypto#hmacHex",
+      "to": "file:lib/pro/crypto.js",
+      "type": "declared-in",
+      "file": "lib/pro/crypto.js",
+      "line": 57
+    },
+    {
+      "from": "lib/pro/crypto#randomToken",
+      "to": "file:lib/pro/crypto.js",
+      "type": "declared-in",
+      "file": "lib/pro/crypto.js",
+      "line": 61
+    },
+    {
+      "from": "lib/pro/entitlement#now",
+      "to": "file:lib/pro/entitlement.js",
+      "type": "declared-in",
+      "file": "lib/pro/entitlement.js",
+      "line": 5
+    },
+    {
+      "from": "lib/pro/entitlement#trialUntilFrom",
+      "to": "file:lib/pro/entitlement.js",
+      "type": "declared-in",
+      "file": "lib/pro/entitlement.js",
+      "line": 9
+    },
+    {
+      "from": "lib/pro/entitlement#isActive",
+      "to": "file:lib/pro/entitlement.js",
+      "type": "declared-in",
+      "file": "lib/pro/entitlement.js",
+      "line": 14
+    },
+    {
+      "from": "lib/pro/entitlement#publicUser",
+      "to": "file:lib/pro/entitlement.js",
+      "type": "declared-in",
+      "file": "lib/pro/entitlement.js",
+      "line": 27
+    },
+    {
+      "from": "lib/pro/store#dataDir",
+      "to": "file:lib/pro/store.js",
+      "type": "declared-in",
+      "file": "lib/pro/store.js",
+      "line": 9
+    },
+    {
+      "from": "lib/pro/store#storePath",
+      "to": "file:lib/pro/store.js",
+      "type": "declared-in",
+      "file": "lib/pro/store.js",
+      "line": 13
+    },
+    {
+      "from": "lib/pro/store#funnelPath",
+      "to": "file:lib/pro/store.js",
+      "type": "declared-in",
+      "file": "lib/pro/store.js",
+      "line": 17
+    },
+    {
+      "from": "lib/pro/store#empty",
+      "to": "file:lib/pro/store.js",
+      "type": "declared-in",
+      "file": "lib/pro/store.js",
+      "line": 21
+    },
+    {
+      "from": "lib/pro/store#load",
+      "to": "file:lib/pro/store.js",
+      "type": "declared-in",
+      "file": "lib/pro/store.js",
+      "line": 25
+    },
+    {
+      "from": "lib/pro/store#save",
+      "to": "file:lib/pro/store.js",
+      "type": "declared-in",
+      "file": "lib/pro/store.js",
+      "line": 38
+    },
+    {
+      "from": "lib/pro/store#id",
+      "to": "file:lib/pro/store.js",
+      "type": "declared-in",
+      "file": "lib/pro/store.js",
+      "line": 46
+    },
+    {
+      "from": "lib/pro/store#track",
+      "to": "file:lib/pro/store.js",
+      "type": "declared-in",
+      "file": "lib/pro/store.js",
+      "line": 50
     },
     {
       "from": "lib/orch/agent-block#findDsh",
@@ -13105,30 +14030,6 @@
       "isType": false
     },
     {
-      "from": "file:web/lib/pro/auth.js",
-      "to": "file:web/lib/pro/store.js",
-      "type": "import",
-      "file": "web/lib/pro/auth.js",
-      "line": 3,
-      "isType": false
-    },
-    {
-      "from": "file:web/lib/pro/auth.js",
-      "to": "file:web/lib/pro/crypto.js",
-      "type": "import",
-      "file": "web/lib/pro/auth.js",
-      "line": 4,
-      "isType": false
-    },
-    {
-      "from": "file:web/lib/pro/auth.js",
-      "to": "file:web/lib/pro/entitlement.js",
-      "type": "import",
-      "file": "web/lib/pro/auth.js",
-      "line": 5,
-      "isType": false
-    },
-    {
       "from": "file:web/lib/pro/billing.js",
       "to": "ext:crypto",
       "type": "uses-external",
@@ -13138,27 +14039,19 @@
     },
     {
       "from": "file:web/lib/pro/billing.js",
-      "to": "file:web/lib/pro/store.js",
-      "type": "import",
-      "file": "web/lib/pro/billing.js",
-      "line": 4,
-      "isType": false
-    },
-    {
-      "from": "file:web/lib/pro/billing.js",
-      "to": "file:web/lib/pro/auth.js",
+      "to": "file:lib/pro/store.js",
       "type": "import",
       "file": "web/lib/pro/billing.js",
       "line": 5,
       "isType": false
     },
     {
-      "from": "file:web/lib/pro/crypto.js",
-      "to": "ext:crypto",
-      "type": "uses-external",
-      "file": "web/lib/pro/crypto.js",
-      "line": 3,
-      "builtin": true
+      "from": "file:web/lib/pro/billing.js",
+      "to": "file:lib/pro/auth.js",
+      "type": "import",
+      "file": "web/lib/pro/billing.js",
+      "line": 6,
+      "isType": false
     },
     {
       "from": "file:web/lib/pro/host-drift.js",
@@ -13202,7 +14095,7 @@
     },
     {
       "from": "file:web/lib/pro/local.js",
-      "to": "file:web/lib/pro/store.js",
+      "to": "file:lib/pro/store.js",
       "type": "import",
       "file": "web/lib/pro/local.js",
       "line": 5,
@@ -13210,7 +14103,7 @@
     },
     {
       "from": "file:web/lib/pro/local.js",
-      "to": "file:web/lib/pro/entitlement.js",
+      "to": "file:lib/pro/entitlement.js",
       "type": "import",
       "file": "web/lib/pro/local.js",
       "line": 6,
@@ -13218,7 +14111,7 @@
     },
     {
       "from": "file:web/lib/pro/local.js",
-      "to": "file:web/lib/pro/crypto.js",
+      "to": "file:lib/pro/crypto.js",
       "type": "import",
       "file": "web/lib/pro/local.js",
       "line": 7,
@@ -13274,15 +14167,7 @@
     },
     {
       "from": "file:web/lib/pro/routes.js",
-      "to": "file:web/lib/pro/store.js",
-      "type": "import",
-      "file": "web/lib/pro/routes.js",
-      "line": 4,
-      "isType": false
-    },
-    {
-      "from": "file:web/lib/pro/routes.js",
-      "to": "file:web/lib/pro/auth.js",
+      "to": "file:lib/pro/store.js",
       "type": "import",
       "file": "web/lib/pro/routes.js",
       "line": 5,
@@ -13290,7 +14175,7 @@
     },
     {
       "from": "file:web/lib/pro/routes.js",
-      "to": "file:web/lib/pro/entitlement.js",
+      "to": "file:lib/pro/auth.js",
       "type": "import",
       "file": "web/lib/pro/routes.js",
       "line": 6,
@@ -13298,7 +14183,7 @@
     },
     {
       "from": "file:web/lib/pro/routes.js",
-      "to": "file:web/lib/pro/billing.js",
+      "to": "file:lib/pro/entitlement.js",
       "type": "import",
       "file": "web/lib/pro/routes.js",
       "line": 7,
@@ -13306,7 +14191,7 @@
     },
     {
       "from": "file:web/lib/pro/routes.js",
-      "to": "file:web/lib/pro/providers.js",
+      "to": "file:lib/pro/crypto.js",
       "type": "import",
       "file": "web/lib/pro/routes.js",
       "line": 8,
@@ -13314,7 +14199,7 @@
     },
     {
       "from": "file:web/lib/pro/routes.js",
-      "to": "file:web/lib/pro/crypto.js",
+      "to": "file:web/lib/pro/billing.js",
       "type": "import",
       "file": "web/lib/pro/routes.js",
       "line": 9,
@@ -13322,7 +14207,7 @@
     },
     {
       "from": "file:web/lib/pro/routes.js",
-      "to": "file:web/lib/pro/host-drift.js",
+      "to": "file:web/lib/pro/providers.js",
       "type": "import",
       "file": "web/lib/pro/routes.js",
       "line": 10,
@@ -13330,7 +14215,7 @@
     },
     {
       "from": "file:web/lib/pro/routes.js",
-      "to": "file:web/lib/pro/comment.js",
+      "to": "file:web/lib/pro/host-drift.js",
       "type": "import",
       "file": "web/lib/pro/routes.js",
       "line": 11,
@@ -13338,7 +14223,7 @@
     },
     {
       "from": "file:web/lib/pro/routes.js",
-      "to": "file:web/lib/clone.js",
+      "to": "file:web/lib/pro/comment.js",
       "type": "import",
       "file": "web/lib/pro/routes.js",
       "line": 12,
@@ -13346,35 +14231,19 @@
     },
     {
       "from": "file:web/lib/pro/routes.js",
-      "to": "file:web/lib/pro/local.js",
+      "to": "file:web/lib/clone.js",
       "type": "import",
       "file": "web/lib/pro/routes.js",
       "line": 13,
       "isType": false
     },
     {
-      "from": "file:web/lib/pro/store.js",
-      "to": "ext:fs",
-      "type": "uses-external",
-      "file": "web/lib/pro/store.js",
-      "line": 3,
-      "builtin": true
-    },
-    {
-      "from": "file:web/lib/pro/store.js",
-      "to": "ext:path",
-      "type": "uses-external",
-      "file": "web/lib/pro/store.js",
-      "line": 4,
-      "builtin": true
-    },
-    {
-      "from": "file:web/lib/pro/store.js",
-      "to": "ext:crypto",
-      "type": "uses-external",
-      "file": "web/lib/pro/store.js",
-      "line": 5,
-      "builtin": true
+      "from": "file:web/lib/pro/routes.js",
+      "to": "file:web/lib/pro/local.js",
+      "type": "import",
+      "file": "web/lib/pro/routes.js",
+      "line": 14,
+      "isType": false
     },
     {
       "from": "file:src/extension-session.js",
@@ -13921,6 +14790,22 @@
       "isType": false
     },
     {
+      "from": "file:lib/cli.js",
+      "to": "file:lib/pro/auth-client.js",
+      "type": "import",
+      "file": "lib/cli.js",
+      "line": 615,
+      "isType": false
+    },
+    {
+      "from": "file:lib/cli.js",
+      "to": "file:lib/telemetry.js",
+      "type": "import",
+      "file": "lib/cli.js",
+      "line": 726,
+      "isType": false
+    },
+    {
       "from": "file:lib/export-archify.js",
       "to": "ext:crypto",
       "type": "uses-external",
@@ -14293,7 +15178,23 @@
       "to": "file:lib/risk-rules.js",
       "type": "import",
       "file": "lib/session-report.js",
-      "line": 8,
+      "line": 11,
+      "isType": false
+    },
+    {
+      "from": "file:lib/session-report.js",
+      "to": "file:lib/report-contract.js",
+      "type": "import",
+      "file": "lib/session-report.js",
+      "line": 44,
+      "isType": false
+    },
+    {
+      "from": "file:lib/session-report.js",
+      "to": "file:lib/report-contract.js",
+      "type": "import",
+      "file": "lib/session-report.js",
+      "line": 1034,
       "isType": false
     },
     {
@@ -14326,6 +15227,38 @@
       "type": "uses-external",
       "file": "lib/setup.js",
       "line": 17,
+      "builtin": true
+    },
+    {
+      "from": "file:lib/telemetry.js",
+      "to": "ext:fs",
+      "type": "uses-external",
+      "file": "lib/telemetry.js",
+      "line": 3,
+      "builtin": true
+    },
+    {
+      "from": "file:lib/telemetry.js",
+      "to": "ext:path",
+      "type": "uses-external",
+      "file": "lib/telemetry.js",
+      "line": 4,
+      "builtin": true
+    },
+    {
+      "from": "file:lib/telemetry.js",
+      "to": "ext:os",
+      "type": "uses-external",
+      "file": "lib/telemetry.js",
+      "line": 5,
+      "builtin": true
+    },
+    {
+      "from": "file:lib/telemetry.js",
+      "to": "ext:https",
+      "type": "uses-external",
+      "file": "lib/telemetry.js",
+      "line": 79,
       "builtin": true
     },
     {
@@ -14415,6 +15348,118 @@
       "file": "lib/workspace.js",
       "line": 13,
       "isType": false
+    },
+    {
+      "from": "file:lib/pro/auth-client.js",
+      "to": "ext:fs",
+      "type": "uses-external",
+      "file": "lib/pro/auth-client.js",
+      "line": 14,
+      "builtin": true
+    },
+    {
+      "from": "file:lib/pro/auth-client.js",
+      "to": "ext:os",
+      "type": "uses-external",
+      "file": "lib/pro/auth-client.js",
+      "line": 15,
+      "builtin": true
+    },
+    {
+      "from": "file:lib/pro/auth-client.js",
+      "to": "ext:path",
+      "type": "uses-external",
+      "file": "lib/pro/auth-client.js",
+      "line": 16,
+      "builtin": true
+    },
+    {
+      "from": "file:lib/pro/auth-client.js",
+      "to": "ext:readline",
+      "type": "uses-external",
+      "file": "lib/pro/auth-client.js",
+      "line": 17,
+      "builtin": true
+    },
+    {
+      "from": "file:lib/pro/auth-client.js",
+      "to": "file:lib/pro/auth.js",
+      "type": "import",
+      "file": "lib/pro/auth-client.js",
+      "line": 76,
+      "isType": false
+    },
+    {
+      "from": "file:lib/pro/auth-client.js",
+      "to": "file:lib/pro/entitlement.js",
+      "type": "import",
+      "file": "lib/pro/auth-client.js",
+      "line": 77,
+      "isType": false
+    },
+    {
+      "from": "file:lib/pro/auth.js",
+      "to": "ext:crypto",
+      "type": "uses-external",
+      "file": "lib/pro/auth.js",
+      "line": 3,
+      "builtin": true
+    },
+    {
+      "from": "file:lib/pro/auth.js",
+      "to": "file:lib/pro/store.js",
+      "type": "import",
+      "file": "lib/pro/auth.js",
+      "line": 4,
+      "isType": false
+    },
+    {
+      "from": "file:lib/pro/auth.js",
+      "to": "file:lib/pro/crypto.js",
+      "type": "import",
+      "file": "lib/pro/auth.js",
+      "line": 5,
+      "isType": false
+    },
+    {
+      "from": "file:lib/pro/auth.js",
+      "to": "file:lib/pro/entitlement.js",
+      "type": "import",
+      "file": "lib/pro/auth.js",
+      "line": 6,
+      "isType": false
+    },
+    {
+      "from": "file:lib/pro/crypto.js",
+      "to": "ext:crypto",
+      "type": "uses-external",
+      "file": "lib/pro/crypto.js",
+      "line": 3,
+      "builtin": true
+    },
+    {
+      "from": "file:lib/pro/store.js",
+      "to": "ext:fs",
+      "type": "uses-external",
+      "file": "lib/pro/store.js",
+      "line": 3,
+      "builtin": true
+    },
+    {
+      "from": "file:lib/pro/store.js",
+      "to": "ext:path",
+      "type": "uses-external",
+      "file": "lib/pro/store.js",
+      "line": 4,
+      "builtin": true
+    },
+    {
+      "from": "file:lib/pro/store.js",
+      "to": "ext:crypto",
+      "type": "uses-external",
+      "file": "lib/pro/store.js",
+      "line": 5,
+      "builtin": true
     },
     {
       "from": "file:lib/orch/agent-block.js",
@@ -14870,7 +15915,7 @@
       "layer": "controller",
       "confidence": "high",
       "signal": "dir-name",
-      "files": 11
+      "files": 7
     },
     "pm/scripts": {
       "layer": "domain",
@@ -14888,7 +15933,13 @@
       "layer": "util",
       "confidence": "high",
       "signal": "dir-name",
-      "files": 21
+      "files": 23
+    },
+    "lib/pro": {
+      "layer": "util",
+      "confidence": "high",
+      "signal": "dir-name",
+      "files": 5
     },
     "lib/orch": {
       "layer": "util",
@@ -14903,5 +15954,5 @@
       "files": 7
     }
   },
-  "sessionStartedAt": "2026-09-04T11:41:46.051Z"
+  "sessionStartedAt": "2026-09-04T13:49:21.542Z"
 }
