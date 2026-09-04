@@ -1095,8 +1095,8 @@
       "phase": 2,
       "week": 7,
       "priority": "P0",
-      "status": "todo",
-      "progress": 0,
+      "status": "done",
+      "progress": 100,
       "assignee": "heyangyan",
       "estHours": 8,
       "deadline": "2026-10-16",
@@ -1127,7 +1127,12 @@
       "refs": [
         "lib/generate.js"
       ],
-      "activity": []
+      "activity": [
+        {
+          "date": "2026-09-04",
+          "note": "新增 lib/cache.js：源码清单指纹（rel+size+mtime 的短 SHA）+ 6 图内容哈希 + 逐图 diff；generateToDir 快路径（清单未变且图在则跳过扫描/生成/重复校验，直接复用上轮 inventory 与校验结论），慢路径仅重写内容变化的图；llm refine 支持 --only 数组只精修变动视图；CLI 输出缓存命中/增量与 payload 估算；eval 增加冷/热启动与 token 对比；test/incremental 6 例全过。test 316 过 0 失败；arch:report Risk NONE。"
+        }
+      ]
     },
     {
       "id": "W07-02",
