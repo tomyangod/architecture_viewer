@@ -73,3 +73,80 @@ describe('CLI bin shim smoke (spawn)', () => {
     }
   });
 });
+
+describe('CLI archify-export', () => {
+  function fixtureRepo() {
+    const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'av-cli-ax-'));
+    fs.mkdirSync(path.join(dir, 'src'), { recursive: true });
+    fs.writeFileSync(
+      path.join(dir, 'src', 'app.py'),
+      'from flask import Flask\napp = Flask(__name__)\n\n@app.route("/")\ndef index():\n    return "ok"\n'
+    );
+    return dir;
+  }
+
+  it('无基线时退出码 1 并提示先 session start', () => {
+    const dir = fixtureRepo();
+    try {
+      const r = run(['archify-export', dir, '--scope', 'layers'], dir);
+      assert.equal(r.status, 1);
+      assert.match(r.stderr + r.stdout, /session start/);
+    } finally {
+      fs.rmSync(dir, { recursive: true, force: true });
+    }
+  });
+
+  it('非法 --scope 退出码 2', () => {
+    const dir = fixtureRepo();
+    try {
+      const r = run(['archify-export', dir, '--scope', 'bogus'], dir);
+      assert.equal(r.status, 2);
+      assert.match(r.stderr, /Invalid --scope/);
+    } finally {
+      fs.rmSync(dir, { recursive: true, force: true });
+    }
+  });
+
+  it('session start 后导出 --json 退出码 0，IR 三件套落盘', () => {
+    const dir = fixtureRepo();
+    try {
+      const start = run(['session', 'start', dir], dir);
+      assert.equal(start.status, 0, start.stderr);
+
+      const r = run(['archify-export', dir, '--scope', 'layers', '--json'], dir);
+      assert.equal(r.status, 0, r.stderr);
+      const out = JSON.parse(r.stdout);
+      assert.ok(out.files && out.files.head);
+      assert.equal(out.sidecar.scopeUsed, 'layers');
+      assert.ok(fs.existsSync(path.join(dir, '.av', 'archify-layers.head.json')));
+      assert.ok(fs.existsSync(path.join(dir, '.av', 'archify-layers.base.json')));
+      assert.ok(fs.existsSync(path.join(dir, '.av', 'archify-layers.sidecar.json')));
+
+      const head = JSON.parse(fs.readFileSync(path.join(dir, '.av', 'archify-layers.head.json'), 'utf8'));
+      assert.equal(head.diagram_type, 'architecture');
+      assert.equal(head.layout.mode, 'grid');
+    } finally {
+      fs.rmSync(dir, { recursive: true, force: true });
+    }
+  });
+});
+
+describe('CLI session report renderer', () => {
+  it('--renderer builtin 写出内置 HTML，不依赖 Archify', () => {
+    const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'av-cli-rend-'));
+    try {
+      fs.mkdirSync(path.join(dir, 'src'), { recursive: true });
+      fs.writeFileSync(path.join(dir, 'src', 'app.py'), 'class App:\n    pass\n');
+      const start = run(['session', 'start', dir], dir);
+      assert.equal(start.status, 0, start.stderr);
+      const r = run(['session', 'report', dir, '--renderer', 'builtin'], dir);
+      assert.equal(r.status, 0, r.stderr + r.stdout);
+      assert.match(r.stdout, /\[builtin\]/);
+      const html = fs.readFileSync(path.join(dir, '.av', 'session-report.html'), 'utf8');
+      assert.match(html, /架构变更报告|REPORT_DATA/);
+      assert.ok(fs.existsSync(path.join(dir, '.av', 'session-report.builtin.html')));
+    } finally {
+      fs.rmSync(dir, { recursive: true, force: true });
+    }
+  });
+});

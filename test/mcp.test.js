@@ -7,7 +7,7 @@ const os = require('os');
 const path = require('path');
 const { spawn } = require('child_process');
 
-const { TOOLS, handleToolCall, toolSessionStart, toolSessionReport, toolSessionChanges, toolCheckLayering, toolExplainFinding, stopWatcher } = require('../mcp/server');
+const { TOOLS, handleToolCall, toolSessionStart, toolSessionReport, toolSessionChanges, toolCheckLayering, toolExplainFinding, toolArchifyExport, stopWatcher } = require('../mcp/server');
 
 function makeRepo(files) {
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'av-mcp-'));
@@ -60,14 +60,15 @@ def get_async_engine():
 };
 
 describe('MCP Server: tools/list', () => {
-  it('暴露且仅暴露 5 个工具', () => {
+  it('暴露且仅暴露 6 个工具', () => {
     const names = TOOLS.map(t => t.name);
-    assert.equal(names.length, 5);
+    assert.equal(names.length, 6);
     assert.ok(names.includes('av_session_start'));
     assert.ok(names.includes('av_session_changes'));
     assert.ok(names.includes('av_session_report'));
     assert.ok(names.includes('av_check_layering'));
     assert.ok(names.includes('av_explain_finding'));
+    assert.ok(names.includes('av_archify_export'));
   });
 
   it('每个工具有 description 和 inputSchema', () => {
@@ -113,6 +114,7 @@ describe('MCP Server: av_session_report', () => {
     assert.ok(Array.isArray(result.findings));
     assert.ok(result.reportPaths.json);
     assert.ok(result.reportPaths.html);
+    assert.ok(['archify', 'builtin'].includes(result.reportPaths.renderer));
   });
 });
 
@@ -261,12 +263,61 @@ describe('MCP Server: stdio JSON-RPC 协议', () => {
 
     send({ jsonrpc: '2.0', id: 2, method: 'tools/list', params: {} });
     const listResp = await waitForResponse(2);
-    assert.equal(listResp.result.tools.length, 5);
+    assert.equal(listResp.result.tools.length, 6);
 
     send({ jsonrpc: '2.0', id: 3, method: 'tools/call', params: { name: 'av_check_layering', arguments: { repo: makeRepo(FIXTURE) } } });
     const callResp = await waitForResponse(3);
     assert.ok(callResp.result.content[0].text.includes('layerCoverage'));
 
     child.kill();
+  });
+});
+
+describe('MCP Server: av_archify_export', () => {
+  it('无基线时返回 NO_BASELINE，不抛异常', () => {
+    const repo = makeRepo(FIXTURE);
+    const r = toolArchifyExport({ repo, scope: 'layers' });
+    assert.equal(r.error, 'NO_BASELINE');
+    assert.ok(r.message);
+  });
+
+  it('导出 IR 三件套到 .av/，组件带显式 row/col、id 合法', () => {
+    const repo = makeRepo(FIXTURE);
+    try {
+      toolSessionStart({ repo }); // 建基线
+      const r = toolArchifyExport({ repo, scope: 'layers' });
+      assert.ok(!r.error, '不应有错误');
+      assert.equal(r.scopeUsed, 'layers');
+      assert.ok(fs.existsSync(r.files.base), 'base IR 落盘');
+      assert.ok(fs.existsSync(r.files.head), 'head IR 落盘');
+      assert.ok(fs.existsSync(r.files.sidecar), 'sidecar 落盘');
+
+      const head = JSON.parse(fs.readFileSync(r.files.head, 'utf8'));
+      assert.equal(head.diagram_type, 'architecture');
+      assert.equal(head.layout.mode, 'grid');
+      const idRe = /^[a-zA-Z][a-zA-Z0-9_-]*$/;
+      for (const c of head.components) {
+        assert.match(c.id, idRe, `组件 id ${c.id} 合法`);
+        assert.equal(typeof c.row, 'number', `${c.id} 有 row`);
+        assert.equal(typeof c.col, 'number', `${c.id} 有 col`);
+        assert.ok(!c.sources, '不发 sources');
+      }
+      for (const cn of head.connections) assert.match(cn.id, idRe, `连接 id ${cn.id} 合法`);
+      assert.ok(!(head.meta && head.meta.repository), '不发 meta.repository');
+    } finally {
+      stopWatcher(repo);
+    }
+  });
+
+  it('handleToolCall 路由 av_archify_export', () => {
+    const repo = makeRepo(FIXTURE);
+    try {
+      toolSessionStart({ repo });
+      const r = handleToolCall({ name: 'av_archify_export', arguments: { repo, scope: 'changed' } });
+      assert.ok(!r.error);
+      assert.ok(r.files.head);
+    } finally {
+      stopWatcher(repo);
+    }
   });
 });

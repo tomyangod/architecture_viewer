@@ -3,11 +3,12 @@
 /**
  * Architecture Viewer MCP Server
  *
- * 暴露 4 个工具给 AI Agent（Cursor/Claude/Codex）：
+ * 暴露 5 个工具给 AI Agent（Cursor/Claude/Codex）：
  *   av_session_start    — AI 改代码前记录基线
  *   av_session_report   — AI 改完后返回架构 diff + 风险 + 影响面
  *   av_check_layering   — 实时检测当前代码的跨层违规（不需要基线）
  *   av_explain_finding  — 解释一条违规的结构化事实
+ *   av_archify_export   — 导出 Archify IR 稀疏图（可选顺带 archify validate）
  *
  * 刻意不暴露图谱查询工具（谁依赖谁）——那是 codebase-memory-mcp 的主场。
  * AV 给 Agent 的是判断和结论，不是原材料。
@@ -21,6 +22,7 @@ const { diffGraphs } = require('../lib/diff-graph');
 const { evaluateRisk, summarizeFindings, LAYER_LABEL } = require('../lib/risk-rules');
 const { computeImpact } = require('../lib/impact');
 const { generateReport } = require('../lib/session-report');
+const { exportArchify, finalizeSessionHtml } = require('../lib/archify-export');
 
 function avDir(repo) {
   return path.join(repo, '.av');
@@ -68,13 +70,12 @@ function generateSessionReport(repo) {
   const dir = avDir(repo);
   fs.mkdirSync(dir, { recursive: true });
   const reportJsonPath = path.join(dir, 'session-report.json');
-  const htmlPath = path.join(dir, 'session-report.html');
   fs.writeFileSync(reportJsonPath, JSON.stringify({ diff, findings, riskSummary, impact }, null, 2));
   const html = generateReport({
     baseGraph: baseline, headGraph: current, diff, findings, impact,
     repoName: path.basename(repo), sessionStart
   });
-  fs.writeFileSync(htmlPath, html);
+  const finalized = finalizeSessionHtml({ repo, builtinHtml: html });
 
   return {
     generatedAt: Date.now(),
@@ -88,7 +89,13 @@ function generateSessionReport(repo) {
     },
     findings: findings.map(formatFinding),
     impact: formatImpact(impact),
-    reportPaths: { json: reportJsonPath, html: htmlPath },
+    reportPaths: {
+      json: reportJsonPath,
+      html: finalized.htmlPath,
+      builtinHtml: finalized.builtinPath,
+      renderer: finalized.renderer.used,
+      rendererReason: finalized.renderer.reason
+    },
     riskLevel: riskSummary.level,
     findingsCount: findings.length,
     hasChanges: (diff.summary.totalChanges || 0) > 0,
@@ -442,6 +449,45 @@ function buildExplainResult(target, diff, graph) {
   };
 }
 
+/**
+ * 导出 Archify IR 稀疏图（base/head + sidecar），写到 <repo>/.av/。
+ * 默认 scope=changed；图太密或纯新增会自动降级为 layers。
+ * validate=true 且本机有 archify CLI 时顺带校验；校验失败不报错，
+ * 调用方应回退内置渲染器（session-report.html）。
+ */
+function toolArchifyExport(args) {
+  const repo = path.resolve(args.repo || process.cwd());
+  const res = exportArchify({
+    repo,
+    scope: args.scope || 'changed',
+    validate: !!args.validate
+  });
+  if (res.error === 'NO_BASELINE') {
+    return { error: 'NO_BASELINE', message: res.message };
+  }
+  const out = {
+    scope: res.sidecar.scopeRequested,
+    scopeUsed: res.sidecar.scopeUsed,
+    downgradedToLayers: res.sidecar.downgradedToLayers,
+    downgradeReason: res.sidecar.downgradeReason,
+    componentCount: res.sidecar.componentCount,
+    connectionCount: res.sidecar.connectionCount,
+    files: res.files,
+    hint: 'IR 文件可喂给 archify validate/render/compare；downgradedToLayers=true 时为层摘要图。'
+  };
+  if (res.validation) {
+    out.validation = res.validation.available
+      ? {
+          ok: res.validation.ok,
+          base: { ok: res.validation.base.ok, codes: res.validation.base.codes || [] },
+          head: { ok: res.validation.head.ok, codes: res.validation.head.codes || [] },
+          fallback: res.validation.ok ? null : 'Archify 校验未通过，请使用内置渲染器 session-report.html。'
+        }
+      : { available: false, message: res.validation.message };
+  }
+  return out;
+}
+
 const TOOLS = [
   {
     name: 'av_session_start',
@@ -501,6 +547,19 @@ const TOOLS = [
       },
       required: ['repo']
     }
+  },
+  {
+    name: 'av_archify_export',
+    description: '把本次会话的架构 diff 导出为 Archify IR 稀疏图（Before/After 两个 JSON + sidecar），写到项目 .av/ 目录，可喂给 archify validate/render/compare 出图。默认 scope=changed（只含变更文件）；图太密或纯新增文件时自动降级为 layers 层摘要图。需要先调 av_session_start 建立基线。validate=true 时若本机装了 archify 会顺带校验，校验失败不报错——回退内置报告图即可。',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        repo: { type: 'string', description: '项目文件夹的绝对路径' },
+        scope: { type: 'string', enum: ['changed', 'violations', 'layers'], description: '导出范围：changed=变更文件（默认），violations=只看违规边，layers=层摘要图' },
+        validate: { type: 'boolean', description: '是否顺带运行 archify validate（需要本机有 archify CLI，默认 false）' }
+      },
+      required: ['repo']
+    }
   }
 ];
 
@@ -512,6 +571,7 @@ function handleToolCall(params) {
     case 'av_session_report': return toolSessionReport(args || {});
     case 'av_check_layering': return toolCheckLayering(args || {});
     case 'av_explain_finding': return toolExplainFinding(args || {});
+    case 'av_archify_export': return toolArchifyExport(args || {});
     default: throw new Error(`Unknown tool: ${name}`);
   }
 }
@@ -569,7 +629,7 @@ function createServer() {
   return { rl };
 }
 
-module.exports = { TOOLS, handleToolCall, toolSessionStart, toolSessionReport, toolSessionChanges, toolCheckLayering, toolExplainFinding, buildExplainResult, createServer, generateSessionReport, startWatcher, stopWatcher, getWatcherState, shouldWatchFile };
+module.exports = { TOOLS, handleToolCall, toolSessionStart, toolSessionReport, toolSessionChanges, toolCheckLayering, toolExplainFinding, toolArchifyExport, buildExplainResult, createServer, generateSessionReport, startWatcher, stopWatcher, getWatcherState, shouldWatchFile };
 
 if (require.main === module) {
   createServer();
