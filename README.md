@@ -155,9 +155,14 @@ arch-viewer auth whoami                           # 查看当前登录邮箱与 
 npx arch-viewer init .
 npx arch-viewer generate .
 npx arch-viewer check architecture_viewer --filled --drift --repo .   # 漂移即 exit ≠ 0
+npx arch-viewer check . --rules architecture-rules.example.yaml       # 团队制图规范（命名 / 跨层 / Rel 白名单）
 ```
 
-CI 模板：[.github/workflows/architecture-check.yml](.github/workflows/architecture-check.yml)。
+CI 模板：
+- 漂移红灯：[.github/workflows/architecture-check.yml](.github/workflows/architecture-check.yml)
+- 漂移 + 规范 + PR 评论：[.github/workflows/architecture-drift.yml](.github/workflows/architecture-drift.yml)（Gitee 等价见 `.gitee/workflows/`）
+
+规则写法见 [architecture-rules.example.yaml](architecture-rules.example.yaml)：复制为仓库根或套件目录的 `architecture-rules.yaml` 即可；`check` 未传 `--rules` 时会自动读取该文件。
 
 ## 网页版（分享 / 评审）
 
@@ -177,9 +182,12 @@ npm run web    # http://127.0.0.1:3847 — 粘贴仓库 URL 生成六视图，/p
 │   └── pro/                          # Pro 核心：账号 / 权益 / 存储 / CLI auth client
 ├── src/extension*.js                 # VS Code 扩展：会话命令 + 状态栏 + Webview（暂缓）
 ├── scripts/build-vsix.js             # 扩展打包 vsce（暂缓）
-├── scripts/pr-comment.js             # CI 评论入口
+├── scripts/pr-comment.js             # CI 评论入口（架构 diff）
+├── scripts/ci-drift-action.mjs       # CI：漂移 / 规范检查 + PR 评论
+├── architecture-rules.example.yaml   # 团队制图规范示例
 ├── web/                              # 落地页 + API + /p/<id> 分享页 + Pro 路由
-├── .github/workflows/                # architecture-check（漂移红灯）+ architecture-diff（PR 评论）
+├── .github/workflows/                # check 红灯 + diff 评论 + drift 规范评论
+├── .gitee/workflows/                 # Gitee 等价 drift pipeline
 ├── templates/                        # 可复制的套件与 CI 模板
 └── eval/                             # 多语言解析夹具与评测
 ```

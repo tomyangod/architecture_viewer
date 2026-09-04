@@ -1140,8 +1140,8 @@
       "phase": 2,
       "week": 7,
       "priority": "P0",
-      "status": "todo",
-      "progress": 0,
+      "status": "done",
+      "progress": 100,
       "assignee": "heyangyan",
       "estHours": 8,
       "deadline": "2026-10-16",
@@ -1175,7 +1175,17 @@
         "docs/market-evaluation/market-evaluation.html",
         "lib/validate.js"
       ],
-      "activity": []
+      "activity": [
+        {
+          "date": "2026-09-04",
+          "action": "状态变更 todo→doing"
+        },
+        {
+          "date": "2026-09-04",
+          "action": "状态变更 doing→done",
+          "detail": "architecture-rules.yaml：命名正则 + 分层归属 + 禁止跨层 + Rel 白名单；check --rules 违规夹具红灯报规则名，合规夹具通过。lib/rules.js 无第三方 YAML 依赖。"
+        }
+      ]
     },
     {
       "id": "W08-01",
@@ -1183,8 +1193,8 @@
       "phase": 2,
       "week": 8,
       "priority": "P0",
-      "status": "todo",
-      "progress": 0,
+      "status": "done",
+      "progress": 100,
       "assignee": "heyangyan",
       "estHours": 8,
       "deadline": "2026-10-23",
@@ -1216,7 +1226,17 @@
         ".github/workflows/ci.yml",
         "eval/demo-drift"
       ],
-      "activity": []
+      "activity": [
+        {
+          "date": "2026-09-04",
+          "action": "状态变更 todo→doing"
+        },
+        {
+          "date": "2026-09-04",
+          "action": "状态变更 doing→done",
+          "detail": "Action 跑 check --drift --rules，PR 评论含视图名/缺失项/建议动作；demo-drift 与 rules-violate 锁红灯；无漂移默认不评论。GitHub + Gitee 等价 pipeline。"
+        }
+      ]
     },
     {
       "id": "W08-02",
@@ -1224,8 +1244,8 @@
       "phase": 2,
       "week": 8,
       "priority": "P0",
-      "status": "todo",
-      "progress": 0,
+      "status": "done",
+      "progress": 100,
       "assignee": "heyangyan",
       "estHours": 3,
       "deadline": "2026-10-23",
@@ -1253,7 +1273,13 @@
       "refs": [
         "lib/validate.js"
       ],
-      "activity": []
+      "activity": [
+        {
+          "date": "2026-09-04",
+          "action": "状态变更 todo→done",
+          "detail": "CLI check 输出 --- rules --- 段；validateDir 结果含 rules；architecture-drift.yml 对 rules 违规红灯；写法见 architecture-rules.example.yaml 与 README。"
+        }
+      ]
     },
     {
       "id": "W08-03",

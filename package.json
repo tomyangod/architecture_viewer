@@ -176,6 +176,8 @@
     "LICENSE",
     "NOTICE",
     "README.md",
-    "README.en.md"
+    "README.en.md",
+    "architecture-rules.example.yaml",
+    "scripts/ci-drift-action.mjs"
   ]
 }

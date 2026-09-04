@@ -2,17 +2,17 @@
 
 > 阶段：Phase 2 ｜ 周期：2026-10-19 ~ 2026-10-23 ｜ 周截止：2026-10-23
 >
-> 完成度：0/3 ░░░░░░░░░░ 0%
+> 完成度：2/3 ███████░░░ 67%
 
 > 本文件由 `node pm/scripts/wbs-cards.mjs` 自动生成，请勿手改；状态请改 `pm/tasks/tasks.json` 或用 `node pm/scripts/wbs.mjs set <任务号> <状态>`。
 
 
-### <a id="w08-01"></a>⬜ W08-01 · GitHub/Gitee Action：漂移检测 + PR 评论标注 
+### <a id="w08-01"></a>✅ W08-01 · GitHub/Gitee Action：漂移检测 + PR 评论标注 
 
 | 字段 | 内容 |
 |---|---|
 | 优先级 | **P0** |
-| 状态 | 未开始（进度 0%） |
+| 状态 | 已完成（进度 100%） |
 | 工时预估 | 8h |
 | 截止 | 2026-10-23 |
 | 依赖 | [W07-01](../W07/README.md#w07-01) |
@@ -40,16 +40,17 @@
 **参考文档**：`.github/workflows/ci.yml` `eval/demo-drift`
 
 **活动记录**：
-  - （暂无）
+  - 2026-09-04 状态变更 todo→doing
+  - 2026-09-04 状态变更 doing→done：Action 跑 check --drift --rules，PR 评论含视图名/缺失项/建议动作；demo-drift 与 rules-violate 锁红灯；无漂移默认不评论。GitHub + Gitee 等价 pipeline。
 
 ---
 
-### <a id="w08-02"></a>⬜ W08-02 · rules 校验接入 CLI Validate 与 CI 
+### <a id="w08-02"></a>✅ W08-02 · rules 校验接入 CLI Validate 与 CI 
 
 | 字段 | 内容 |
 |---|---|
 | 优先级 | **P0** |
-| 状态 | 未开始（进度 0%） |
+| 状态 | 已完成（进度 100%） |
 | 工时预估 | 3h |
 | 截止 | 2026-10-23 |
 | 依赖 | [W07-02](../W07/README.md#w07-02) |
@@ -76,7 +77,7 @@
 **参考文档**：`lib/validate.js`
 
 **活动记录**：
-  - （暂无）
+  - 2026-09-04 状态变更 todo→done：CLI check 输出 --- rules --- 段；validateDir 结果含 rules；architecture-drift.yml 对 rules 违规红灯；写法见 architecture-rules.example.yaml 与 README。
 
 ---
 

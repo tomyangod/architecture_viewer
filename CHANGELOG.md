@@ -6,6 +6,10 @@
 
 ### Added
 
+- **团队制图规范**（`architecture-rules.yaml` / W07-02）：节点命名正则、分层归属、禁止跨层 Rel、Rel 标签白名单。`arch-viewer check --rules` 违规亮红灯并报规则名；未传 `--rules` 时自动读取套件或仓库根的 `architecture-rules.yaml`。示例见 `architecture-rules.example.yaml`。
+
+- **CI 漂移 + 规范 + PR 评论**（W08-01）：`scripts/ci-drift-action.mjs` 在 PR 上运行 `check --drift --rules`，评论含视图名、缺失模块、规则名与建议动作；无漂移默认不评论（`ARCH_DRIFT_COMMENT_ON_PASS=1` 可改）。GitHub：`.github/workflows/architecture-drift.yml`；Gitee 等价：`.gitee/workflows/architecture-drift.yml`。`eval/demo-drift` 与 `eval/fixtures/rules-violate` 锁红灯。
+
 - **Archify IR 适配器**（`lib/export-archify.js`）：把内部图谱转换为 Archify JSON IR（零 I/O 纯函数模块）。id 清洗 `^[a-zA-Z][a-zA-Z0-9_-]*$`；grid 自带 row/col（不依赖自动布局）；稀疏 scope（changed / violations / layers），超限自动降级 layers；不写 sources；connection 稳定 id（base/head 共用 allocator）；boundary 用 kind+label。支持 Before/After 配对导出 + sidecar 元数据（scopeUsed、降级原因、组件/连接计数）。
 
 - **CLI `archify-export` 子命令**：`arch-viewer archify-export [repo] [--scope changed|violations|layers] [--validate] [--archify <path>] [--json]`。导出 IR 三件套（`.base` / `.head` / `.sidecar`）到 `.av/`；可选 `--validate` 调本地 archify CLI 做 `validate` + `compare`。CLI 发现顺序：`--archify` → `ARCHIFY_CLI` 环境变量 → PATH → 仓内 vendor 副本；找不到不报错，提示回退内置渲染器。

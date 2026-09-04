@@ -73,6 +73,8 @@ jobs:
         run: npx --yes arch-viewer@latest pr-comment /tmp/av-base . --post
 ```
 
+Team diagram rules (`architecture-rules.example.yaml`) and a drift + rules PR comment workflow live in `.github/workflows/architecture-drift.yml` (Gitee twin under `.gitee/workflows/`). Run `npx arch-viewer check . --rules architecture-rules.example.yaml`.
+
 ### 4. Web (Share / Review)
 
 ```bash
@@ -145,9 +147,12 @@ When enabled, only records: event name (CLI command), duration (ms), exit code, 
 lib/                              # Scan / diff / impact / risk rules / report / telemetry (CLI . MCP . Web)
 ├── pro/                          # Pro core: account / entitlement / store / CLI auth client
 ├── src/extension*.js             # VS Code extension (deferred)
-├── scripts/pr-comment.js         # CI comment entry point
+├── scripts/pr-comment.js         # CI comment entry point (architecture diff)
+├── scripts/ci-drift-action.mjs   # CI: drift / rules check + PR comment
+├── architecture-rules.example.yaml
 ├── web/                          # Landing page + API + /p/<id> share + Pro routes
-├── .github/workflows/            # architecture-check (drift gate) + architecture-diff (PR comment)
+├── .github/workflows/            # check gate + diff comment + drift/rules comment
+├── .gitee/workflows/             # Gitee twin of the drift pipeline
 ├── templates/                    # Copyable kits and CI templates
 └── eval/                         # Multi-language parse fixtures and benchmarks
 ```

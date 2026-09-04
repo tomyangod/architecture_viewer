@@ -1,0 +1,65 @@
+# Gitee 等价 pipeline：漂移检测 + 团队规范 + PR 评论
+# 与 GitHub 版共用 scripts/ci-drift-action.mjs
+#
+# 在 Gitee Go / Gitee Actions 中配置环境变量：
+#   GITEE_TOKEN                  评论权限 token
+#   GITEE_OWNER / GITEE_REPO     仓库
+#   GITEE_PULL_REQUEST_NUMBER    PR 编号
+# 无漂移时默认不评论；ARCH_DRIFT_COMMENT_ON_PASS=1 可贴通过。
+
+name: architecture-drift
+
+on:
+  push:
+  pull_request:
+    types: [opened, synchronize, reopened]
+  merge_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  fixture-lock:
+    name: demo-drift / rules fixtures
+    runs-on: ubuntu-latest
+    steps:
+      - checkout
+      - name: demo-drift must fail
+        run: |
+          set +e
+          node scripts/ci-drift-action.mjs --kit eval/demo-drift --filled --no-drift --no-comment --out /tmp/demo-drift.md
+          code=$?
+          set -e
+          test "$code" != "0"
+          grep -q "c4-container" /tmp/demo-drift.md
+          grep -qE "NOT DECLARED|ghost_service|placeholder" /tmp/demo-drift.md
+      - name: rules fixtures
+        run: |
+          set +e
+          node scripts/ci-drift-action.mjs --kit eval/fixtures/rules-violate --no-drift --rules architecture-rules.example.yaml --out /tmp/rules-bad.md
+          bad=$?
+          node scripts/ci-drift-action.mjs --kit eval/fixtures/rules-ok --no-drift --rules architecture-rules.example.yaml
+          good=$?
+          set -e
+          test "$bad" != "0"
+          test "$good" = "0"
+          grep -q "no-controller-to-storage" /tmp/rules-bad.md
+
+  drift-comment:
+    name: PR drift comment
+    runs-on: ubuntu-latest
+    steps:
+      - checkout
+      - name: Check kit + post
+        run: |
+          KIT="architecture_viewer"
+          if [ ! -f "$KIT/architecture_visualized.html" ]; then
+            echo "No kit; skip product gate (fixture-lock covers acceptance)."
+            exit 0
+          fi
+          RULES=""
+          if [ -f architecture-rules.yaml ]; then RULES="--rules architecture-rules.yaml"; fi
+          node scripts/ci-drift-action.mjs --kit "$KIT" --repo . --filled --drift $RULES --post
+        env:
+          GITEE_TOKEN: ${{ secrets.GITEE_TOKEN }}
+          GITEE_OWNER: ${{ gitee.repository_owner }}
+          GITEE_REPO: ${{ gitee.repository_name }}
+          GITEE_PULL_REQUEST_NUMBER: ${{ gitee.pull_request.number }}

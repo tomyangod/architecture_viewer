@@ -1,0 +1,91 @@
+# Architecture Viewer — 漂移检测 + 团队规范 + PR 评论
+#
+# 复制到你的仓库 `.github/workflows/architecture-drift.yml`
+# 前置：`npx arch-viewer init` 并把 architecture_viewer/（以及可选的
+# architecture-rules.yaml）提交进仓库。
+#
+# 行为：
+#   - check --filled --drift --rules 失败 → job 红灯，并在 PR 评论里写出
+#     视图名、缺失模块、规范规则名、建议动作
+#   - 无漂移时默认不评论（设 ARCH_DRIFT_COMMENT_ON_PASS=1 可改为贴通过）
+#   - demo-drift 夹具必须红灯（本仓 fixture-lock 锁住）
+#
+# 本仓 dogfood：fixture-lock 验证夹具；用户仓把 drift-comment 的 kit 改成自己的目录。
+
+name: Architecture Drift
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+  push:
+    branches: [main, master]
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  fixture-lock:
+    name: demo-drift / rules fixtures
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: demo-drift must fail and name the view
+        run: |
+          set +e
+          node scripts/ci-drift-action.mjs --kit eval/demo-drift --filled --no-drift --no-comment --out /tmp/demo-drift.md
+          code=$?
+          set -e
+          if [ "$code" -eq 0 ]; then
+            echo "demo-drift should fail"
+            exit 1
+          fi
+          grep -q "c4-container" /tmp/demo-drift.md
+          grep -qE "NOT DECLARED|ghost_service|placeholder" /tmp/demo-drift.md
+          grep -q "建议动作" /tmp/demo-drift.md
+          echo "demo-drift red comment locked"
+      - name: rules-violate must fail; rules-ok must pass
+        run: |
+          set +e
+          node scripts/ci-drift-action.mjs --kit eval/fixtures/rules-violate --no-drift --rules architecture-rules.example.yaml --out /tmp/rules-bad.md
+          bad=$?
+          node scripts/ci-drift-action.mjs --kit eval/fixtures/rules-ok --no-drift --rules architecture-rules.example.yaml --out /tmp/rules-ok.md
+          good=$?
+          set -e
+          if [ "$bad" -eq 0 ]; then echo "rules-violate should fail"; exit 1; fi
+          if [ "$good" -ne 0 ]; then echo "rules-ok should pass"; cat /tmp/rules-ok.md; exit 1; fi
+          grep -q "no-controller-to-storage" /tmp/rules-bad.md
+          grep -q "node-id-snake" /tmp/rules-bad.md
+          echo "rules fixtures locked"
+
+  drift-comment:
+    name: PR drift comment
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Check kit + post drift comment
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # 用户仓：改成自己的 kit 目录。本仓若无 architecture_viewer/ 则跳过产品门禁
+          #（fixture-lock 已锁住 demo-drift / rules 红灯）。
+          KIT="architecture_viewer"
+          if [ ! -f "$KIT/architecture_visualized.html" ]; then
+            echo "No $KIT kit in this repo; skip product gate."
+            echo "Copy this workflow and point --kit at your generated suite."
+            exit 0
+          fi
+          RULES=""
+          if [ -f architecture-rules.yaml ]; then
+            RULES="--rules architecture-rules.yaml"
+          elif [ -f architecture-rules.example.yaml ]; then
+            RULES="--rules architecture-rules.example.yaml"
+          fi
+          node scripts/ci-drift-action.mjs --kit "$KIT" --repo . --filled --drift $RULES --post
