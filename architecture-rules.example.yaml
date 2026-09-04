@@ -1,0 +1,46 @@
+# architecture-rules.yaml — 团队制图规范（Architecture Viewer）
+#
+# 用法：
+#   复制为本仓库根或套件目录下的 architecture-rules.yaml
+#   arch-viewer check . --rules architecture-rules.example.yaml
+#   未传 --rules 时，自动读取 kit/ 或仓库根的 architecture-rules.yaml
+#
+# 三类规则（差异化支点）：
+#   1. naming            节点 id 命名正则
+#   2. layers + forbid   分层归属 + 禁止跨层 Rel
+#   3. rel_whitelist     Rel 标签白名单
+#
+# 只对照 C4 图源（c4-*.md）的声明与 Rel；class / block / deployment 不参与。
+# 层归属按 layers 下声明顺序，第一条 glob 命中即停。
+
+version: 1
+name: team-default
+
+# 1) 节点命名：C4 id 必须是小写 snake_case
+naming:
+  - id: node-id-snake
+    pattern: '^[a-z][a-z0-9_]*$'
+    on: id
+    message: 节点 id 必须是小写 snake_case（^[a-z][a-z0-9_]*$）
+
+# 2) 分层归属（glob，* 匹配任意长度）
+layers:
+  controller:
+    match: [user, web, '*_page', '*_handler', '*_controller']
+  service:
+    match: ['*_service', '*_svc', '*_api']
+  storage:
+    match: ['*_repo', '*_dao', '*_store', db, redis, queue]
+
+# 3) 禁止跨层：展示/控制层不得直连仓储
+forbid_cross_layer:
+  - id: no-controller-to-storage
+    from: controller
+    to: storage
+    message: 控制层不得直接依赖存储层，请经 service 中转
+
+# 4) Rel 标签白名单（大小写不敏感；无标签的 Rel 默认放行）
+rel_whitelist:
+  - id: allowed-rel-labels
+    labels: [HTTP, gRPC, SQL, 调用, 访问, 读写, uses, use]
+    allow_empty: true
