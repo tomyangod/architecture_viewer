@@ -1,19 +1,19 @@
 {
   "version": 1,
   "root": "architecture_viewer",
-  "generatedAt": "2026-09-04T15:03:25.938Z",
-  "fingerprint": "c55b19b5195a724f",
+  "generatedAt": "2026-09-04T15:57:32.671Z",
+  "fingerprint": "7e1fd9cf504a6e8e",
   "languages": [
     "javascript"
   ],
   "stats": {
-    "files": 68,
-    "filesParsed": 68,
+    "files": 71,
+    "filesParsed": 71,
     "parseErrors": 0,
-    "types": 564,
-    "nodes": 653,
-    "edges": 830,
-    "externalPackages": 21
+    "types": 607,
+    "nodes": 700,
+    "edges": 891,
+    "externalPackages": 22
   },
   "nodes": [
     {
@@ -1908,6 +1908,164 @@
       ]
     },
     {
+      "id": "file:scripts/ci-drift-action.mjs",
+      "kind": "file",
+      "name": "ci-drift-action.mjs",
+      "path": "scripts/ci-drift-action.mjs",
+      "layer": null,
+      "lang": "javascript"
+    },
+    {
+      "id": "scripts/ci-drift-action#parseCli",
+      "kind": "function",
+      "name": "parseCli",
+      "path": "scripts/ci-drift-action.mjs",
+      "line": 30,
+      "layer": null,
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "scripts/ci-drift-action",
+      "methods": [
+        "parseCli"
+      ]
+    },
+    {
+      "id": "scripts/ci-drift-action#runDriftCheck",
+      "kind": "function",
+      "name": "runDriftCheck",
+      "path": "scripts/ci-drift-action.mjs",
+      "line": 51,
+      "layer": null,
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "scripts/ci-drift-action",
+      "methods": [
+        "runDriftCheck"
+      ]
+    },
+    {
+      "id": "scripts/ci-drift-action#suggestActions",
+      "kind": "function",
+      "name": "suggestActions",
+      "path": "scripts/ci-drift-action.mjs",
+      "line": 62,
+      "layer": null,
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "scripts/ci-drift-action",
+      "methods": [
+        "suggestActions"
+      ]
+    },
+    {
+      "id": "scripts/ci-drift-action#formatDriftComment",
+      "kind": "function",
+      "name": "formatDriftComment",
+      "path": "scripts/ci-drift-action.mjs",
+      "line": 93,
+      "layer": null,
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "scripts/ci-drift-action",
+      "methods": [
+        "formatDriftComment"
+      ]
+    },
+    {
+      "id": "scripts/ci-drift-action#footer",
+      "kind": "function",
+      "name": "footer",
+      "path": "scripts/ci-drift-action.mjs",
+      "line": 152,
+      "layer": null,
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "scripts/ci-drift-action",
+      "methods": [
+        "footer"
+      ]
+    },
+    {
+      "id": "scripts/ci-drift-action#shouldWriteComment",
+      "kind": "function",
+      "name": "shouldWriteComment",
+      "path": "scripts/ci-drift-action.mjs",
+      "line": 157,
+      "layer": null,
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "scripts/ci-drift-action",
+      "methods": [
+        "shouldWriteComment"
+      ]
+    },
+    {
+      "id": "scripts/ci-drift-action#postGiteeComment",
+      "kind": "function",
+      "name": "postGiteeComment",
+      "path": "scripts/ci-drift-action.mjs",
+      "line": 163,
+      "layer": null,
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "scripts/ci-drift-action",
+      "methods": [
+        "postGiteeComment"
+      ]
+    },
+    {
+      "id": "scripts/ci-drift-action#postDriftComment",
+      "kind": "function",
+      "name": "postDriftComment",
+      "path": "scripts/ci-drift-action.mjs",
+      "line": 177,
+      "layer": null,
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "scripts/ci-drift-action",
+      "methods": [
+        "postDriftComment"
+      ]
+    },
+    {
+      "id": "scripts/ci-drift-action#printHelp",
+      "kind": "function",
+      "name": "printHelp",
+      "path": "scripts/ci-drift-action.mjs",
+      "line": 201,
+      "layer": null,
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "scripts/ci-drift-action",
+      "methods": [
+        "printHelp"
+      ]
+    },
+    {
+      "id": "scripts/ci-drift-action#main",
+      "kind": "function",
+      "name": "main",
+      "path": "scripts/ci-drift-action.mjs",
+      "line": 214,
+      "layer": null,
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "scripts/ci-drift-action",
+      "methods": [
+        "main"
+      ]
+    },
+    {
       "id": "file:scripts/pr-comment.js",
       "kind": "file",
       "name": "pr-comment.js",
@@ -2925,6 +3083,203 @@
       ]
     },
     {
+      "id": "file:lib/cache.js",
+      "kind": "file",
+      "name": "cache.js",
+      "path": "lib/cache.js",
+      "layer": "util",
+      "layerConfidence": "high",
+      "layerSignal": "dir-name",
+      "lang": "javascript"
+    },
+    {
+      "id": "lib/cache#sha",
+      "kind": "function",
+      "name": "sha",
+      "path": "lib/cache.js",
+      "line": 25,
+      "layer": "util",
+      "layerConfidence": "high",
+      "layerSignal": "dir-name",
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "lib/cache",
+      "methods": [
+        "sha"
+      ]
+    },
+    {
+      "id": "lib/cache#shortSha",
+      "kind": "function",
+      "name": "shortSha",
+      "path": "lib/cache.js",
+      "line": 29,
+      "layer": "util",
+      "layerConfidence": "high",
+      "layerSignal": "dir-name",
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "lib/cache",
+      "methods": [
+        "shortSha"
+      ]
+    },
+    {
+      "id": "lib/cache#listDir",
+      "kind": "function",
+      "name": "listDir",
+      "path": "lib/cache.js",
+      "line": 33,
+      "layer": "util",
+      "layerConfidence": "high",
+      "layerSignal": "dir-name",
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "lib/cache",
+      "methods": [
+        "listDir"
+      ]
+    },
+    {
+      "id": "lib/cache#walkSourceFiles",
+      "kind": "function",
+      "name": "walkSourceFiles",
+      "path": "lib/cache.js",
+      "line": 45,
+      "layer": "util",
+      "layerConfidence": "high",
+      "layerSignal": "dir-name",
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "lib/cache",
+      "methods": [
+        "walkSourceFiles"
+      ]
+    },
+    {
+      "id": "lib/cache#sourceManifest",
+      "kind": "function",
+      "name": "sourceManifest",
+      "path": "lib/cache.js",
+      "line": 76,
+      "layer": "util",
+      "layerConfidence": "high",
+      "layerSignal": "dir-name",
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "lib/cache",
+      "methods": [
+        "sourceManifest"
+      ]
+    },
+    {
+      "id": "lib/cache#cachePath",
+      "kind": "function",
+      "name": "cachePath",
+      "path": "lib/cache.js",
+      "line": 83,
+      "layer": "util",
+      "layerConfidence": "high",
+      "layerSignal": "dir-name",
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "lib/cache",
+      "methods": [
+        "cachePath"
+      ]
+    },
+    {
+      "id": "lib/cache#loadCache",
+      "kind": "function",
+      "name": "loadCache",
+      "path": "lib/cache.js",
+      "line": 87,
+      "layer": "util",
+      "layerConfidence": "high",
+      "layerSignal": "dir-name",
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "lib/cache",
+      "methods": [
+        "loadCache"
+      ]
+    },
+    {
+      "id": "lib/cache#saveCache",
+      "kind": "function",
+      "name": "saveCache",
+      "path": "lib/cache.js",
+      "line": 98,
+      "layer": "util",
+      "layerConfidence": "high",
+      "layerSignal": "dir-name",
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "lib/cache",
+      "methods": [
+        "saveCache"
+      ]
+    },
+    {
+      "id": "lib/cache#diagramContentHashes",
+      "kind": "function",
+      "name": "diagramContentHashes",
+      "path": "lib/cache.js",
+      "line": 109,
+      "layer": "util",
+      "layerConfidence": "high",
+      "layerSignal": "dir-name",
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "lib/cache",
+      "methods": [
+        "diagramContentHashes"
+      ]
+    },
+    {
+      "id": "lib/cache#diffDiagrams",
+      "kind": "function",
+      "name": "diffDiagrams",
+      "path": "lib/cache.js",
+      "line": 121,
+      "layer": "util",
+      "layerConfidence": "high",
+      "layerSignal": "dir-name",
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "lib/cache",
+      "methods": [
+        "diffDiagrams"
+      ]
+    },
+    {
+      "id": "lib/cache#refinePayloadScale",
+      "kind": "function",
+      "name": "refinePayloadScale",
+      "path": "lib/cache.js",
+      "line": 137,
+      "layer": "util",
+      "layerConfidence": "high",
+      "layerSignal": "dir-name",
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "lib/cache",
+      "methods": [
+        "refinePayloadScale"
+      ]
+    },
+    {
       "id": "file:lib/cli.js",
       "kind": "file",
       "name": "cli.js",
@@ -3024,7 +3379,7 @@
       "kind": "function",
       "name": "loadEvalConfig",
       "path": "lib/cli.js",
-      "line": 133,
+      "line": 143,
       "layer": "util",
       "layerConfidence": "high",
       "layerSignal": "dir-name",
@@ -3041,7 +3396,7 @@
       "kind": "function",
       "name": "runEval",
       "path": "lib/cli.js",
-      "line": 142,
+      "line": 152,
       "layer": "util",
       "layerConfidence": "high",
       "layerSignal": "dir-name",
@@ -3058,7 +3413,7 @@
       "kind": "function",
       "name": "printGenerateResult",
       "path": "lib/cli.js",
-      "line": 207,
+      "line": 246,
       "layer": "util",
       "layerConfidence": "high",
       "layerSignal": "dir-name",
@@ -3075,7 +3430,7 @@
       "kind": "function",
       "name": "writeLayerSuggestions",
       "path": "lib/cli.js",
-      "line": 237,
+      "line": 287,
       "layer": "util",
       "layerConfidence": "high",
       "layerSignal": "dir-name",
@@ -3092,7 +3447,7 @@
       "kind": "function",
       "name": "wantsRefine",
       "path": "lib/cli.js",
-      "line": 251,
+      "line": 301,
       "layer": "util",
       "layerConfidence": "high",
       "layerSignal": "dir-name",
@@ -3109,7 +3464,7 @@
       "kind": "function",
       "name": "main",
       "path": "lib/cli.js",
-      "line": 255,
+      "line": 305,
       "layer": "util",
       "layerConfidence": "high",
       "layerSignal": "dir-name",
@@ -4321,11 +4676,45 @@
       "lang": "javascript"
     },
     {
+      "id": "lib/index#stripInventory",
+      "kind": "function",
+      "name": "stripInventory",
+      "path": "lib/index.js",
+      "line": 20,
+      "layer": "util",
+      "layerConfidence": "high",
+      "layerSignal": "dir-name",
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "lib/index",
+      "methods": [
+        "stripInventory"
+      ]
+    },
+    {
+      "id": "lib/index#diagramsOnDisk",
+      "kind": "function",
+      "name": "diagramsOnDisk",
+      "path": "lib/index.js",
+      "line": 25,
+      "layer": "util",
+      "layerConfidence": "high",
+      "layerSignal": "dir-name",
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "lib/index",
+      "methods": [
+        "diagramsOnDisk"
+      ]
+    },
+    {
       "id": "lib/index#haystack",
       "kind": "function",
       "name": "haystack",
       "path": "lib/index.js",
-      "line": 11,
+      "line": 29,
       "layer": "util",
       "layerConfidence": "high",
       "layerSignal": "dir-name",
@@ -4342,7 +4731,7 @@
       "kind": "function",
       "name": "generateToDir",
       "path": "lib/index.js",
-      "line": 22,
+      "line": 40,
       "layer": "util",
       "layerConfidence": "high",
       "layerSignal": "dir-name",
@@ -4359,7 +4748,7 @@
       "kind": "function",
       "name": "generateForRepo",
       "path": "lib/index.js",
-      "line": 31,
+      "line": 102,
       "layer": "util",
       "layerConfidence": "high",
       "layerSignal": "dir-name",
@@ -4376,7 +4765,7 @@
       "kind": "function",
       "name": "hasLlmKey",
       "path": "lib/index.js",
-      "line": 41,
+      "line": 112,
       "layer": "util",
       "layerConfidence": "high",
       "layerSignal": "dir-name",
@@ -4393,7 +4782,7 @@
       "kind": "function",
       "name": "resolveGenerateMode",
       "path": "lib/index.js",
-      "line": 52,
+      "line": 123,
       "layer": "util",
       "layerConfidence": "high",
       "layerSignal": "dir-name",
@@ -4410,7 +4799,7 @@
       "kind": "function",
       "name": "generateToDirAsync",
       "path": "lib/index.js",
-      "line": 78,
+      "line": 149,
       "layer": "util",
       "layerConfidence": "high",
       "layerSignal": "dir-name",
@@ -4427,7 +4816,7 @@
       "kind": "function",
       "name": "generateForRepoAsync",
       "path": "lib/index.js",
-      "line": 113,
+      "line": 233,
       "layer": "util",
       "layerConfidence": "high",
       "layerSignal": "dir-name",
@@ -4444,7 +4833,7 @@
       "kind": "function",
       "name": "checkKit",
       "path": "lib/index.js",
-      "line": 125,
+      "line": 245,
       "layer": "util",
       "layerConfidence": "high",
       "layerSignal": "dir-name",
@@ -5072,7 +5461,7 @@
       "kind": "function",
       "name": "main",
       "path": "lib/llm-generate.js",
-      "line": 352,
+      "line": 355,
       "layer": "util",
       "layerConfidence": "high",
       "layerSignal": "dir-name",
@@ -5411,6 +5800,356 @@
       "module": "lib/risk-rules",
       "methods": [
         "summarizeFindings"
+      ]
+    },
+    {
+      "id": "file:lib/rules.js",
+      "kind": "file",
+      "name": "rules.js",
+      "path": "lib/rules.js",
+      "layer": "util",
+      "layerConfidence": "high",
+      "layerSignal": "dir-name",
+      "lang": "javascript"
+    },
+    {
+      "id": "lib/rules#kindOf",
+      "kind": "function",
+      "name": "kindOf",
+      "path": "lib/rules.js",
+      "line": 19,
+      "layer": "util",
+      "layerConfidence": "high",
+      "layerSignal": "dir-name",
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "lib/rules",
+      "methods": [
+        "kindOf"
+      ]
+    },
+    {
+      "id": "lib/rules#extractDiagramModel",
+      "kind": "function",
+      "name": "extractDiagramModel",
+      "path": "lib/rules.js",
+      "line": 28,
+      "layer": "util",
+      "layerConfidence": "high",
+      "layerSignal": "dir-name",
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "lib/rules",
+      "methods": [
+        "extractDiagramModel"
+      ]
+    },
+    {
+      "id": "lib/rules#stripComment",
+      "kind": "function",
+      "name": "stripComment",
+      "path": "lib/rules.js",
+      "line": 54,
+      "layer": "util",
+      "layerConfidence": "high",
+      "layerSignal": "dir-name",
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "lib/rules",
+      "methods": [
+        "stripComment"
+      ]
+    },
+    {
+      "id": "lib/rules#parseInlineArray",
+      "kind": "function",
+      "name": "parseInlineArray",
+      "path": "lib/rules.js",
+      "line": 73,
+      "layer": "util",
+      "layerConfidence": "high",
+      "layerSignal": "dir-name",
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "lib/rules",
+      "methods": [
+        "parseInlineArray"
+      ]
+    },
+    {
+      "id": "lib/rules#parseScalar",
+      "kind": "function",
+      "name": "parseScalar",
+      "path": "lib/rules.js",
+      "line": 100,
+      "layer": "util",
+      "layerConfidence": "high",
+      "layerSignal": "dir-name",
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "lib/rules",
+      "methods": [
+        "parseScalar"
+      ]
+    },
+    {
+      "id": "lib/rules#parseYaml",
+      "kind": "function",
+      "name": "parseYaml",
+      "path": "lib/rules.js",
+      "line": 114,
+      "layer": "util",
+      "layerConfidence": "high",
+      "layerSignal": "dir-name",
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "lib/rules",
+      "methods": [
+        "parseYaml"
+      ]
+    },
+    {
+      "id": "lib/rules#globToRegExp",
+      "kind": "function",
+      "name": "globToRegExp",
+      "path": "lib/rules.js",
+      "line": 184,
+      "layer": "util",
+      "layerConfidence": "high",
+      "layerSignal": "dir-name",
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "lib/rules",
+      "methods": [
+        "globToRegExp"
+      ]
+    },
+    {
+      "id": "lib/rules#asList",
+      "kind": "function",
+      "name": "asList",
+      "path": "lib/rules.js",
+      "line": 192,
+      "layer": "util",
+      "layerConfidence": "high",
+      "layerSignal": "dir-name",
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "lib/rules",
+      "methods": [
+        "asList"
+      ]
+    },
+    {
+      "id": "lib/rules#normalizeRules",
+      "kind": "function",
+      "name": "normalizeRules",
+      "path": "lib/rules.js",
+      "line": 197,
+      "layer": "util",
+      "layerConfidence": "high",
+      "layerSignal": "dir-name",
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "lib/rules",
+      "methods": [
+        "normalizeRules"
+      ]
+    },
+    {
+      "id": "lib/rules#loadRules",
+      "kind": "function",
+      "name": "loadRules",
+      "path": "lib/rules.js",
+      "line": 218,
+      "layer": "util",
+      "layerConfidence": "high",
+      "layerSignal": "dir-name",
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "lib/rules",
+      "methods": [
+        "loadRules"
+      ]
+    },
+    {
+      "id": "lib/rules#resolveRulesPath",
+      "kind": "function",
+      "name": "resolveRulesPath",
+      "path": "lib/rules.js",
+      "line": 229,
+      "layer": "util",
+      "layerConfidence": "high",
+      "layerSignal": "dir-name",
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "lib/rules",
+      "methods": [
+        "resolveRulesPath"
+      ]
+    },
+    {
+      "id": "lib/rules#assignLayer",
+      "kind": "function",
+      "name": "assignLayer",
+      "path": "lib/rules.js",
+      "line": 245,
+      "layer": "util",
+      "layerConfidence": "high",
+      "layerSignal": "dir-name",
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "lib/rules",
+      "methods": [
+        "assignLayer"
+      ]
+    },
+    {
+      "id": "lib/rules#compilePattern",
+      "kind": "function",
+      "name": "compilePattern",
+      "path": "lib/rules.js",
+      "line": 254,
+      "layer": "util",
+      "layerConfidence": "high",
+      "layerSignal": "dir-name",
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "lib/rules",
+      "methods": [
+        "compilePattern"
+      ]
+    },
+    {
+      "id": "lib/rules#checkNaming",
+      "kind": "function",
+      "name": "checkNaming",
+      "path": "lib/rules.js",
+      "line": 263,
+      "layer": "util",
+      "layerConfidence": "high",
+      "layerSignal": "dir-name",
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "lib/rules",
+      "methods": [
+        "checkNaming"
+      ]
+    },
+    {
+      "id": "lib/rules#checkCrossLayer",
+      "kind": "function",
+      "name": "checkCrossLayer",
+      "path": "lib/rules.js",
+      "line": 293,
+      "layer": "util",
+      "layerConfidence": "high",
+      "layerSignal": "dir-name",
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "lib/rules",
+      "methods": [
+        "checkCrossLayer"
+      ]
+    },
+    {
+      "id": "lib/rules#checkRelWhitelist",
+      "kind": "function",
+      "name": "checkRelWhitelist",
+      "path": "lib/rules.js",
+      "line": 315,
+      "layer": "util",
+      "layerConfidence": "high",
+      "layerSignal": "dir-name",
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "lib/rules",
+      "methods": [
+        "checkRelWhitelist"
+      ]
+    },
+    {
+      "id": "lib/rules#relMatchesWhitelist",
+      "kind": "function",
+      "name": "relMatchesWhitelist",
+      "path": "lib/rules.js",
+      "line": 335,
+      "layer": "util",
+      "layerConfidence": "high",
+      "layerSignal": "dir-name",
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "lib/rules",
+      "methods": [
+        "relMatchesWhitelist"
+      ]
+    },
+    {
+      "id": "lib/rules#evaluateRules",
+      "kind": "function",
+      "name": "evaluateRules",
+      "path": "lib/rules.js",
+      "line": 348,
+      "layer": "util",
+      "layerConfidence": "high",
+      "layerSignal": "dir-name",
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "lib/rules",
+      "methods": [
+        "evaluateRules"
+      ]
+    },
+    {
+      "id": "lib/rules#evaluateKitRules",
+      "kind": "function",
+      "name": "evaluateKitRules",
+      "path": "lib/rules.js",
+      "line": 367,
+      "layer": "util",
+      "layerConfidence": "high",
+      "layerSignal": "dir-name",
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "lib/rules",
+      "methods": [
+        "evaluateKitRules"
+      ]
+    },
+    {
+      "id": "lib/rules#formatRuleViolations",
+      "kind": "function",
+      "name": "formatRuleViolations",
+      "path": "lib/rules.js",
+      "line": 379,
+      "layer": "util",
+      "layerConfidence": "high",
+      "layerSignal": "dir-name",
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "lib/rules",
+      "methods": [
+        "formatRuleViolations"
       ]
     },
     {
@@ -6199,7 +6938,7 @@
       "kind": "function",
       "name": "mentionedIds",
       "path": "lib/validate.js",
-      "line": 115,
+      "line": 132,
       "layer": "util",
       "layerConfidence": "high",
       "layerSignal": "dir-name",
@@ -10288,6 +11027,13 @@
       "builtin": false
     },
     {
+      "id": "ext:module",
+      "kind": "external",
+      "name": "module",
+      "external": true,
+      "builtin": true
+    },
+    {
       "id": "ext:node:http",
       "kind": "external",
       "name": "node:http",
@@ -11095,6 +11841,76 @@
       "line": 31
     },
     {
+      "from": "scripts/ci-drift-action#parseCli",
+      "to": "file:scripts/ci-drift-action.mjs",
+      "type": "declared-in",
+      "file": "scripts/ci-drift-action.mjs",
+      "line": 30
+    },
+    {
+      "from": "scripts/ci-drift-action#runDriftCheck",
+      "to": "file:scripts/ci-drift-action.mjs",
+      "type": "declared-in",
+      "file": "scripts/ci-drift-action.mjs",
+      "line": 51
+    },
+    {
+      "from": "scripts/ci-drift-action#suggestActions",
+      "to": "file:scripts/ci-drift-action.mjs",
+      "type": "declared-in",
+      "file": "scripts/ci-drift-action.mjs",
+      "line": 62
+    },
+    {
+      "from": "scripts/ci-drift-action#formatDriftComment",
+      "to": "file:scripts/ci-drift-action.mjs",
+      "type": "declared-in",
+      "file": "scripts/ci-drift-action.mjs",
+      "line": 93
+    },
+    {
+      "from": "scripts/ci-drift-action#footer",
+      "to": "file:scripts/ci-drift-action.mjs",
+      "type": "declared-in",
+      "file": "scripts/ci-drift-action.mjs",
+      "line": 152
+    },
+    {
+      "from": "scripts/ci-drift-action#shouldWriteComment",
+      "to": "file:scripts/ci-drift-action.mjs",
+      "type": "declared-in",
+      "file": "scripts/ci-drift-action.mjs",
+      "line": 157
+    },
+    {
+      "from": "scripts/ci-drift-action#postGiteeComment",
+      "to": "file:scripts/ci-drift-action.mjs",
+      "type": "declared-in",
+      "file": "scripts/ci-drift-action.mjs",
+      "line": 163
+    },
+    {
+      "from": "scripts/ci-drift-action#postDriftComment",
+      "to": "file:scripts/ci-drift-action.mjs",
+      "type": "declared-in",
+      "file": "scripts/ci-drift-action.mjs",
+      "line": 177
+    },
+    {
+      "from": "scripts/ci-drift-action#printHelp",
+      "to": "file:scripts/ci-drift-action.mjs",
+      "type": "declared-in",
+      "file": "scripts/ci-drift-action.mjs",
+      "line": 201
+    },
+    {
+      "from": "scripts/ci-drift-action#main",
+      "to": "file:scripts/ci-drift-action.mjs",
+      "type": "declared-in",
+      "file": "scripts/ci-drift-action.mjs",
+      "line": 214
+    },
+    {
       "from": "pm/scripts/gitee-webhook#appendLog",
       "to": "file:pm/scripts/gitee-webhook.mjs",
       "type": "declared-in",
@@ -11480,6 +12296,83 @@
       "line": 259
     },
     {
+      "from": "lib/cache#sha",
+      "to": "file:lib/cache.js",
+      "type": "declared-in",
+      "file": "lib/cache.js",
+      "line": 25
+    },
+    {
+      "from": "lib/cache#shortSha",
+      "to": "file:lib/cache.js",
+      "type": "declared-in",
+      "file": "lib/cache.js",
+      "line": 29
+    },
+    {
+      "from": "lib/cache#listDir",
+      "to": "file:lib/cache.js",
+      "type": "declared-in",
+      "file": "lib/cache.js",
+      "line": 33
+    },
+    {
+      "from": "lib/cache#walkSourceFiles",
+      "to": "file:lib/cache.js",
+      "type": "declared-in",
+      "file": "lib/cache.js",
+      "line": 45
+    },
+    {
+      "from": "lib/cache#sourceManifest",
+      "to": "file:lib/cache.js",
+      "type": "declared-in",
+      "file": "lib/cache.js",
+      "line": 76
+    },
+    {
+      "from": "lib/cache#cachePath",
+      "to": "file:lib/cache.js",
+      "type": "declared-in",
+      "file": "lib/cache.js",
+      "line": 83
+    },
+    {
+      "from": "lib/cache#loadCache",
+      "to": "file:lib/cache.js",
+      "type": "declared-in",
+      "file": "lib/cache.js",
+      "line": 87
+    },
+    {
+      "from": "lib/cache#saveCache",
+      "to": "file:lib/cache.js",
+      "type": "declared-in",
+      "file": "lib/cache.js",
+      "line": 98
+    },
+    {
+      "from": "lib/cache#diagramContentHashes",
+      "to": "file:lib/cache.js",
+      "type": "declared-in",
+      "file": "lib/cache.js",
+      "line": 109
+    },
+    {
+      "from": "lib/cache#diffDiagrams",
+      "to": "file:lib/cache.js",
+      "type": "declared-in",
+      "file": "lib/cache.js",
+      "line": 121
+    },
+    {
+      "from": "lib/cache#refinePayloadScale",
+      "to": "file:lib/cache.js",
+      "type": "declared-in",
+      "file": "lib/cache.js",
+      "line": 137
+    },
+    {
       "from": "lib/cli#help",
       "to": "file:lib/cli.js",
       "type": "declared-in",
@@ -11519,42 +12412,42 @@
       "to": "file:lib/cli.js",
       "type": "declared-in",
       "file": "lib/cli.js",
-      "line": 133
+      "line": 143
     },
     {
       "from": "lib/cli#runEval",
       "to": "file:lib/cli.js",
       "type": "declared-in",
       "file": "lib/cli.js",
-      "line": 142
+      "line": 152
     },
     {
       "from": "lib/cli#printGenerateResult",
       "to": "file:lib/cli.js",
       "type": "declared-in",
       "file": "lib/cli.js",
-      "line": 207
+      "line": 246
     },
     {
       "from": "lib/cli#writeLayerSuggestions",
       "to": "file:lib/cli.js",
       "type": "declared-in",
       "file": "lib/cli.js",
-      "line": 237
+      "line": 287
     },
     {
       "from": "lib/cli#wantsRefine",
       "to": "file:lib/cli.js",
       "type": "declared-in",
       "file": "lib/cli.js",
-      "line": 251
+      "line": 301
     },
     {
       "from": "lib/cli#main",
       "to": "file:lib/cli.js",
       "type": "declared-in",
       "file": "lib/cli.js",
-      "line": 255
+      "line": 305
     },
     {
       "from": "lib/diff-graph#canonical",
@@ -12026,60 +12919,74 @@
       "line": 128
     },
     {
+      "from": "lib/index#stripInventory",
+      "to": "file:lib/index.js",
+      "type": "declared-in",
+      "file": "lib/index.js",
+      "line": 20
+    },
+    {
+      "from": "lib/index#diagramsOnDisk",
+      "to": "file:lib/index.js",
+      "type": "declared-in",
+      "file": "lib/index.js",
+      "line": 25
+    },
+    {
       "from": "lib/index#haystack",
       "to": "file:lib/index.js",
       "type": "declared-in",
       "file": "lib/index.js",
-      "line": 11
+      "line": 29
     },
     {
       "from": "lib/index#generateToDir",
       "to": "file:lib/index.js",
       "type": "declared-in",
       "file": "lib/index.js",
-      "line": 22
+      "line": 40
     },
     {
       "from": "lib/index#generateForRepo",
       "to": "file:lib/index.js",
       "type": "declared-in",
       "file": "lib/index.js",
-      "line": 31
+      "line": 102
     },
     {
       "from": "lib/index#hasLlmKey",
       "to": "file:lib/index.js",
       "type": "declared-in",
       "file": "lib/index.js",
-      "line": 41
+      "line": 112
     },
     {
       "from": "lib/index#resolveGenerateMode",
       "to": "file:lib/index.js",
       "type": "declared-in",
       "file": "lib/index.js",
-      "line": 52
+      "line": 123
     },
     {
       "from": "lib/index#generateToDirAsync",
       "to": "file:lib/index.js",
       "type": "declared-in",
       "file": "lib/index.js",
-      "line": 78
+      "line": 149
     },
     {
       "from": "lib/index#generateForRepoAsync",
       "to": "file:lib/index.js",
       "type": "declared-in",
       "file": "lib/index.js",
-      "line": 113
+      "line": 233
     },
     {
       "from": "lib/index#checkKit",
       "to": "file:lib/index.js",
       "type": "declared-in",
       "file": "lib/index.js",
-      "line": 125
+      "line": 245
     },
     {
       "from": "lib/init#productRoot",
@@ -12317,7 +13224,7 @@
       "to": "file:lib/llm-generate.js",
       "type": "declared-in",
       "file": "lib/llm-generate.js",
-      "line": 352
+      "line": 355
     },
     {
       "from": "lib/pr-comment#esc",
@@ -12437,6 +13344,146 @@
       "type": "declared-in",
       "file": "lib/risk-rules.js",
       "line": 205
+    },
+    {
+      "from": "lib/rules#kindOf",
+      "to": "file:lib/rules.js",
+      "type": "declared-in",
+      "file": "lib/rules.js",
+      "line": 19
+    },
+    {
+      "from": "lib/rules#extractDiagramModel",
+      "to": "file:lib/rules.js",
+      "type": "declared-in",
+      "file": "lib/rules.js",
+      "line": 28
+    },
+    {
+      "from": "lib/rules#stripComment",
+      "to": "file:lib/rules.js",
+      "type": "declared-in",
+      "file": "lib/rules.js",
+      "line": 54
+    },
+    {
+      "from": "lib/rules#parseInlineArray",
+      "to": "file:lib/rules.js",
+      "type": "declared-in",
+      "file": "lib/rules.js",
+      "line": 73
+    },
+    {
+      "from": "lib/rules#parseScalar",
+      "to": "file:lib/rules.js",
+      "type": "declared-in",
+      "file": "lib/rules.js",
+      "line": 100
+    },
+    {
+      "from": "lib/rules#parseYaml",
+      "to": "file:lib/rules.js",
+      "type": "declared-in",
+      "file": "lib/rules.js",
+      "line": 114
+    },
+    {
+      "from": "lib/rules#globToRegExp",
+      "to": "file:lib/rules.js",
+      "type": "declared-in",
+      "file": "lib/rules.js",
+      "line": 184
+    },
+    {
+      "from": "lib/rules#asList",
+      "to": "file:lib/rules.js",
+      "type": "declared-in",
+      "file": "lib/rules.js",
+      "line": 192
+    },
+    {
+      "from": "lib/rules#normalizeRules",
+      "to": "file:lib/rules.js",
+      "type": "declared-in",
+      "file": "lib/rules.js",
+      "line": 197
+    },
+    {
+      "from": "lib/rules#loadRules",
+      "to": "file:lib/rules.js",
+      "type": "declared-in",
+      "file": "lib/rules.js",
+      "line": 218
+    },
+    {
+      "from": "lib/rules#resolveRulesPath",
+      "to": "file:lib/rules.js",
+      "type": "declared-in",
+      "file": "lib/rules.js",
+      "line": 229
+    },
+    {
+      "from": "lib/rules#assignLayer",
+      "to": "file:lib/rules.js",
+      "type": "declared-in",
+      "file": "lib/rules.js",
+      "line": 245
+    },
+    {
+      "from": "lib/rules#compilePattern",
+      "to": "file:lib/rules.js",
+      "type": "declared-in",
+      "file": "lib/rules.js",
+      "line": 254
+    },
+    {
+      "from": "lib/rules#checkNaming",
+      "to": "file:lib/rules.js",
+      "type": "declared-in",
+      "file": "lib/rules.js",
+      "line": 263
+    },
+    {
+      "from": "lib/rules#checkCrossLayer",
+      "to": "file:lib/rules.js",
+      "type": "declared-in",
+      "file": "lib/rules.js",
+      "line": 293
+    },
+    {
+      "from": "lib/rules#checkRelWhitelist",
+      "to": "file:lib/rules.js",
+      "type": "declared-in",
+      "file": "lib/rules.js",
+      "line": 315
+    },
+    {
+      "from": "lib/rules#relMatchesWhitelist",
+      "to": "file:lib/rules.js",
+      "type": "declared-in",
+      "file": "lib/rules.js",
+      "line": 335
+    },
+    {
+      "from": "lib/rules#evaluateRules",
+      "to": "file:lib/rules.js",
+      "type": "declared-in",
+      "file": "lib/rules.js",
+      "line": 348
+    },
+    {
+      "from": "lib/rules#evaluateKitRules",
+      "to": "file:lib/rules.js",
+      "type": "declared-in",
+      "file": "lib/rules.js",
+      "line": 367
+    },
+    {
+      "from": "lib/rules#formatRuleViolations",
+      "to": "file:lib/rules.js",
+      "type": "declared-in",
+      "file": "lib/rules.js",
+      "line": 379
     },
     {
       "from": "lib/scan#readSafe",
@@ -12744,7 +13791,7 @@
       "to": "file:lib/validate.js",
       "type": "declared-in",
       "file": "lib/validate.js",
-      "line": 115
+      "line": 132
     },
     {
       "from": "lib/workspace#defaultRegistryPath",
@@ -14962,6 +16009,62 @@
       "builtin": true
     },
     {
+      "from": "file:scripts/ci-drift-action.mjs",
+      "to": "ext:module",
+      "type": "uses-external",
+      "file": "scripts/ci-drift-action.mjs",
+      "line": 15,
+      "builtin": true
+    },
+    {
+      "from": "file:scripts/ci-drift-action.mjs",
+      "to": "ext:fs",
+      "type": "uses-external",
+      "file": "scripts/ci-drift-action.mjs",
+      "line": 16,
+      "builtin": true
+    },
+    {
+      "from": "file:scripts/ci-drift-action.mjs",
+      "to": "ext:path",
+      "type": "uses-external",
+      "file": "scripts/ci-drift-action.mjs",
+      "line": 17,
+      "builtin": true
+    },
+    {
+      "from": "file:scripts/ci-drift-action.mjs",
+      "to": "ext:url",
+      "type": "uses-external",
+      "file": "scripts/ci-drift-action.mjs",
+      "line": 18,
+      "builtin": true
+    },
+    {
+      "from": "file:scripts/ci-drift-action.mjs",
+      "to": "file:lib/index.js",
+      "type": "import",
+      "file": "scripts/ci-drift-action.mjs",
+      "line": 21,
+      "isType": false
+    },
+    {
+      "from": "file:scripts/ci-drift-action.mjs",
+      "to": "file:lib/rules.js",
+      "type": "import",
+      "file": "scripts/ci-drift-action.mjs",
+      "line": 22,
+      "isType": false
+    },
+    {
+      "from": "file:scripts/ci-drift-action.mjs",
+      "to": "file:lib/pr-comment.js",
+      "type": "import",
+      "file": "scripts/ci-drift-action.mjs",
+      "line": 23,
+      "isType": false
+    },
+    {
       "from": "file:scripts/pr-comment.js",
       "to": "ext:path",
       "type": "uses-external",
@@ -15218,6 +16321,38 @@
       "isType": false
     },
     {
+      "from": "file:lib/cache.js",
+      "to": "ext:fs",
+      "type": "uses-external",
+      "file": "lib/cache.js",
+      "line": 14,
+      "builtin": true
+    },
+    {
+      "from": "file:lib/cache.js",
+      "to": "ext:path",
+      "type": "uses-external",
+      "file": "lib/cache.js",
+      "line": 15,
+      "builtin": true
+    },
+    {
+      "from": "file:lib/cache.js",
+      "to": "ext:crypto",
+      "type": "uses-external",
+      "file": "lib/cache.js",
+      "line": 16,
+      "builtin": true
+    },
+    {
+      "from": "file:lib/cache.js",
+      "to": "file:lib/scan.js",
+      "type": "import",
+      "file": "lib/cache.js",
+      "line": 17,
+      "isType": false
+    },
+    {
       "from": "file:lib/cli.js",
       "to": "ext:fs",
       "type": "uses-external",
@@ -15326,7 +16461,7 @@
       "to": "file:lib/pro/auth-client.js",
       "type": "import",
       "file": "lib/cli.js",
-      "line": 649,
+      "line": 700,
       "isType": false
     },
     {
@@ -15334,7 +16469,7 @@
       "to": "file:lib/pro/auth-client.js",
       "type": "import",
       "file": "lib/cli.js",
-      "line": 682,
+      "line": 733,
       "isType": false
     },
     {
@@ -15342,7 +16477,7 @@
       "to": "file:lib/pro/features.js",
       "type": "import",
       "file": "lib/cli.js",
-      "line": 683,
+      "line": 734,
       "isType": false
     },
     {
@@ -15350,7 +16485,7 @@
       "to": "file:lib/telemetry.js",
       "type": "import",
       "file": "lib/cli.js",
-      "line": 785,
+      "line": 836,
       "isType": false
     },
     {
@@ -15523,10 +16658,26 @@
     },
     {
       "from": "file:lib/index.js",
+      "to": "file:lib/cache.js",
+      "type": "import",
+      "file": "lib/index.js",
+      "line": 17,
+      "isType": false
+    },
+    {
+      "from": "file:lib/index.js",
       "to": "file:lib/llm-generate.js",
       "type": "import",
       "file": "lib/index.js",
-      "line": 84,
+      "line": 187,
+      "isType": false
+    },
+    {
+      "from": "file:lib/index.js",
+      "to": "file:lib/rules.js",
+      "type": "import",
+      "file": "lib/index.js",
+      "line": 255,
       "isType": false
     },
     {
@@ -15534,7 +16685,7 @@
       "to": "file:lib/refine-route.js",
       "type": "import",
       "file": "lib/index.js",
-      "line": 155,
+      "line": 288,
       "isType": false
     },
     {
@@ -15542,7 +16693,7 @@
       "to": "file:lib/refine-route.js",
       "type": "import",
       "file": "lib/index.js",
-      "line": 156,
+      "line": 289,
       "isType": false
     },
     {
@@ -15662,7 +16813,7 @@
       "to": "file:lib/refine-route.js",
       "type": "import",
       "file": "lib/llm-generate.js",
-      "line": 228,
+      "line": 231,
       "isType": false
     },
     {
@@ -15695,6 +16846,38 @@
       "type": "import",
       "file": "lib/refine-route.js",
       "line": 19,
+      "isType": false
+    },
+    {
+      "from": "file:lib/rules.js",
+      "to": "ext:fs",
+      "type": "uses-external",
+      "file": "lib/rules.js",
+      "line": 9,
+      "builtin": true
+    },
+    {
+      "from": "file:lib/rules.js",
+      "to": "ext:path",
+      "type": "uses-external",
+      "file": "lib/rules.js",
+      "line": 10,
+      "builtin": true
+    },
+    {
+      "from": "file:lib/rules.js",
+      "to": "file:lib/kit.js",
+      "type": "import",
+      "file": "lib/rules.js",
+      "line": 11,
+      "isType": false
+    },
+    {
+      "from": "file:lib/rules.js",
+      "to": "file:lib/validate.js",
+      "type": "import",
+      "file": "lib/rules.js",
+      "line": 12,
       "isType": false
     },
     {
@@ -15831,6 +17014,14 @@
       "type": "import",
       "file": "lib/validate.js",
       "line": 5,
+      "isType": false
+    },
+    {
+      "from": "file:lib/validate.js",
+      "to": "file:lib/rules.js",
+      "type": "import",
+      "file": "lib/validate.js",
+      "line": 107,
       "isType": false
     },
     {
@@ -16497,7 +17688,7 @@
       "layer": "util",
       "confidence": "high",
       "signal": "dir-name",
-      "files": 23
+      "files": 25
     },
     "lib/pro": {
       "layer": "util",
@@ -16518,5 +17709,5 @@
       "files": 7
     }
   },
-  "sessionStartedAt": "2026-09-04T15:03:25.939Z"
+  "sessionStartedAt": "2026-09-04T15:57:32.672Z"
 }
