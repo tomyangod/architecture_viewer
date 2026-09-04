@@ -19,13 +19,15 @@
 - [ ] av_session_report 对同一临时仓返回变更报告
 - [ ] av_archify_export 返回 scopeUsed / 组件连接计数 / 文件路径
 
-## 扩展冒烟
+## 扩展冒烟（暂缓）
 
-- [ ] `node scripts/build-vsix.js` 成功产出 .vsix（需 `node_modules/.bin` 在 PATH）
-- [ ] .vsix 体积合理（约 9 MB），含 `src/`、`lib/`、`assets/`、`vendor/mermaid.min.js`、NOTICE、LICENSE、六视图模板 `c4-*.md`/`class/block/deployment-ops.md`、`Dockerfile`
-- [ ] .vsix **不含** `.data/`、`archify-main/`、`web/`、`.av/`、`eval/`、`test/`、`pm/`（.vscodeignore 生效）
-- [ ] VS Code 安装 .vsix 后命令面板可见 `AV: Session Start` 等命令
-- [ ] 状态栏角标正常显示
+> VS Code 扩展方向推迟，以下项目暂不阻塞发版。扩展重启时取消此段 deferred 标记。
+
+- [ ] ~~`node scripts/build-vsix.js` 成功产出 .vsix（需 `node_modules/.bin` 在 PATH）~~
+- [ ] ~~.vsix 体积合理（约 9 MB），含 `src/`、`lib/`、`assets/`、`vendor/mermaid.min.js`、NOTICE、LICENSE、六视图模板 `c4-*.md`/`class/block/deployment-ops.md`、`Dockerfile`~~
+- [ ] ~~.vsix **不含** `.data/`、`archify-main/`、`web/`、`.av/`、`eval/`、`test/`、`pm/`（.vscodeignore 生效）~~
+- [ ] ~~VS Code 安装 .vsix 后命令面板可见 `AV: Session Start` 等命令~~
+- [ ] ~~状态栏角标正常显示~~
 
 ## 网页冒烟
 

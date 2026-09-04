@@ -24,7 +24,7 @@
 
 **目标**：Pro 7 天试用流程；漂移检出/增量同步等价值时刻后引导升级；漏斗事件埋点（登录→试用→付费）。
 
-**涉及文件**：`account/auth-client.js` `lib/telemetry.js` `web/public/index.html`
+**涉及文件**：`lib/pro/auth-client.js` `lib/telemetry.js` `web/public/index.html`
 
 **验收标准**（逐条勾选，全部满足才能标 done）：
 - [ ] 新用户可一键开启 7 天 Pro 试用
@@ -33,7 +33,7 @@
 
 **验收命令**（退出码 0 即通过；人工验收项需在周报中记录证据）：
   ```bash
-  grep -q "trial" account/auth-client.js web/lib/auth.js 2>/dev/null && echo TRIAL_OK
+  grep -q "trial" lib/pro/auth-client.js lib/pro/entitlement.js 2>/dev/null && echo TRIAL_OK
   ```
 
 **参考文档**：—

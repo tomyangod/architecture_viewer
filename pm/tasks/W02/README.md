@@ -1,28 +1,28 @@
-# W02 任务卡 · 打包脚手架 / Webview 回归 / 账号骨架
+# W02 任务卡 · 网页离线包 / 冒烟清单 / 账号骨架（扩展暂缓）
 
 > 阶段：Phase 0 ｜ 周期：2026-09-07 ~ 2026-09-11 ｜ 周截止：2026-09-11
 >
-> 完成度：5/6 ████████░░ 83%
+> 完成度：4/6 ███████░░░ 67%
 
 > 本文件由 `node pm/scripts/wbs-cards.mjs` 自动生成，请勿手改；状态请改 `pm/tasks/tasks.json` 或用 `node pm/scripts/wbs.mjs set <任务号> <状态>`。
 
 
-### <a id="w02-01"></a>✅ W02-01 · VS Code 扩展打包脚手架（vsce） 
+### <a id="w02-01"></a>⬜ W02-01 · VS Code 扩展打包脚手架（vsce） 
 
 | 字段 | 内容 |
 |---|---|
-| 优先级 | **P0** |
-| 状态 | 已完成（进度 100%） |
+| 优先级 | **P2** |
+| 状态 | 未开始（进度 0%） |
 | 工时预估 | 4h |
 | 截止 | 2026-09-11 |
 | 依赖 | [W01-01](../W01/README.md#w01-01)、[W01-02](../W01/README.md#w01-02) |
 | 负责人 | heyangyan |
-| 标签 | infra / release |
+| 标签 | infra / release / deferred |
 
 
-**背景**：package.json 已有 publisher/commands，但缺 icon、repository 完整字段、vsce 打包验证；.vscodeignore 需确保不把 eval/、web/ 多余文件打进去。
+**背景**：暂缓：当前优先 CLI/MCP 方向，VS Code 扩展打包推迟到方向明确后再做。package.json 已有 publisher/commands，.vscodeignore 与 build-vsix.js 脚手架已就绪，重启时可直接用。
 
-**目标**：一条命令打出可侧载的 .vsix，内容最小且完整（含 vendor/mermaid、NOTICE、LICENSE、六视图模板）。
+**目标**：（暂缓）一条命令打出可侧载的 .vsix，内容最小且完整（含 vendor/mermaid、NOTICE、LICENSE、六视图模板）。
 
 **涉及文件**：`package.json` `.vscodeignore` `scripts/build-vsix.js` `assets/icon.png`
 
@@ -40,7 +40,7 @@
 **参考文档**：`package.json` `.vscodeignore`
 
 **活动记录**：
-  - 2026-09-04 状态变更 todo→done：校准：build-vsix.js 打包通；补 .vscodeignore 排除 .data/archify-main/web/.av，vsix 29MB→9MB，六视图模板保留
+  - 2026-09-04 状态变更 done→todo（暂缓）：暂缓 VS Code 扩展方向；build-vsix.js 与 .vscodeignore 脚手架已就绪保留，后续重启可直接用
 
 ---
 
@@ -80,22 +80,22 @@
 
 ---
 
-### <a id="w02-03"></a>✅ W02-03 · Webview 离线回归与 CSP 加固 
+### <a id="w02-03"></a>⬜ W02-03 · Webview 离线回归与 CSP 加固 
 
 | 字段 | 内容 |
 |---|---|
-| 优先级 | **P0** |
-| 状态 | 已完成（进度 100%） |
+| 优先级 | **P2** |
+| 状态 | 未开始（进度 0%） |
 | 工时预估 | 3h |
 | 截止 | 2026-09-11 |
 | 依赖 | [W01-01](../W01/README.md#w01-01) |
 | 负责人 | heyangyan |
-| 标签 | extension / security |
+| 标签 | extension / security / deferred |
 
 
-**背景**：buildPreviewHtml 的 CSP 当前放行 cdn.jsdelivr.net；离线化后应收紧为 localResourceRoots + cspSource，消除远程 connect-src。
+**背景**：暂缓：VS Code 扩展方向推迟，Webview CSP 加固一并暂缓。W01-01 离线化已消除 CDN 依赖，扩展重启时直接收紧 CSP 即可。
 
-**目标**：Webview CSP 无远程域名；F5 开发宿主与侧载 vsix 两条路径断网均可 Preview。
+**目标**：（暂缓）Webview CSP 无远程域名；F5 开发宿主与侧载 vsix 两条路径断网均可 Preview。
 
 **涉及文件**：`src/extension.js`
 
@@ -112,7 +112,7 @@
 **参考文档**：`src/extension.js`
 
 **活动记录**：
-  - 2026-09-04 状态变更 todo→done：校准：src 无 cdn.jsdelivr/unpkg(W01-01 离线化已收紧 CSP)；断网 F5 人工项发版前走查
+  - 2026-09-04 状态变更 done→todo（暂缓）：随 VS Code 扩展方向一并暂缓；W01-01 离线化已消除 CDN 依赖，重启时只需收紧 CSP
 
 ---
 
@@ -129,9 +129,9 @@
 | 标签 | docs / dx |
 
 
-**背景**：README/DEMO 中 python -m http.server 是旧路径；扩展 Preview 与 node web 已覆盖，多一条 Python 依赖多一层流失。
+**背景**：README/DEMO 中 python -m http.server 是旧路径；CLI session report 与 node web 已覆盖，多一条 Python 依赖多一层流失。
 
-**目标**：文档与 demo 脚本统一走扩展 Preview / npm run web；python 仅在「无扩展兜底」附录中保留。
+**目标**：文档与 demo 脚本统一走 CLI session report / npm run web；python 仅在附录兜底中保留。
 
 **涉及文件**：`README.md` `DEMO.md` `scripts/demo.sh` `USER_GUIDE.md`
 
@@ -159,21 +159,22 @@
 | 状态 | 已完成（进度 100%） |
 | 工时预估 | 2h |
 | 截止 | 2026-09-11 |
-| 依赖 | [W02-01](../W02/README.md#w02-01)、[W02-03](../W02/README.md#w02-03) |
+| 依赖 | 无 |
 | 负责人 | heyangyan |
 | 标签 | test / release |
 
 
-**背景**：上架前必须人工确认两条安装路径都可用，否则首批用户差评致命。产品已转向架构验收门，冒烟覆盖 CLI/MCP/扩展/网页/setup/文档/架构门七类。
+**背景**：上架前必须人工确认各路径可用。产品已转向架构验收门，冒烟覆盖 CLI/MCP/网页/setup/文档/架构门六类（扩展段暂缓，标 deferred）。
 
-**目标**：产出可勾选的冒烟清单文档：覆盖 extract/session start/session report/archify-export 等新命令体系，CLI + MCP + vsix 侧载 + 网页离线包各路径有预期结果。
+**目标**：产出可勾选的冒烟清单文档：覆盖 extract/session start/session report/archify-export 等新命令体系，CLI + MCP + 网页离线包各路径有预期结果。
 
 **涉及文件**：`pm/checklists/release-smoke.md`
 
 **验收标准**（逐条勾选，全部满足才能标 done）：
-- [ ] 清单覆盖 CLI/MCP/扩展/网页/setup/文档/架构门七类路径
+- [ ] 清单覆盖 CLI/MCP/网页/setup/文档/架构门六类路径
 - [ ] 每条命令有预期结果描述；MCP 工具数为 6（含 av_archify_export）
-- [ ] 含 vsix 瘦身检查（不含 .data/archify-main/web/.av）与网页 zip 离线检查
+- [ ] 含网页 zip 离线检查
+- [ ] 扩展段标注「暂缓」，不阻塞发版
 - [ ] 实际走查一遍并勾选记录
 
 **验收命令**（退出码 0 即通过；人工验收项需在周报中记录证据）：
@@ -184,16 +185,16 @@
 **参考文档**：—
 
 **活动记录**：
-  - 2026-09-04 状态变更 todo→done：校准：release-smoke.md 七类冒烟；MCP 5→6 工具、加 archify 链路与 vsix 瘦身检查
+  - 2026-09-04 状态变更 todo→done：校准：release-smoke.md 六类冒烟（扩展段暂缓不阻塞）；MCP 5→6 工具、加 archify 链路
 
 ---
 
-### <a id="w02-06"></a>⬜ W02-06 · 轻量邮箱账号体系骨架（≤3 文件） 
+### <a id="w02-06"></a>✅ W02-06 · 轻量邮箱账号体系骨架（≤3 文件） 
 
 | 字段 | 内容 |
 |---|---|
 | 优先级 | **P0** |
-| 状态 | 未开始（进度 0%） |
+| 状态 | 已完成（进度 100%） |
 | 工时预估 | 6h |
 | 截止 | 2026-09-11 |
 | 依赖 | 无 |
@@ -201,24 +202,27 @@
 | 标签 | account / pro |
 
 
-**背景**：License Key/设备码易盗版且体验差；账号体系是 Pro 门禁、Team 转化、埋点的共同底座。先做最小可用：邮箱验证码登录。注：服务端骨架已存在于 web/lib/pro/（auth.js/billing.js/entitlement.js/store.js/crypto.js，9/1 搭好）；本卡缺的是扩展端 client 与命令接入。
+**背景**：License Key/设备码易盗版且体验差；账号体系是 Pro 门禁、Team 转化、埋点的共同底座。先做最小可用：邮箱验证码登录。无框架依赖的 Pro 核心（auth/store/entitlement/crypto）统一下沉在 lib/pro/，CLI / MCP / web 三方复用；web 侧只留 Express 交付层（routes/billing/local 等）。本卡做 CLI/网页端 client 接入（扩展端暂缓）。
 
-**目标**：扩展内 Login 命令输入邮箱 → 服务端发码（开发期控制台打印/邮件 stub）→ 校验 → 本地持久化 token；whoami 可查登录态。复用 web/lib/pro/auth.js 服务端，新建扩展端 account/auth-client.js。
+**目标**：CLI auth login 命令输入邮箱 → 服务端发码（stub 模式控制台打印）→ 校验 → 本地持久化 token；auth whoami 可查登录态。复用 lib/pro/auth.js 服务端核心，新建 lib/pro/auth-client.js（CLI 可用，本地直调 / 远程 HTTP 双传输）。
 
-**涉及文件**：`account/auth-client.js` `web/lib/pro/auth.js` `src/extension.js` `account/README.md`
+**涉及文件**：`lib/pro/auth-client.js` `lib/pro/auth.js` `lib/pro/store.js` `lib/pro/entitlement.js` `lib/pro/crypto.js` `lib/pro/README.md` `web/lib/pro/routes.js` `web/lib/pro/billing.js` `web/lib/pro/local.js` `lib/cli.js` `package.json` `test/auth-client.test.js` `test/pro.test.js`
 
 **验收标准**（逐条勾选，全部满足才能标 done）：
-- [ ] 命令面板有 Architecture Viewer: Login / Logout / Who Am I
-- [ ] 输入邮箱后 6 位验证码流程可走通（stub 模式码打印在服务端日志）
-- [ ] token 持久化在 globalState，重启编辑器仍登录
-- [ ] 未登录调用 Pro 命令时提示登录而非崩溃
+- [ ] CLI auth login 输入邮箱后 6 位验证码流程可走通（stub 模式码打印在服务端日志）
+- [ ] token 持久化在 ~/.config/arch-viewer/auth.json（0600），重启终端仍登录
+- [ ] auth whoami 输出当前登录邮箱与 Pro 状态
+- [ ] 未登录调用 Pro 命令时 requireUser() 抛 AUTH_REQUIRED 提示登录而非崩溃
 
 **验收命令**（退出码 0 即通过；人工验收项需在周报中记录证据）：
   ```bash
-  test -f account/auth-client.js && test -f web/lib/pro/auth.js && test -f account/README.md && echo AUTH_OK
+  test -f lib/pro/auth-client.js && test -f lib/pro/auth.js && test -f lib/pro/README.md && echo AUTH_OK
+  ```
+  ```bash
+  node --test test/auth-client.test.js
   ```
 
 **参考文档**：`COMMERCIAL.md`
 
 **活动记录**：
-  - （暂无）
+  - 2026-09-04 状态变更 todo→done：CLI 邮箱验证码登录：lib/pro/auth-client.js（本地直调/HTTP 双传输，token 存 ~/.config/arch-viewer/auth.json 0600）；lib/pro/auth.js 加 requestLoginCode/verifyLoginCode/sessionByToken/logoutToken（HMAC 存码、10min、5 次尝试）；web/lib/pro/routes.js 加 /api/pro/auth/* 4 端点（Bearer+cookie）；cli.js 加 auth login/whoami/logout。架构门驱动重构：无框架的 Pro 核心 auth/store/entitlement/crypto 从 web/lib/pro 下沉 lib/pro（web 交付层反向依赖核心，方向合法）；9 个新测试全过，全量 281 测试 0 fail

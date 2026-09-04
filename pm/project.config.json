@@ -27,18 +27,18 @@
     "P2": "缓冲项，假期/余力时做"
   },
   "phases": [
-    { "id": 0, "name": "Phase 0 · 合规与包装", "weeks": [1, 2], "milestone": "可打包、可离线、商业化文档定稿", "gate": "vsix 本地侧载成功 + 断网 Preview 正常" },
-    { "id": 1, "name": "Phase 1 · 上架 × 获客并行", "weeks": [3, 4, 5, 6], "milestone": "双 Marketplace 上架 + 首批 100 安装", "gate": "Marketplace 可安装 + Free/Pro 门禁可演示" },
+    { "id": 0, "name": "Phase 0 · 合规与包装", "weeks": [1, 2], "milestone": "可离线、CLI/MCP 可交付、商业化文档定稿", "gate": "网页离线 zip 可跑 + npm test 全绿 + 架构门 NONE" },
+    { "id": 1, "name": "Phase 1 · CLI/网页获客并行", "weeks": [3, 4, 5, 6], "milestone": "npm/CLI 可安装 + 落地页上线 + 首批试用", "gate": "setup 一键接入可用 + Free/Pro 门禁可演示（CLI/网页）" },
     { "id": 2, "name": "Phase 2 · 差异化（收费理由落地）", "weeks": [7, 8, 9, 10, 11, 12], "milestone": "防漂移闭环 + 首笔 Pro 付费 + Team 试点意向", "gate": "PR 漂移评论在真实仓库运行 + 首笔付费到账" },
     { "id": 3, "name": "Phase 3 · 壁垒层（backlog）", "weeks": [13], "milestone": "架构资产管理器", "gate": "多仓聚合门户可用" }
   ],
   "weeks": [
     { "id": "W01", "num": 1, "start": "2026-08-31", "end": "2026-09-04", "deadline": "2026-09-04", "phase": 0, "theme": "离线化 / 合规 / 商业文档" },
-    { "id": "W02", "num": 2, "start": "2026-09-07", "end": "2026-09-11", "deadline": "2026-09-11", "phase": 0, "theme": "打包脚手架 / Webview 回归 / 账号骨架" },
+    { "id": "W02", "num": 2, "start": "2026-09-07", "end": "2026-09-11", "deadline": "2026-09-11", "phase": 0, "theme": "网页离线包 / 冒烟清单 / 账号骨架（扩展暂缓）" },
     { "id": "W03", "num": 3, "start": "2026-09-14", "end": "2026-09-18", "deadline": "2026-09-18", "phase": 1, "theme": "生成质量打磨 / 五仓回归" },
     { "id": "W04", "num": 4, "start": "2026-09-21", "end": "2026-09-25", "deadline": "2026-09-25", "phase": 1, "theme": "获客启动：教程文 / README / 种子博主" },
     { "id": "W05", "num": 5, "start": "2026-09-28", "end": "2026-10-02", "deadline": "2026-10-02", "phase": 1, "theme": "付费门禁 / 支付通道（国庆假期，轻量）", "holiday": true },
-    { "id": "W06", "num": 6, "start": "2026-10-05", "end": "2026-10-09", "deadline": "2026-10-09", "phase": 1, "theme": "双 Marketplace 上架 / 落地页 / 冲榜", "holiday": true, "deadlineNote": "国庆假期缓冲，上架允许滑至 2026-10-16" },
+    { "id": "W06", "num": 6, "start": "2026-10-05", "end": "2026-10-09", "deadline": "2026-10-09", "phase": 1, "theme": "落地页 / npm 分发 / 冲榜（Marketplace 暂缓）", "holiday": true, "deadlineNote": "国庆假期缓冲；VS Marketplace 上架暂缓，不挡本周落地页" },
     { "id": "W07", "num": 7, "start": "2026-10-12", "end": "2026-10-16", "deadline": "2026-10-16", "phase": 2, "theme": "增量生成引擎 / architecture-rules.yaml" },
     { "id": "W08", "num": 8, "start": "2026-10-19", "end": "2026-10-23", "deadline": "2026-10-23", "phase": 2, "theme": "CI Action 漂移检测 + PR 评论" },
     { "id": "W09", "num": 9, "start": "2026-10-26", "end": "2026-10-30", "deadline": "2026-10-30", "phase": 2, "theme": "付费转化优化 / 首笔 Pro" },

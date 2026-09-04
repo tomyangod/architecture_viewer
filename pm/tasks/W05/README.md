@@ -22,18 +22,18 @@
 
 **背景**：国庆周轻量任务；门禁是支付的前置，必须先能演示「免费能用、Pro 要登录」。
 
-**目标**：Pro 特性（云端精修入口、增量同步占位）未登录提示升级；Pro 账号登录后放行；特性开关服务端可配。
+**目标**：Pro 特性（云端精修入口、增量同步占位）未登录时 CLI/网页提示升级；Pro 账号登录后放行；特性开关服务端可配。扩展端门禁暂缓。
 
-**涉及文件**：`account/auth-client.js` `web/lib/auth.js` `src/extension.js`
+**涉及文件**：`lib/pro/auth-client.js` `lib/pro/entitlement.js`
 
 **验收标准**（逐条勾选，全部满足才能标 done）：
-- [ ] 未登录点 Pro 命令弹出升级提示（含定价页链接）
+- [ ] 未登录调用 Pro CLI 命令时提示升级（含定价页链接）
 - [ ] Pro 账号登录后命令可执行
-- [ ] Community 四命令永不禁用（COMMERCIAL.md 承诺）
+- [ ] Community 能力永不禁用（COMMERCIAL.md 承诺）
 
 **验收命令**（退出码 0 即通过；人工验收项需在周报中记录证据）：
   ```bash
-  grep -q "pro\|Pro" account/auth-client.js && echo GATE_OK
+  grep -q "requireUser\|entitlement" lib/pro/auth-client.js && echo GATE_OK
   ```
 
 **参考文档**：`COMMERCIAL.md`
@@ -92,9 +92,9 @@
 | 标签 | growth / content |
 
 
-**背景**：假期缓冲项；视频用于落地页、Marketplace 介绍、PH 发布。
+**背景**：假期缓冲项；视频用于落地页、README、PH 发布。Marketplace 介绍暂缓。
 
-**目标**：60 秒演示：Init→Generate→Preview→Validate→PR 漂移评论，中英字幕。
+**目标**：60 秒演示：session start → 改代码 → session report 红灯 / Before-Delta-After，中英字幕。
 
 **涉及文件**：`docs/demo.mp4`
 

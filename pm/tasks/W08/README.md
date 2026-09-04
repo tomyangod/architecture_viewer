@@ -44,7 +44,7 @@
 
 ---
 
-### <a id="w08-02"></a>⬜ W08-02 · rules 校验接入扩展 Validate 与 CI 
+### <a id="w08-02"></a>⬜ W08-02 · rules 校验接入 CLI Validate 与 CI 
 
 | 字段 | 内容 |
 |---|---|
@@ -54,23 +54,23 @@
 | 截止 | 2026-10-23 |
 | 依赖 | [W07-02](../W07/README.md#w07-02) |
 | 负责人 | heyangyan |
-| 标签 | core / ux |
+| 标签 | core / cli |
 
 
-**背景**：rules 只在 CLI 可用则用户感知弱；扩展 Validate 与 CI 必须同源。
+**背景**：rules 只写文件用户感知弱；CLI Validate 与 CI 必须同源。扩展 Validate 接入暂缓。
 
-**目标**：Validate 命令输出 rules 违规项；CI Action 同步执行 rules 检查。
+**目标**：CLI validate 输出 rules 违规项；CI Action 同步执行 rules 检查。
 
-**涉及文件**：`src/extension.js` `lib/validate.js` `.github/workflows/architecture-drift.yml`
+**涉及文件**：`lib/validate.js` `.github/workflows/architecture-drift.yml`
 
 **验收标准**（逐条勾选，全部满足才能标 done）：
-- [ ] 扩展 Validate 结果含 rules 段
+- [ ] CLI validate 结果含 rules 段
 - [ ] CI 对 rules 违规红灯
 - [ ] 文档说明 rules 文件写法
 
 **验收命令**（退出码 0 即通过；人工验收项需在周报中记录证据）：
   ```bash
-  grep -q "rules" src/extension.js && npm test && echo RULES_UI_OK
+  grep -q "rules" lib/validate.js && npm test && echo RULES_CLI_OK
   ```
 
 **参考文档**：`lib/validate.js`

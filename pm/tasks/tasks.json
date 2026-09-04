@@ -257,9 +257,9 @@
       "title": "VS Code 扩展打包脚手架（vsce）",
       "phase": 0,
       "week": 2,
-      "priority": "P0",
-      "status": "done",
-      "progress": 100,
+      "priority": "P2",
+      "status": "todo",
+      "progress": 0,
       "assignee": "heyangyan",
       "estHours": 4,
       "deadline": "2026-09-11",
@@ -269,10 +269,11 @@
       ],
       "tags": [
         "infra",
-        "release"
+        "release",
+        "deferred"
       ],
-      "context": "package.json 已有 publisher/commands，但缺 icon、repository 完整字段、vsce 打包验证；.vscodeignore 需确保不把 eval/、web/ 多余文件打进去。",
-      "goal": "一条命令打出可侧载的 .vsix，内容最小且完整（含 vendor/mermaid、NOTICE、LICENSE、六视图模板）。",
+      "context": "暂缓：当前优先 CLI/MCP 方向，VS Code 扩展打包推迟到方向明确后再做。package.json 已有 publisher/commands，.vscodeignore 与 build-vsix.js 脚手架已就绪，重启时可直接用。",
+      "goal": "（暂缓）一条命令打出可侧载的 .vsix，内容最小且完整（含 vendor/mermaid、NOTICE、LICENSE、六视图模板）。",
       "files": [
         "package.json",
         ".vscodeignore",
@@ -295,8 +296,8 @@
       "activity": [
         {
           "date": "2026-09-04",
-          "action": "状态变更 todo→done",
-          "detail": "校准：build-vsix.js 打包通；补 .vscodeignore 排除 .data/archify-main/web/.av，vsix 29MB→9MB，六视图模板保留"
+          "action": "状态变更 done→todo（暂缓）",
+          "detail": "暂缓 VS Code 扩展方向；build-vsix.js 与 .vscodeignore 脚手架已就绪保留，后续重启可直接用"
         }
       ]
     },
@@ -348,9 +349,9 @@
       "title": "Webview 离线回归与 CSP 加固",
       "phase": 0,
       "week": 2,
-      "priority": "P0",
-      "status": "done",
-      "progress": 100,
+      "priority": "P2",
+      "status": "todo",
+      "progress": 0,
       "assignee": "heyangyan",
       "estHours": 3,
       "deadline": "2026-09-11",
@@ -359,10 +360,11 @@
       ],
       "tags": [
         "extension",
-        "security"
+        "security",
+        "deferred"
       ],
-      "context": "buildPreviewHtml 的 CSP 当前放行 cdn.jsdelivr.net；离线化后应收紧为 localResourceRoots + cspSource，消除远程 connect-src。",
-      "goal": "Webview CSP 无远程域名；F5 开发宿主与侧载 vsix 两条路径断网均可 Preview。",
+      "context": "暂缓：VS Code 扩展方向推迟，Webview CSP 加固一并暂缓。W01-01 离线化已消除 CDN 依赖，扩展重启时直接收紧 CSP 即可。",
+      "goal": "（暂缓）Webview CSP 无远程域名；F5 开发宿主与侧载 vsix 两条路径断网均可 Preview。",
       "files": [
         "src/extension.js"
       ],
@@ -380,8 +382,8 @@
       "activity": [
         {
           "date": "2026-09-04",
-          "action": "状态变更 todo→done",
-          "detail": "校准：src 无 cdn.jsdelivr/unpkg(W01-01 离线化已收紧 CSP)；断网 F5 人工项发版前走查"
+          "action": "状态变更 done→todo（暂缓）",
+          "detail": "随 VS Code 扩展方向一并暂缓；W01-01 离线化已消除 CDN 依赖，重启时只需收紧 CSP"
         }
       ]
     },
@@ -401,8 +403,8 @@
         "docs",
         "dx"
       ],
-      "context": "README/DEMO 中 python -m http.server 是旧路径；扩展 Preview 与 node web 已覆盖，多一条 Python 依赖多一层流失。",
-      "goal": "文档与 demo 脚本统一走扩展 Preview / npm run web；python 仅在「无扩展兜底」附录中保留。",
+      "context": "README/DEMO 中 python -m http.server 是旧路径；CLI session report 与 node web 已覆盖，多一条 Python 依赖多一层流失。",
+      "goal": "文档与 demo 脚本统一走 CLI session report / npm run web；python 仅在附录兜底中保留。",
       "files": [
         "README.md",
         "DEMO.md",
@@ -439,23 +441,21 @@
       "assignee": "heyangyan",
       "estHours": 2,
       "deadline": "2026-09-11",
-      "deps": [
-        "W02-01",
-        "W02-03"
-      ],
+      "deps": [],
       "tags": [
         "test",
         "release"
       ],
-      "context": "上架前必须人工确认两条安装路径都可用，否则首批用户差评致命。产品已转向架构验收门，冒烟覆盖 CLI/MCP/扩展/网页/setup/文档/架构门七类。",
-      "goal": "产出可勾选的冒烟清单文档：覆盖 extract/session start/session report/archify-export 等新命令体系，CLI + MCP + vsix 侧载 + 网页离线包各路径有预期结果。",
+      "context": "上架前必须人工确认各路径可用。产品已转向架构验收门，冒烟覆盖 CLI/MCP/网页/setup/文档/架构门六类（扩展段暂缓，标 deferred）。",
+      "goal": "产出可勾选的冒烟清单文档：覆盖 extract/session start/session report/archify-export 等新命令体系，CLI + MCP + 网页离线包各路径有预期结果。",
       "files": [
         "pm/checklists/release-smoke.md"
       ],
       "acceptance": [
-        "清单覆盖 CLI/MCP/扩展/网页/setup/文档/架构门七类路径",
+        "清单覆盖 CLI/MCP/网页/setup/文档/架构门六类路径",
         "每条命令有预期结果描述；MCP 工具数为 6（含 av_archify_export）",
-        "含 vsix 瘦身检查（不含 .data/archify-main/web/.av）与网页 zip 离线检查",
+        "含网页 zip 离线检查",
+        "扩展段标注「暂缓」，不阻塞发版",
         "实际走查一遍并勾选记录"
       ],
       "acceptanceCommands": [
@@ -466,7 +466,7 @@
         {
           "date": "2026-09-04",
           "action": "状态变更 todo→done",
-          "detail": "校准：release-smoke.md 七类冒烟；MCP 5→6 工具、加 archify 链路与 vsix 瘦身检查"
+          "detail": "校准：release-smoke.md 六类冒烟（扩展段暂缓不阻塞）；MCP 5→6 工具、加 archify 链路"
         }
       ]
     },
@@ -476,8 +476,8 @@
       "phase": 0,
       "week": 2,
       "priority": "P0",
-      "status": "todo",
-      "progress": 0,
+      "status": "done",
+      "progress": 100,
       "assignee": "heyangyan",
       "estHours": 6,
       "deadline": "2026-09-11",
@@ -486,27 +486,43 @@
         "account",
         "pro"
       ],
-      "context": "License Key/设备码易盗版且体验差；账号体系是 Pro 门禁、Team 转化、埋点的共同底座。先做最小可用：邮箱验证码登录。注：服务端骨架已存在于 web/lib/pro/（auth.js/billing.js/entitlement.js/store.js/crypto.js，9/1 搭好）；本卡缺的是扩展端 client 与命令接入。",
-      "goal": "扩展内 Login 命令输入邮箱 → 服务端发码（开发期控制台打印/邮件 stub）→ 校验 → 本地持久化 token；whoami 可查登录态。复用 web/lib/pro/auth.js 服务端，新建扩展端 account/auth-client.js。",
+      "context": "License Key/设备码易盗版且体验差；账号体系是 Pro 门禁、Team 转化、埋点的共同底座。先做最小可用：邮箱验证码登录。无框架依赖的 Pro 核心（auth/store/entitlement/crypto）统一下沉在 lib/pro/，CLI / MCP / web 三方复用；web 侧只留 Express 交付层（routes/billing/local 等）。本卡做 CLI/网页端 client 接入（扩展端暂缓）。",
+      "goal": "CLI auth login 命令输入邮箱 → 服务端发码（stub 模式控制台打印）→ 校验 → 本地持久化 token；auth whoami 可查登录态。复用 lib/pro/auth.js 服务端核心，新建 lib/pro/auth-client.js（CLI 可用，本地直调 / 远程 HTTP 双传输）。",
       "files": [
-        "account/auth-client.js",
-        "web/lib/pro/auth.js",
-        "src/extension.js",
-        "account/README.md"
+        "lib/pro/auth-client.js",
+        "lib/pro/auth.js",
+        "lib/pro/store.js",
+        "lib/pro/entitlement.js",
+        "lib/pro/crypto.js",
+        "lib/pro/README.md",
+        "web/lib/pro/routes.js",
+        "web/lib/pro/billing.js",
+        "web/lib/pro/local.js",
+        "lib/cli.js",
+        "package.json",
+        "test/auth-client.test.js",
+        "test/pro.test.js"
       ],
       "acceptance": [
-        "命令面板有 Architecture Viewer: Login / Logout / Who Am I",
-        "输入邮箱后 6 位验证码流程可走通（stub 模式码打印在服务端日志）",
-        "token 持久化在 globalState，重启编辑器仍登录",
-        "未登录调用 Pro 命令时提示登录而非崩溃"
+        "CLI auth login 输入邮箱后 6 位验证码流程可走通（stub 模式码打印在服务端日志）",
+        "token 持久化在 ~/.config/arch-viewer/auth.json（0600），重启终端仍登录",
+        "auth whoami 输出当前登录邮箱与 Pro 状态",
+        "未登录调用 Pro 命令时 requireUser() 抛 AUTH_REQUIRED 提示登录而非崩溃"
       ],
       "acceptanceCommands": [
-        "test -f account/auth-client.js && test -f web/lib/pro/auth.js && test -f account/README.md && echo AUTH_OK"
+        "test -f lib/pro/auth-client.js && test -f lib/pro/auth.js && test -f lib/pro/README.md && echo AUTH_OK",
+        "node --test test/auth-client.test.js"
       ],
       "refs": [
         "COMMERCIAL.md"
       ],
-      "activity": []
+      "activity": [
+        {
+          "date": "2026-09-04",
+          "action": "状态变更 todo→done",
+          "detail": "CLI 邮箱验证码登录：lib/pro/auth-client.js（本地直调/HTTP 双传输，token 存 ~/.config/arch-viewer/auth.json 0600）；lib/pro/auth.js 加 requestLoginCode/verifyLoginCode/sessionByToken/logoutToken（HMAC 存码、10min、5 次尝试）；web/lib/pro/routes.js 加 /api/pro/auth/* 4 端点（Bearer+cookie）；cli.js 加 auth login/whoami/logout。架构门驱动重构：无框架的 Pro 核心 auth/store/entitlement/crypto 从 web/lib/pro 下沉 lib/pro（web 交付层反向依赖核心，方向合法）；9 个新测试全过，全量 281 测试 0 fail"
+        }
+      ]
     },
     {
       "id": "W03-01",
@@ -514,24 +530,21 @@
       "phase": 1,
       "week": 3,
       "priority": "P0",
-      "status": "todo",
-      "progress": 0,
+      "status": "done",
+      "progress": 100,
       "assignee": "heyangyan",
       "estHours": 8,
       "deadline": "2026-09-18",
-      "deps": [
-        "W02-01"
-      ],
+      "deps": [],
       "tags": [
         "core",
         "quality"
       ],
       "context": "当前 generate 产出确定性骨架，LLM 填图靠用户手动贴 AGENT.md；生成后 Rel 校验已在命令内串联但错误提示需更可操作。",
-      "goal": "AGENT.md 协议内置进扩展（生成时自动写入套件）；Generate 完成后自动跑校验并在输出中给出可点击的修复提示。",
+      "goal": "AGENT.md 协议内置（生成时自动写入套件）；Generate 完成后自动跑校验并在 CLI 输出中给出可操作的修复提示。",
       "files": [
         "lib/generate.js",
         "lib/kit.js",
-        "src/extension.js",
         "AGENT.md"
       ],
       "acceptance": [
@@ -549,7 +562,13 @@
         "AGENT.md",
         "eval/REPORT.md"
       ],
-      "activity": []
+      "activity": [
+        {
+          "date": "2026-09-04",
+          "action": "状态变更 todo→done",
+          "detail": "AGENT.md 已在 KIT_FILES 内置（init 自动复制）；validate.js 每条 error 后加可操作修复提示（Rel 未声明→提示加 Container/System 声明、模板占位→提示替换、密钥泄露→提示删除等）；cli.js printGenerateResult 加校验摘要（PASS/FAIL+计数）+ null 安全（r.drift 可能为 null）；eval 三仓 0 error 全 PASS；npm test 290/289/0"
+        }
+      ]
     },
     {
       "id": "W03-02",
@@ -593,21 +612,20 @@
       "title": "侧栏树视图 + 右键刷新此视图",
       "phase": 1,
       "week": 3,
-      "priority": "P1",
+      "priority": "P2",
       "status": "todo",
       "progress": 0,
       "assignee": "heyangyan",
       "estHours": 5,
       "deadline": "2026-09-18",
-      "deps": [
-        "W02-03"
-      ],
+      "deps": [],
       "tags": [
         "extension",
-        "ux"
+        "ux",
+        "deferred"
       ],
-      "context": "命令面板对新用户不够直观；侧栏树是 VS Code 扩展的标准交互，也为后续单视图增量刷新铺路。",
-      "goal": "活动栏新增 Architecture Viewer 图标，树列六视图；单击打开 Preview 并定位 tab，右键支持「刷新此视图」「在编辑器中打开图源」。",
+      "context": "暂缓：VS Code 扩展方向推迟，侧栏树视图一并暂缓。重启扩展时再做。",
+      "goal": "（暂缓）活动栏新增 Architecture Viewer 图标，树列六视图；单击打开 Preview 并定位 tab。",
       "files": [
         "src/extension.js",
         "src/treeView.js"
@@ -668,8 +686,8 @@
       "phase": 1,
       "week": 4,
       "priority": "P0",
-      "status": "todo",
-      "progress": 0,
+      "status": "done",
+      "progress": 100,
       "assignee": "heyangyan",
       "estHours": 3,
       "deadline": "2026-09-25",
@@ -681,8 +699,8 @@
         "growth",
         "docs"
       ],
-      "context": "README 是 Marketplace 与 GitHub 的第一转化页；调研显示 GitHub README 是开发者工具最长尾渠道。",
-      "goal": "首屏放 60 秒 demo GIF、一行价值主张、安装命令、Marketplace badge（上架后启用）、中英链接。",
+      "context": "README 是 GitHub / npm 的第一转化页；调研显示 GitHub README 是开发者工具最长尾渠道。VS Marketplace badge 暂缓。",
+      "goal": "首屏放 60 秒 demo GIF、一行价值主张（架构验收门）、npm/CLI 安装命令、中英链接。Marketplace badge 仅占位、不挡验收。",
       "files": [
         "README.md",
         "README.en.md",
@@ -690,7 +708,7 @@
       ],
       "acceptance": [
         "README 首屏（前 30 行）含 demo GIF 引用",
-        "含 Marketplace 安装命令与 badge 占位",
+        "含 npm / npx arch-viewer setup 安装命令",
         "中英 README 互相链接"
       ],
       "acceptanceCommands": [
@@ -699,7 +717,13 @@
       "refs": [
         "README.md"
       ],
-      "activity": []
+      "activity": [
+        {
+          "date": "2026-09-04",
+          "action": "状态变更 todo→done",
+          "detail": "README.md 首屏加 demo.gif 引用、去 VS Code 扩展主路径改为 CLI/MCP/网页四端、加 Pro 账号命令段、加遥测隐私段、中英互链；README.en.md 全文重写对齐中文版"
+        }
+      ]
     },
     {
       "id": "W04-03",
@@ -707,8 +731,8 @@
       "phase": 1,
       "week": 4,
       "priority": "P0",
-      "status": "todo",
-      "progress": 0,
+      "status": "done",
+      "progress": 100,
       "assignee": "heyangyan",
       "estHours": 4,
       "deadline": "2026-09-25",
@@ -739,8 +763,8 @@
       "phase": 1,
       "week": 4,
       "priority": "P1",
-      "status": "todo",
-      "progress": 0,
+      "status": "done",
+      "progress": 100,
       "assignee": "heyangyan",
       "estHours": 4,
       "deadline": "2026-09-25",
@@ -752,22 +776,31 @@
         "pro"
       ],
       "context": "付费率/留存只能靠数据；但企业用户对遥测敏感，必须默认关、可审计、不采代码内容。",
-      "goal": "lib/telemetry.js：命令使用、生成耗时、校验结果计数；配置项默认 false；开启时仅发事件名与时长，不含路径/代码。",
+      "goal": "lib/telemetry.js：CLI 命令使用、生成耗时、校验结果计数；配置项默认 false；开启时仅发事件名与时长，不含路径/代码。扩展端埋点暂缓。",
       "files": [
         "lib/telemetry.js",
+        "lib/cli.js",
         "package.json",
-        "src/extension.js"
+        "test/telemetry.test.js",
+        "README.md",
+        "README.en.md"
       ],
       "acceptance": [
-        "architectureViewer.telemetry 默认 false",
-        "开启后五条命令各触发事件，payload 中无文件路径与代码片段",
+        "telemetry 配置默认 false",
+        "开启后 CLI 主命令各触发事件，payload 中无文件路径与代码片段",
         "隐私说明写入 README"
       ],
       "acceptanceCommands": [
         "grep -q \"telemetry\" lib/telemetry.js && grep -q \"false\" package.json && echo TELEMETRY_OK"
       ],
       "refs": [],
-      "activity": []
+      "activity": [
+        {
+          "date": "2026-09-04",
+          "action": "状态变更 todo→done",
+          "detail": "lib/telemetry.js：默认关、ARCH_TELEMETRY=1 开启、DO_NOT_TRACK 优先级最高；敏感字段 denylist（path/file/code/repo/token 等）不透传；CLI main() 入口 wrap() 自动埋点（命令名+耗时+退出码）；package.json 加 telemetry.enabled=false；7 个测试全过；README 中英双语加隐私段"
+        }
+      ]
     },
     {
       "id": "W05-01",
@@ -789,19 +822,18 @@
         "account"
       ],
       "context": "国庆周轻量任务；门禁是支付的前置，必须先能演示「免费能用、Pro 要登录」。",
-      "goal": "Pro 特性（云端精修入口、增量同步占位）未登录提示升级；Pro 账号登录后放行；特性开关服务端可配。",
+      "goal": "Pro 特性（云端精修入口、增量同步占位）未登录时 CLI/网页提示升级；Pro 账号登录后放行；特性开关服务端可配。扩展端门禁暂缓。",
       "files": [
-        "account/auth-client.js",
-        "web/lib/auth.js",
-        "src/extension.js"
+        "lib/pro/auth-client.js",
+        "lib/pro/entitlement.js"
       ],
       "acceptance": [
-        "未登录点 Pro 命令弹出升级提示（含定价页链接）",
+        "未登录调用 Pro CLI 命令时提示升级（含定价页链接）",
         "Pro 账号登录后命令可执行",
-        "Community 四命令永不禁用（COMMERCIAL.md 承诺）"
+        "Community 能力永不禁用（COMMERCIAL.md 承诺）"
       ],
       "acceptanceCommands": [
-        "grep -q \"pro\\|Pro\" account/auth-client.js && echo GATE_OK"
+        "grep -q \"requireUser\\|entitlement\" lib/pro/auth-client.js && echo GATE_OK"
       ],
       "refs": [
         "COMMERCIAL.md"
@@ -863,8 +895,8 @@
         "growth",
         "content"
       ],
-      "context": "假期缓冲项；视频用于落地页、Marketplace 介绍、PH 发布。",
-      "goal": "60 秒演示：Init→Generate→Preview→Validate→PR 漂移评论，中英字幕。",
+      "context": "假期缓冲项；视频用于落地页、README、PH 发布。Marketplace 介绍暂缓。",
+      "goal": "60 秒演示：session start → 改代码 → session report 红灯 / Before-Delta-After，中英字幕。",
       "files": [
         "docs/demo.mp4"
       ],
@@ -884,23 +916,23 @@
       "title": "VS Marketplace + Open VSX 双上架",
       "phase": 1,
       "week": 6,
-      "priority": "P0",
+      "priority": "P2",
       "status": "todo",
       "progress": 0,
       "assignee": "heyangyan",
       "estHours": 4,
       "deadline": "2026-10-09",
       "deps": [
-        "W02-01",
         "W03-02",
         "W04-02"
       ],
       "tags": [
         "release",
-        "milestone"
+        "milestone",
+        "deferred"
       ],
-      "context": "Open VSX 覆盖 Cursor 用户；两市场都过审才算 Phase 1 交付。国庆缓冲允许滑至 10-16。",
-      "goal": "扩展在两个市场可搜索、可安装；publisher 验证完成。",
+      "context": "暂缓：VS Code 扩展方向推迟，Marketplace 上架一并暂缓。当前优先 CLI/MCP/网页三条路径。扩展重启时直接推进。",
+      "goal": "（暂缓）扩展在两个市场可搜索、可安装；publisher 验证完成。",
       "files": [
         "package.json"
       ],
@@ -998,13 +1030,12 @@
       "estHours": 2,
       "deadline": "2026-10-09",
       "deps": [
-        "W06-01",
         "W04-04"
       ],
       "tags": [
         "metrics"
       ],
-      "context": "周报需要安装/激活数据支撑转化率判断；Marketplace 后台 + 遥测双来源。",
+      "context": "周报需要安装/激活数据支撑转化率判断。数据源改为 npm 下载 + CLI/网页遥测；Marketplace 后台待扩展重启后再加。",
       "goal": "pm/metrics.md 模板：周安装、周活跃、Generate 触发数、Pro 登录数，每周五随周报更新。",
       "files": [
         "pm/metrics.md"
@@ -1145,7 +1176,7 @@
     },
     {
       "id": "W08-02",
-      "title": "rules 校验接入扩展 Validate 与 CI",
+      "title": "rules 校验接入 CLI Validate 与 CI",
       "phase": 2,
       "week": 8,
       "priority": "P0",
@@ -1159,22 +1190,21 @@
       ],
       "tags": [
         "core",
-        "ux"
+        "cli"
       ],
-      "context": "rules 只在 CLI 可用则用户感知弱；扩展 Validate 与 CI 必须同源。",
-      "goal": "Validate 命令输出 rules 违规项；CI Action 同步执行 rules 检查。",
+      "context": "rules 只写文件用户感知弱；CLI Validate 与 CI 必须同源。扩展 Validate 接入暂缓。",
+      "goal": "CLI validate 输出 rules 违规项；CI Action 同步执行 rules 检查。",
       "files": [
-        "src/extension.js",
         "lib/validate.js",
         ".github/workflows/architecture-drift.yml"
       ],
       "acceptance": [
-        "扩展 Validate 结果含 rules 段",
+        "CLI validate 结果含 rules 段",
         "CI 对 rules 违规红灯",
         "文档说明 rules 文件写法"
       ],
       "acceptanceCommands": [
-        "grep -q \"rules\" src/extension.js && npm test && echo RULES_UI_OK"
+        "grep -q \"rules\" lib/validate.js && npm test && echo RULES_CLI_OK"
       ],
       "refs": [
         "lib/validate.js"
@@ -1237,7 +1267,7 @@
       "context": "2% 转化需要主动设计：7 天试用、价值时刻后弹 paywall（第 N 次生成或首次漂移检出）。",
       "goal": "Pro 7 天试用流程；漂移检出/增量同步等价值时刻后引导升级；漏斗事件埋点（登录→试用→付费）。",
       "files": [
-        "account/auth-client.js",
+        "lib/pro/auth-client.js",
         "lib/telemetry.js",
         "web/public/index.html"
       ],
@@ -1247,7 +1277,7 @@
         "漏斗事件可在遥测日志中看到"
       ],
       "acceptanceCommands": [
-        "grep -q \"trial\" account/auth-client.js web/lib/auth.js 2>/dev/null && echo TRIAL_OK"
+        "grep -q \"trial\" lib/pro/auth-client.js lib/pro/entitlement.js 2>/dev/null && echo TRIAL_OK"
       ],
       "refs": [],
       "activity": []
@@ -1730,7 +1760,7 @@
       "context": "企业采购门槛能力；私有化报价的交付内容。",
       "goal": "SSO 登录、自带模型 Key、一键离线安装包。",
       "files": [
-        "account/",
+        "lib/pro/",
         "web/"
       ],
       "acceptance": [

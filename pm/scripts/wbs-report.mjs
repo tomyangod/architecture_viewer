@@ -130,7 +130,7 @@ export function generateWeekly(weekId) {
     : '- Phase 3 backlog，按 12 周复盘结论排期。') + '\n\n';
 
   md += `## 六、数据与指标（人工填写）\n\n`;
-  md += `> 数据源：Marketplace 后台 + 遥测，详见 [pm/metrics.md](../metrics.md)。\n\n`;
+  md += `> 数据源：npm 下载 + CLI/网页遥测，详见 [pm/metrics.md](../metrics.md)。Marketplace 口径暂缓。\n\n`;
   md += `| 指标 | 本周 | 上周 | 备注 |\n|---|---|---|---|\n`;
   md += `| 累计安装 |  |  |  |\n`;
   md += `| 周活跃 |  |  |  |\n`;

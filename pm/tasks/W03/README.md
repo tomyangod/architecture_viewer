@@ -2,29 +2,29 @@
 
 > 阶段：Phase 1 ｜ 周期：2026-09-14 ~ 2026-09-18 ｜ 周截止：2026-09-18
 >
-> 完成度：0/3 ░░░░░░░░░░ 0%
+> 完成度：1/3 ███░░░░░░░ 33%
 
 > 本文件由 `node pm/scripts/wbs-cards.mjs` 自动生成，请勿手改；状态请改 `pm/tasks/tasks.json` 或用 `node pm/scripts/wbs.mjs set <任务号> <状态>`。
 
 
-### <a id="w03-01"></a>⬜ W03-01 · Generate 命令质量打磨与协议内置 
+### <a id="w03-01"></a>✅ W03-01 · Generate 命令质量打磨与协议内置 
 
 | 字段 | 内容 |
 |---|---|
 | 优先级 | **P0** |
-| 状态 | 未开始（进度 0%） |
+| 状态 | 已完成（进度 100%） |
 | 工时预估 | 8h |
 | 截止 | 2026-09-18 |
-| 依赖 | [W02-01](../W02/README.md#w02-01) |
+| 依赖 | 无 |
 | 负责人 | heyangyan |
 | 标签 | core / quality |
 
 
 **背景**：当前 generate 产出确定性骨架，LLM 填图靠用户手动贴 AGENT.md；生成后 Rel 校验已在命令内串联但错误提示需更可操作。
 
-**目标**：AGENT.md 协议内置进扩展（生成时自动写入套件）；Generate 完成后自动跑校验并在输出中给出可点击的修复提示。
+**目标**：AGENT.md 协议内置（生成时自动写入套件）；Generate 完成后自动跑校验并在 CLI 输出中给出可操作的修复提示。
 
-**涉及文件**：`lib/generate.js` `lib/kit.js` `src/extension.js` `AGENT.md`
+**涉及文件**：`lib/generate.js` `lib/kit.js` `AGENT.md`
 
 **验收标准**（逐条勾选，全部满足才能标 done）：
 - [ ] Init 出的套件内含 AGENT.md
@@ -43,7 +43,7 @@
 **参考文档**：`lib/generate.js` `AGENT.md` `eval/REPORT.md`
 
 **活动记录**：
-  - （暂无）
+  - 2026-09-04 状态变更 todo→done：AGENT.md 已在 KIT_FILES 内置（init 自动复制）；validate.js 每条 error 后加可操作修复提示（Rel 未声明→提示加 Container/System 声明、模板占位→提示替换、密钥泄露→提示删除等）；cli.js printGenerateResult 加校验摘要（PASS/FAIL+计数）+ null 安全（r.drift 可能为 null）；eval 三仓 0 error 全 PASS；npm test 290/289/0
 
 ---
 
@@ -87,18 +87,18 @@
 
 | 字段 | 内容 |
 |---|---|
-| 优先级 | **P1** |
+| 优先级 | **P2** |
 | 状态 | 未开始（进度 0%） |
 | 工时预估 | 5h |
 | 截止 | 2026-09-18 |
-| 依赖 | [W02-03](../W02/README.md#w02-03) |
+| 依赖 | 无 |
 | 负责人 | heyangyan |
-| 标签 | extension / ux |
+| 标签 | extension / ux / deferred |
 
 
-**背景**：命令面板对新用户不够直观；侧栏树是 VS Code 扩展的标准交互，也为后续单视图增量刷新铺路。
+**背景**：暂缓：VS Code 扩展方向推迟，侧栏树视图一并暂缓。重启扩展时再做。
 
-**目标**：活动栏新增 Architecture Viewer 图标，树列六视图；单击打开 Preview 并定位 tab，右键支持「刷新此视图」「在编辑器中打开图源」。
+**目标**：（暂缓）活动栏新增 Architecture Viewer 图标，树列六视图；单击打开 Preview 并定位 tab。
 
 **涉及文件**：`src/extension.js` `src/treeView.js`
 
