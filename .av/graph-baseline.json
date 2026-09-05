@@ -1,18 +1,18 @@
 {
   "version": 1,
   "root": "architecture_viewer",
-  "generatedAt": "2026-09-05T00:53:22.324Z",
-  "fingerprint": "c4372752d3cf72e1",
+  "generatedAt": "2026-09-05T02:22:19.096Z",
+  "fingerprint": "2d31ef10a3d1b3d2",
   "languages": [
     "javascript"
   ],
   "stats": {
-    "files": 71,
-    "filesParsed": 71,
+    "files": 72,
+    "filesParsed": 72,
     "parseErrors": 0,
-    "types": 609,
-    "nodes": 702,
-    "edges": 893,
+    "types": 617,
+    "nodes": 711,
+    "edges": 905,
     "externalPackages": 22
   },
   "nodes": [
@@ -1920,7 +1920,7 @@
       "kind": "function",
       "name": "parseCli",
       "path": "scripts/ci-drift-action.mjs",
-      "line": 30,
+      "line": 31,
       "layer": null,
       "lang": "javascript",
       "modifiers": [],
@@ -1935,7 +1935,7 @@
       "kind": "function",
       "name": "runDriftCheck",
       "path": "scripts/ci-drift-action.mjs",
-      "line": 51,
+      "line": 52,
       "layer": null,
       "lang": "javascript",
       "modifiers": [],
@@ -1950,7 +1950,7 @@
       "kind": "function",
       "name": "suggestActions",
       "path": "scripts/ci-drift-action.mjs",
-      "line": 62,
+      "line": 63,
       "layer": null,
       "lang": "javascript",
       "modifiers": [],
@@ -1961,11 +1961,26 @@
       ]
     },
     {
+      "id": "scripts/ci-drift-action#viewLabel",
+      "kind": "function",
+      "name": "viewLabel",
+      "path": "scripts/ci-drift-action.mjs",
+      "line": 94,
+      "layer": null,
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "scripts/ci-drift-action",
+      "methods": [
+        "viewLabel"
+      ]
+    },
+    {
       "id": "scripts/ci-drift-action#formatDriftComment",
       "kind": "function",
       "name": "formatDriftComment",
       "path": "scripts/ci-drift-action.mjs",
-      "line": 93,
+      "line": 99,
       "layer": null,
       "lang": "javascript",
       "modifiers": [],
@@ -1980,7 +1995,7 @@
       "kind": "function",
       "name": "footer",
       "path": "scripts/ci-drift-action.mjs",
-      "line": 152,
+      "line": 175,
       "layer": null,
       "lang": "javascript",
       "modifiers": [],
@@ -1995,7 +2010,7 @@
       "kind": "function",
       "name": "shouldWriteComment",
       "path": "scripts/ci-drift-action.mjs",
-      "line": 157,
+      "line": 180,
       "layer": null,
       "lang": "javascript",
       "modifiers": [],
@@ -2010,7 +2025,7 @@
       "kind": "function",
       "name": "postGiteeComment",
       "path": "scripts/ci-drift-action.mjs",
-      "line": 163,
+      "line": 186,
       "layer": null,
       "lang": "javascript",
       "modifiers": [],
@@ -2025,7 +2040,7 @@
       "kind": "function",
       "name": "postDriftComment",
       "path": "scripts/ci-drift-action.mjs",
-      "line": 177,
+      "line": 200,
       "layer": null,
       "lang": "javascript",
       "modifiers": [],
@@ -2040,7 +2055,7 @@
       "kind": "function",
       "name": "printHelp",
       "path": "scripts/ci-drift-action.mjs",
-      "line": 201,
+      "line": 224,
       "layer": null,
       "lang": "javascript",
       "modifiers": [],
@@ -2055,7 +2070,7 @@
       "kind": "function",
       "name": "main",
       "path": "scripts/ci-drift-action.mjs",
-      "line": 214,
+      "line": 237,
       "layer": null,
       "lang": "javascript",
       "modifiers": [],
@@ -3739,6 +3754,135 @@
       "module": "lib/diff-graph",
       "methods": [
         "formatDiffText"
+      ]
+    },
+    {
+      "id": "file:lib/drift-locate.js",
+      "kind": "file",
+      "name": "drift-locate.js",
+      "path": "lib/drift-locate.js",
+      "layer": "util",
+      "layerConfidence": "high",
+      "layerSignal": "dir-name",
+      "lang": "javascript"
+    },
+    {
+      "id": "lib/drift-locate#viewsForKind",
+      "kind": "function",
+      "name": "viewsForKind",
+      "path": "lib/drift-locate.js",
+      "line": 26,
+      "layer": "util",
+      "layerConfidence": "high",
+      "layerSignal": "dir-name",
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "lib/drift-locate",
+      "methods": [
+        "viewsForKind"
+      ]
+    },
+    {
+      "id": "lib/drift-locate#locateInSource",
+      "kind": "function",
+      "name": "locateInSource",
+      "path": "lib/drift-locate.js",
+      "line": 47,
+      "layer": "util",
+      "layerConfidence": "high",
+      "layerSignal": "dir-name",
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "lib/drift-locate",
+      "methods": [
+        "locateInSource"
+      ]
+    },
+    {
+      "id": "lib/drift-locate#buildVariants",
+      "kind": "function",
+      "name": "buildVariants",
+      "path": "lib/drift-locate.js",
+      "line": 95,
+      "layer": "util",
+      "layerConfidence": "high",
+      "layerSignal": "dir-name",
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "lib/drift-locate",
+      "methods": [
+        "buildVariants"
+      ]
+    },
+    {
+      "id": "lib/drift-locate#escapeRe",
+      "kind": "function",
+      "name": "escapeRe",
+      "path": "lib/drift-locate.js",
+      "line": 127,
+      "layer": "util",
+      "layerConfidence": "high",
+      "layerSignal": "dir-name",
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "lib/drift-locate",
+      "methods": [
+        "escapeRe"
+      ]
+    },
+    {
+      "id": "lib/drift-locate#buildFixPrompt",
+      "kind": "function",
+      "name": "buildFixPrompt",
+      "path": "lib/drift-locate.js",
+      "line": 134,
+      "layer": "util",
+      "layerConfidence": "high",
+      "layerSignal": "dir-name",
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "lib/drift-locate",
+      "methods": [
+        "buildFixPrompt"
+      ]
+    },
+    {
+      "id": "lib/drift-locate#enrichDriftItems",
+      "kind": "function",
+      "name": "enrichDriftItems",
+      "path": "lib/drift-locate.js",
+      "line": 158,
+      "layer": "util",
+      "layerConfidence": "high",
+      "layerSignal": "dir-name",
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "lib/drift-locate",
+      "methods": [
+        "enrichDriftItems"
+      ]
+    },
+    {
+      "id": "lib/drift-locate#pickView",
+      "kind": "function",
+      "name": "pickView",
+      "path": "lib/drift-locate.js",
+      "line": 170,
+      "layer": "util",
+      "layerConfidence": "high",
+      "layerSignal": "dir-name",
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "lib/drift-locate",
+      "methods": [
+        "pickView"
       ]
     },
     {
@@ -11879,70 +12023,77 @@
       "to": "file:scripts/ci-drift-action.mjs",
       "type": "declared-in",
       "file": "scripts/ci-drift-action.mjs",
-      "line": 30
+      "line": 31
     },
     {
       "from": "scripts/ci-drift-action#runDriftCheck",
       "to": "file:scripts/ci-drift-action.mjs",
       "type": "declared-in",
       "file": "scripts/ci-drift-action.mjs",
-      "line": 51
+      "line": 52
     },
     {
       "from": "scripts/ci-drift-action#suggestActions",
       "to": "file:scripts/ci-drift-action.mjs",
       "type": "declared-in",
       "file": "scripts/ci-drift-action.mjs",
-      "line": 62
+      "line": 63
+    },
+    {
+      "from": "scripts/ci-drift-action#viewLabel",
+      "to": "file:scripts/ci-drift-action.mjs",
+      "type": "declared-in",
+      "file": "scripts/ci-drift-action.mjs",
+      "line": 94
     },
     {
       "from": "scripts/ci-drift-action#formatDriftComment",
       "to": "file:scripts/ci-drift-action.mjs",
       "type": "declared-in",
       "file": "scripts/ci-drift-action.mjs",
-      "line": 93
+      "line": 99
     },
     {
       "from": "scripts/ci-drift-action#footer",
       "to": "file:scripts/ci-drift-action.mjs",
       "type": "declared-in",
       "file": "scripts/ci-drift-action.mjs",
-      "line": 152
+      "line": 175
     },
     {
       "from": "scripts/ci-drift-action#shouldWriteComment",
       "to": "file:scripts/ci-drift-action.mjs",
       "type": "declared-in",
       "file": "scripts/ci-drift-action.mjs",
-      "line": 157
+      "line": 180
     },
     {
       "from": "scripts/ci-drift-action#postGiteeComment",
       "to": "file:scripts/ci-drift-action.mjs",
       "type": "declared-in",
       "file": "scripts/ci-drift-action.mjs",
-      "line": 163
+      "line": 186
     },
     {
       "from": "scripts/ci-drift-action#postDriftComment",
       "to": "file:scripts/ci-drift-action.mjs",
       "type": "declared-in",
       "file": "scripts/ci-drift-action.mjs",
-      "line": 177
+      "line": 200
     },
     {
       "from": "scripts/ci-drift-action#printHelp",
       "to": "file:scripts/ci-drift-action.mjs",
       "type": "declared-in",
       "file": "scripts/ci-drift-action.mjs",
-      "line": 201
+      "line": 224
     },
     {
       "from": "scripts/ci-drift-action#main",
       "to": "file:scripts/ci-drift-action.mjs",
       "type": "declared-in",
       "file": "scripts/ci-drift-action.mjs",
-      "line": 214
+      "line": 237
     },
     {
       "from": "pm/scripts/gitee-webhook#appendLog",
@@ -12587,6 +12738,55 @@
       "type": "declared-in",
       "file": "lib/diff-graph.js",
       "line": 464
+    },
+    {
+      "from": "lib/drift-locate#viewsForKind",
+      "to": "file:lib/drift-locate.js",
+      "type": "declared-in",
+      "file": "lib/drift-locate.js",
+      "line": 26
+    },
+    {
+      "from": "lib/drift-locate#locateInSource",
+      "to": "file:lib/drift-locate.js",
+      "type": "declared-in",
+      "file": "lib/drift-locate.js",
+      "line": 47
+    },
+    {
+      "from": "lib/drift-locate#buildVariants",
+      "to": "file:lib/drift-locate.js",
+      "type": "declared-in",
+      "file": "lib/drift-locate.js",
+      "line": 95
+    },
+    {
+      "from": "lib/drift-locate#escapeRe",
+      "to": "file:lib/drift-locate.js",
+      "type": "declared-in",
+      "file": "lib/drift-locate.js",
+      "line": 127
+    },
+    {
+      "from": "lib/drift-locate#buildFixPrompt",
+      "to": "file:lib/drift-locate.js",
+      "type": "declared-in",
+      "file": "lib/drift-locate.js",
+      "line": 134
+    },
+    {
+      "from": "lib/drift-locate#enrichDriftItems",
+      "to": "file:lib/drift-locate.js",
+      "type": "declared-in",
+      "file": "lib/drift-locate.js",
+      "line": 158
+    },
+    {
+      "from": "lib/drift-locate#pickView",
+      "to": "file:lib/drift-locate.js",
+      "type": "declared-in",
+      "file": "lib/drift-locate.js",
+      "line": 170
     },
     {
       "from": "lib/export-archify#shortHash",
@@ -16113,6 +16313,14 @@
       "isType": false
     },
     {
+      "from": "file:scripts/ci-drift-action.mjs",
+      "to": "file:lib/drift-locate.js",
+      "type": "import",
+      "file": "scripts/ci-drift-action.mjs",
+      "line": 24,
+      "isType": false
+    },
+    {
       "from": "file:scripts/pr-comment.js",
       "to": "ext:path",
       "type": "uses-external",
@@ -16534,6 +16742,30 @@
       "type": "import",
       "file": "lib/cli.js",
       "line": 869,
+      "isType": false
+    },
+    {
+      "from": "file:lib/drift-locate.js",
+      "to": "ext:fs",
+      "type": "uses-external",
+      "file": "lib/drift-locate.js",
+      "line": 12,
+      "builtin": true
+    },
+    {
+      "from": "file:lib/drift-locate.js",
+      "to": "ext:path",
+      "type": "uses-external",
+      "file": "lib/drift-locate.js",
+      "line": 13,
+      "builtin": true
+    },
+    {
+      "from": "file:lib/drift-locate.js",
+      "to": "file:lib/scan.js",
+      "type": "import",
+      "file": "lib/drift-locate.js",
+      "line": 14,
       "isType": false
     },
     {
@@ -17736,7 +17968,7 @@
       "layer": "util",
       "confidence": "high",
       "signal": "dir-name",
-      "files": 25
+      "files": 26
     },
     "lib/pro": {
       "layer": "util",
@@ -17757,5 +17989,5 @@
       "files": 7
     }
   },
-  "sessionStartedAt": "2026-09-05T00:53:22.324Z"
+  "sessionStartedAt": "2026-09-05T02:22:19.096Z"
 }
