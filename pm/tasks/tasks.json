@@ -1319,8 +1319,8 @@
       "phase": 2,
       "week": 8,
       "priority": "P1",
-      "status": "done",
-      "progress": 80,
+      "status": "doing",
+      "progress": 50,
       "assignee": "heyangyan",
       "estHours": 3,
       "deadline": "2026-10-23",
@@ -1348,6 +1348,10 @@
         {
           "date": "2026-09-05",
           "action": "状态变更 todo→done（Week 1 完成）。试点 v18 仓库，24 漂移项（7 真实+11 误报+6 边界）。Week 2 复检待 2026-09-12。"
+        },
+        {
+          "date": "2026-09-05",
+          "action": "状态更正 done→doing：Week 1 试点已完成（v18，24 漂移项记录在 pm/pilots.md），验收要求连续 2 周，Week 2 复检计划 2026-09-12，未满周期不结卡。"
         }
       ]
     },
