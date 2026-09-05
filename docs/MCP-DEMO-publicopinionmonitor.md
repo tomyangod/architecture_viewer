@@ -1,7 +1,8 @@
 # MCP 实战：让 AI 自动帮你检查项目（逐步教程）
 
 > **一句话**：配置一次之后，AI 改代码前自动拍照片、改完自动检查有没有改坏，你不用敲任何命令。
-> 实测项目：舆情监控仓 `publicopinionmonitor_v2`，约 246 个文件。
+> 实测项目：舆情监控仓 `publicopinionmonitor_v2`，约 246 个文件、1543 个组件、1885 个节点。
+> 适用版本：arch-viewer **0.11.0**（6 个 MCP 工具 + 漂移检测 + PR 评论）。本文 2026-09-05 复核。
 
 ## 三步速览（整个工具就这三件事）
 
@@ -32,6 +33,7 @@
 |------|------|
 | 🔍 `av_explain_finding` | 看红灯详情 · 谁串门了、怎么修 |
 | 🏗️ `av_check_layering` | 查全楼老问题 · 第一次摸底用（日常不要用） |
+| 📤 `av_archify_export` | 把这次改动导出成稀疏架构图（Before/After JSON），喂给 archify 出图 |
 
 ---
 
@@ -81,9 +83,18 @@ node mcp/server.js   # 会挂起等输入；Ctrl+C 关掉即可，只证明文�
 项目：/Users/yanheyang/Desktop/publicopinionmonitor_v2
 ```
 
-### 0.2 接入 Cursor（推荐先试这个）
+### 0.2 接入 AI 编辑器（推荐一键 setup）
 
-编辑 `~/.cursor/mcp.json`，加上一段：
+**最省事**：在工具仓里跑一句，自动探测并配置你装了的 AI 工具（Cursor / Claude Code / Claude Desktop / Windsurf），不用手改配置文件：
+
+```bash
+cd ~/Desktop/architecture_viewer
+node lib/cli.js setup
+```
+
+它会列出检测到的编辑器，把 `mcp/server.js` 写进对应配置。
+
+**想手动接 Cursor**：编辑 `~/.cursor/mcp.json`，加上一段：
 
 ```json
 {
@@ -104,7 +115,7 @@ node mcp/server.js   # 会挂起等输入；Ctrl+C 关掉即可，只证明文�
 2. 打开文件夹：`~/Desktop/publicopinionmonitor_v2`
 3. 新开 AI 对话，问一句：**「列出你可用的 MCP 工具，有没有 arch-viewer？」**
 
-应能看到 5 个工具：
+应能看到 6 个工具：
 
 | 工具名 | 干什么用的 |
 |-------|-----------|
@@ -113,6 +124,7 @@ node mcp/server.js   # 会挂起等输入；Ctrl+C 关掉即可，只证明文�
 | `av_session_report` | 看完整报告（Before/After 对比图）；自动监听已生成则秒回 |
 | `av_check_layering` | 查全楼所有历史问题（第一次摸底用） |
 | `av_explain_finding` | 解释某条红灯的详情和修法 |
+| `av_archify_export` | 把本次改动导出成稀疏架构图（Before/After JSON，喂 archify 出图） |
 
 ### 0.3 接入 DeepSeek Harness（可选）
 
@@ -133,7 +145,7 @@ printf '%s\n' \
   | node "$AV/mcp/server.js"
 ```
 
-能打印出 5 个工具的信息就成功了。
+能打印出 6 个工具的信息就成功了。
 
 ---
 
@@ -150,6 +162,7 @@ printf '%s\n' \
 | 项 | 结果 |
 |----|------|
 | 文件数 | 246 |
+| 组件 / 节点 | 1543 个组件 · 1885 个节点 · 3652 条关系 |
 | 楼层识别率 | 94%（大部分文件已分到楼层） |
 | 红灯数 | 约 218 条（历史老问题） |
 
@@ -358,6 +371,9 @@ printf '%s\n' \
 | 看这次改了什么 | `av_session_report` | `node …/cli.js session report $REPO --open` |
 | 查全楼历史问题 | `av_check_layering` | 日常不用 |
 | 解释一条红灯 | `av_explain_finding` | 看 HTML 报告 |
+| 导出稀疏架构图 | `av_archify_export` | `node …/cli.js archify-export $REPO` |
+| 查"代码有、图没有" | （PR 里自动，见第 9 节） | `node …/cli.js check $KIT --drift --repo $REPO` |
+| 生成 PR 漂移评论 | （GitHub Action 自动） | `node …/cli.js pr-comment <base> <head>` |
 
 检查引擎完全一样，只是一个让 AI 自动跑，一个你自己跑。
 
@@ -381,3 +397,66 @@ printf '%s\n' \
 5. 绿了 →「再 `av_session_start` 拍新照片」
 
 想先练红灯再动真仓：用第 3 节的 `/tmp/pom-mcp-demo`。
+
+---
+
+## 9. 团队协作：PR 里自动抓"图和代码对不上"
+
+前面 1–8 节讲的是**你一个人在本地**用 MCP 让 AI 自检。0.11 还多了一层**团队协作**：把检查挂到 PR 上，谁提交代码、架构图没跟着更新，PR 里自动亮红灯并评论。
+
+### 9.1 这和前面的"串门红灯"有什么不一样？
+
+| | 前面的 session 检查 | PR 漂移检查 |
+|---|---|---|
+| 管什么 | 这次改动有没有**跨层串门**（改坏了） | 代码里新加的模块，**架构图里漏画了没有** |
+| 什么时候 | 你本地改完代码 | 团队成员提 PR 时 |
+| 大白话 | "你把前台直接连到仓库了" | "你新建了个服务，六张图里没它" |
+
+> **漂移** = 代码里有、架构图里没有（或反过来）。图和代码慢慢对不上，就是架构腐化的开始。
+
+### 9.2 接入（一次配置）
+
+把工作流模板放进仓库，PR 就会自动跑：
+
+```bash
+mkdir -p .github/workflows
+curl -fsSL https://gitee.com/heyangyan/architecture_viewer/raw/master/templates/architecture-check.yml \
+  -o .github/workflows/architecture-check.yml
+```
+
+它在每个 PR / push 到 main 时：装 CLI → 没有架构图就 `init` 生成 → 刷新图 → `check --filled --drift`，不达标就红灯。
+
+想要**在 PR 上发评论**（而不只是红灯），用仓里的 `scripts/ci-drift-action.mjs`，配一条调用它的 workflow 即可。
+
+### 9.3 PR 评论长什么样
+
+检出漂移时，机器人会在 PR 下评论，**不用人去翻代码**：
+
+```
+## 🏛️ 架构漂移 / 规范检查
+结果：❌ 未通过 · 协议 0 · 漂移 1 · 规范 0
+
+### 漂移（代码有、图没有）
+- module `backend/services` → 应补入 `block-diagram.md`（分层模块图）
+  · 源码 backend/services/__init__.py:1
+
+### 一键修复 Prompt（粘贴给 Cursor / AI 编辑器）
+架构图漂移修复：模块 `backend/services` 在代码中存在，
+但架构图 block-diagram.md 中缺失。请在分层模块图补充该节点……
+```
+
+每条漂移都带三样东西：
+
+- **补到哪张图**（六视图之一，如分层模块图 / C4 容器图）
+- **源码位置**（`文件:行号`，点进去就能看）
+- **一键修复 Prompt**（整段复制给 AI 编辑器，它自己补图）
+
+### 9.4 本地先自测，再提 PR
+
+不想等 CI 才发现，本地先跑：
+
+```bash
+arch-viewer check architecture_viewer --filled --drift --repo .
+```
+
+绿了再推，PR 一次过。这条命令和 MCP、CI 用的是**同一个检查引擎**，结果一致。
