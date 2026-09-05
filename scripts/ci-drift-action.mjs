@@ -21,6 +21,7 @@ const require = createRequire(import.meta.url);
 const { checkKit, findKitDir } = require('../lib/index.js');
 const { formatRuleViolations } = require('../lib/rules.js');
 const { postPullRequestComment } = require('../lib/pr-comment.js');
+const { enrichDriftItems, DIAGRAM_VIEWS } = require('../lib/drift-locate.js');
 
 const MARKER = '<!-- arch-viewer:architecture-drift -->';
 const HOMEPAGE = 'https://gitee.com/heyangyan/architecture_viewer';
@@ -90,14 +91,23 @@ function suggestActions(result) {
   return actions;
 }
 
+function viewLabel(file) {
+  const v = DIAGRAM_VIEWS.find((x) => x.file === file);
+  return v ? v.label : file;
+}
+
 function formatDriftComment(result, opts) {
   const kit = (opts && opts.kit) || (result.protocol && result.protocol.dir) || '';
+  const repoRoot = opts && opts.repo ? path.resolve(opts.repo) : null;
   const lines = [MARKER];
   lines.push('## 🏛️ 架构漂移 / 规范检查');
   lines.push('');
   const protoN = ((result.protocol && result.protocol.errors) || []).length;
-  const driftN = (result.drift && result.drift.missing && result.drift.missing.length) || 0;
+  const rawMissing = (result.drift && result.drift.missing) || [];
+  const driftN = rawMissing.length;
   const ruleN = (result.rules && result.rules.violations && result.rules.violations.length) || 0;
+  // W10-02：精确定位缺失项（视图 + 源码行号 + 修复 prompt）
+  const enriched = driftN ? enrichDriftItems(rawMissing, repoRoot, kit) : [];
   if (result.ok) {
     lines.push('**结果：✅ 通过** · 协议 / 漂移 / 团队规范均无红灯。');
     lines.push('');
@@ -120,9 +130,22 @@ function formatDriftComment(result, opts) {
   if (driftN) {
     lines.push('### 漂移（代码有、图没有）');
     lines.push('');
-    for (const m of result.drift.missing) {
-      lines.push(`- **${m.kind}** \`${m.label}\`（\`${m.term}\`）未在图源中出现`);
+    for (const m of enriched) {
+      const loc = m.source
+        ? ` · 源码 \`${m.source.file}${m.source.line ? ':' + m.source.line : ''}\``
+        : '';
+      lines.push(`- **${m.kind}** \`${m.label}\` → 应补入 [\`${m.view}\`](${m.view})（${viewLabel(m.view)}）${loc}`);
     }
+    lines.push('');
+    lines.push('### 一键修复 Prompt（粘贴给 Cursor / AI 编辑器）');
+    lines.push('');
+    lines.push('```');
+    enriched.forEach((m, i) => {
+      lines.push(`# 缺失项 ${i + 1}/${enriched.length}：${m.label}`);
+      lines.push(m.prompt);
+      lines.push('');
+    });
+    lines.push('```');
     lines.push('');
   }
 
