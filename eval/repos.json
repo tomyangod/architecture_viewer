@@ -24,6 +24,11 @@
       "id": "order-go",
       "path": "fixtures/order-go",
       "kind": "go"
+    },
+    {
+      "id": "java-order",
+      "path": "fixtures/java-order",
+      "kind": "java"
     }
   ]
 }

@@ -10,16 +10,19 @@ const ROOT = path.join(__dirname, '..');
 const REPOS = path.join(ROOT, 'eval', 'repos.json');
 
 describe('W03-02 five-repo eval coverage', () => {
-  it('repos.json has 5 entries including frontend and go', () => {
+  it('repos.json has 6 entries including frontend, go, and java', () => {
     const spec = JSON.parse(fs.readFileSync(REPOS, 'utf8'));
-    assert.equal(spec.repos.length, 5);
+    assert.equal(spec.repos.length, 6);
     const kinds = spec.repos.map((r) => r.kind);
     assert.ok(kinds.includes('frontend'), kinds.join(','));
     assert.ok(kinds.includes('go'), kinds.join(','));
+    assert.ok(kinds.includes('java'), kinds.join(','));
     const frontend = spec.repos.find((r) => r.kind === 'frontend');
     const go = spec.repos.find((r) => r.kind === 'go');
+    const java = spec.repos.find((r) => r.kind === 'java');
     assert.ok(fs.existsSync(path.resolve(path.dirname(REPOS), frontend.path)));
     assert.ok(fs.existsSync(path.resolve(path.dirname(REPOS), go.path)));
+    assert.ok(fs.existsSync(path.resolve(path.dirname(REPOS), java.path)));
   });
 
   it('shop-frontend generate is green', () => {
