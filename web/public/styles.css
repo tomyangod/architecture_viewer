@@ -385,6 +385,21 @@ h2 {
 }
 
 .demo-panel { padding-top: 0.85rem; }
+.demo-video-wrap {
+  margin: 0 0 1.5rem;
+  max-width: 48rem;
+}
+.demo-video-wrap video {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 0.85rem;
+  border: 1px solid var(--line);
+  background: #0b1210;
+}
+.demo-video-wrap figcaption {
+  margin: 0.45rem 0 0;
+}
 .tabs {
   display: flex;
   gap: 0.35rem;

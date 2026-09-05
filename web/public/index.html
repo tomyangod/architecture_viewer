@@ -138,9 +138,17 @@
     <section class="demo" id="demo">
       <h2 data-i18n="demo.title">60 秒走一遍真实链路</h2>
       <p class="section-copy" data-i18n-html="demo.copy">
-        我们做了一个专门的演示仓 <strong>Coffee Shop · 咖啡订单平台</strong>，刻意覆盖 compose、前后端、领域类、Worker、K8s。
-        下面是<strong>已烘焙的静态分享页</strong>（官网不实时扫你的仓库，轻量无风险）。点进去就能看见六视图长什么样。
+        先看 60 秒成片：session start → 改代码 → session report 红灯。下面还有 Coffee Shop 六视图分享页（官网不实时扫你的仓库）。
       </p>
+
+      <figure class="demo-video-wrap">
+        <video id="demo-video" controls playsinline preload="metadata" width="1280">
+          <source src="/demo.mp4" type="video/mp4" />
+          <track kind="subtitles" src="/demo.zh.vtt" srclang="zh" label="中文" default />
+          <track kind="subtitles" src="/demo.en.vtt" srclang="en" label="English" />
+        </video>
+        <figcaption class="muted small" data-i18n="demo.videoCaption">60 秒：基线 → 改代码 → 漂移红灯（中英字幕）</figcaption>
+      </figure>
 
       <ol class="demo-steps" aria-label="产品链路">
         <li><strong>Init</strong><span data-i18n="demo.step1">拷入 Viewer 套件</span></li>
@@ -338,7 +346,7 @@ npm install
     <footer class="foot">
       <span>Architecture Viewer · v<span id="ver">0.1.0</span> · Apache-2.0</span>
       <span>
-        <a href="/account.html">Pro</a> · <a href="/api/health">API</a> · <a href="https://gitee.com/heyangyan/architecture_viewer/blob/master/docs/billing.md" target="_blank" rel="noopener">收款开通</a> · <a href="https://gitee.com/heyangyan/architecture_viewer/blob/master/docs/support.md" target="_blank" rel="noopener">支持</a> · <a href="https://gitee.com/heyangyan/architecture_viewer/blob/master/docs/invoice.md" target="_blank" rel="noopener">发票</a> · <a href="https://gitee.com/heyangyan/architecture_viewer/blob/master/COMMERCIAL.md" target="_blank" rel="noopener">商业说明</a>
+        <a href="/account.html">Pro</a> · <a href="/api/health">API</a> · <a href="https://gitee.com/heyangyan/architecture_viewer/blob/master/docs/billing.md" target="_blank" rel="noopener">收款开通</a> · <a href="https://gitee.com/heyangyan/architecture_viewer/blob/master/docs/support.md" target="_blank" rel="noopener">支持</a> · <a href="https://gitee.com/heyangyan/architecture_viewer/blob/master/docs/invoice.md" target="_blank" rel="noopener">发票</a> · <a href="https://gitee.com/heyangyan/architecture_viewer/blob/master/COMMERCIAL.md" target="_blank" rel="noopener">商业说明</a> · <a href="https://gitee.com/heyangyan/architecture_viewer/blob/master/docs/landing-deploy.md" target="_blank" rel="noopener">落地页部署</a>
       </span>
     </footer>
   </div>

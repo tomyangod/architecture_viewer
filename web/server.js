@@ -95,7 +95,10 @@ function contentType(filePath) {
       '.json': 'application/json; charset=utf-8',
       '.md': 'text/markdown; charset=utf-8',
       '.svg': 'image/svg+xml',
-      '.png': 'image/png'
+      '.png': 'image/png',
+      '.mp4': 'video/mp4',
+      '.vtt': 'text/vtt; charset=utf-8',
+      '.srt': 'application/x-subrip; charset=utf-8'
     }[ext] || 'application/octet-stream'
   );
 }
@@ -414,6 +417,17 @@ async function handler(req, res) {
     if (url.pathname === '/favicon.ico' || url.pathname === '/favicon.svg') {
       const svg = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><rect width="32" height="32" rx="6" fill="#0f6e56"/><rect x="6" y="14" width="6" height="12" fill="#fff" rx="1"/><rect x="13" y="10" width="6" height="16" fill="#fff" rx="1"/><rect x="20" y="16" width="6" height="10" fill="#fff" rx="1"/><rect x="5" y="8" width="22" height="3" fill="#80cbc4" rx="1"/></svg>';
       return send(res, 200, svg, { 'Content-Type': 'image/svg+xml; charset=utf-8', 'Cache-Control': 'public, max-age=86400' });
+    }
+
+    if (/^\/demo\.(mp4|zh\.vtt|en\.vtt|zh\.srt|en\.srt)$/.test(url.pathname)) {
+      const demoPath = path.join(ROOT, 'docs', path.basename(url.pathname));
+      if (!fs.existsSync(demoPath)) {
+        return send(res, 404, 'Not found', { 'Content-Type': 'text/plain; charset=utf-8' });
+      }
+      return send(res, 200, fs.readFileSync(demoPath), {
+        'Content-Type': contentType(demoPath),
+        'Cache-Control': 'public, max-age=86400'
+      });
     }
 
     if (url.pathname.startsWith('/vendor/')) {

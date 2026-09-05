@@ -1,0 +1,33 @@
+# 静态落地页 → GitHub Pages（营销页 + demo 视频；无 /api/generate）
+name: Landing Pages
+
+on:
+  push:
+    branches: [main, master]
+    paths:
+      - 'web/public/**'
+      - 'docs/demo.*'
+      - 'scripts/prepare-landing-static.mjs'
+      - '.github/workflows/landing-pages.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    if: github.repository_owner != ''
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Build static landing
+        run: node scripts/prepare-landing-static.mjs
+      - name: Publish gh-pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: dist/landing
+          force_orphan: true

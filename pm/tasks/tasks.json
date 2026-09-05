@@ -997,8 +997,8 @@
       "phase": 1,
       "week": 6,
       "priority": "P0",
-      "status": "todo",
-      "progress": 0,
+      "status": "done",
+      "progress": 100,
       "assignee": "heyangyan",
       "estHours": 4,
       "deadline": "2026-10-09",
@@ -1014,7 +1014,10 @@
       "context": "落地页是广告投放、博主转发、PH 的承接页。",
       "goal": "公网可访问的落地页：价值主张、demo 视频、定价三档、安装按钮、GitHub 链接。",
       "files": [
-        "web/public/index.html"
+        "web/public/index.html",
+        "web/server.js",
+        "docs/landing-deploy.md",
+        ".github/workflows/landing-pages.yml"
       ],
       "acceptance": [
         "落地页公网 URL 可访问（部署方式记录）",
@@ -1025,7 +1028,18 @@
         "grep -q \"29\" web/public/index.html && grep -qi \"install\" web/public/index.html && echo LANDING_OK"
       ],
       "refs": [],
-      "activity": []
+      "activity": [
+        {
+          "date": "2026-09-05",
+          "action": "状态变更 todo→doing",
+          "detail": "落地页嵌入 demo 视频、VTT、部署 SOP、Pages 工作流"
+        },
+        {
+          "date": "2026-09-05",
+          "action": "状态变更 doing→done",
+          "detail": "落地页嵌入 60s demo+中英字幕，定价/安装已有；docs/landing-deploy.md 记录本机/Docker/Pages；Actions 发 gh-pages"
+        }
+      ]
     },
     {
       "id": "W06-03",

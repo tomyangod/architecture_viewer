@@ -2,7 +2,7 @@
 
 > 阶段：Phase 1 ｜ 周期：2026-10-05 ~ 2026-10-09 ｜ 周截止：2026-10-09
 >
-> 完成度：0/4 ░░░░░░░░░░ 0%
+> 完成度：1/4 ███░░░░░░░ 25%
 
 > 本文件由 `node pm/scripts/wbs-cards.mjs` 自动生成，请勿手改；状态请改 `pm/tasks/tasks.json` 或用 `node pm/scripts/wbs.mjs set <任务号> <状态>`。
 
@@ -43,12 +43,12 @@
 
 ---
 
-### <a id="w06-02"></a>⬜ W06-02 · 落地页发布（定价 + demo + 安装） 
+### <a id="w06-02"></a>✅ W06-02 · 落地页发布（定价 + demo + 安装） 
 
 | 字段 | 内容 |
 |---|---|
 | 优先级 | **P0** |
-| 状态 | 未开始（进度 0%） |
+| 状态 | 已完成（进度 100%） |
 | 工时预估 | 4h |
 | 截止 | 2026-10-09 |
 | 依赖 | [W01-05](../W01/README.md#w01-05)、[W05-03](../W05/README.md#w05-03)、[W05-02](../W05/README.md#w05-02) |
@@ -60,7 +60,7 @@
 
 **目标**：公网可访问的落地页：价值主张、demo 视频、定价三档、安装按钮、GitHub 链接。
 
-**涉及文件**：`web/public/index.html`
+**涉及文件**：`web/public/index.html` `web/server.js` `docs/landing-deploy.md` `.github/workflows/landing-pages.yml`
 
 **验收标准**（逐条勾选，全部满足才能标 done）：
 - [ ] 落地页公网 URL 可访问（部署方式记录）
@@ -75,7 +75,8 @@
 **参考文档**：—
 
 **活动记录**：
-  - （暂无）
+  - 2026-09-05 状态变更 todo→doing：落地页嵌入 demo 视频、VTT、部署 SOP、Pages 工作流
+  - 2026-09-05 状态变更 doing→done：落地页嵌入 60s demo+中英字幕，定价/安装已有；docs/landing-deploy.md 记录本机/Docker/Pages；Actions 发 gh-pages
 
 ---
 

@@ -1,5 +1,6 @@
 const { describe, it } = require('node:test');
 const assert = require('node:assert/strict');
+const fs = require('fs');
 const http = require('http');
 const path = require('path');
 
@@ -78,6 +79,26 @@ describe('web product API', () => {
     const r = await request('GET', '/');
     assert.equal(r.status, 200);
     assert.match(r.body, /Architecture Viewer/);
+    assert.match(r.body, /demo\.mp4/);
+    assert.match(r.body, /¥29/);
+    assert.match(r.body, /install|安装/i);
+  });
+
+  it('serves demo video from docs/', async () => {
+    const r = await request('GET', '/demo.mp4');
+    assert.equal(r.status, 200);
+    assert.match(String(r.headers['content-type'] || ''), /video\/mp4/);
+    assert.ok(Buffer.byteLength(r.body) > 10000);
+    const vtt = await request('GET', '/demo.zh.vtt');
+    assert.equal(vtt.status, 200);
+    assert.match(vtt.body, /WEBVTT/);
+  });
+
+  it('records landing deploy SOP', () => {
+    const deploy = fs.readFileSync(path.join(__dirname, '..', 'docs', 'landing-deploy.md'), 'utf8');
+    assert.match(deploy, /127\.0\.0\.1:3847/);
+    assert.match(deploy, /prepare-landing-static/);
+    assert.match(deploy, /landing-pages\.yml/);
   });
 
   it('generate from local path', async () => {

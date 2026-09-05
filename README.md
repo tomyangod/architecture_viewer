@@ -7,6 +7,8 @@
 
 ![demo](docs/demo.gif)
 
+落地页（定价 / 60 秒成片 / 安装）：本地 `npm run web` → http://127.0.0.1:3847/ ；部署见 [docs/landing-deploy.md](docs/landing-deploy.md)。成片：[docs/demo.mp4](docs/demo.mp4)。
+
 > **English**: [README.en.md](README.en.md)
 
 > **新手入门**：如果你不太懂技术术语，先看 [小白超详细攻略](docs/beginner-guide/index.html)（图文版）
