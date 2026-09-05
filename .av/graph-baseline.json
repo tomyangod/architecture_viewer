@@ -1,8 +1,8 @@
 {
   "version": 1,
   "root": "architecture_viewer",
-  "generatedAt": "2026-09-04T15:57:32.671Z",
-  "fingerprint": "7e1fd9cf504a6e8e",
+  "generatedAt": "2026-09-05T00:53:22.324Z",
+  "fingerprint": "c4372752d3cf72e1",
   "languages": [
     "javascript"
   ],
@@ -10,9 +10,9 @@
     "files": 71,
     "filesParsed": 71,
     "parseErrors": 0,
-    "types": 607,
-    "nodes": 700,
-    "edges": 891,
+    "types": 609,
+    "nodes": 702,
+    "edges": 893,
     "externalPackages": 22
   },
   "nodes": [
@@ -3413,7 +3413,7 @@
       "kind": "function",
       "name": "printGenerateResult",
       "path": "lib/cli.js",
-      "line": 246,
+      "line": 279,
       "layer": "util",
       "layerConfidence": "high",
       "layerSignal": "dir-name",
@@ -3430,7 +3430,7 @@
       "kind": "function",
       "name": "writeLayerSuggestions",
       "path": "lib/cli.js",
-      "line": 287,
+      "line": 320,
       "layer": "util",
       "layerConfidence": "high",
       "layerSignal": "dir-name",
@@ -3447,7 +3447,7 @@
       "kind": "function",
       "name": "wantsRefine",
       "path": "lib/cli.js",
-      "line": 301,
+      "line": 334,
       "layer": "util",
       "layerConfidence": "high",
       "layerSignal": "dir-name",
@@ -3464,7 +3464,7 @@
       "kind": "function",
       "name": "main",
       "path": "lib/cli.js",
-      "line": 305,
+      "line": 338,
       "layer": "util",
       "layerConfidence": "high",
       "layerSignal": "dir-name",
@@ -6231,11 +6231,45 @@
       ]
     },
     {
+      "id": "lib/scan#ext2",
+      "kind": "function",
+      "name": "ext2",
+      "path": "lib/scan.js",
+      "line": 61,
+      "layer": "util",
+      "layerConfidence": "high",
+      "layerSignal": "dir-name",
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "lib/scan",
+      "methods": [
+        "ext2"
+      ]
+    },
+    {
+      "id": "lib/scan#extractTypeNames",
+      "kind": "function",
+      "name": "extractTypeNames",
+      "path": "lib/scan.js",
+      "line": 66,
+      "layer": "util",
+      "layerConfidence": "high",
+      "layerSignal": "dir-name",
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "lib/scan",
+      "methods": [
+        "extractTypeNames"
+      ]
+    },
+    {
       "id": "lib/scan#collectClasses",
       "kind": "function",
       "name": "collectClasses",
       "path": "lib/scan.js",
-      "line": 61,
+      "line": 103,
       "layer": "util",
       "layerConfidence": "high",
       "layerSignal": "dir-name",
@@ -6252,7 +6286,7 @@
       "kind": "function",
       "name": "hasCodeFiles",
       "path": "lib/scan.js",
-      "line": 92,
+      "line": 131,
       "layer": "util",
       "layerConfidence": "high",
       "layerSignal": "dir-name",
@@ -6269,7 +6303,7 @@
       "kind": "function",
       "name": "escapeRegex",
       "path": "lib/scan.js",
-      "line": 103,
+      "line": 142,
       "layer": "util",
       "layerConfidence": "high",
       "layerSignal": "dir-name",
@@ -6286,7 +6320,7 @@
       "kind": "function",
       "name": "scan",
       "path": "lib/scan.js",
-      "line": 107,
+      "line": 146,
       "layer": "util",
       "layerConfidence": "high",
       "layerSignal": "dir-name",
@@ -6303,7 +6337,7 @@
       "kind": "function",
       "name": "uniqueBy",
       "path": "lib/scan.js",
-      "line": 343,
+      "line": 382,
       "layer": "util",
       "layerConfidence": "high",
       "layerSignal": "dir-name",
@@ -6320,7 +6354,7 @@
       "kind": "function",
       "name": "leafTerm",
       "path": "lib/scan.js",
-      "line": 373,
+      "line": 412,
       "layer": "util",
       "layerConfidence": "high",
       "layerSignal": "dir-name",
@@ -6337,7 +6371,7 @@
       "kind": "function",
       "name": "driftTerms",
       "path": "lib/scan.js",
-      "line": 380,
+      "line": 419,
       "layer": "util",
       "layerConfidence": "high",
       "layerSignal": "dir-name",
@@ -6354,7 +6388,7 @@
       "kind": "function",
       "name": "checkDrift",
       "path": "lib/scan.js",
-      "line": 436,
+      "line": 475,
       "layer": "util",
       "layerConfidence": "high",
       "layerSignal": "dir-name",
@@ -12426,28 +12460,28 @@
       "to": "file:lib/cli.js",
       "type": "declared-in",
       "file": "lib/cli.js",
-      "line": 246
+      "line": 279
     },
     {
       "from": "lib/cli#writeLayerSuggestions",
       "to": "file:lib/cli.js",
       "type": "declared-in",
       "file": "lib/cli.js",
-      "line": 287
+      "line": 320
     },
     {
       "from": "lib/cli#wantsRefine",
       "to": "file:lib/cli.js",
       "type": "declared-in",
       "file": "lib/cli.js",
-      "line": 301
+      "line": 334
     },
     {
       "from": "lib/cli#main",
       "to": "file:lib/cli.js",
       "type": "declared-in",
       "file": "lib/cli.js",
-      "line": 305
+      "line": 338
     },
     {
       "from": "lib/diff-graph#canonical",
@@ -13514,60 +13548,74 @@
       "line": 41
     },
     {
-      "from": "lib/scan#collectClasses",
+      "from": "lib/scan#ext2",
       "to": "file:lib/scan.js",
       "type": "declared-in",
       "file": "lib/scan.js",
       "line": 61
     },
     {
-      "from": "lib/scan#hasCodeFiles",
+      "from": "lib/scan#extractTypeNames",
       "to": "file:lib/scan.js",
       "type": "declared-in",
       "file": "lib/scan.js",
-      "line": 92
+      "line": 66
     },
     {
-      "from": "lib/scan#escapeRegex",
+      "from": "lib/scan#collectClasses",
       "to": "file:lib/scan.js",
       "type": "declared-in",
       "file": "lib/scan.js",
       "line": 103
     },
     {
+      "from": "lib/scan#hasCodeFiles",
+      "to": "file:lib/scan.js",
+      "type": "declared-in",
+      "file": "lib/scan.js",
+      "line": 131
+    },
+    {
+      "from": "lib/scan#escapeRegex",
+      "to": "file:lib/scan.js",
+      "type": "declared-in",
+      "file": "lib/scan.js",
+      "line": 142
+    },
+    {
       "from": "lib/scan#scan",
       "to": "file:lib/scan.js",
       "type": "declared-in",
       "file": "lib/scan.js",
-      "line": 107
+      "line": 146
     },
     {
       "from": "lib/scan#uniqueBy",
       "to": "file:lib/scan.js",
       "type": "declared-in",
       "file": "lib/scan.js",
-      "line": 343
+      "line": 382
     },
     {
       "from": "lib/scan#leafTerm",
       "to": "file:lib/scan.js",
       "type": "declared-in",
       "file": "lib/scan.js",
-      "line": 373
+      "line": 412
     },
     {
       "from": "lib/scan#driftTerms",
       "to": "file:lib/scan.js",
       "type": "declared-in",
       "file": "lib/scan.js",
-      "line": 380
+      "line": 419
     },
     {
       "from": "lib/scan#checkDrift",
       "to": "file:lib/scan.js",
       "type": "declared-in",
       "file": "lib/scan.js",
-      "line": 436
+      "line": 475
     },
     {
       "from": "lib/session-report#generateReport",
@@ -16461,7 +16509,7 @@
       "to": "file:lib/pro/auth-client.js",
       "type": "import",
       "file": "lib/cli.js",
-      "line": 700,
+      "line": 733,
       "isType": false
     },
     {
@@ -16469,7 +16517,7 @@
       "to": "file:lib/pro/auth-client.js",
       "type": "import",
       "file": "lib/cli.js",
-      "line": 733,
+      "line": 766,
       "isType": false
     },
     {
@@ -16477,7 +16525,7 @@
       "to": "file:lib/pro/features.js",
       "type": "import",
       "file": "lib/cli.js",
-      "line": 734,
+      "line": 767,
       "isType": false
     },
     {
@@ -16485,7 +16533,7 @@
       "to": "file:lib/telemetry.js",
       "type": "import",
       "file": "lib/cli.js",
-      "line": 836,
+      "line": 869,
       "isType": false
     },
     {
@@ -17709,5 +17757,5 @@
       "files": 7
     }
   },
-  "sessionStartedAt": "2026-09-04T15:57:32.672Z"
+  "sessionStartedAt": "2026-09-05T00:53:22.324Z"
 }
