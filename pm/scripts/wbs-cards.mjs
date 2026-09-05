@@ -152,6 +152,7 @@ idx += `   - 服务：\`node pm/scripts/wbs.mjs webhook\`（端口 3910，路径
 
 idx += `## 周报与记录\n\n`;
 idx += `- 周报目录：[\`pm/reports/weekly/\`](./reports/weekly/)\n`;
+idx += `- 现状全览：[\`pm/reports/STATUS-2026-09-05.md\`](./reports/STATUS-2026-09-05.md)\n`;
 idx += `- 指标台账：[\`pm/metrics.md\`](./metrics.md)\n`;
 idx += `- Webhook 日志：\`pm/reports/webhook.log\`\n`;
 

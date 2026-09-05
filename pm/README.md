@@ -85,5 +85,6 @@ node pm/scripts/wbs.mjs webhook                # 启动 Gitee Webhook 服务（�
 ## 周报与记录
 
 - 周报目录：[`pm/reports/weekly/`](./reports/weekly/)
+- 现状全览：[`pm/reports/STATUS-2026-09-05.md`](./reports/STATUS-2026-09-05.md)
 - 指标台账：[`pm/metrics.md`](./metrics.md)
 - Webhook 日志：`pm/reports/webhook.log`
