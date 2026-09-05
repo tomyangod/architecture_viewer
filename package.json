@@ -133,6 +133,7 @@
     "start": "node web/server.js",
     "bake:samples": "node scripts/bake-samples.js",
     "wbs": "node pm/scripts/wbs.mjs",
+    "metrics:pull": "node pm/scripts/metrics-pull.mjs",
     "build:vsix": "node scripts/build-vsix.js",
     "publish:vsix": "node scripts/build-vsix.js && vsce publish --packagePath arch-viewer.vsix --no-git-tag-version",
     "publish:ovsx": "ovsx publish arch-viewer.vsix",

@@ -129,11 +129,13 @@ export function generateWeekly(weekId) {
     ? nextTasks.map((t) => `- ${STATUS_EMOJI[effectiveStatus(tasks, t)]} ${t.id} ${t.title}（${t.priority}，截止 ${t.deadline || '—'}；依赖：${(t.deps || []).join(', ') || '无'}）`).join('\n')
     : '- Phase 3 backlog，按 12 周复盘结论排期。') + '\n\n';
 
-  md += `## 六、数据与指标（人工填写）\n\n`;
-  md += `> 数据源：npm 下载 + CLI/网页遥测，详见 [pm/metrics.md](../metrics.md)。Marketplace 口径暂缓。\n\n`;
+  md += `## 六、数据与指标（对照 pm/metrics.md）\n\n`;
+  md += `> 数据源：npm 下载 + CLI/网页遥测，详见 [pm/metrics.md](../metrics.md)。Marketplace 口径暂缓。\n`;
+  md += `> 周五先跑 \`npm run metrics:pull\`（或 \`node pm/scripts/metrics-pull.mjs\`），确认后回填台账与下表。\n\n`;
   md += `| 指标 | 本周 | 上周 | 备注 |\n|---|---|---|---|\n`;
-  md += `| 累计安装 |  |  |  |\n`;
-  md += `| 周活跃 |  |  |  |\n`;
+  md += `| 累计安装 |  |  | 见 metrics 周度记录 |\n`;
+  md += `| 周新增安装 |  |  | npm downloads point |\n`;
+  md += `| 周活跃 |  |  | 遥测默认关；见口径 |\n`;
   md += `| Generate 触发 |  |  |  |\n`;
   md += `| Pro 试用/付费 |  |  |  |\n`;
   md += `| 收入（¥） |  |  |  |\n\n`;

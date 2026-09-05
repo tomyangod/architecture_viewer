@@ -1082,8 +1082,8 @@
       "phase": 1,
       "week": 6,
       "priority": "P1",
-      "status": "todo",
-      "progress": 0,
+      "status": "done",
+      "progress": 100,
       "assignee": "heyangyan",
       "estHours": 2,
       "deadline": "2026-10-09",
@@ -1096,7 +1096,9 @@
       "context": "周报需要安装/激活数据支撑转化率判断。数据源改为 npm 下载 + CLI/网页遥测；Marketplace 后台待扩展重启后再加。",
       "goal": "pm/metrics.md 模板：周安装、周活跃、Generate 触发数、Pro 登录数，每周五随周报更新。",
       "files": [
-        "pm/metrics.md"
+        "pm/metrics.md",
+        "pm/scripts/metrics-pull.mjs",
+        "pm/scripts/wbs-report.mjs"
       ],
       "acceptance": [
         "metrics.md 含数据口径与首周数据",
@@ -1106,7 +1108,18 @@
         "test -f pm/metrics.md && echo METRICS_OK"
       ],
       "refs": [],
-      "activity": []
+      "activity": [
+        {
+          "date": "2026-09-05",
+          "action": "状态变更 todo→doing",
+          "detail": "补齐 metrics 口径与首周 npm 实数"
+        },
+        {
+          "date": "2026-09-05",
+          "action": "状态变更 doing→done",
+          "detail": "metrics.md 口径+首周 npm 375；metrics-pull.mjs；周报 §六引用拉取命令"
+        }
+      ]
     },
     {
       "id": "W07-01",
