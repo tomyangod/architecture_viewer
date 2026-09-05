@@ -1357,26 +1357,27 @@
       "phase": 2,
       "week": 9,
       "priority": "P0",
-      "status": "todo",
-      "progress": 0,
+      "status": "done",
+      "progress": 100,
       "assignee": "heyangyan",
       "estHours": 6,
       "deadline": "2026-10-30",
       "deps": [
         "W05-01",
-        "W06-01",
         "W04-04"
       ],
       "tags": [
         "pro",
         "growth"
       ],
-      "context": "2% 转化需要主动设计：7 天试用、价值时刻后弹 paywall（第 N 次生成或首次漂移检出）。",
+      "context": "2% 转化需要主动设计：7 天试用、价值时刻后弹 paywall（第 N 次生成或首次漂移检出）。原依赖 W06-01 Marketplace 已解开：试用走 CLI auth / 网页 account，不绑扩展上架。",
       "goal": "Pro 7 天试用流程；漂移检出/增量同步等价值时刻后引导升级；漏斗事件埋点（登录→试用→付费）。",
       "files": [
         "lib/pro/auth-client.js",
+        "lib/pro/funnel.js",
+        "lib/pro/entitlement.js",
         "lib/telemetry.js",
-        "web/public/index.html"
+        "web/public/account.html"
       ],
       "acceptance": [
         "新用户可一键开启 7 天 Pro 试用",
@@ -1387,7 +1388,18 @@
         "grep -q \"trial\" lib/pro/auth-client.js lib/pro/entitlement.js 2>/dev/null && echo TRIAL_OK"
       ],
       "refs": [],
-      "activity": []
+      "activity": [
+        {
+          "date": "2026-09-05",
+          "action": "状态变更 todo→doing",
+          "detail": "解开 Marketplace 依赖；接 trial/paywall/funnel"
+        },
+        {
+          "date": "2026-09-05",
+          "action": "状态变更 doing→done",
+          "detail": "auth trial；漂移/session 后非阻断 paywall；funnel.log+遥测镜像；已去 W06-01 依赖"
+        }
+      ]
     },
     {
       "id": "W09-02",
@@ -1647,8 +1659,8 @@
       "phase": 2,
       "week": 11,
       "priority": "P1",
-      "status": "todo",
-      "progress": 0,
+      "status": "done",
+      "progress": 100,
       "assignee": "heyangyan",
       "estHours": 3,
       "deadline": "2026-11-13",
@@ -1675,7 +1687,18 @@
       "refs": [
         "pm/metrics.md"
       ],
-      "activity": []
+      "activity": [
+        {
+          "date": "2026-09-05",
+          "action": "状态变更 todo→doing",
+          "detail": "写 retrospective-w11 基于首周 npm 与漏斗接线"
+        },
+        {
+          "date": "2026-09-05",
+          "action": "状态变更 doing→done",
+          "detail": "retrospective-w11：漏斗数字+3 条建议"
+        }
+      ]
     },
     {
       "id": "W12-01",
@@ -1730,8 +1753,8 @@
       "phase": 2,
       "week": 12,
       "priority": "P1",
-      "status": "todo",
-      "progress": 0,
+      "status": "done",
+      "progress": 100,
       "assignee": "heyangyan",
       "estHours": 4,
       "deadline": "2026-11-20",
@@ -1756,7 +1779,18 @@
       "refs": [
         "docs/market-evaluation/market-evaluation.html"
       ],
-      "activity": []
+      "activity": [
+        {
+          "date": "2026-09-05",
+          "action": "状态变更 todo→doing",
+          "detail": "12 周快照复盘 + Phase3 设计稿"
+        },
+        {
+          "date": "2026-09-05",
+          "action": "状态变更 doing→done",
+          "detail": "12w 快照复盘+phase3-design 多仓/跨仓模型"
+        }
+      ]
     },
     {
       "id": "W13-01",

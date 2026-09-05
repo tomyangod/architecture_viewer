@@ -2,29 +2,29 @@
 
 > 阶段：Phase 2 ｜ 周期：2026-10-26 ~ 2026-10-30 ｜ 周截止：2026-10-30
 >
-> 完成度：1/3 ███░░░░░░░ 33%
+> 完成度：2/3 ███████░░░ 67%
 
 > 本文件由 `node pm/scripts/wbs-cards.mjs` 自动生成，请勿手改；状态请改 `pm/tasks/tasks.json` 或用 `node pm/scripts/wbs.mjs set <任务号> <状态>`。
 
 
-### <a id="w09-01"></a>⬜ W09-01 · 付费转化优化（试用 + paywall 时机 + 漏斗） 
+### <a id="w09-01"></a>✅ W09-01 · 付费转化优化（试用 + paywall 时机 + 漏斗） 
 
 | 字段 | 内容 |
 |---|---|
 | 优先级 | **P0** |
-| 状态 | 未开始（进度 0%） |
+| 状态 | 已完成（进度 100%） |
 | 工时预估 | 6h |
 | 截止 | 2026-10-30 |
-| 依赖 | [W05-01](../W05/README.md#w05-01)、[W06-01](../W06/README.md#w06-01)、[W04-04](../W04/README.md#w04-04) |
+| 依赖 | [W05-01](../W05/README.md#w05-01)、[W04-04](../W04/README.md#w04-04) |
 | 负责人 | heyangyan |
 | 标签 | pro / growth |
 
 
-**背景**：2% 转化需要主动设计：7 天试用、价值时刻后弹 paywall（第 N 次生成或首次漂移检出）。
+**背景**：2% 转化需要主动设计：7 天试用、价值时刻后弹 paywall（第 N 次生成或首次漂移检出）。原依赖 W06-01 Marketplace 已解开：试用走 CLI auth / 网页 account，不绑扩展上架。
 
 **目标**：Pro 7 天试用流程；漂移检出/增量同步等价值时刻后引导升级；漏斗事件埋点（登录→试用→付费）。
 
-**涉及文件**：`lib/pro/auth-client.js` `lib/telemetry.js` `web/public/index.html`
+**涉及文件**：`lib/pro/auth-client.js` `lib/pro/funnel.js` `lib/pro/entitlement.js` `lib/telemetry.js` `web/public/account.html`
 
 **验收标准**（逐条勾选，全部满足才能标 done）：
 - [ ] 新用户可一键开启 7 天 Pro 试用
@@ -39,7 +39,8 @@
 **参考文档**：—
 
 **活动记录**：
-  - （暂无）
+  - 2026-09-05 状态变更 todo→doing：解开 Marketplace 依赖；接 trial/paywall/funnel
+  - 2026-09-05 状态变更 doing→done：auth trial；漂移/session 后非阻断 paywall；funnel.log+遥测镜像；已去 W06-01 依赖
 
 ---
 
