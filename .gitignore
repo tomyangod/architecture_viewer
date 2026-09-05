@@ -56,3 +56,4 @@ archify-main/
 .av/layers.suggested.json
 
 *.vsix
+*.tgz

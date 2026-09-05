@@ -134,6 +134,8 @@
     "bake:samples": "node scripts/bake-samples.js",
     "wbs": "node pm/scripts/wbs.mjs",
     "metrics:pull": "node pm/scripts/metrics-pull.mjs",
+    "pack:npm": "npm pack --dry-run",
+    "release:npm": "npm publish --access public",
     "build:vsix": "node scripts/build-vsix.js",
     "publish:vsix": "node scripts/build-vsix.js && vsce publish --packagePath arch-viewer.vsix --no-git-tag-version",
     "publish:ovsx": "ovsx publish arch-viewer.vsix",
@@ -165,10 +167,14 @@
   "files": [
     "bin/",
     "lib/",
+    "mcp/",
     "web/",
     "src/",
     "assets/",
     "vendor/",
+    "templates/",
+    "docs/welcome.html",
+    ".cursor/rules/architecture-viewer.mdc",
     "architecture_visualized.html",
     "architecture.config.js",
     "AGENT.md",
@@ -179,6 +185,12 @@
     "README.md",
     "README.en.md",
     "architecture-rules.example.yaml",
+    "c4-context.md",
+    "c4-container.md",
+    "c4-component.md",
+    "block-diagram.md",
+    "class-diagram.md",
+    "deployment-ops.md",
     "scripts/ci-drift-action.mjs"
   ]
 }

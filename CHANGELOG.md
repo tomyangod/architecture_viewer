@@ -4,6 +4,10 @@
 
 ## \[Unreleased\]
 
+（下一拍：首笔 Pro 到账、npm 后续补丁。）
+
+## \[0.11.0\] — 2026-09-05（首次上架 npm latest；此前 registry 停在 0.3.1）
+
 ### Added
 
 - **团队制图规范**（`architecture-rules.yaml` / W07-02）：节点命名正则、分层归属、禁止跨层 Rel、Rel 标签白名单。`arch-viewer check --rules` 违规亮红灯并报规则名；未传 `--rules` 时自动读取套件或仓库根的 `architecture-rules.yaml`。示例见 `architecture-rules.example.yaml`。
@@ -26,10 +30,9 @@
 - `pm/reports/ARCHIFY-COMPARISON-2026-09-04.md`：与 Archify 逐维度对比。
 - `pm/reports/STATUS-2026-09-04.md`：项目现状归档（0.11.0 已发 + 0.12 候选）。
 - `COMMERCIAL-v2.md`：商业模式修订（学分发不学赞助当主业 / 不改整仓 GPL / 分析不进付费墙）。
+- 落地页 60 秒 demo、指标台账、Team 私有化报价、试用漏斗（`auth trial` / 漂移后非阻断 paywall）。
 
-## \[0.11.0\] — 2026-09-03
-
-### Added
+### Added（0.11.0 原条目 · 2026-09-03）
 
 - **MCP 自动闭环（watcher 模式）**：`av_session_start` 后 MCP server 自动监听工作区源码文件（过滤口径与扫描器一致：node\_modules/docs/.venv/dist 等不监听），AI 停下 20 秒（防抖）后**自动生成**架构报告并缓存，无需 Agent 手动触发；新增第 5 个工具 `av_session_changes`——轻量轮询「有没有架构变更」，不生成文件、秒回，Agent 改完代码回复用户前先调它，有变更再调 `av_session_report` 看详情（缓存命中秒回）。新增 `startWatcher` / `stopWatcher` / `getWatcherState` 生命周期管理，工具返回中带 watcher 状态。DeepSeek Harness 示例配置（`mcp/dsh-config.example.yml`）同步更新为自动闭环工作流说明。
 

@@ -20,7 +20,8 @@
 哪些地方不好用？有没有解决你的真实痛点？愿不愿意在掘金/知乎写一条体验？
 
 GitHub: https://github.com/heyangyan/architecture_viewer
-一行试用: npx arch-viewer setup
+一行试用: npx arch-viewer@0.11.0 setup
+（或 npm i -g arch-viewer@0.11.0；registry 升到 0.11 后可去掉版本钉）
 
 如果方便，回复一下就行，我把 Pro 额度给你开通。
 ```

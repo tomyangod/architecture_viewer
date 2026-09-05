@@ -1452,8 +1452,8 @@
       "phase": 2,
       "week": 9,
       "priority": "P0",
-      "status": "todo",
-      "progress": 0,
+      "status": "doing",
+      "progress": 20,
       "assignee": "heyangyan",
       "estHours": 2,
       "deadline": "2026-10-30",
@@ -1468,17 +1468,25 @@
       "context": "首笔付费验证全链路；种子用户或自然流量转化均可。",
       "goal": "≥1 笔真实 Pro 付款到账并完成开通。",
       "files": [
-        "pm/metrics.md"
+        "pm/metrics.md",
+        "docs/billing.md",
+        "docs/npm-publish.md"
       ],
       "acceptance": [
         "付款凭证/订单号记录在 metrics.md",
         "用户 Pro 权益开通确认"
       ],
       "acceptanceCommands": [
-        "grep -q \"订单\\|order\\|付费\" pm/metrics.md && echo FIRST_PAY_OK"
+        "grep -q \"FIRST_PAY:\" pm/metrics.md && echo FIRST_PAY_OK"
       ],
       "refs": [],
-      "activity": []
+      "activity": [
+        {
+          "date": "2026-09-05",
+          "action": "状态变更 todo→doing",
+          "detail": "订单表与发布 SOP 已备；待 npm login 发 0.11 与真实 Pro 到账"
+        }
+      ]
     },
     {
       "id": "W10-01",

@@ -80,12 +80,12 @@
 
 ---
 
-### <a id="w09-03"></a>⬜ W09-03 · 首笔 Pro 付费到账（里程碑） 
+### <a id="w09-03"></a>🔵 W09-03 · 首笔 Pro 付费到账（里程碑） 
 
 | 字段 | 内容 |
 |---|---|
 | 优先级 | **P0** |
-| 状态 | 未开始（进度 0%） |
+| 状态 | 进行中（进度 20%） |
 | 工时预估 | 2h |
 | 截止 | 2026-10-30 |
 | 依赖 | [W09-01](../W09/README.md#w09-01)、[W05-02](../W05/README.md#w05-02) |
@@ -97,7 +97,7 @@
 
 **目标**：≥1 笔真实 Pro 付款到账并完成开通。
 
-**涉及文件**：`pm/metrics.md`
+**涉及文件**：`pm/metrics.md` `docs/billing.md` `docs/npm-publish.md`
 
 **验收标准**（逐条勾选，全部满足才能标 done）：
 - [ ] 付款凭证/订单号记录在 metrics.md
@@ -105,10 +105,10 @@
 
 **验收命令**（退出码 0 即通过；人工验收项需在周报中记录证据）：
   ```bash
-  grep -q "订单\|order\|付费" pm/metrics.md && echo FIRST_PAY_OK
+  grep -q "FIRST_PAY:" pm/metrics.md && echo FIRST_PAY_OK
   ```
 
 **参考文档**：—
 
 **活动记录**：
-  - （暂无）
+  - 2026-09-05 状态变更 todo→doing：订单表与发布 SOP 已备；待 npm login 发 0.11 与真实 Pro 到账

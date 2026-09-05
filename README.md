@@ -41,7 +41,7 @@ npx arch-viewer session start        # ③ 确认变更符合预期：刷新基�
 ### 2. 一键接入 AI 工具（Cursor / Claude / DeepSeek）
 
 ```bash
-npx arch-viewer setup          # 自动装好、自动打开图文引导页，之后只需对 AI 说人话
+npx arch-viewer@0.11.0 setup   # 自动装好、打开图文引导；npm latest 升到 0.11 后可去掉版本钉
 ```
 
 自动检测已安装的 AI 编程工具（Cursor、Claude、DeepSeek Harness），把架构检查规则
@@ -98,7 +98,7 @@ npm i -g arch-viewer        # CLI 全局安装
 **最省事的方式（推荐小白）**——一条命令自动接入 Cursor / Claude，不用编辑任何配置文件：
 
 ```bash
-npx arch-viewer setup          # 自动装好、自动打开图文引导页，之后只需对 AI 说人话
+npx arch-viewer@0.11.0 setup   # 自动装好、打开图文引导；npm latest 升到 0.11 后可去掉版本钉
 ```
 
 **手动方式**：
