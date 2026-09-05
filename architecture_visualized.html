@@ -1098,6 +1098,109 @@
             border-radius: 4px;
             font-weight: 600;
         }
+
+        /* ===== W11-02 工具栏：导出 PDF / 演示模式 ===== */
+        .viewer-toolbar {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+            margin: -8px 0 16px;
+            flex-wrap: wrap;
+        }
+        .tool-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 9px 16px;
+            border: none;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.25s;
+            color: #fff;
+            font-family: inherit;
+        }
+        .tool-btn.tool-pdf { background: linear-gradient(135deg, #c62828, #d84315); }
+        .tool-btn.tool-present { background: linear-gradient(135deg, #1a237e, #283593); }
+        .tool-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 18px rgba(0,0,0,0.25); }
+        .tool-btn .tool-icon { font-size: 16px; }
+
+        /* 演示模式：全屏黑底，只显示当前图 */
+        body.presentation-mode { background: #0d1117; overflow: hidden; }
+        body.presentation-mode .page-header,
+        body.presentation-mode .legend-bar,
+        body.presentation-mode .changelog-container,
+        body.presentation-mode .file-references,
+        body.presentation-mode .footer-info,
+        body.presentation-mode .viewer-toolbar,
+        body.presentation-mode .back-to-top,
+        body.presentation-mode .tab-navigation { display: none !important; }
+        body.presentation-mode .container { max-width: 100%; padding: 0; }
+        body.presentation-mode .tab-panel { display: none !important; }
+        body.presentation-mode .tab-panel.active {
+            display: block !important;
+            height: 100vh;
+            overflow: auto;
+            padding: 24px;
+        }
+        body.presentation-mode .diagram-card {
+            box-shadow: none;
+            border: 1px solid #30363d;
+            background: #161b22;
+        }
+        .present-hint {
+            position: fixed;
+            bottom: 18px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0,0,0,0.7);
+            color: #c9d1d9;
+            padding: 8px 18px;
+            border-radius: 20px;
+            font-size: 13px;
+            z-index: 2000;
+            opacity: 0;
+            transition: opacity 0.3s;
+            pointer-events: none;
+        }
+        .present-hint.show { opacity: 1; }
+        .present-counter {
+            position: fixed;
+            top: 16px;
+            right: 20px;
+            background: rgba(0,0,0,0.6);
+            color: #8b949e;
+            padding: 6px 14px;
+            border-radius: 16px;
+            font-size: 13px;
+            z-index: 2000;
+        }
+
+        /* ===== 打印 / 导出 PDF：六视图合订，每图一页 ===== */
+        @media print {
+            body { background: #fff; }
+            .back-to-top, .viewer-toolbar, .tab-navigation,
+            .present-hint, .present-counter, .interact-tip-overlay,
+            .diagram-controls, .zoom-controls, .changelog-toggle { display: none !important; }
+            .container { max-width: 100%; padding: 0; }
+            .tab-panel { display: block !important; page-break-after: always; break-after: page; }
+            .tab-panel:last-of-type { page-break-after: auto; break-after: auto; }
+            .diagram-card { box-shadow: none; border: 1px solid #ccc; margin-bottom: 20px; }
+            .diagram-inner { min-width: 0 !important; overflow: visible !important; }
+            .mermaid svg { max-width: 100% !important; height: auto !important; }
+            .pdf-title-page {
+                display: flex !important;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                height: 100vh;
+                page-break-after: always;
+                break-after: page;
+                text-align: center;
+            }
+        }
+        .pdf-title-page { display: none; }
     </style>
 </head>
 <body>
@@ -1309,6 +1412,19 @@
                 <h1>${PROJECT.headerIcon || '🏗️'} ${escapeHtml(PROJECT.title || '项目架构可视化全景')}</h1>
                 <p class="subtitle">${escapeHtml(PROJECT.subtitle || '系统架构多视图展示 · C4 模型 · 分层模块 · 代码结构 · 部署运维')}</p>
             </header>
+            <div class="viewer-toolbar">
+                <button class="tool-btn tool-pdf" onclick="exportPDF()" title="导出六视图合订 PDF（浏览器打印 → 另存为 PDF）">
+                    <span class="tool-icon">📄</span> 导出 PDF
+                </button>
+                <button class="tool-btn tool-present" onclick="togglePresentation()" title="演示模式：全屏，←/→ 切换视图，Esc 退出">
+                    <span class="tool-icon">🖥️</span> 演示模式
+                </button>
+            </div>
+            <div class="pdf-title-page">
+                <h1 style="font-size:34px;margin-bottom:12px;">${PROJECT.headerIcon || '🏗️'} ${escapeHtml(PROJECT.title || '项目架构可视化全景')}</h1>
+                <p style="font-size:16px;color:#555;">${escapeHtml(PROJECT.subtitle || '系统架构多视图展示 · C4 模型 · 分层模块 · 代码结构 · 部署运维')}</p>
+                <p style="margin-top:30px;color:#888;font-size:13px;">由 Architecture Viewer 生成 · ${new Date().toLocaleDateString('zh-CN')}</p>
+            </div>
         `);
 
         // 2) 更新日志（如果有）
@@ -2127,6 +2243,95 @@
             }
         });
     }
+
+    // ============================================================
+    //  W11-02：导出 PDF / 演示模式
+    // ============================================================
+    function exportPDF() {
+        // 打印前确保所有视图的 mermaid 都已渲染（隐藏面板里的图可能是懒加载的）
+        const panels = document.querySelectorAll('.tab-panel');
+        panels.forEach(p => {
+            const tabId = p.id.replace('tab-', '');
+            if (!renderedDiagrams.has(tabId)) renderDiagram(tabId);
+        });
+        // 等一帧让 SVG 落地，再调打印
+        setTimeout(() => window.print(), 120);
+    }
+
+    let presentState = { active: false, index: 0 };
+    function togglePresentation() {
+        presentState.active = !presentState.active;
+        const body = document.body;
+        let hint = document.getElementById('presentHint');
+        let counter = document.getElementById('presentCounter');
+        if (presentState.active) {
+            body.classList.add('presentation-mode');
+            if (!hint) {
+                hint = document.createElement('div');
+                hint.id = 'presentHint';
+                hint.className = 'present-hint';
+                document.body.appendChild(hint);
+            }
+            if (!counter) {
+                counter = document.createElement('div');
+                counter.id = 'presentCounter';
+                counter.className = 'present-counter';
+                document.body.appendChild(counter);
+            }
+            const idx = TABS.findIndex(t => t.id === (document.querySelector('.tab-panel.active')?.id || '').replace('tab-', ''));
+            presentState.index = idx >= 0 ? idx : 0;
+            switchTab(TABS[presentState.index].id);
+            updatePresentUI();
+            // 请求浏览器全屏
+            const root = document.documentElement;
+            if (root.requestFullscreen) root.requestFullscreen().catch(() => {});
+            showPresentHint('演示模式：← / → 切换视图 · Esc 退出');
+        } else {
+            exitPresentation();
+        }
+    }
+    function exitPresentation() {
+        presentState.active = false;
+        document.body.classList.remove('presentation-mode');
+        const hint = document.getElementById('presentHint');
+        const counter = document.getElementById('presentCounter');
+        if (hint) hint.remove();
+        if (counter) counter.remove();
+        if (document.fullscreenElement) document.exitFullscreen().catch(() => {});
+    }
+    function updatePresentUI() {
+        const counter = document.getElementById('presentCounter');
+        if (counter) counter.textContent = (presentState.index + 1) + ' / ' + TABS.length;
+    }
+    function showPresentHint(text) {
+        const hint = document.getElementById('presentHint');
+        if (!hint) return;
+        hint.textContent = text;
+        hint.classList.add('show');
+        clearTimeout(hint._t);
+        hint._t = setTimeout(() => hint.classList.remove('show'), 2200);
+    }
+    function presentNav(delta) {
+        if (!presentState.active) return;
+        const next = presentState.index + delta;
+        if (next < 0 || next >= TABS.length) {
+            showPresentHint(next < 0 ? '已是第一张' : '已是最后一张');
+            return;
+        }
+        presentState.index = next;
+        switchTab(TABS[next].id);
+        updatePresentUI();
+    }
+    document.addEventListener('keydown', function (e) {
+        if (!presentState.active) return;
+        if (e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === ' ') { e.preventDefault(); presentNav(1); }
+        else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') { e.preventDefault(); presentNav(-1); }
+        else if (e.key === 'Escape') { exitPresentation(); }
+    });
+    document.addEventListener('fullscreenchange', function () {
+        // 浏览器原生 Esc 退出全屏时同步关闭演示模式
+        if (!document.fullscreenElement && presentState.active) exitPresentation();
+    });
 
     // ============================================================
     //  缩放 / 平移 / 全屏 / 下载
