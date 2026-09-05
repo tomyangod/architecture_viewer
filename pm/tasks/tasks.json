@@ -1437,8 +1437,8 @@
       "phase": 2,
       "week": 10,
       "priority": "P0",
-      "status": "todo",
-      "progress": 0,
+      "status": "done",
+      "progress": 100,
       "assignee": "heyangyan",
       "estHours": 8,
       "deadline": "2026-11-06",
@@ -1468,7 +1468,12 @@
       "refs": [
         "eval/REPORT.md"
       ],
-      "activity": []
+      "activity": [
+        {
+          "date": "2026-09-04",
+          "note": "mentionedIds 拆 CamelCase 边界（AuthService→auth+service+auth_service）；checkDrift 保留原始+拆分双 haystack（保护 OpenIM 缩写不被拆散）；collectClasses 补 Go type X struct、Vue SFC 文件名、React tsx 函数组件、Java public class/interface 修饰符；MANIFEST_FILES 加 pom.xml/build.gradle；entrypoints 加 Java 三项；新增 Java eval 夹具 java-order（Spring MVC + JPA）；eval 报告增加漂移检测精度表（检查项/Missing/FP/FP率）。6 仓全过，drift missing=0，FP 率 0%。测试 341 过 0 失败。"
+        }
+      ]
     },
     {
       "id": "W10-02",
@@ -1476,8 +1481,8 @@
       "phase": 2,
       "week": 10,
       "priority": "P1",
-      "status": "todo",
-      "progress": 0,
+      "status": "done",
+      "progress": 100,
       "assignee": "heyangyan",
       "estHours": 5,
       "deadline": "2026-11-06",
@@ -1502,7 +1507,12 @@
         "grep -q \"prompt\\|Prompt\" scripts/ci-drift-action.mjs && echo PRV2_OK"
       ],
       "refs": [],
-      "activity": []
+      "activity": [
+        {
+          "date": "2026-09-05",
+          "note": "新增 lib/drift-locate.js：viewsForKind 按 kind/标签映射到目标视图（service→c4-container、entry→deployment 等）；locateInSource 浅遍历源码树，代码精确匹配（class/type/func + CamelCase/snake 变体）带行号优先，目录名匹配兜底；buildFixPrompt 生成可粘贴给 Cursor 的修复指令（视图名、源码 file:line、命名规范、Rel 白名单、复检命令）。ci-drift-action 评论增「漂移」段视图链接+源码位置，增「一键修复 Prompt」代码块。test/drift-locate 9 例全过；PRV2_OK。"
+        }
+      ]
     },
     {
       "id": "W11-01",
@@ -1559,8 +1569,8 @@
       "phase": 2,
       "week": 11,
       "priority": "P1",
-      "status": "todo",
-      "progress": 0,
+      "status": "done",
+      "progress": 100,
       "assignee": "heyangyan",
       "estHours": 5,
       "deadline": "2026-11-13",
@@ -1587,7 +1597,12 @@
       "refs": [
         "architecture_visualized.html"
       ],
-      "activity": []
+      "activity": [
+        {
+          "date": "2026-09-05",
+          "note": "architecture_visualized.html（规范模板，init 时复制进 kit）增工具栏：导出 PDF（打印前先渲染全部懒加载 mermaid，再 window.print）与演示模式（全屏 + 黑底 + 页码计数器 + 操作提示）。@media print：六视图合订每图一页 + 标题页，隐藏导航/控件/工具栏。演示模式键盘 ←/→/空格切 tab、Esc 退出，fullscreenchange 同步退出。PDF_OK。"
+        }
+      ]
     },
     {
       "id": "W11-03",
