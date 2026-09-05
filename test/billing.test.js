@@ -153,3 +153,19 @@ describe('W09-02 support + invoice', () => {
     assert.match(page.body, /docs\/invoice\.md/);
   });
 });
+
+describe('W12-01 team on-prem quote', () => {
+  it('team-onprem.md has tiers, deliverables, SLA', () => {
+    const text = fs.readFileSync(path.join(__dirname, '..', 'docs', 'team-onprem.md'), 'utf8');
+    assert.match(text, /19,?999/);
+    assert.match(text, /交付物/);
+    assert.match(text, /SLA/);
+    assert.match(text, /docker compose/i);
+  });
+
+  it('landing Team card links on-prem quote', async () => {
+    const page = await request('GET', '/');
+    assert.equal(page.status, 200);
+    assert.match(page.body, /team-onprem\.md/);
+  });
+});

@@ -1683,8 +1683,8 @@
       "phase": 2,
       "week": 12,
       "priority": "P0",
-      "status": "todo",
-      "progress": 0,
+      "status": "doing",
+      "progress": 70,
       "assignee": "heyangyan",
       "estHours": 6,
       "deadline": "2026-11-20",
@@ -1711,7 +1711,18 @@
         "test -f docs/team-onprem.md && echo ONPREM_OK"
       ],
       "refs": [],
-      "activity": []
+      "activity": [
+        {
+          "date": "2026-09-05",
+          "action": "状态变更 todo→doing",
+          "detail": "写私有化报价与交付说明，意向凭证待真实书面回复"
+        },
+        {
+          "date": "2026-09-05",
+          "action": "状态变更 doing→doing",
+          "detail": "报价/交付/SLA 已发布；书面付费意向待真实回信，不虚构凭证"
+        }
+      ]
     },
     {
       "id": "W12-02",

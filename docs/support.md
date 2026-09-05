@@ -27,7 +27,7 @@
 4. **没登录能不能用？** 能。`generate` / `check` / `session` / `--refine`（自带 Key）是 Community，永不登录墙。
 5. **Pro 和免费有何不同？** 免费：自己出图、自己跑 check。Pro：本机文件夹盯梢 + 企微、托管 PR 评论、云端精修/增量同步入口。见 [COMMERCIAL.md](../COMMERCIAL.md)、[PRO-LOCAL.md](PRO-LOCAL.md)。
 6. **试用多久？** 注册即 7 天。到期后本地仍可手动检查；自动检查与企微需开通或兑换许可证。
-7. **怎么付费？** 定价页爱发电 / 微信 / Lemon，或控制台 Stripe。先付款再按 [billing.md](billing.md) 开通。Team 为 ¥999/年/仓库。
+7. **怎么付费？** 定价页爱发电 / 微信 / Lemon，或控制台 Stripe。先付款再按 [billing.md](billing.md) 开通。Team 为 ¥999/年/仓库。内网私有化见 [team-onprem.md](team-onprem.md)（¥19,999 / 年起）。
 8. **生成质量不好？** 骨架是扫描拼模板，秒级。精修：本机 `--refine` + `DEEPSEEK_API_KEY`；云端精修是 Pro 入口（占位）。
 9. **能离线用吗？** Community CLI 完全离线。网页自托管也不依赖 CDN（Mermaid 打进 vendor）。企微推送需要访问企业微信接口。
 10. **Webhook 配错了？** Secret 必须与控制台一致。GitHub 勾选 Pull request；Gitee 选 Merge Request Hook。
