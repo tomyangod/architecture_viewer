@@ -1,19 +1,19 @@
 {
   "version": 1,
   "root": "architecture_viewer",
-  "generatedAt": "2026-09-05T02:22:19.096Z",
-  "fingerprint": "2d31ef10a3d1b3d2",
+  "generatedAt": "2026-09-05T03:32:09.377Z",
+  "fingerprint": "15d92a443595971b",
   "languages": [
     "javascript"
   ],
   "stats": {
-    "files": 72,
-    "filesParsed": 72,
+    "files": 75,
+    "filesParsed": 75,
     "parseErrors": 0,
-    "types": 617,
-    "nodes": 711,
-    "edges": 905,
-    "externalPackages": 22
+    "types": 629,
+    "nodes": 728,
+    "edges": 932,
+    "externalPackages": 24
   },
   "nodes": [
     {
@@ -102,7 +102,7 @@
       "kind": "function",
       "name": "safeResolveUnder",
       "path": "web/server.js",
-      "line": 103,
+      "line": 106,
       "layer": "controller",
       "layerConfidence": "high",
       "layerSignal": "dir-name",
@@ -119,7 +119,7 @@
       "kind": "function",
       "name": "buildViewerPage",
       "path": "web/server.js",
-      "line": 111,
+      "line": 114,
       "layer": "controller",
       "layerConfidence": "high",
       "layerSignal": "dir-name",
@@ -136,7 +136,7 @@
       "kind": "function",
       "name": "pickApiKey",
       "path": "web/server.js",
-      "line": 129,
+      "line": 132,
       "layer": "controller",
       "layerConfidence": "high",
       "layerSignal": "dir-name",
@@ -153,7 +153,7 @@
       "kind": "function",
       "name": "generateOptsFromBody",
       "path": "web/server.js",
-      "line": 146,
+      "line": 149,
       "layer": "controller",
       "layerConfidence": "high",
       "layerSignal": "dir-name",
@@ -170,7 +170,7 @@
       "kind": "function",
       "name": "generateFromPath",
       "path": "web/server.js",
-      "line": 172,
+      "line": 175,
       "layer": "controller",
       "layerConfidence": "high",
       "layerSignal": "dir-name",
@@ -187,7 +187,7 @@
       "kind": "function",
       "name": "handleApi",
       "path": "web/server.js",
-      "line": 219,
+      "line": 222,
       "layer": "controller",
       "layerConfidence": "high",
       "layerSignal": "dir-name",
@@ -204,7 +204,7 @@
       "kind": "function",
       "name": "handler",
       "path": "web/server.js",
-      "line": 396,
+      "line": 399,
       "layer": "controller",
       "layerConfidence": "high",
       "layerSignal": "dir-name",
@@ -221,7 +221,7 @@
       "kind": "function",
       "name": "main",
       "path": "web/server.js",
-      "line": 444,
+      "line": 458,
       "layer": "controller",
       "layerConfidence": "high",
       "layerSignal": "dir-name",
@@ -2089,6 +2089,29 @@
       "lang": "javascript"
     },
     {
+      "id": "file:scripts/prepare-landing-static.mjs",
+      "kind": "file",
+      "name": "prepare-landing-static.mjs",
+      "path": "scripts/prepare-landing-static.mjs",
+      "layer": null,
+      "lang": "javascript"
+    },
+    {
+      "id": "scripts/prepare-landing-static#copyDir",
+      "kind": "function",
+      "name": "copyDir",
+      "path": "scripts/prepare-landing-static.mjs",
+      "line": 13,
+      "layer": null,
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "scripts/prepare-landing-static",
+      "methods": [
+        "copyDir"
+      ]
+    },
+    {
       "id": "file:pm/scripts/gitee-webhook.mjs",
       "kind": "file",
       "name": "gitee-webhook.mjs",
@@ -2143,6 +2166,134 @@
       "module": "pm/scripts/gitee-webhook",
       "methods": [
         "startWebhook"
+      ]
+    },
+    {
+      "id": "file:pm/scripts/metrics-pull.mjs",
+      "kind": "file",
+      "name": "metrics-pull.mjs",
+      "path": "pm/scripts/metrics-pull.mjs",
+      "layer": null,
+      "lang": "javascript"
+    },
+    {
+      "id": "pm/scripts/metrics-pull#parseArgs",
+      "kind": "function",
+      "name": "parseArgs",
+      "path": "pm/scripts/metrics-pull.mjs",
+      "line": 18,
+      "layer": null,
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "pm/scripts/metrics-pull",
+      "methods": [
+        "parseArgs"
+      ]
+    },
+    {
+      "id": "pm/scripts/metrics-pull#isoDay",
+      "kind": "function",
+      "name": "isoDay",
+      "path": "pm/scripts/metrics-pull.mjs",
+      "line": 28,
+      "layer": null,
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "pm/scripts/metrics-pull",
+      "methods": [
+        "isoDay"
+      ]
+    },
+    {
+      "id": "pm/scripts/metrics-pull#defaultRange",
+      "kind": "function",
+      "name": "defaultRange",
+      "path": "pm/scripts/metrics-pull.mjs",
+      "line": 33,
+      "layer": null,
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "pm/scripts/metrics-pull",
+      "methods": [
+        "defaultRange"
+      ]
+    },
+    {
+      "id": "pm/scripts/metrics-pull#getJson",
+      "kind": "function",
+      "name": "getJson",
+      "path": "pm/scripts/metrics-pull.mjs",
+      "line": 43,
+      "layer": null,
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "pm/scripts/metrics-pull",
+      "methods": [
+        "getJson"
+      ]
+    },
+    {
+      "id": "pm/scripts/metrics-pull#telemetryPath",
+      "kind": "function",
+      "name": "telemetryPath",
+      "path": "pm/scripts/metrics-pull.mjs",
+      "line": 66,
+      "layer": null,
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "pm/scripts/metrics-pull",
+      "methods": [
+        "telemetryPath"
+      ]
+    },
+    {
+      "id": "pm/scripts/metrics-pull#summarizeTelemetry",
+      "kind": "function",
+      "name": "summarizeTelemetry",
+      "path": "pm/scripts/metrics-pull.mjs",
+      "line": 76,
+      "layer": null,
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "pm/scripts/metrics-pull",
+      "methods": [
+        "summarizeTelemetry"
+      ]
+    },
+    {
+      "id": "pm/scripts/metrics-pull#countProRealUsers",
+      "kind": "function",
+      "name": "countProRealUsers",
+      "path": "pm/scripts/metrics-pull.mjs",
+      "line": 109,
+      "layer": null,
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "pm/scripts/metrics-pull",
+      "methods": [
+        "countProRealUsers"
+      ]
+    },
+    {
+      "id": "pm/scripts/metrics-pull#main",
+      "kind": "function",
+      "name": "main",
+      "path": "pm/scripts/metrics-pull.mjs",
+      "line": 131,
+      "layer": null,
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "pm/scripts/metrics-pull",
+      "methods": [
+        "main"
       ]
     },
     {
@@ -3326,7 +3477,7 @@
       "kind": "function",
       "name": "parseArgs",
       "path": "lib/cli.js",
-      "line": 82,
+      "line": 83,
       "layer": "util",
       "layerConfidence": "high",
       "layerSignal": "dir-name",
@@ -3343,7 +3494,7 @@
       "kind": "function",
       "name": "openInBrowser",
       "path": "lib/cli.js",
-      "line": 98,
+      "line": 99,
       "layer": "util",
       "layerConfidence": "high",
       "layerSignal": "dir-name",
@@ -3360,7 +3511,7 @@
       "kind": "function",
       "name": "formatFindingsText",
       "path": "lib/cli.js",
-      "line": 112,
+      "line": 113,
       "layer": "util",
       "layerConfidence": "high",
       "layerSignal": "dir-name",
@@ -3377,7 +3528,7 @@
       "kind": "function",
       "name": "printIssues",
       "path": "lib/cli.js",
-      "line": 123,
+      "line": 124,
       "layer": "util",
       "layerConfidence": "high",
       "layerSignal": "dir-name",
@@ -3394,7 +3545,7 @@
       "kind": "function",
       "name": "loadEvalConfig",
       "path": "lib/cli.js",
-      "line": 143,
+      "line": 144,
       "layer": "util",
       "layerConfidence": "high",
       "layerSignal": "dir-name",
@@ -3411,7 +3562,7 @@
       "kind": "function",
       "name": "runEval",
       "path": "lib/cli.js",
-      "line": 152,
+      "line": 153,
       "layer": "util",
       "layerConfidence": "high",
       "layerSignal": "dir-name",
@@ -3428,7 +3579,7 @@
       "kind": "function",
       "name": "printGenerateResult",
       "path": "lib/cli.js",
-      "line": 279,
+      "line": 280,
       "layer": "util",
       "layerConfidence": "high",
       "layerSignal": "dir-name",
@@ -3445,7 +3596,7 @@
       "kind": "function",
       "name": "writeLayerSuggestions",
       "path": "lib/cli.js",
-      "line": 320,
+      "line": 328,
       "layer": "util",
       "layerConfidence": "high",
       "layerSignal": "dir-name",
@@ -3462,7 +3613,7 @@
       "kind": "function",
       "name": "wantsRefine",
       "path": "lib/cli.js",
-      "line": 334,
+      "line": 342,
       "layer": "util",
       "layerConfidence": "high",
       "layerSignal": "dir-name",
@@ -3479,7 +3630,7 @@
       "kind": "function",
       "name": "main",
       "path": "lib/cli.js",
-      "line": 338,
+      "line": 346,
       "layer": "util",
       "layerConfidence": "high",
       "layerSignal": "dir-name",
@@ -7472,11 +7623,28 @@
       ]
     },
     {
+      "id": "lib/pro/auth-client#startTrial",
+      "kind": "function",
+      "name": "startTrial",
+      "path": "lib/pro/auth-client.js",
+      "line": 168,
+      "layer": "util",
+      "layerConfidence": "high",
+      "layerSignal": "dir-name",
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "lib/pro/auth-client",
+      "methods": [
+        "startTrial"
+      ]
+    },
+    {
       "id": "lib/pro/auth-client#whoamiAsync",
       "kind": "function",
       "name": "whoamiAsync",
       "path": "lib/pro/auth-client.js",
-      "line": 167,
+      "line": 177,
       "layer": "util",
       "layerConfidence": "high",
       "layerSignal": "dir-name",
@@ -7493,7 +7661,7 @@
       "kind": "function",
       "name": "logoutFlow",
       "path": "lib/pro/auth-client.js",
-      "line": 184,
+      "line": 194,
       "layer": "util",
       "layerConfidence": "high",
       "layerSignal": "dir-name",
@@ -7510,7 +7678,7 @@
       "kind": "function",
       "name": "requireUser",
       "path": "lib/pro/auth-client.js",
-      "line": 201,
+      "line": 211,
       "layer": "util",
       "layerConfidence": "high",
       "layerSignal": "dir-name",
@@ -7527,7 +7695,7 @@
       "kind": "function",
       "name": "requirePro",
       "path": "lib/pro/auth-client.js",
-      "line": 230,
+      "line": 240,
       "layer": "util",
       "layerConfidence": "high",
       "layerSignal": "dir-name",
@@ -7843,7 +8011,7 @@
       "kind": "function",
       "name": "verifyLoginCode",
       "path": "lib/pro/auth.js",
-      "line": 260,
+      "line": 265,
       "layer": "util",
       "layerConfidence": "high",
       "layerSignal": "dir-name",
@@ -7860,7 +8028,7 @@
       "kind": "function",
       "name": "sessionByToken",
       "path": "lib/pro/auth.js",
-      "line": 295,
+      "line": 301,
       "layer": "util",
       "layerConfidence": "high",
       "layerSignal": "dir-name",
@@ -7877,7 +8045,7 @@
       "kind": "function",
       "name": "logoutToken",
       "path": "lib/pro/auth.js",
-      "line": 304,
+      "line": 310,
       "layer": "util",
       "layerConfidence": "high",
       "layerSignal": "dir-name",
@@ -8291,6 +8459,50 @@
       "module": "lib/pro/features",
       "methods": [
         "upgradePayload"
+      ]
+    },
+    {
+      "id": "file:lib/pro/funnel.js",
+      "kind": "file",
+      "name": "funnel.js",
+      "path": "lib/pro/funnel.js",
+      "layer": "util",
+      "layerConfidence": "high",
+      "layerSignal": "dir-name",
+      "lang": "javascript"
+    },
+    {
+      "id": "lib/pro/funnel#emit",
+      "kind": "function",
+      "name": "emit",
+      "path": "lib/pro/funnel.js",
+      "line": 21,
+      "layer": "util",
+      "layerConfidence": "high",
+      "layerSignal": "dir-name",
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "lib/pro/funnel",
+      "methods": [
+        "emit"
+      ]
+    },
+    {
+      "id": "lib/pro/funnel#maybePaywallAfterValueMoment",
+      "kind": "function",
+      "name": "maybePaywallAfterValueMoment",
+      "path": "lib/pro/funnel.js",
+      "line": 37,
+      "layer": "util",
+      "layerConfidence": "high",
+      "layerSignal": "dir-name",
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "lib/pro/funnel",
+      "methods": [
+        "maybePaywallAfterValueMoment"
       ]
     },
     {
@@ -11226,9 +11438,23 @@
       "builtin": true
     },
     {
+      "id": "ext:node:https",
+      "kind": "external",
+      "name": "node:https",
+      "external": true,
+      "builtin": true
+    },
+    {
       "id": "ext:node:path",
       "kind": "external",
       "name": "node:path",
+      "external": true,
+      "builtin": true
+    },
+    {
+      "id": "ext:node:os",
+      "kind": "external",
+      "name": "node:os",
       "external": true,
       "builtin": true
     },
@@ -11323,56 +11549,56 @@
       "to": "file:web/server.js",
       "type": "declared-in",
       "file": "web/server.js",
-      "line": 103
+      "line": 106
     },
     {
       "from": "web/server#buildViewerPage",
       "to": "file:web/server.js",
       "type": "declared-in",
       "file": "web/server.js",
-      "line": 111
+      "line": 114
     },
     {
       "from": "web/server#pickApiKey",
       "to": "file:web/server.js",
       "type": "declared-in",
       "file": "web/server.js",
-      "line": 129
+      "line": 132
     },
     {
       "from": "web/server#generateOptsFromBody",
       "to": "file:web/server.js",
       "type": "declared-in",
       "file": "web/server.js",
-      "line": 146
+      "line": 149
     },
     {
       "from": "web/server#generateFromPath",
       "to": "file:web/server.js",
       "type": "declared-in",
       "file": "web/server.js",
-      "line": 172
+      "line": 175
     },
     {
       "from": "web/server#handleApi",
       "to": "file:web/server.js",
       "type": "declared-in",
       "file": "web/server.js",
-      "line": 219
+      "line": 222
     },
     {
       "from": "web/server#handler",
       "to": "file:web/server.js",
       "type": "declared-in",
       "file": "web/server.js",
-      "line": 396
+      "line": 399
     },
     {
       "from": "web/server#main",
       "to": "file:web/server.js",
       "type": "declared-in",
       "file": "web/server.js",
-      "line": 444
+      "line": 458
     },
     {
       "from": "web/lib/billing#trimUrl",
@@ -12096,6 +12322,13 @@
       "line": 237
     },
     {
+      "from": "scripts/prepare-landing-static#copyDir",
+      "to": "file:scripts/prepare-landing-static.mjs",
+      "type": "declared-in",
+      "file": "scripts/prepare-landing-static.mjs",
+      "line": 13
+    },
+    {
       "from": "pm/scripts/gitee-webhook#appendLog",
       "to": "file:pm/scripts/gitee-webhook.mjs",
       "type": "declared-in",
@@ -12115,6 +12348,62 @@
       "type": "declared-in",
       "file": "pm/scripts/gitee-webhook.mjs",
       "line": 73
+    },
+    {
+      "from": "pm/scripts/metrics-pull#parseArgs",
+      "to": "file:pm/scripts/metrics-pull.mjs",
+      "type": "declared-in",
+      "file": "pm/scripts/metrics-pull.mjs",
+      "line": 18
+    },
+    {
+      "from": "pm/scripts/metrics-pull#isoDay",
+      "to": "file:pm/scripts/metrics-pull.mjs",
+      "type": "declared-in",
+      "file": "pm/scripts/metrics-pull.mjs",
+      "line": 28
+    },
+    {
+      "from": "pm/scripts/metrics-pull#defaultRange",
+      "to": "file:pm/scripts/metrics-pull.mjs",
+      "type": "declared-in",
+      "file": "pm/scripts/metrics-pull.mjs",
+      "line": 33
+    },
+    {
+      "from": "pm/scripts/metrics-pull#getJson",
+      "to": "file:pm/scripts/metrics-pull.mjs",
+      "type": "declared-in",
+      "file": "pm/scripts/metrics-pull.mjs",
+      "line": 43
+    },
+    {
+      "from": "pm/scripts/metrics-pull#telemetryPath",
+      "to": "file:pm/scripts/metrics-pull.mjs",
+      "type": "declared-in",
+      "file": "pm/scripts/metrics-pull.mjs",
+      "line": 66
+    },
+    {
+      "from": "pm/scripts/metrics-pull#summarizeTelemetry",
+      "to": "file:pm/scripts/metrics-pull.mjs",
+      "type": "declared-in",
+      "file": "pm/scripts/metrics-pull.mjs",
+      "line": 76
+    },
+    {
+      "from": "pm/scripts/metrics-pull#countProRealUsers",
+      "to": "file:pm/scripts/metrics-pull.mjs",
+      "type": "declared-in",
+      "file": "pm/scripts/metrics-pull.mjs",
+      "line": 109
+    },
+    {
+      "from": "pm/scripts/metrics-pull#main",
+      "to": "file:pm/scripts/metrics-pull.mjs",
+      "type": "declared-in",
+      "file": "pm/scripts/metrics-pull.mjs",
+      "line": 131
     },
     {
       "from": "pm/scripts/wbs-cards#esc",
@@ -12569,70 +12858,70 @@
       "to": "file:lib/cli.js",
       "type": "declared-in",
       "file": "lib/cli.js",
-      "line": 82
+      "line": 83
     },
     {
       "from": "lib/cli#openInBrowser",
       "to": "file:lib/cli.js",
       "type": "declared-in",
       "file": "lib/cli.js",
-      "line": 98
+      "line": 99
     },
     {
       "from": "lib/cli#formatFindingsText",
       "to": "file:lib/cli.js",
       "type": "declared-in",
       "file": "lib/cli.js",
-      "line": 112
+      "line": 113
     },
     {
       "from": "lib/cli#printIssues",
       "to": "file:lib/cli.js",
       "type": "declared-in",
       "file": "lib/cli.js",
-      "line": 123
+      "line": 124
     },
     {
       "from": "lib/cli#loadEvalConfig",
       "to": "file:lib/cli.js",
       "type": "declared-in",
       "file": "lib/cli.js",
-      "line": 143
+      "line": 144
     },
     {
       "from": "lib/cli#runEval",
       "to": "file:lib/cli.js",
       "type": "declared-in",
       "file": "lib/cli.js",
-      "line": 152
+      "line": 153
     },
     {
       "from": "lib/cli#printGenerateResult",
       "to": "file:lib/cli.js",
       "type": "declared-in",
       "file": "lib/cli.js",
-      "line": 279
+      "line": 280
     },
     {
       "from": "lib/cli#writeLayerSuggestions",
       "to": "file:lib/cli.js",
       "type": "declared-in",
       "file": "lib/cli.js",
-      "line": 320
+      "line": 328
     },
     {
       "from": "lib/cli#wantsRefine",
       "to": "file:lib/cli.js",
       "type": "declared-in",
       "file": "lib/cli.js",
-      "line": 334
+      "line": 342
     },
     {
       "from": "lib/cli#main",
       "to": "file:lib/cli.js",
       "type": "declared-in",
       "file": "lib/cli.js",
-      "line": 338
+      "line": 346
     },
     {
       "from": "lib/diff-graph#canonical",
@@ -14175,32 +14464,39 @@
       "line": 142
     },
     {
+      "from": "lib/pro/auth-client#startTrial",
+      "to": "file:lib/pro/auth-client.js",
+      "type": "declared-in",
+      "file": "lib/pro/auth-client.js",
+      "line": 168
+    },
+    {
       "from": "lib/pro/auth-client#whoamiAsync",
       "to": "file:lib/pro/auth-client.js",
       "type": "declared-in",
       "file": "lib/pro/auth-client.js",
-      "line": 167
+      "line": 177
     },
     {
       "from": "lib/pro/auth-client#logoutFlow",
       "to": "file:lib/pro/auth-client.js",
       "type": "declared-in",
       "file": "lib/pro/auth-client.js",
-      "line": 184
+      "line": 194
     },
     {
       "from": "lib/pro/auth-client#requireUser",
       "to": "file:lib/pro/auth-client.js",
       "type": "declared-in",
       "file": "lib/pro/auth-client.js",
-      "line": 201
+      "line": 211
     },
     {
       "from": "lib/pro/auth-client#requirePro",
       "to": "file:lib/pro/auth-client.js",
       "type": "declared-in",
       "file": "lib/pro/auth-client.js",
-      "line": 230
+      "line": 240
     },
     {
       "from": "lib/pro/auth#rateLimit",
@@ -14326,21 +14622,21 @@
       "to": "file:lib/pro/auth.js",
       "type": "declared-in",
       "file": "lib/pro/auth.js",
-      "line": 260
+      "line": 265
     },
     {
       "from": "lib/pro/auth#sessionByToken",
       "to": "file:lib/pro/auth.js",
       "type": "declared-in",
       "file": "lib/pro/auth.js",
-      "line": 295
+      "line": 301
     },
     {
       "from": "lib/pro/auth#logoutToken",
       "to": "file:lib/pro/auth.js",
       "type": "declared-in",
       "file": "lib/pro/auth.js",
-      "line": 304
+      "line": 310
     },
     {
       "from": "lib/pro/crypto#secret",
@@ -14495,6 +14791,20 @@
       "type": "declared-in",
       "file": "lib/pro/features.js",
       "line": 107
+    },
+    {
+      "from": "lib/pro/funnel#emit",
+      "to": "file:lib/pro/funnel.js",
+      "type": "declared-in",
+      "file": "lib/pro/funnel.js",
+      "line": 21
+    },
+    {
+      "from": "lib/pro/funnel#maybePaywallAfterValueMoment",
+      "to": "file:lib/pro/funnel.js",
+      "type": "declared-in",
+      "file": "lib/pro/funnel.js",
+      "line": 37
     },
     {
       "from": "lib/pro/store#dataDir",
@@ -15701,7 +16011,7 @@
       "to": "ext:os",
       "type": "uses-external",
       "file": "web/server.js",
-      "line": 179,
+      "line": 182,
       "builtin": true
     },
     {
@@ -15709,7 +16019,7 @@
       "to": "file:web/lib/billing.js",
       "type": "import",
       "file": "web/server.js",
-      "line": 221,
+      "line": 224,
       "isType": false
     },
     {
@@ -15717,7 +16027,7 @@
       "to": "file:web/lib/billing.js",
       "type": "import",
       "file": "web/server.js",
-      "line": 240,
+      "line": 243,
       "isType": false
     },
     {
@@ -15725,7 +16035,7 @@
       "to": "file:web/lib/billing.js",
       "type": "import",
       "file": "web/server.js",
-      "line": 245,
+      "line": 248,
       "isType": false
     },
     {
@@ -15733,7 +16043,7 @@
       "to": "file:lib/generate.js",
       "type": "import",
       "file": "web/server.js",
-      "line": 326,
+      "line": 329,
       "isType": false
     },
     {
@@ -15741,7 +16051,7 @@
       "to": "file:lib/validate.js",
       "type": "import",
       "file": "web/server.js",
-      "line": 327,
+      "line": 330,
       "isType": false
     },
     {
@@ -15749,7 +16059,7 @@
       "to": "file:lib/scan.js",
       "type": "import",
       "file": "web/server.js",
-      "line": 328,
+      "line": 331,
       "isType": false
     },
     {
@@ -15757,7 +16067,7 @@
       "to": "ext:os",
       "type": "uses-external",
       "file": "web/server.js",
-      "line": 329,
+      "line": 332,
       "builtin": true
     },
     {
@@ -16337,6 +16647,30 @@
       "builtin": true
     },
     {
+      "from": "file:scripts/prepare-landing-static.mjs",
+      "to": "ext:fs",
+      "type": "uses-external",
+      "file": "scripts/prepare-landing-static.mjs",
+      "line": 5,
+      "builtin": true
+    },
+    {
+      "from": "file:scripts/prepare-landing-static.mjs",
+      "to": "ext:path",
+      "type": "uses-external",
+      "file": "scripts/prepare-landing-static.mjs",
+      "line": 6,
+      "builtin": true
+    },
+    {
+      "from": "file:scripts/prepare-landing-static.mjs",
+      "to": "ext:url",
+      "type": "uses-external",
+      "file": "scripts/prepare-landing-static.mjs",
+      "line": 7,
+      "builtin": true
+    },
+    {
       "from": "file:pm/scripts/gitee-webhook.mjs",
       "to": "ext:node:http",
       "type": "uses-external",
@@ -16359,6 +16693,46 @@
       "file": "pm/scripts/gitee-webhook.mjs",
       "line": 10,
       "isType": false
+    },
+    {
+      "from": "file:pm/scripts/metrics-pull.mjs",
+      "to": "ext:node:https",
+      "type": "uses-external",
+      "file": "pm/scripts/metrics-pull.mjs",
+      "line": 9,
+      "builtin": true
+    },
+    {
+      "from": "file:pm/scripts/metrics-pull.mjs",
+      "to": "ext:node:fs",
+      "type": "uses-external",
+      "file": "pm/scripts/metrics-pull.mjs",
+      "line": 10,
+      "builtin": true
+    },
+    {
+      "from": "file:pm/scripts/metrics-pull.mjs",
+      "to": "ext:node:path",
+      "type": "uses-external",
+      "file": "pm/scripts/metrics-pull.mjs",
+      "line": 11,
+      "builtin": true
+    },
+    {
+      "from": "file:pm/scripts/metrics-pull.mjs",
+      "to": "ext:node:os",
+      "type": "uses-external",
+      "file": "pm/scripts/metrics-pull.mjs",
+      "line": 12,
+      "builtin": true
+    },
+    {
+      "from": "file:pm/scripts/metrics-pull.mjs",
+      "to": "ext:node:url",
+      "type": "uses-external",
+      "file": "pm/scripts/metrics-pull.mjs",
+      "line": 13,
+      "builtin": true
     },
     {
       "from": "file:pm/scripts/wbs-cards.mjs",
@@ -16714,10 +17088,18 @@
     },
     {
       "from": "file:lib/cli.js",
-      "to": "file:lib/pro/auth-client.js",
+      "to": "file:lib/pro/funnel.js",
       "type": "import",
       "file": "lib/cli.js",
-      "line": 733,
+      "line": 311,
+      "isType": false
+    },
+    {
+      "from": "file:lib/cli.js",
+      "to": "file:lib/pro/funnel.js",
+      "type": "import",
+      "file": "lib/cli.js",
+      "line": 576,
       "isType": false
     },
     {
@@ -16725,7 +17107,15 @@
       "to": "file:lib/pro/auth-client.js",
       "type": "import",
       "file": "lib/cli.js",
-      "line": 766,
+      "line": 748,
+      "isType": false
+    },
+    {
+      "from": "file:lib/cli.js",
+      "to": "file:lib/pro/auth-client.js",
+      "type": "import",
+      "file": "lib/cli.js",
+      "line": 783,
       "isType": false
     },
     {
@@ -16733,7 +17123,7 @@
       "to": "file:lib/pro/features.js",
       "type": "import",
       "file": "lib/cli.js",
-      "line": 767,
+      "line": 784,
       "isType": false
     },
     {
@@ -16741,7 +17131,7 @@
       "to": "file:lib/telemetry.js",
       "type": "import",
       "file": "lib/cli.js",
-      "line": 869,
+      "line": 886,
       "isType": false
     },
     {
@@ -17421,7 +17811,23 @@
       "to": "file:lib/pro/features.js",
       "type": "import",
       "file": "lib/pro/auth-client.js",
-      "line": 232,
+      "line": 242,
+      "isType": false
+    },
+    {
+      "from": "file:lib/pro/auth-client.js",
+      "to": "file:lib/pro/funnel.js",
+      "type": "import",
+      "file": "lib/pro/auth-client.js",
+      "line": 256,
+      "isType": false
+    },
+    {
+      "from": "file:lib/pro/auth-client.js",
+      "to": "file:lib/pro/funnel.js",
+      "type": "import",
+      "file": "lib/pro/auth-client.js",
+      "line": 267,
       "isType": false
     },
     {
@@ -17473,6 +17879,22 @@
       "builtin": true
     },
     {
+      "from": "file:lib/pro/funnel.js",
+      "to": "file:lib/pro/store.js",
+      "type": "import",
+      "file": "lib/pro/funnel.js",
+      "line": 27,
+      "isType": false
+    },
+    {
+      "from": "file:lib/pro/funnel.js",
+      "to": "file:lib/pro/features.js",
+      "type": "import",
+      "file": "lib/pro/funnel.js",
+      "line": 49,
+      "isType": false
+    },
+    {
       "from": "file:lib/pro/store.js",
       "to": "ext:fs",
       "type": "uses-external",
@@ -17495,6 +17917,14 @@
       "file": "lib/pro/store.js",
       "line": 5,
       "builtin": true
+    },
+    {
+      "from": "file:lib/pro/store.js",
+      "to": "file:lib/telemetry.js",
+      "type": "import",
+      "file": "lib/pro/store.js",
+      "line": 60,
+      "isType": false
     },
     {
       "from": "file:lib/orch/agent-block.js",
@@ -17956,7 +18386,7 @@
       "layer": "domain",
       "confidence": "low",
       "signal": "structure:high-fan-in",
-      "files": 5
+      "files": 6
     },
     "mcp": {
       "layer": "controller",
@@ -17974,7 +18404,7 @@
       "layer": "util",
       "confidence": "high",
       "signal": "dir-name",
-      "files": 6
+      "files": 7
     },
     "lib/orch": {
       "layer": "util",
@@ -17989,5 +18419,5 @@
       "files": 7
     }
   },
-  "sessionStartedAt": "2026-09-05T02:22:19.096Z"
+  "sessionStartedAt": "2026-09-05T03:32:09.377Z"
 }
