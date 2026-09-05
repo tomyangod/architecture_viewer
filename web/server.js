@@ -258,6 +258,17 @@ async function handleApi(req, res, url) {
     return send(res, 200, createTeamOrder(body));
   }
 
+  if (req.method === 'GET' && url.pathname === '/api/metrics') {
+    const force = url.searchParams.get('force') === '1';
+    try {
+      const { getMetrics } = require('./lib/metrics');
+      const data = await getMetrics(force);
+      return send(res, 200, data);
+    } catch (err) {
+      return send(res, 200, { error: err.message, npm: { totalInstalls: 0, weeklyInstalls: 0, daily: [] }, kpi: {} });
+    }
+  }
+
   if (url.pathname.startsWith('/api/pro')) {
     if (!handlePro) return send(res, 503, { error: 'pro routes not mounted; need web/lib/pro/ + env ARCH_PRO_SECRET' });
     const raw = req.method === 'GET' || req.method === 'HEAD' ? Buffer.alloc(0) : await readBody(req);
@@ -462,7 +473,8 @@ function main() {
   server.listen(PORT, HOST, () => {
     console.log(`Architecture Viewer Web  http://${HOST}:${PORT}`);
     console.log('  Landing   /');
-    console.log('  API       /api/health  /api/samples  /api/generate  /api/projects');
+    console.log('  Metrics   /metrics.html');
+    console.log('  API       /api/health  /api/metrics  /api/samples  /api/generate  /api/projects');
     console.log('  Account   /account.html');
     console.log('  Pro API   /api/pro/signup  /api/pro/webhook  /api/pro/local  /api/pro/billing/*');
     if (startLocalTicker) startLocalTicker();

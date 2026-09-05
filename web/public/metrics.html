@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>安装与激活指标 — Architecture Viewer</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%230f6e56'/><rect x='6' y='14' width='6' height='12' fill='%23fff' rx='1'/><rect x='13' y='10' width='6' height='16' fill='%23fff' rx='1'/><rect x='20' y='16' width='6' height='10' fill='%23fff' rx='1'/></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@500;600;700&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/styles.css">
+<style>
+  .dash-header {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin: 1.5rem 0 0.5rem;
+  }
+  .dash-title {
+    font-family: var(--font-display);
+    font-size: 1.8rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    margin: 0;
+  }
+  .dash-sub {
+    color: var(--muted);
+    font-size: 0.9rem;
+    margin-top: 0.25rem;
+  }
+  .dash-actions { display: flex; gap: 0.5rem; align-items: center; }
+  .btn-refresh {
+    border: 1px solid var(--line);
+    background: #fffdf8;
+    color: var(--ink);
+    font: inherit;
+    font-weight: 600;
+    font-size: 0.85rem;
+    padding: 0.45rem 1rem;
+    border-radius: 999px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .btn-refresh:hover { border-color: var(--accent); color: var(--accent); }
+  .btn-refresh:disabled { opacity: 0.5; cursor: wait; }
+  .updated-at {
+    font-size: 0.78rem;
+    color: var(--muted);
+  }
+
+  /* KPI cards */
+  .kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(155px, 1fr));
+    gap: 0.85rem;
+    margin: 1.25rem 0;
+  }
+  .kpi-card {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 1rem 1.1rem;
+    box-shadow: var(--shadow-soft);
+  }
+  .kpi-label {
+    font-size: 0.78rem;
+    color: var(--muted);
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    margin-bottom: 0.35rem;
+  }
+  .kpi-value {
+    font-family: var(--font-display);
+    font-size: 1.9rem;
+    font-weight: 700;
+    line-height: 1.1;
+    color: var(--ink);
+  }
+  .kpi-delta {
+    font-size: 0.78rem;
+    margin-top: 0.3rem;
+    color: var(--muted);
+  }
+  .kpi-delta.up { color: var(--accent); font-weight: 600; }
+  .kpi-delta.warn { color: var(--warn); }
+
+  /* Panels */
+  .panel {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 1.25rem 1.4rem;
+    margin-bottom: 1.25rem;
+    box-shadow: var(--shadow-soft);
+  }
+  .panel-title {
+    font-family: var(--font-display);
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin: 0 0 0.75rem;
+  }
+  .panel-note {
+    font-size: 0.82rem;
+    color: var(--muted);
+    margin-top: 0.5rem;
+  }
+
+  /* Chart */
+  .chart-wrap { width: 100%; overflow-x: auto; }
+  .chart-wrap svg { display: block; }
+  .bar { transition: opacity 0.15s; }
+  .bar:hover { opacity: 0.8; }
+  .bar-label { font-size: 10px; fill: var(--muted); font-family: var(--font-body); }
+  .bar-value { font-size: 10px; fill: var(--ink); font-weight: 600; font-family: var(--font-body); }
+
+  /* Funnel */
+  .funnel {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    margin: 0.5rem 0;
+  }
+  .funnel-row {
+    display: grid;
+    grid-template-columns: 140px 1fr 80px;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.55rem 0;
+    border-bottom: 1px solid rgba(201,192,176,0.4);
+  }
+  .funnel-row:last-child { border-bottom: none; }
+  .funnel-label {
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: var(--ink);
+  }
+  .funnel-bar-track {
+    height: 28px;
+    background: rgba(15,110,86,0.06);
+    border-radius: 6px;
+    overflow: hidden;
+    position: relative;
+  }
+  .funnel-bar-fill {
+    height: 100%;
+    border-radius: 6px;
+    background: linear-gradient(90deg, var(--accent), #1a9474);
+    transition: width 0.6s ease;
+    min-width: 2px;
+  }
+  .funnel-bar-fill.trial { background: linear-gradient(90deg, #c98a1a, #e0a830); }
+  .funnel-bar-fill.paid { background: linear-gradient(90deg, #9a4a12, #c06020); }
+  .funnel-count {
+    font-family: var(--font-display);
+    font-size: 1.15rem;
+    font-weight: 700;
+    text-align: right;
+  }
+  .funnel-pct {
+    font-size: 0.75rem;
+    color: var(--muted);
+    text-align: right;
+  }
+
+  /* Pro breakdown */
+  .pro-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+    gap: 0.75rem;
+  }
+  .pro-stat {
+    text-align: center;
+    padding: 0.75rem;
+    border-radius: 10px;
+    background: rgba(15,110,86,0.04);
+  }
+  .pro-stat .num {
+    font-family: var(--font-display);
+    font-size: 1.6rem;
+    font-weight: 700;
+  }
+  .pro-stat .lbl {
+    font-size: 0.78rem;
+    color: var(--muted);
+    margin-top: 0.15rem;
+  }
+
+  .loading {
+    text-align: center;
+    padding: 3rem 1rem;
+    color: var(--muted);
+    font-size: 0.95rem;
+  }
+  .error-box {
+    background: rgba(154,74,18,0.08);
+    border: 1px solid rgba(154,74,18,0.25);
+    border-radius: 10px;
+    padding: 0.85rem 1.1rem;
+    color: var(--warn);
+    font-size: 0.88rem;
+    margin: 1rem 0;
+  }
+
+  @media (max-width: 600px) {
+    .funnel-row { grid-template-columns: 100px 1fr 60px; }
+    .kpi-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+  <div class="top">
+    <a class="brand" href="/">Architecture Viewer</a>
+    <nav class="nav">
+      <a href="/">首页</a>
+      <a href="/account.html">控制台</a>
+      <a href="/metrics.html" style="color:var(--accent);font-weight:600;">指标</a>
+    </nav>
+  </div>
+
+  <div class="dash-header">
+    <div>
+      <h1 class="dash-title">安装与激活指标</h1>
+      <div class="dash-sub">npm 下载 + Pro 账号 + 漏斗事件，每 5 分钟自动刷新</div>
+    </div>
+    <div class="dash-actions">
+      <span class="updated-at" id="updatedAt"></span>
+      <button class="btn-refresh" id="btnRefresh" onclick="loadMetrics(true)">刷新</button>
+    </div>
+  </div>
+
+  <div id="content">
+    <div class="loading">正在加载指标数据…</div>
+  </div>
+</div>
+
+<script src="/metrics.js"></script>
+</body>
+</html>

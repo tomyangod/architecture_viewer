@@ -2,7 +2,8 @@
 
 > 数据源：npm 下载量 + CLI/网页遥测（默认关）+ Pro 支付/账号后台。  
 > VS Marketplace / Open VSX 待扩展重启后再加。  
-> 周报脚本引用本表口径（`pm/scripts/wbs-report.mjs` §六）；数值用 `node pm/scripts/metrics-pull.mjs` 拉取后人工确认写入。
+> 周报脚本引用本表口径（`pm/scripts/wbs-report.mjs` §六）；数值用 `node pm/scripts/metrics-pull.mjs` 拉取后人工确认写入。  
+> **可视化看板**：启动 web 服务后访问 `/metrics.html`（API: `GET /api/metrics`），自动聚合 npm + Pro store + 漏斗事件，5 分钟缓存。
 
 ## 数据口径
 
