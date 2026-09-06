@@ -66,10 +66,11 @@ PR 评论示例：
 ## 5. 常见问题
 
 - **红灯很多怎么办？** 老仓历史问题正常，session 报告只看"新增红灯"。
-- **图生成不准？** `arch-viewer refresh` 重新生成；人工改图后 AI 会接着维护。
+- **图生成不准？** `arch-viewer generate` 重新生成；人工改图后 AI 会接着维护。
 - **想手动配？** 见完整版 `docs/MCP-DEMO-publicopinionmonitor.md` §0.2。
 - **想试红灯再动真仓？** 完整版 §3 有个构造红灯的练习。
 
 ---
 
-完整版（带逐步练习 + 截图指引）：[MCP-DEMO-publicopinionmonitor.md](./MCP-DEMO-publicopinionmonitor.md)
+完整版（带逐步练习 + 截图指引）：[MCP-DEMO-publicopinionmonitor.md](./MCP-DEMO-publicopinionmonitor.md)  
+任意新项目通用教程（功能全景 + 报告解读）：[TUTORIAL-new-project.md](./TUTORIAL-new-project.md)

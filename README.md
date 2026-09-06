@@ -13,6 +13,7 @@
 
 > **新手入门**：如果你不太懂技术术语，先看 [小白超详细攻略](docs/beginner-guide/index.html)（图文版）
 > 或 [会话验收指南](docs/SESSION-GUIDE.md)（大白话版，无技术术语）。
+> 把工具接到**任意新项目**：功能全景 + 报告怎么读 → [全新项目教程](docs/TUTORIAL-new-project.md)。
 >
 > **实战文**：[用 AI 自动生成架构图，还能在 PR 里抓漂移](docs/blog/2026-09-ai-architecture-drift.md) · [60 秒 Demo 分镜](docs/demo-script.md)
 >
