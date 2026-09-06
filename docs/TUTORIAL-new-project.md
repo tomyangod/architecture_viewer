@@ -490,6 +490,74 @@ PR 模板：`templates/architecture-check.yml`（见舆情教程 §9）。评论
 
 ---
 
+## 13. 纯 CLI 速查（不用 MCP）
+
+不想接 AI 编辑器、只想自己敲命令？完全没问题——以下四条命令覆盖日常主路径，引擎与 MCP 完全相同。
+
+### 13.1 安装与初始化
+
+```bash
+npm i -g arch-viewer
+cd $REPO
+
+# 生成架构图（c4/block/class 等 Markdown 文件）
+arch-viewer init
+arch-viewer generate
+
+# 拍基线快照（改码前执行）
+arch-viewer session start
+```
+
+> 没装 MCP 不影响任何 CLI 功能；MCP 只是把这几条命令交给 AI 按节奏调用。
+
+### 13.2 日常循环（三条命令）
+
+```bash
+# 1. 改码前拍快照（基线）
+arch-viewer session start
+
+# 2. 改码……（编辑器随意）
+
+# 3. 改完看报告
+arch-viewer session report --open
+# 或强制三栏高亮版：
+arch-viewer session report --renderer builtin --open
+```
+
+报告打开后看什么：
+- **Delta 栏**：绿增 / 黄改 / 红删 / 紫移 / 青重命名；橙边 = 违规（呼吸发光）。
+- **findings 表**：🔴 高 / 🟠 中 / 🔵 低，逐条给建议动作。
+- **影响面**：波及了哪些下游模块。
+
+### 13.3 一条命令版
+
+如果你只记一条：
+
+```bash
+arch-viewer session start && arch-viewer session report --renderer builtin --open
+```
+
+改码前跑前半句拍基线，改码后跑后半句出报告。
+
+### 13.4 CLI 与 MCP 对照
+
+| 做什么 | CLI | MCP（AI 代劳） |
+|--------|-----|----------------|
+| 拍基线 | `session start` | `av_session_start` |
+| 看变更 | `session report --open` | `av_session_report` |
+| 解释红灯 | 看 HTML findings 表 | `av_explain_finding` |
+| 导出稀疏图 | `archify-export` | `av_archify_export` |
+| 漂移检查 | `check --filled --drift --repo .` | — |
+| 影响面 | `impact <base> <head> --open` | 含在 report |
+
+### 13.5 什么时候考虑接 MCP
+
+- 改动频繁、想每次提交前自动验收 → 接 MCP 让 AI 按节奏跑。
+- 偶尔用 / 团队 CI 用 → 纯 CLI 够了，报告 HTML 一样看。
+- 多人协作需要 PR 评论 → 接 GitHub Actions + `check --drift`。
+
+---
+
 **记住一条线：**  
-`session start` → AI 改码 → `session report`（看 **builtin** Delta + findings）→ 你点头 → 再 `session start`。  
+`session start` → 改码 → `session report`（看 **builtin** Delta + findings）→ 你点头 → 再 `session start`。  
 其余功能都是这条线上的放大镜或团队插件。
