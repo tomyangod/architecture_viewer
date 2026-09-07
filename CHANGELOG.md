@@ -6,6 +6,17 @@
 
 （下一拍：首笔 Pro 到账、npm 后续补丁。）
 
+## \[0.11.1\] — 2026-09-08
+
+### Fixed
+
+- **Worktree / 工作区根**：MCP `repo` 可省略（默认 cwd）；`setup` 口令不再写死历史绝对路径。
+- **`from=session`**：找不到本轮 finding 时返回 `NO_SESSION_FINDING`，禁止静默扫全楼。
+- **刷新基线**：清除 `session-report.*` 与 `archify-*`，保留 baseline / layers / history。
+- **版本同源**：CLI `--version`/`-V` 与 MCP `serverInfo.version` 均读 `package.json`。
+- **HTML 双口径**：`#graph-count` 区分「N 个变更」与「图上含同文件 M 个」。
+- **Python import**：`from pkg import mod` 解析到子模块文件，不再误指包 `__init__.py`。
+
 ## \[0.11.0\] — 2026-09-05（首次上架 npm latest；此前 registry 停在 0.3.1）
 
 ### Added
