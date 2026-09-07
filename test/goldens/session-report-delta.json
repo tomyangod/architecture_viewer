@@ -44,6 +44,7 @@
   "layers": [
     "component",
     "controller",
+    "entrypoint",
     "service",
     "domain",
     "storage",
@@ -236,27 +237,11 @@
   "structure": {
     "files": [
       {
-        "path": "new.js",
-        "layer": "service",
-        "lang": "js",
-        "lines": 9,
-        "delta": 9,
-        "status": "added"
-      },
-      {
         "path": "gone.js",
         "layer": "service",
         "lang": "js",
         "lines": 6,
         "delta": -6,
-        "status": "removed"
-      },
-      {
-        "path": "old.js",
-        "layer": "util",
-        "lang": "js",
-        "lines": 8,
-        "delta": -8,
         "status": "removed"
       },
       {
@@ -266,6 +251,22 @@
         "lines": 14,
         "delta": 4,
         "status": "modified"
+      },
+      {
+        "path": "new.js",
+        "layer": "service",
+        "lang": "js",
+        "lines": 9,
+        "delta": 9,
+        "status": "added"
+      },
+      {
+        "path": "old.js",
+        "layer": "util",
+        "lang": "js",
+        "lines": 8,
+        "delta": -8,
+        "status": "removed"
       }
     ],
     "deps": [
@@ -275,14 +276,14 @@
         "status": "added"
       },
       {
-        "name": "left-pad",
-        "builtin": false,
-        "status": "removed"
-      },
-      {
         "name": "fs",
         "builtin": true,
         "status": "unchanged"
+      },
+      {
+        "name": "left-pad",
+        "builtin": false,
+        "status": "removed"
       }
     ],
     "totalFiles": 4,

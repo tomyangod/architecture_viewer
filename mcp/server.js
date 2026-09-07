@@ -23,12 +23,19 @@ const { evaluateRisk, summarizeFindings, LAYER_LABEL, loadSessionRules } = requi
 const { computeImpact } = require('../lib/impact');
 const { generateReport, appendSessionHistory, clearStaleSessionReports } = require('../lib/session-report');
 const { exportArchify, finalizeSessionHtml } = require('../lib/archify-export');
+const { exitCodeForRisk } = require('../lib/exit-codes');
 const PKG_VERSION = require('../package.json').version;
 
-/** repo 可省略：默认 MCP 进程 cwd（打开的工作区根）。空字符串也当省略，避免 path.resolve(undefined) → ".../undefined"。 */
+/** MCP hosts do not guarantee cwd is the active workspace, so repo must be explicit. */
 function resolveRepo(args) {
   const raw = args && typeof args.repo === 'string' ? args.repo.trim() : '';
-  const repo = path.resolve(raw || process.cwd());
+  if (!raw) {
+    throw new Error('repo is required and must be the absolute path of the active workspace root');
+  }
+  if (!path.isAbsolute(raw)) {
+    throw new Error(`repo must be an absolute path: ${raw}`);
+  }
+  const repo = path.resolve(raw);
   if (!fs.existsSync(repo)) throw new Error(`路径不存在: ${repo}`);
   return repo;
 }
@@ -127,13 +134,17 @@ function generateSessionReport(repo) {
     riskLevel: riskSummary.level,
     findingsCount: findings.length,
     hasChanges: (diff.summary.totalChanges || 0) > 0,
+    exitCode: exitCodeForRisk(riskSummary.level, 'high'),
+    exitCodeHint: '默认 high→1 阻断，medium/low/none→0。CLI 可用 --fail-on 调整。',
     message: riskSummary.level === 'high'
       ? `🔴 红灯 — ${findings.length} 个问题需要你亲眼看一下，可能改坏了结构，建议先看再提交。`
       : riskSummary.level === 'medium'
         ? `🟠 黄灯 — ${findings.length} 个值得注意的地方，建议看一下。`
         : riskSummary.level === 'low'
           ? `🔵 蓝灯 — ${findings.length} 个小提示，有空可以看看。`
-          : `✅ 绿灯 — 没发现问题，结构改动正常。`
+          : ((diff.summary.totalChanges || 0) === 0
+            ? '✅ 绿灯 — 没有可识别的架构结构变化。不是源码没变：函数体、日志、注释不进结构指纹。'
+            : '✅ 绿灯 — 没发现架构风险。')
   };
 }
 
@@ -240,6 +251,7 @@ function toolSessionStart(args) {
   // 路径回显：避免在 worktree/主仓之间检查错目录（AI 必须把这三行进最终回复）
   const gitRoot = findGitRoot(repo);
   const pathMismatch = gitRoot && path.resolve(gitRoot) !== path.resolve(repo);
+
   const pathInfo = {
     checking: repo,
     baselineSavedTo: baselinePath(repo),
@@ -248,11 +260,16 @@ function toolSessionStart(args) {
     mismatch: pathMismatch
   };
 
+  let pathWarning;
+  if (pathMismatch) {
+    pathWarning = `当前检查目录不是 Git 根：\n  检查目录: ${repo}\n  Git 根:   ${gitRoot}\n基线与报告都基于「检查目录」。请确认这就是你正在改代码的目录（worktree/子目录场景尤其注意），并在回复中回显以上路径。`;
+  } else {
+    pathWarning = `正在检查：${repo}\n基线保存到：${baselinePath(repo)}\n（请在最终回复中回显检查目录与基线路径，三者一致才说明没检查错对象。）`;
+  }
+
   return {
     path: pathInfo,
-    pathWarning: pathMismatch
-      ? `当前检查目录不是 Git 根：\n  检查目录: ${repo}\n  Git 根:   ${gitRoot}\n基线与报告都基于「检查目录」。请确认这就是你正在改代码的目录（worktree/子目录场景尤其注意），并在回复中回显以上路径。`
-      : `正在检查：${repo}\n基线保存到：${baselinePath(repo)}\n（请在最终回复中回显检查目录与基线路径，三者一致才说明没检查错对象。）`,
+    pathWarning,
     baseline: {
       files: graph.stats.files,
       types: graph.stats.types,
@@ -566,8 +583,9 @@ const TOOLS = [
     inputSchema: {
       type: 'object',
       properties: {
-        repo: { type: 'string', description: '项目文件夹路径。可省略，默认当前工作区根（MCP 进程 cwd）。不要沿用历史对话里的绝对路径。' }
-      }
+        repo: { type: 'string', description: '当前工作区根目录的绝对路径。必须显式传入，避免 MCP 进程 cwd 指向其他仓库。' }
+      },
+      required: ['repo']
     }
   },
   {
@@ -576,8 +594,9 @@ const TOOLS = [
     inputSchema: {
       type: 'object',
       properties: {
-        repo: { type: 'string', description: '项目文件夹路径。可省略，默认当前工作区根（MCP 进程 cwd）。不要沿用历史对话里的绝对路径。' }
-      }
+        repo: { type: 'string', description: '当前工作区根目录的绝对路径。必须显式传入，避免 MCP 进程 cwd 指向其他仓库。' }
+      },
+      required: ['repo']
     }
   },
   {
@@ -586,9 +605,10 @@ const TOOLS = [
     inputSchema: {
       type: 'object',
       properties: {
-        repo: { type: 'string', description: '项目文件夹路径。可省略，默认当前工作区根（MCP 进程 cwd）。不要沿用历史对话里的绝对路径。' },
+        repo: { type: 'string', description: '当前工作区根目录的绝对路径。必须显式传入，避免 MCP 进程 cwd 指向其他仓库。' },
         from: { type: 'string', enum: ['session'], description: '可选：从会话报告取数据' }
-      }
+      },
+      required: ['repo']
     }
   },
   {
@@ -597,8 +617,9 @@ const TOOLS = [
     inputSchema: {
       type: 'object',
       properties: {
-        repo: { type: 'string', description: '项目文件夹路径。可省略，默认当前工作区根（MCP 进程 cwd）。不要沿用历史对话里的绝对路径。' }
-      }
+        repo: { type: 'string', description: '当前工作区根目录的绝对路径。必须显式传入，避免 MCP 进程 cwd 指向其他仓库。' }
+      },
+      required: ['repo']
     }
   },
   {
@@ -607,11 +628,12 @@ const TOOLS = [
     inputSchema: {
       type: 'object',
       properties: {
-        repo: { type: 'string', description: '项目文件夹路径。可省略，默认当前工作区根（MCP 进程 cwd）。不要沿用历史对话里的绝对路径。' },
+        repo: { type: 'string', description: '当前工作区根目录的绝对路径。必须显式传入，避免 MCP 进程 cwd 指向其他仓库。' },
         rule: { type: 'string', description: '规则名（cross-layer-violation, layer-skip, removed-type, new-external-dep）' },
         index: { type: 'integer', description: '问题列表中的序号（从0开始）' },
         from: { type: 'string', enum: ['session'], description: '从会话报告取本轮红灯；报告不存在或 findings 为空时返回 NO_SESSION_FINDING，绝不改扫全楼' }
-      }
+      },
+      required: ['repo']
     }
   },
   {
@@ -620,10 +642,11 @@ const TOOLS = [
     inputSchema: {
       type: 'object',
       properties: {
-        repo: { type: 'string', description: '项目文件夹路径。可省略，默认当前工作区根（MCP 进程 cwd）。不要沿用历史对话里的绝对路径。' },
+        repo: { type: 'string', description: '当前工作区根目录的绝对路径。必须显式传入，避免 MCP 进程 cwd 指向其他仓库。' },
         scope: { type: 'string', enum: ['changed', 'violations', 'layers'], description: '导出范围：changed=变更文件（默认），violations=只看违规边，layers=层摘要图' },
         validate: { type: 'boolean', description: '是否顺带运行 archify validate（需要本机有 archify CLI，默认 false）' }
-      }
+      },
+      required: ['repo']
     }
   }
 ];

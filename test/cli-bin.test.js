@@ -94,11 +94,11 @@ describe('CLI archify-export', () => {
     return dir;
   }
 
-  it('无基线时退出码 1 并提示先 session start', () => {
+  it('无基线时退出码 4 并提示先 session start（退出码契约）', () => {
     const dir = fixtureRepo();
     try {
       const r = run(['archify-export', dir, '--scope', 'layers'], dir);
-      assert.equal(r.status, 1);
+      assert.equal(r.status, 4);
       assert.match(r.stderr + r.stdout, /session start/);
     } finally {
       fs.rmSync(dir, { recursive: true, force: true });
