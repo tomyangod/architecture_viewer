@@ -5,6 +5,9 @@
 会话基线 → 变更图谱 → 影响面分析：CLI / MCP / 网页 / PR 评论四端可用。
 免费开源（Apache-2.0），零配置、秒级出图，不依赖 LLM。
 
+> **定位：AI 改码后的增量架构验收门，不是全量架构治理平台。**
+> 与语言级硬规则工具**互补不竞争**：Python 用 [Import Linter](https://import-linter.readthedocs.io/)、JS/TS 用 [dependency-cruiser](https://github.com/sverweij/dependency-cruiser) 管「规则是否被违反」；Architecture Viewer 管「**这一轮 AI 会话改了什么、有没有跨层、波及谁**」。需要正式架构治理平台时看 Sonargraph / CodeScene；需要 5 分钟装好、每次 AI 改完看一眼，用本工具。
+
 ![demo](docs/demo.gif)
 
 落地页（定价 / 60 秒成片 / 安装）：本地 `npm run web` → http://127.0.0.1:3847/ ；部署见 [docs/landing-deploy.md](docs/landing-deploy.md)。成片：[docs/demo.mp4](docs/demo.mp4)。
@@ -13,7 +16,7 @@
 
 > **新手入门**：如果你不太懂技术术语，先看 [小白超详细攻略](docs/beginner-guide/index.html)（图文版）
 > 或 [会话验收指南](docs/SESSION-GUIDE.md)（大白话版，无技术术语）。
-> 把工具接到**任意新项目**：功能全景 + 报告怎么读 → [全新项目教程](docs/TUTORIAL-new-project.md)。
+> 把工具接到**任意新项目**：功能全景 + 报告怎么读 → [Quickstart](docs/quickstart.md)。
 >
 > **实战文**：[用 AI 自动生成架构图，还能在 PR 里抓漂移](docs/blog/2026-09-ai-architecture-drift.md) · [60 秒 Demo 分镜](docs/demo-script.md)
 >
@@ -152,7 +155,8 @@ arch-viewer auth whoami                           # 查看当前登录邮箱与 
 
 ## 经典能力：PR 漂移红灯
 
-图与代码不一致时 CI 失败，坏图进不了主干：
+新模块 / 服务 / 入口没画进六视图时 CI 失败，坏图进不了主干。
+（粒度是目录与部署单元，不是每一个新文件；文件级变化看 `session report`。）
 
 ```bash
 npx arch-viewer init .

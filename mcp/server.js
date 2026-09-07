@@ -19,10 +19,19 @@ const path = require('path');
 const readline = require('readline');
 const { buildGraph } = require('../lib/extract-graph');
 const { diffGraphs } = require('../lib/diff-graph');
-const { evaluateRisk, summarizeFindings, LAYER_LABEL } = require('../lib/risk-rules');
+const { evaluateRisk, summarizeFindings, LAYER_LABEL, loadSessionRules } = require('../lib/risk-rules');
 const { computeImpact } = require('../lib/impact');
-const { generateReport } = require('../lib/session-report');
+const { generateReport, appendSessionHistory, clearStaleSessionReports } = require('../lib/session-report');
 const { exportArchify, finalizeSessionHtml } = require('../lib/archify-export');
+const PKG_VERSION = require('../package.json').version;
+
+/** repo 可省略：默认 MCP 进程 cwd（打开的工作区根）。空字符串也当省略，避免 path.resolve(undefined) → ".../undefined"。 */
+function resolveRepo(args) {
+  const raw = args && typeof args.repo === 'string' ? args.repo.trim() : '';
+  const repo = path.resolve(raw || process.cwd());
+  if (!fs.existsSync(repo)) throw new Error(`路径不存在: ${repo}`);
+  return repo;
+}
 
 function avDir(repo) {
   return path.join(repo, '.av');
@@ -30,6 +39,18 @@ function avDir(repo) {
 
 function baselinePath(repo) {
   return path.join(avDir(repo), 'graph-baseline.json');
+}
+
+// Walk up to find nearest .git (dir or worktree/submodule file). Zero-dep.
+function findGitRoot(dir) {
+  let cur = path.resolve(dir);
+  for (let i = 0; i < 50; i++) {
+    if (fs.existsSync(path.join(cur, '.git'))) return cur;
+    const parent = path.dirname(cur);
+    if (parent === cur) return null;
+    cur = parent;
+  }
+  return null;
 }
 
 // ─── 自动闭环：文件监听 + 防抖自动报告 ───────────────────────────
@@ -64,8 +85,15 @@ function generateSessionReport(repo) {
   const current = buildGraph(repo);
   const diff = diffGraphs(baseline, current);
   const impact = computeImpact(diff, baseline, current);
-  const findings = evaluateRisk(diff, current, baseline, impact);
+  let teamRules = null;
+  try {
+    teamRules = loadSessionRules(repo);
+  } catch { /* auto-discover miss or bad file: fall back to builtin rules only */ }
+  const findings = evaluateRisk(diff, current, baseline, impact, { rules: teamRules });
   const riskSummary = summarizeFindings(findings);
+
+  // W14-06: append local trend record (best-effort, never blocks report)
+  appendSessionHistory(repo, { baseline, current, diff, riskSummary });
 
   const dir = avDir(repo);
   fs.mkdirSync(dir, { recursive: true });
@@ -186,7 +214,9 @@ function formatFinding(f) {
 
 function formatImpact(impact) {
   if (!impact || !impact.items || impact.items.length === 0) return '没有波及范围数据';
-  const lines = [`改了 ${impact.summary.changed} 个地方，会波及 ${impact.summary.affected} 个其他地方`];
+  const changed = impact.changedCount ?? impact.summary?.changed ?? 0;
+  const affected = impact.impactedCount ?? impact.summary?.affected ?? 0;
+  const lines = [`改了 ${changed} 个地方，会波及 ${affected} 个其他地方`];
   for (const it of impact.items.slice(0, 5)) {
     const direct = (it.direct || []).length;
     const transitive = (it.transitive || []).length;
@@ -196,18 +226,33 @@ function formatImpact(impact) {
 }
 
 function toolSessionStart(args) {
-  const repo = path.resolve(args.repo);
-  if (!fs.existsSync(repo)) throw new Error(`路径不存在: ${repo}`);
+  const repo = resolveRepo(args);
   fs.mkdirSync(avDir(repo), { recursive: true });
   const graph = buildGraph(repo);
   const snapshot = { ...graph, sessionStartedAt: new Date().toISOString() };
   fs.writeFileSync(baselinePath(repo), JSON.stringify(snapshot, null, 2));
+  const clearedReports = clearStaleSessionReports(repo);
   const suggested = writeLayerSuggestions(repo, graph);
 
   // 启动文件监听：AI 改代码后自动生成报告，无需手动触发
   const watchState = startWatcher(repo);
 
+  // 路径回显：避免在 worktree/主仓之间检查错目录（AI 必须把这三行进最终回复）
+  const gitRoot = findGitRoot(repo);
+  const pathMismatch = gitRoot && path.resolve(gitRoot) !== path.resolve(repo);
+  const pathInfo = {
+    checking: repo,
+    baselineSavedTo: baselinePath(repo),
+    reportDir: avDir(repo),
+    gitRoot: gitRoot || null,
+    mismatch: pathMismatch
+  };
+
   return {
+    path: pathInfo,
+    pathWarning: pathMismatch
+      ? `当前检查目录不是 Git 根：\n  检查目录: ${repo}\n  Git 根:   ${gitRoot}\n基线与报告都基于「检查目录」。请确认这就是你正在改代码的目录（worktree/子目录场景尤其注意），并在回复中回显以上路径。`
+      : `正在检查：${repo}\n基线保存到：${baselinePath(repo)}\n（请在最终回复中回显检查目录与基线路径，三者一致才说明没检查错对象。）`,
     baseline: {
       files: graph.stats.files,
       types: graph.stats.types,
@@ -222,12 +267,13 @@ function toolSessionStart(args) {
     layerSuggestions: suggested
       ? { path: suggested, note: '工具自动帮你分好了楼层。觉得没问题就不用管；想锁定就复制为 .av/layers.json' }
       : null,
+    clearedReports,
     message: `已经拍好了"改之前"的照片（${graph.stats.files} 个文件、${graph.stats.types} 个组件）。现在可以放心改代码，系统会自动盯着结构变化。`
   };
 }
 
 function toolSessionReport(args) {
-  const repo = path.resolve(args.repo);
+  const repo = resolveRepo(args);
   const bp = baselinePath(repo);
   if (!fs.existsSync(bp)) {
     return { error: 'NO_BASELINE', message: '还没拍"改之前"的照片。请先调用 av_session_start 再改代码。' };
@@ -258,7 +304,7 @@ function toolSessionReport(args) {
  * 如果 watcher 正在防抖（检测到变更但还没跑完），返回 analyzing 状态。
  */
 function toolSessionChanges(args) {
-  const repo = path.resolve(args.repo);
+  const repo = resolveRepo(args);
   const bp = baselinePath(repo);
   if (!fs.existsSync(bp)) {
     return { error: 'NO_BASELINE', message: '还没拍"改之前"的照片。请先调 av_session_start。' };
@@ -323,8 +369,7 @@ function toolSessionChanges(args) {
 }
 
 function toolCheckLayering(args) {
-  const repo = path.resolve(args.repo);
-  if (!fs.existsSync(repo)) throw new Error(`路径不存在: ${repo}`);
+  const repo = resolveRepo(args);
   const graph = buildGraph(repo);
 
   const emptyBase = { nodes: [], edges: [], fingerprint: '', root: graph.root, stats: {} };
@@ -358,51 +403,73 @@ function toolCheckLayering(args) {
   };
 }
 
-function toolExplainFinding(args) {
-  const repo = path.resolve(args.repo);
-  const bp = baselinePath(repo);
-  const hasBaseline = fs.existsSync(bp);
-
-  let graph, baseline, diff, impact, findings;
-
-  // 尝试从会话报告取数据
-  if (hasBaseline && args.from === 'session') {
-    const reportPath = path.join(avDir(repo), 'session-report.json');
-    if (fs.existsSync(reportPath)) {
-      const report = JSON.parse(fs.readFileSync(reportPath, 'utf8'));
-      if (report.findings && report.findings.length > 0) {
-        diff = report.diff;
-        impact = report.impact;
-        baseline = JSON.parse(fs.readFileSync(bp, 'utf8'));
-        graph = buildGraph(repo);
-        findings = report.findings;
-      }
-    }
-  }
-
-  // fallback：实时检测——用空基线，让所有边都算"新增"，从而检测出当前图内部的跨层违规
-  if (!findings) {
-    graph = buildGraph(repo);
-    const emptyBase = { nodes: [], edges: [], fingerprint: '', root: graph.root, stats: {} };
-    diff = diffGraphs(emptyBase, graph);
-    impact = computeImpact(diff, emptyBase, graph);
-    findings = evaluateRisk(diff, graph, emptyBase, impact);
-  }
-
-  // 从 findings 里找匹配项；findings 可能是原始对象或已格式化的字符串
-  let target = findings.find((f, i) => {
+function pickFinding(findings, args) {
+  return (findings || []).find((f, i) => {
     if (typeof f === 'string') return false;
     return (args.rule && f.rule === args.rule) ||
            (args.index !== undefined && i === args.index);
   });
+}
 
-  // 如果 findings 是字符串数组，重新生成原始对象
+function liveScanFindings(repo) {
+  const graph = buildGraph(repo);
+  const emptyBase = { nodes: [], edges: [], fingerprint: '', root: graph.root, stats: {} };
+  const diff = diffGraphs(emptyBase, graph);
+  const impact = computeImpact(diff, emptyBase, graph);
+  let teamRules = null;
+  try { teamRules = loadSessionRules(repo); } catch { /* ignore */ }
+  const findings = evaluateRisk(diff, graph, emptyBase, impact, { rules: teamRules });
+  return { graph, baseline: emptyBase, diff, impact, findings };
+}
+
+function loadSessionFindings(repo) {
+  const reportPath = path.join(avDir(repo), 'session-report.json');
+  if (!fs.existsSync(reportPath)) {
+    return { error: 'NO_SESSION_FINDING', message: '没有会话报告。请先调用 av_session_report，或去掉 from=session 做实时全楼扫描。' };
+  }
+  let report;
+  try {
+    report = JSON.parse(fs.readFileSync(reportPath, 'utf8'));
+  } catch (e) {
+    return { error: 'NO_SESSION_FINDING', message: '会话报告无法解析：' + e.message };
+  }
+  const findings = report.findings;
+  if (!Array.isArray(findings) || findings.length === 0) {
+    return { error: 'NO_SESSION_FINDING', message: '会话报告里没有 finding。本轮可能是绿灯；不要把全楼历史问题当成这次红灯。' };
+  }
+  const bp = baselinePath(repo);
+  if (!fs.existsSync(bp)) {
+    return { error: 'NO_SESSION_FINDING', message: '有会话报告但基线已丢失。请重新 av_session_start 后再 report。' };
+  }
+  return {
+    findings,
+    diff: report.diff,
+    impact: report.impact,
+    baseline: JSON.parse(fs.readFileSync(bp, 'utf8')),
+    graph: buildGraph(repo)
+  };
+}
+
+function toolExplainFinding(args) {
+  const repo = resolveRepo(args);
+  let graph, baseline, diff, impact, findings;
+
+  if (args.from === 'session') {
+    const loaded = loadSessionFindings(repo);
+    if (loaded.error) return { error: loaded.error, message: loaded.message };
+    ({ graph, baseline, diff, impact, findings } = loaded);
+  } else {
+    ({ graph, baseline, diff, impact, findings } = liveScanFindings(repo));
+  }
+
+  let target = pickFinding(findings, args);
+
+  // 报告里若是格式化字符串，用同一份 diff/基线还原对象——禁止改走空基线全楼扫描
   if (!target && findings.length > 0 && typeof findings[0] === 'string') {
-    const rawFindings = evaluateRisk(diff, graph, baseline, impact);
-    target = rawFindings.find((f, i) =>
-      (args.rule && f.rule === args.rule) ||
-      (args.index !== undefined && i === args.index)
-    );
+    let teamRules = null;
+    try { teamRules = loadSessionRules(repo); } catch { /* ignore */ }
+    const rawFindings = evaluateRisk(diff, graph, baseline, impact, { rules: teamRules });
+    target = pickFinding(rawFindings, args);
   }
 
   if (!target) {
@@ -414,7 +481,9 @@ function toolExplainFinding(args) {
 
 function buildExplainResult(target, diff, graph) {
   let edgeEvidence = null;
-  if (target.rule === 'cross-layer-violation' || target.rule === 'layer-skip') {
+  const layerRules = new Set(['cross-layer-violation', 'layer-skip']);
+  const isTeamForbid = target.source === 'architecture-rules.yaml' || target.title === '团队分层禁令';
+  if (layerRules.has(target.rule) || isTeamForbid) {
     const edge = (diff.addedEdges || []).find(e => {
       const fromNode = graph.nodes.find(n => n.id === e.from);
       const toNode = graph.nodes.find(n => n.id === e.to);
@@ -441,6 +510,8 @@ function buildExplainResult(target, diff, graph) {
     edgeEvidence,
     suggestion: target.rule === 'cross-layer-violation' || target.rule === 'layer-skip'
       ? '不要让前台直接跑去仓库拿东西——中间加一层"中间人"来中转，或者改成走接口。'
+      : isTeamForbid
+        ? '这是团队 architecture-rules.yaml 禁止的依赖方向，请改走允许的层，或更新规则文件并评审。'
       : target.rule === 'removed-type'
         ? '检查有没有其他代码用到被删掉的东西，必要的话保留或给个替代方案。'
         : target.rule === 'new-external-dep'
@@ -456,7 +527,7 @@ function buildExplainResult(target, diff, graph) {
  * 调用方应回退内置渲染器（session-report.html）。
  */
 function toolArchifyExport(args) {
-  const repo = path.resolve(args.repo || process.cwd());
+  const repo = resolveRepo(args);
   const res = exportArchify({
     repo,
     scope: args.scope || 'changed',
@@ -495,9 +566,8 @@ const TOOLS = [
     inputSchema: {
       type: 'object',
       properties: {
-        repo: { type: 'string', description: '项目文件夹的绝对路径' }
-      },
-      required: ['repo']
+        repo: { type: 'string', description: '项目文件夹路径。可省略，默认当前工作区根（MCP 进程 cwd）。不要沿用历史对话里的绝对路径。' }
+      }
     }
   },
   {
@@ -506,9 +576,8 @@ const TOOLS = [
     inputSchema: {
       type: 'object',
       properties: {
-        repo: { type: 'string', description: '项目文件夹的绝对路径' }
-      },
-      required: ['repo']
+        repo: { type: 'string', description: '项目文件夹路径。可省略，默认当前工作区根（MCP 进程 cwd）。不要沿用历史对话里的绝对路径。' }
+      }
     }
   },
   {
@@ -517,10 +586,9 @@ const TOOLS = [
     inputSchema: {
       type: 'object',
       properties: {
-        repo: { type: 'string', description: '项目文件夹的绝对路径' },
+        repo: { type: 'string', description: '项目文件夹路径。可省略，默认当前工作区根（MCP 进程 cwd）。不要沿用历史对话里的绝对路径。' },
         from: { type: 'string', enum: ['session'], description: '可选：从会话报告取数据' }
-      },
-      required: ['repo']
+      }
     }
   },
   {
@@ -529,23 +597,21 @@ const TOOLS = [
     inputSchema: {
       type: 'object',
       properties: {
-        repo: { type: 'string', description: '项目文件夹的绝对路径' }
-      },
-      required: ['repo']
+        repo: { type: 'string', description: '项目文件夹路径。可省略，默认当前工作区根（MCP 进程 cwd）。不要沿用历史对话里的绝对路径。' }
+      }
     }
   },
   {
     name: 'av_explain_finding',
-    description: '解释某条红灯的详情：谁串了谁的门、跳了哪一层、怎么修。按序号定位。',
+    description: '解释某条红灯的详情：谁串了谁的门、跳了哪一层、怎么修。按序号定位。from=session 时只读本轮报告，找不到就报错，不会静默改扫全楼。',
     inputSchema: {
       type: 'object',
       properties: {
-        repo: { type: 'string', description: '项目文件夹的绝对路径' },
+        repo: { type: 'string', description: '项目文件夹路径。可省略，默认当前工作区根（MCP 进程 cwd）。不要沿用历史对话里的绝对路径。' },
         rule: { type: 'string', description: '规则名（cross-layer-violation, layer-skip, removed-type, new-external-dep）' },
         index: { type: 'integer', description: '问题列表中的序号（从0开始）' },
-        from: { type: 'string', enum: ['session'], description: '可选：从会话报告取数据而非实时检测' }
-      },
-      required: ['repo']
+        from: { type: 'string', enum: ['session'], description: '从会话报告取本轮红灯；报告不存在或 findings 为空时返回 NO_SESSION_FINDING，绝不改扫全楼' }
+      }
     }
   },
   {
@@ -554,11 +620,10 @@ const TOOLS = [
     inputSchema: {
       type: 'object',
       properties: {
-        repo: { type: 'string', description: '项目文件夹的绝对路径' },
+        repo: { type: 'string', description: '项目文件夹路径。可省略，默认当前工作区根（MCP 进程 cwd）。不要沿用历史对话里的绝对路径。' },
         scope: { type: 'string', enum: ['changed', 'violations', 'layers'], description: '导出范围：changed=变更文件（默认），violations=只看违规边，layers=层摘要图' },
         validate: { type: 'boolean', description: '是否顺带运行 archify validate（需要本机有 archify CLI，默认 false）' }
-      },
-      required: ['repo']
+      }
     }
   }
 ];
@@ -663,7 +728,7 @@ function createServer() {
             result: {
               protocolVersion: '2024-11-05',
               capabilities: { tools: {} },
-              serverInfo: { name: 'architecture-viewer', version: '0.10.0' }
+              serverInfo: { name: 'architecture-viewer', version: PKG_VERSION }
             }
           });
           break;
@@ -699,7 +764,7 @@ function createServer() {
   return { rl };
 }
 
-module.exports = { TOOLS, handleToolCall, validateToolArgs, toolSessionStart, toolSessionReport, toolSessionChanges, toolCheckLayering, toolExplainFinding, toolArchifyExport, buildExplainResult, createServer, generateSessionReport, startWatcher, stopWatcher, getWatcherState, shouldWatchFile };
+module.exports = { TOOLS, handleToolCall, validateToolArgs, toolSessionStart, toolSessionReport, toolSessionChanges, toolCheckLayering, toolExplainFinding, toolArchifyExport, buildExplainResult, createServer, generateSessionReport, startWatcher, stopWatcher, getWatcherState, shouldWatchFile, resolveRepo, PKG_VERSION };
 
 if (require.main === module) {
   createServer();
