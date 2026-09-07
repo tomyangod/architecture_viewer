@@ -18,6 +18,11 @@ function miniGraphs() {
     root: '/demo',
     stats: { files: 2, types: 2, edges: 1 },
     nodes: [
+      { id: 'file:keep.js', kind: 'file', name: 'keep.js', path: 'keep.js', layer: 'util', lang: 'js', lineCount: 10 },
+      { id: 'file:old.js', kind: 'file', name: 'old.js', path: 'old.js', layer: 'util', lang: 'js', lineCount: 8 },
+      { id: 'file:gone.js', kind: 'file', name: 'gone.js', path: 'gone.js', layer: 'service', lang: 'js', lineCount: 6 },
+      { id: 'ext:fs', kind: 'external', name: 'fs', builtin: true },
+      { id: 'ext:left-pad', kind: 'external', name: 'left-pad', builtin: false },
       { id: 'cls:Keep', name: 'Keep', kind: 'class', layer: 'util', path: 'keep.js', lang: 'js', methods: ['a'], modifiers: [] },
       { id: 'cls:MoveMe', name: 'MoveMe', kind: 'class', layer: 'util', path: 'old.js', lang: 'js', methods: [], modifiers: [] },
       { id: 'cls:Gone', name: 'Gone', kind: 'class', layer: 'service', path: 'gone.js', lang: 'js', methods: [], modifiers: [] }
@@ -32,6 +37,10 @@ function miniGraphs() {
     root: '/demo',
     stats: { files: 2, types: 2, edges: 1 },
     nodes: [
+      { id: 'file:keep.js', kind: 'file', name: 'keep.js', path: 'keep.js', layer: 'util', lang: 'js', lineCount: 14 },
+      { id: 'file:new.js', kind: 'file', name: 'new.js', path: 'new.js', layer: 'service', lang: 'js', lineCount: 9 },
+      { id: 'ext:fs', kind: 'external', name: 'fs', builtin: true },
+      { id: 'ext:flask', kind: 'external', name: 'flask', builtin: false },
       { id: 'cls:Keep', name: 'Keep', kind: 'class', layer: 'util', path: 'keep.js', lang: 'js', methods: ['a', 'b'], modifiers: [] },
       { id: 'cls:MoveMe', name: 'MoveMe', kind: 'class', layer: 'service', path: 'new.js', lang: 'js', methods: [], modifiers: [] },
       { id: 'cls:New', name: 'New', kind: 'class', layer: 'service', path: 'new.js', lang: 'js', methods: [], modifiers: [] }
@@ -54,6 +63,17 @@ describe('session-report golden + delivery contract', () => {
     assert.ok(data.rerouted.some((e) => e.from === 'cls:Keep' && e.to === 'cls:MoveMe'));
     assert.equal(data.entities.find((e) => e.id === 'cls:MoveMe').status, 'moved');
     assert.ok(data.edges.some((e) => e.status === 'rerouted'));
+    // structure: 文件清单含增/删/改三种状态，外部依赖含新增/删除/内置
+    const byPath = Object.fromEntries(data.structure.files.map((f) => [f.path, f]));
+    assert.equal(byPath['new.js'].status, 'added');
+    assert.equal(byPath['gone.js'].status, 'removed');
+    assert.equal(byPath['keep.js'].status, 'modified');
+    assert.equal(byPath['keep.js'].delta, 4);
+    const depByName = Object.fromEntries(data.structure.deps.map((d) => [d.name, d]));
+    assert.equal(depByName['flask'].status, 'added');
+    assert.equal(depByName['left-pad'].status, 'removed');
+    assert.equal(depByName['fs'].status, 'unchanged');
+    assert.equal(depByName['fs'].builtin, true);
   });
 
   it('缺字段时 contract 拒绝交付', () => {
@@ -72,6 +92,9 @@ describe('session-report golden + delivery contract', () => {
     assert.match(html, /id="graph-before"/);
     assert.match(html, /id="graph-delta"/);
     assert.match(html, /id="graph-after"/);
+    assert.match(html, /id="structure-details"/);
+    assert.match(html, /id="structure-body"/);
+    assert.match(html, /项目结构/);
     assert.match(html, /lang="zh-CN"/);
     assert.match(html, /meta name="viewport"/);
     assert.match(html, /triple-graph/);
@@ -89,7 +112,7 @@ describe('session-report golden + delivery contract', () => {
     }
 
     assert.ok(fs.existsSync(GOLDEN_PATH), `missing golden; run UPDATE_GOLDENS=1 to create ${GOLDEN_PATH}`);
-    const expected = fs.readFileSync(GOLDEN_PATH, 'utf8');
+    const expected = fs.readFileSync(GOLDEN_PATH, 'utf8').replace(/\r\n/g, '\n');
     assert.equal(rendered, expected);
   });
 });
