@@ -6,6 +6,12 @@
 
 （下一拍：首笔 Pro 到账、npm 后续补丁。）
 
+## \[0.11.2\] — 2026-09-08
+
+### Fixed
+
+- **紧急**：补交 `loadSessionRules`（及 session 侧 `forbid_cross_layer` / circular-import）。0.11.1 已引用但未入库，干净安装下 `session report` 会报 `loadSessionRules is not a function`。
+
 ## \[0.11.1\] — 2026-09-08
 
 ### Fixed
