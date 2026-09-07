@@ -25,6 +25,15 @@ describe('CLI bin shim smoke (spawn)', () => {
     assert.match(r.stdout, /arch-viewer (init|generate|check)/);
   });
 
+  it('--version / -V 打印 package.json 版本', () => {
+    const expected = JSON.parse(fs.readFileSync(path.join(__dirname, '..', 'package.json'), 'utf8')).version;
+    for (const flag of ['--version', '-V', 'version']) {
+      const r = run([flag]);
+      assert.equal(r.status, 0, flag + ' stderr: ' + r.stderr);
+      assert.equal(r.stdout.trim(), expected);
+    }
+  });
+
   it('unknown command exits 2, not silent 0', () => {
     const r = run(['definitely-not-a-command']);
     assert.equal(r.status, 2);
@@ -145,6 +154,33 @@ describe('CLI session report renderer', () => {
       const html = fs.readFileSync(path.join(dir, '.av', 'session-report.html'), 'utf8');
       assert.match(html, /架构变更报告|REPORT_DATA/);
       assert.ok(fs.existsSync(path.join(dir, '.av', 'session-report.builtin.html')));
+    } finally {
+      fs.rmSync(dir, { recursive: true, force: true });
+    }
+  });
+
+  it('session start 刷新基线时清掉旧报告', () => {
+    const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'av-cli-stale-'));
+    try {
+      fs.mkdirSync(path.join(dir, 'src'), { recursive: true });
+      fs.writeFileSync(path.join(dir, 'src', 'app.py'), 'class App:\n    pass\n');
+      const first = run(['session', 'start', dir], dir);
+      assert.equal(first.status, 0, first.stderr);
+      const av = path.join(dir, '.av');
+      fs.writeFileSync(path.join(av, 'session-report.json'), '{"findings":[]}');
+      fs.writeFileSync(path.join(av, 'session-report.html'), '<html>stale</html>');
+      fs.writeFileSync(path.join(av, 'session-report.archify.html'), '<html>stale-archify</html>');
+      fs.writeFileSync(path.join(av, 'archify-changed.sidecar.json'), '{}');
+      fs.writeFileSync(path.join(av, 'archify-layers.head.json'), '{}');
+      const second = run(['session', 'start', dir], dir);
+      assert.equal(second.status, 0, second.stderr);
+      assert.match(second.stdout, /Cleared stale session report/);
+      assert.ok(!fs.existsSync(path.join(av, 'session-report.json')));
+      assert.ok(!fs.existsSync(path.join(av, 'session-report.html')));
+      assert.ok(!fs.existsSync(path.join(av, 'session-report.archify.html')));
+      assert.ok(!fs.existsSync(path.join(av, 'archify-changed.sidecar.json')));
+      assert.ok(!fs.existsSync(path.join(av, 'archify-layers.head.json')));
+      assert.ok(fs.existsSync(path.join(av, 'graph-baseline.json')));
     } finally {
       fs.rmSync(dir, { recursive: true, force: true });
     }

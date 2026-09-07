@@ -8,6 +8,7 @@ const path = require('path');
 const { execFileSync } = require('child_process');
 
 const CLI = path.join(__dirname, '..', 'lib', 'cli.js');
+const { magicPrompt } = require('../lib/setup');
 
 function tmpHome() {
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'av-setup-'));
@@ -61,6 +62,14 @@ describe('setup: 一键接入', () => {
     const out = runSetup(home);
     assert.ok(out.includes('拍照片'));
     assert.ok(out.includes('改坏'));
+  });
+
+  it('口令不写死绝对路径，即使传入 repo', () => {
+    const abs = '/Users/someone/Desktop/architecture_viewer';
+    const text = magicPrompt(abs);
+    assert.ok(!text.includes(abs), '不得把绝对路径写进口令');
+    assert.ok(!text.includes('我的项目在'), '不得写死「我的项目在」');
+    assert.ok(text.includes('当前工作区'));
   });
 });
 

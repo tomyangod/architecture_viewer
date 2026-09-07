@@ -7,7 +7,8 @@ const os = require('os');
 const path = require('path');
 const { spawn } = require('child_process');
 
-const { TOOLS, handleToolCall, toolSessionStart, toolSessionReport, toolSessionChanges, toolCheckLayering, toolExplainFinding, toolArchifyExport, stopWatcher } = require('../mcp/server');
+const { TOOLS, handleToolCall, toolSessionStart, toolSessionReport, toolSessionChanges, toolCheckLayering, toolExplainFinding, toolArchifyExport, stopWatcher, resolveRepo, PKG_VERSION } = require('../mcp/server');
+const { clearStaleSessionReports } = require('../lib/session-report');
 
 function makeRepo(files) {
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'av-mcp-'));
@@ -71,11 +72,11 @@ describe('MCP Server: tools/list', () => {
     assert.ok(names.includes('av_archify_export'));
   });
 
-  it('每个工具有 description 和 inputSchema', () => {
+  it('每个工具有 description 和 inputSchema，repo 可省略', () => {
     for (const t of TOOLS) {
       assert.ok(t.description.length > 10, `${t.name} 缺 description`);
       assert.ok(t.inputSchema.properties.repo, `${t.name} 缺 repo 参数`);
-      assert.ok(t.inputSchema.required.includes('repo'), `${t.name} repo 未标 required`);
+      assert.ok(!(t.inputSchema.required || []).includes('repo'), `${t.name} repo 不应再强制必填`);
     }
   });
 });
@@ -92,6 +93,52 @@ describe('MCP Server: av_session_start', () => {
     assert.ok(result.baseline.fingerprint);
     assert.ok(fs.existsSync(path.join(repo, '.av/graph-baseline.json')));
     assert.ok(result.message.includes('拍好了'));
+  });
+
+  it('刷新基线时删除上一轮 session-report', () => {
+    const isolated = makeRepo(FIXTURE);
+    try {
+      toolSessionStart({ repo: isolated });
+      const av = path.join(isolated, '.av');
+      fs.writeFileSync(path.join(av, 'session-report.json'), '{"findings":[{"rule":"stale"}]}');
+      fs.writeFileSync(path.join(av, 'session-report.html'), '<html>stale</html>');
+      fs.writeFileSync(path.join(av, 'session-report.builtin.html'), '<html>stale-builtin</html>');
+      fs.writeFileSync(path.join(av, 'session-report.archify.html'), '<html>stale-archify</html>');
+      fs.writeFileSync(path.join(av, 'archify-changed.base.json'), '{}');
+      fs.writeFileSync(path.join(av, 'archify-changed.head.json'), '{}');
+      fs.writeFileSync(path.join(av, 'archify-changed.sidecar.json'), '{}');
+      fs.writeFileSync(path.join(av, 'archify-violations.sidecar.json'), '{}');
+      const again = toolSessionStart({ repo: isolated });
+      assert.ok(again.clearedReports.includes('session-report.json'));
+      assert.ok(again.clearedReports.includes('session-report.archify.html'));
+      assert.ok(again.clearedReports.includes('archify-changed.head.json'));
+      assert.ok(!fs.existsSync(path.join(av, 'session-report.json')));
+      assert.ok(!fs.existsSync(path.join(av, 'session-report.html')));
+      assert.ok(!fs.existsSync(path.join(av, 'session-report.builtin.html')));
+      assert.ok(!fs.existsSync(path.join(av, 'session-report.archify.html')));
+      assert.ok(!fs.existsSync(path.join(av, 'archify-changed.base.json')));
+      assert.ok(!fs.existsSync(path.join(av, 'archify-violations.sidecar.json')));
+      assert.ok(fs.existsSync(path.join(av, 'graph-baseline.json')), '基线必须保留');
+    } finally {
+      stopWatcher(isolated);
+    }
+  });
+
+  it('清陈旧报告不碰 baseline / layers / session-history', () => {
+    const isolated = makeRepo(FIXTURE);
+    const av = path.join(isolated, '.av');
+    fs.mkdirSync(av, { recursive: true });
+    fs.writeFileSync(path.join(av, 'graph-baseline.json'), '{}');
+    fs.writeFileSync(path.join(av, 'layers.json'), '{}');
+    fs.writeFileSync(path.join(av, 'layers.suggested.json'), '{}');
+    fs.writeFileSync(path.join(av, 'session-history.jsonl'), '{}\n');
+    fs.writeFileSync(path.join(av, 'archify-changed.head.json'), '{}');
+    const cleared = clearStaleSessionReports(isolated);
+    assert.deepEqual(cleared, ['archify-changed.head.json']);
+    assert.ok(fs.existsSync(path.join(av, 'graph-baseline.json')));
+    assert.ok(fs.existsSync(path.join(av, 'layers.json')));
+    assert.ok(fs.existsSync(path.join(av, 'layers.suggested.json')));
+    assert.ok(fs.existsSync(path.join(av, 'session-history.jsonl')));
   });
 });
 
@@ -202,6 +249,46 @@ describe('MCP Server: av_explain_finding', () => {
     const result = toolExplainFinding({ repo, rule: 'nonexistent-rule' });
     assert.equal(result.error, 'NOT_FOUND');
   });
+
+  it('from=session 且无报告时返回 NO_SESSION_FINDING，不扫全楼', () => {
+    const isolated = makeRepo(FIXTURE);
+    try {
+      toolSessionStart({ repo: isolated });
+      const result = toolExplainFinding({ repo: isolated, from: 'session', rule: 'layer-skip' });
+      assert.equal(result.error, 'NO_SESSION_FINDING');
+      assert.ok(!result.finding, '不得静默回退到全楼实时扫描');
+    } finally {
+      stopWatcher(isolated);
+    }
+  });
+
+  it('from=session 且本轮 findings 为空时不 fallback', () => {
+    const isolated = makeRepo(FIXTURE);
+    try {
+      toolSessionStart({ repo: isolated });
+      toolSessionReport({ repo: isolated });
+      const result = toolExplainFinding({ repo: isolated, from: 'session', index: 0 });
+      assert.equal(result.error, 'NO_SESSION_FINDING');
+      assert.ok(!result.finding);
+    } finally {
+      stopWatcher(isolated);
+    }
+  });
+
+  it('from=session 能解释本轮报告中的 finding', () => {
+    const isolated = makeRepo(FIXTURE);
+    try {
+      toolSessionStart({ repo: isolated });
+      fs.writeFileSync(path.join(isolated, 'services', 'notify.py'), 'import requests\nclass Notify:\n    pass\n');
+      const report = toolSessionReport({ repo: isolated });
+      assert.ok(report.findingsCount > 0, '本轮应有 finding');
+      const result = toolExplainFinding({ repo: isolated, from: 'session', index: 0 });
+      assert.ok(!result.error, result.message);
+      assert.ok(result.finding);
+    } finally {
+      stopWatcher(isolated);
+    }
+  });
 });
 
 describe('MCP Server: handleToolCall 路由', () => {
@@ -260,6 +347,8 @@ describe('MCP Server: stdio JSON-RPC 协议', () => {
     const initResp = await waitForResponse(1);
     assert.equal(initResp.result.protocolVersion, '2024-11-05');
     assert.equal(initResp.result.serverInfo.name, 'architecture-viewer');
+    assert.equal(initResp.result.serverInfo.version, PKG_VERSION);
+    assert.match(initResp.result.serverInfo.version, /^\d+\.\d+\.\d+/);
 
     send({ jsonrpc: '2.0', id: 2, method: 'tools/list', params: {} });
     const listResp = await waitForResponse(2);
@@ -325,11 +414,19 @@ describe('MCP Server: av_archify_export', () => {
 describe('MCP Server: 输入 schema 校验（fail-closed）', () => {
   const { validateToolArgs } = require('../mcp/server');
 
-  it('缺 repo 直接报 INVALID_ARGS', () => {
-    assert.throws(
-      () => validateToolArgs('av_session_start', {}),
-      (e) => e.code === 'INVALID_ARGS' && /repo/.test(e.message)
-    );
+  it('缺 repo 合法，由 resolveRepo 落到 cwd', () => {
+    const v = validateToolArgs('av_session_start', {});
+    assert.equal(v.repo, undefined);
+    const prev = process.cwd();
+    const isolated = makeRepo(FIXTURE);
+    try {
+      process.chdir(isolated);
+      assert.equal(fs.realpathSync(resolveRepo({})), fs.realpathSync(isolated));
+      assert.equal(fs.realpathSync(resolveRepo({ repo: '' })), fs.realpathSync(isolated));
+    } finally {
+      process.chdir(prev);
+      stopWatcher(isolated);
+    }
   });
 
   it('非法 enum 拒绝', () => {
@@ -353,7 +450,7 @@ describe('MCP Server: 输入 schema 校验（fail-closed）', () => {
 
   it('handleToolCall 非法参数不执行工具', () => {
     assert.throws(
-      () => handleToolCall({ name: 'av_session_start', arguments: { repo: '' } }),
+      () => handleToolCall({ name: 'av_session_start', arguments: { repo: '/tmp/x', hack: true } }),
       /INVALID_ARGS/
     );
   });
