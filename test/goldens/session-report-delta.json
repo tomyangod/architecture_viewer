@@ -6,8 +6,8 @@
   "baseFingerprint": "<fp-base>",
   "headFingerprint": "<fp-head>",
   "summary": {
-    "addedNodes": 1,
-    "removedNodes": 1,
+    "addedNodes": 3,
+    "removedNodes": 4,
     "modifiedNodes": 1,
     "movedNodes": 1,
     "renamedNodes": 0,
@@ -18,10 +18,10 @@
     "removedTypes": 1,
     "addedPackages": 0,
     "removedPackages": 0,
-    "addedExternalDeps": 0,
-    "removedExternalDeps": 0,
+    "addedExternalDeps": 1,
+    "removedExternalDeps": 1,
     "violations": 0,
-    "totalChanges": 7,
+    "totalChanges": 14,
     "riskLevel": "medium"
   },
   "risk": {
@@ -187,13 +187,105 @@
       "toType": "import"
     }
   ],
-  "extAdded": [],
-  "extRemoved": [],
-  "fileLocMap": {},
+  "extAdded": [
+    {
+      "name": "flask",
+      "builtin": false
+    }
+  ],
+  "extRemoved": [
+    {
+      "name": "left-pad",
+      "builtin": false
+    }
+  ],
+  "fileLocMap": {
+    "keep.js": {
+      "base": 10,
+      "head": 14,
+      "delta": 4,
+      "deltaPercent": 40,
+      "label": "+4行 · +40%",
+      "severity": "growth"
+    },
+    "old.js": {
+      "base": 8,
+      "head": 0,
+      "delta": -8,
+      "deltaPercent": -100,
+      "label": "",
+      "severity": ""
+    },
+    "gone.js": {
+      "base": 6,
+      "head": 0,
+      "delta": -6,
+      "deltaPercent": -100,
+      "label": "",
+      "severity": ""
+    },
+    "new.js": {
+      "base": 0,
+      "head": 9,
+      "delta": 9,
+      "deltaPercent": 100,
+      "label": "",
+      "severity": ""
+    }
+  },
   "structure": {
-    "files": [],
-    "deps": [],
-    "totalFiles": 0,
+    "files": [
+      {
+        "path": "new.js",
+        "layer": "service",
+        "lang": "js",
+        "lines": 9,
+        "delta": 9,
+        "status": "added"
+      },
+      {
+        "path": "gone.js",
+        "layer": "service",
+        "lang": "js",
+        "lines": 6,
+        "delta": -6,
+        "status": "removed"
+      },
+      {
+        "path": "old.js",
+        "layer": "util",
+        "lang": "js",
+        "lines": 8,
+        "delta": -8,
+        "status": "removed"
+      },
+      {
+        "path": "keep.js",
+        "layer": "util",
+        "lang": "js",
+        "lines": 14,
+        "delta": 4,
+        "status": "modified"
+      }
+    ],
+    "deps": [
+      {
+        "name": "flask",
+        "builtin": false,
+        "status": "added"
+      },
+      {
+        "name": "left-pad",
+        "builtin": false,
+        "status": "removed"
+      },
+      {
+        "name": "fs",
+        "builtin": true,
+        "status": "unchanged"
+      }
+    ],
+    "totalFiles": 4,
     "truncated": false
   }
 }
