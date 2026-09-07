@@ -1,0 +1,70 @@
+#!/usr/bin/env bash
+# Architecture Viewer · pre-commit 架构验收门
+#
+# 安装（在业务仓根目录）：
+#   curl -fsSL https://gitee.com/heyangyan/architecture_viewer/raw/master/templates/pre-commit \
+#     -o .git/hooks/pre-commit && chmod +x .git/hooks/pre-commit
+# 或本仓开发时：
+#   cp templates/pre-commit /path/to/your-repo/.git/hooks/pre-commit && chmod +x ...
+#
+# 行为：
+#   - 无 .av/graph-baseline.json → 跳过（先跑 arch-viewer session start）
+#   - 有基线 → session report；Risk HIGH（红灯）则拒绝提交（exit 1）
+#   - 中/低风险不挡提交（与 CLI 退出码一致：仅 high → 1）
+#
+# 绕过（紧急）：git commit --no-verify （请在 PR 说明原因）
+
+set -euo pipefail
+
+ROOT="$(git rev-parse --show-toplevel 2>/dev/null || pwd)"
+cd "$ROOT"
+
+if [ ! -f .av/graph-baseline.json ]; then
+  echo "[arch-viewer] 无会话基线，跳过门禁。需要时先跑: arch-viewer session start"
+  exit 0
+fi
+
+resolve_cli() {
+  if command -v arch-viewer >/dev/null 2>&1; then
+    echo "arch-viewer"
+    return
+  fi
+  if [ -x "$ROOT/node_modules/.bin/arch-viewer" ]; then
+    echo "$ROOT/node_modules/.bin/arch-viewer"
+    return
+  fi
+  # 本仓开发：相对路径到 architecture_viewer
+  if [ -f "$ROOT/lib/cli.js" ] && [ -f "$ROOT/package.json" ] && grep -q '"name"[[:space:]]*:[[:space:]]*"arch-viewer"' "$ROOT/package.json" 2>/dev/null; then
+    echo "node $ROOT/lib/cli.js"
+    return
+  fi
+  if command -v npx >/dev/null 2>&1; then
+    echo "npx --yes arch-viewer"
+    return
+  fi
+  echo ""
+}
+
+CLI="$(resolve_cli)"
+if [ -z "$CLI" ]; then
+  echo "[arch-viewer] 未找到 CLI，跳过门禁（请 npm i -g arch-viewer 或本地安装）"
+  exit 0
+fi
+
+echo "[arch-viewer] 运行会话验收门…"
+# shellcheck disable=SC2086
+set +e
+$CLI session report "$ROOT" --renderer builtin
+code=$?
+set -e
+
+if [ "$code" -eq 0 ]; then
+  echo "[arch-viewer] 通过（无 HIGH 风险）"
+  exit 0
+fi
+
+echo ""
+echo "[arch-viewer] 拒绝提交：存在 HIGH 架构风险。"
+echo "  查看报告: $ROOT/.av/session-report.builtin.html"
+echo "  修复后重试；紧急合入可用: git commit --no-verify"
+exit 1
