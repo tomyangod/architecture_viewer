@@ -420,6 +420,19 @@ describe('B1-3: 报告过滤（高信号优先）', () => {
     // 模板字符串转义/括号错误会让整个内联脚本在浏览器里 SyntaxError、页面白屏
     assert.doesNotThrow(() => new vm.Script(m[1]), 'inline script must parse');
   });
+
+  it('HTML 风险筛选条在有 finding 时仍可解析', () => {
+    const { baseGraph, headGraph, diff } = fixtureReport();
+    const html = generateReport({
+      baseGraph, headGraph, diff,
+      findings: [{ rule: 'layer-skip', severity: 'high', title: 't', message: 'm', file: 'src/a.js', line: 1 }],
+      repoName: 'demo', sessionStart: null
+    });
+    assert.match(html, /id="finding-filters"/);
+    const m = html.match(/<script>([\s\S]*)<\/script>/);
+    const vm = require('node:vm');
+    assert.doesNotThrow(() => new vm.Script(m[1]), 'inline script must parse with findings');
+  });
 });
 
 describe('B1-3 续: 风险引擎边契约（regression）', () => {

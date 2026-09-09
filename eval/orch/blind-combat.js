@@ -102,7 +102,7 @@ async function runRound(round, sets) {
       try {
         const raw = await chat(
           [{ role: 'system', content: SYS }, { role: 'user', content: user }],
-          { json: true, temperature: 0.15, maxTokens: 4096 }
+          { json: true, temperature: 0.15, maxTokens: 4096, scene: 'blind' }
         );
         scored = extractJson(raw);
       } catch (e) {
@@ -113,6 +113,10 @@ async function runRound(round, sets) {
       console.log('[fail]', spec.short);
       continue;
     }
+    const { resolveBlindWinner } = require('../../lib/orch/blind-score');
+    const judged = resolveBlindWinner(scored);
+    scored.winner = judged.winner;
+    scored.decisive = judged.decisive;
     const reveal = { A: order[0], B: order[1] };
     const winnerMethod = scored.winner === 'tie' ? 'tie' : reveal[scored.winner];
     const row = {

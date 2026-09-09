@@ -44,3 +44,28 @@ rel_whitelist:
   - id: allowed-rel-labels
     labels: [HTTP, gRPC, SQL, 调用, 访问, 读写, uses, use]
     allow_empty: true
+
+# 6) 风险规则策略（仅 session report；省略则用内置默认值）
+#    removed-type 分级：下游 < removed_type_low → low；≥ broad_impact → high；其余 medium。
+#    与 broad-impact 共用 broad_impact / broad_impact_high。
+risk:
+  # disable: [orphan-entity, large-file]
+  thresholds:
+    broad_impact: 10
+    broad_impact_high: 20
+    removed_type_low: 3
+    high_fanout: 5
+    high_fanout_medium: 8
+    god_file: 800
+    large_file: 400
+    growth_abs_low: 150
+    growth_rel_low: 40
+    growth_abs_med: 300
+    growth_rel_med: 100
+    growth_rel_min_base: 100
+    cycle_cap: 5
+  # exclude:
+  #   - rule: god-file
+  #     path: 'vendor/**'
+  #   - rule: '*'
+  #     path: 'generated/**'
