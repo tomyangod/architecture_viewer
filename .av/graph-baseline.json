@@ -1,8 +1,8 @@
 {
   "version": 1,
   "root": "architecture_viewer",
-  "generatedAt": "2026-09-09T05:00:29.067Z",
-  "fingerprint": "9fefcd24c22d4bba",
+  "generatedAt": "2026-09-09T05:04:36.084Z",
+  "fingerprint": "ee39a3158d48a47f",
   "languages": [
     "javascript"
   ],
@@ -10,9 +10,9 @@
     "files": 100,
     "filesParsed": 100,
     "parseErrors": 0,
-    "types": 885,
-    "nodes": 1009,
-    "edges": 1292,
+    "types": 890,
+    "nodes": 1014,
+    "edges": 1299,
     "externalPackages": 24
   },
   "nodes": [
@@ -2417,17 +2417,21 @@
       "kind": "file",
       "name": "ci-drift-action.mjs",
       "path": "scripts/ci-drift-action.mjs",
-      "layer": null,
+      "layer": "controller",
+      "layerConfidence": "low",
+      "layerSignal": "structure:high-fan-out",
       "lang": "javascript",
-      "lineCount": 329
+      "lineCount": 330
     },
     {
       "id": "scripts/ci-drift-action#parseCli",
       "kind": "function",
       "name": "parseCli",
       "path": "scripts/ci-drift-action.mjs",
-      "line": 31,
-      "layer": null,
+      "line": 32,
+      "layer": "controller",
+      "layerConfidence": "low",
+      "layerSignal": "structure:high-fan-out",
       "lang": "javascript",
       "modifiers": [],
       "exported": false,
@@ -2441,8 +2445,10 @@
       "kind": "function",
       "name": "resolveBaselineChanged",
       "path": "scripts/ci-drift-action.mjs",
-      "line": 59,
-      "layer": null,
+      "line": 60,
+      "layer": "controller",
+      "layerConfidence": "low",
+      "layerSignal": "structure:high-fan-out",
       "lang": "javascript",
       "modifiers": [],
       "exported": false,
@@ -2456,8 +2462,10 @@
       "kind": "function",
       "name": "runDriftCheck",
       "path": "scripts/ci-drift-action.mjs",
-      "line": 67,
-      "layer": null,
+      "line": 68,
+      "layer": "controller",
+      "layerConfidence": "low",
+      "layerSignal": "structure:high-fan-out",
       "lang": "javascript",
       "modifiers": [],
       "exported": false,
@@ -2471,8 +2479,10 @@
       "kind": "function",
       "name": "suggestActions",
       "path": "scripts/ci-drift-action.mjs",
-      "line": 78,
-      "layer": null,
+      "line": 79,
+      "layer": "controller",
+      "layerConfidence": "low",
+      "layerSignal": "structure:high-fan-out",
       "lang": "javascript",
       "modifiers": [],
       "exported": false,
@@ -2486,8 +2496,10 @@
       "kind": "function",
       "name": "viewLabel",
       "path": "scripts/ci-drift-action.mjs",
-      "line": 109,
-      "layer": null,
+      "line": 110,
+      "layer": "controller",
+      "layerConfidence": "low",
+      "layerSignal": "structure:high-fan-out",
       "lang": "javascript",
       "modifiers": [],
       "exported": false,
@@ -2501,8 +2513,10 @@
       "kind": "function",
       "name": "formatDriftComment",
       "path": "scripts/ci-drift-action.mjs",
-      "line": 114,
-      "layer": null,
+      "line": 115,
+      "layer": "controller",
+      "layerConfidence": "low",
+      "layerSignal": "structure:high-fan-out",
       "lang": "javascript",
       "modifiers": [],
       "exported": false,
@@ -2516,8 +2530,10 @@
       "kind": "function",
       "name": "footer",
       "path": "scripts/ci-drift-action.mjs",
-      "line": 204,
-      "layer": null,
+      "line": 205,
+      "layer": "controller",
+      "layerConfidence": "low",
+      "layerSignal": "structure:high-fan-out",
       "lang": "javascript",
       "modifiers": [],
       "exported": false,
@@ -2531,8 +2547,10 @@
       "kind": "function",
       "name": "shouldWriteComment",
       "path": "scripts/ci-drift-action.mjs",
-      "line": 210,
-      "layer": null,
+      "line": 211,
+      "layer": "controller",
+      "layerConfidence": "low",
+      "layerSignal": "structure:high-fan-out",
       "lang": "javascript",
       "modifiers": [],
       "exported": false,
@@ -2546,8 +2564,10 @@
       "kind": "function",
       "name": "postGiteeComment",
       "path": "scripts/ci-drift-action.mjs",
-      "line": 217,
-      "layer": null,
+      "line": 218,
+      "layer": "controller",
+      "layerConfidence": "low",
+      "layerSignal": "structure:high-fan-out",
       "lang": "javascript",
       "modifiers": [],
       "exported": false,
@@ -2561,8 +2581,10 @@
       "kind": "function",
       "name": "postDriftComment",
       "path": "scripts/ci-drift-action.mjs",
-      "line": 231,
-      "layer": null,
+      "line": 232,
+      "layer": "controller",
+      "layerConfidence": "low",
+      "layerSignal": "structure:high-fan-out",
       "lang": "javascript",
       "modifiers": [],
       "exported": false,
@@ -2576,8 +2598,10 @@
       "kind": "function",
       "name": "printHelp",
       "path": "scripts/ci-drift-action.mjs",
-      "line": 255,
-      "layer": null,
+      "line": 256,
+      "layer": "controller",
+      "layerConfidence": "low",
+      "layerSignal": "structure:high-fan-out",
       "lang": "javascript",
       "modifiers": [],
       "exported": false,
@@ -2591,8 +2615,10 @@
       "kind": "function",
       "name": "main",
       "path": "scripts/ci-drift-action.mjs",
-      "line": 271,
-      "layer": null,
+      "line": 272,
+      "layer": "controller",
+      "layerConfidence": "low",
+      "layerSignal": "structure:high-fan-out",
       "lang": "javascript",
       "modifiers": [],
       "exported": false,
@@ -4173,7 +4199,7 @@
       "layerConfidence": "high",
       "layerSignal": "dir-name",
       "lang": "javascript",
-      "lineCount": 1106
+      "lineCount": 1165
     },
     {
       "id": "lib/cli#help",
@@ -4197,7 +4223,7 @@
       "kind": "function",
       "name": "parseArgs",
       "path": "lib/cli.js",
-      "line": 104,
+      "line": 106,
       "layer": "util",
       "layerConfidence": "high",
       "layerSignal": "dir-name",
@@ -4214,7 +4240,7 @@
       "kind": "function",
       "name": "openInBrowser",
       "path": "lib/cli.js",
-      "line": 122,
+      "line": 124,
       "layer": "util",
       "layerConfidence": "high",
       "layerSignal": "dir-name",
@@ -4231,7 +4257,7 @@
       "kind": "function",
       "name": "findGitRoot",
       "path": "lib/cli.js",
-      "line": 139,
+      "line": 141,
       "layer": "util",
       "layerConfidence": "high",
       "layerSignal": "dir-name",
@@ -4248,7 +4274,7 @@
       "kind": "function",
       "name": "formatFindingsText",
       "path": "lib/cli.js",
-      "line": 150,
+      "line": 152,
       "layer": "util",
       "layerConfidence": "high",
       "layerSignal": "dir-name",
@@ -4265,7 +4291,7 @@
       "kind": "function",
       "name": "printIssues",
       "path": "lib/cli.js",
-      "line": 164,
+      "line": 166,
       "layer": "util",
       "layerConfidence": "high",
       "layerSignal": "dir-name",
@@ -4282,7 +4308,7 @@
       "kind": "function",
       "name": "loadEvalConfig",
       "path": "lib/cli.js",
-      "line": 184,
+      "line": 200,
       "layer": "util",
       "layerConfidence": "high",
       "layerSignal": "dir-name",
@@ -4299,7 +4325,7 @@
       "kind": "function",
       "name": "runEval",
       "path": "lib/cli.js",
-      "line": 193,
+      "line": 209,
       "layer": "util",
       "layerConfidence": "high",
       "layerSignal": "dir-name",
@@ -4316,7 +4342,7 @@
       "kind": "function",
       "name": "printGenerateResult",
       "path": "lib/cli.js",
-      "line": 320,
+      "line": 336,
       "layer": "util",
       "layerConfidence": "high",
       "layerSignal": "dir-name",
@@ -4333,7 +4359,7 @@
       "kind": "function",
       "name": "writeLayerSuggestions",
       "path": "lib/cli.js",
-      "line": 368,
+      "line": 384,
       "layer": "util",
       "layerConfidence": "high",
       "layerSignal": "dir-name",
@@ -4350,7 +4376,7 @@
       "kind": "function",
       "name": "wantsRefine",
       "path": "lib/cli.js",
-      "line": 382,
+      "line": 398,
       "layer": "util",
       "layerConfidence": "high",
       "layerSignal": "dir-name",
@@ -4367,7 +4393,7 @@
       "kind": "function",
       "name": "main",
       "path": "lib/cli.js",
-      "line": 386,
+      "line": 402,
       "layer": "util",
       "layerConfidence": "high",
       "layerSignal": "dir-name",
@@ -4818,7 +4844,7 @@
       "layerConfidence": "high",
       "layerSignal": "dir-name",
       "lang": "javascript",
-      "lineCount": 56
+      "lineCount": 88
     },
     {
       "id": "lib/exit-codes#normalizeFailOn",
@@ -4869,6 +4895,57 @@
       "module": "lib/exit-codes",
       "methods": [
         "exitCodeForRisk"
+      ]
+    },
+    {
+      "id": "lib/exit-codes#codedError",
+      "kind": "function",
+      "name": "codedError",
+      "path": "lib/exit-codes.js",
+      "line": 55,
+      "layer": "util",
+      "layerConfidence": "high",
+      "layerSignal": "dir-name",
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "lib/exit-codes",
+      "methods": [
+        "codedError"
+      ]
+    },
+    {
+      "id": "lib/exit-codes#exitCodeFromError",
+      "kind": "function",
+      "name": "exitCodeFromError",
+      "path": "lib/exit-codes.js",
+      "line": 61,
+      "layer": "util",
+      "layerConfidence": "high",
+      "layerSignal": "dir-name",
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "lib/exit-codes",
+      "methods": [
+        "exitCodeFromError"
+      ]
+    },
+    {
+      "id": "lib/exit-codes#exitCodeForCheck",
+      "kind": "function",
+      "name": "exitCodeForCheck",
+      "path": "lib/exit-codes.js",
+      "line": 69,
+      "layer": "util",
+      "layerConfidence": "high",
+      "layerSignal": "dir-name",
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "lib/exit-codes",
+      "methods": [
+        "exitCodeForCheck"
       ]
     },
     {
@@ -5129,7 +5206,7 @@
       "layerConfidence": "high",
       "layerSignal": "dir-name",
       "lang": "javascript",
-      "lineCount": 1188
+      "lineCount": 1228
     },
     {
       "id": "lib/extract-graph#isJdkImport",
@@ -5605,6 +5682,40 @@
       "module": "lib/extract-graph",
       "methods": [
         "extractGraphTo"
+      ]
+    },
+    {
+      "id": "lib/extract-graph#isGraphPayload",
+      "kind": "function",
+      "name": "isGraphPayload",
+      "path": "lib/extract-graph.js",
+      "line": 1187,
+      "layer": "util",
+      "layerConfidence": "high",
+      "layerSignal": "dir-name",
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "lib/extract-graph",
+      "methods": [
+        "isGraphPayload"
+      ]
+    },
+    {
+      "id": "lib/extract-graph#loadGraphInput",
+      "kind": "function",
+      "name": "loadGraphInput",
+      "path": "lib/extract-graph.js",
+      "line": 1195,
+      "layer": "util",
+      "layerConfidence": "high",
+      "layerSignal": "dir-name",
+      "lang": "javascript",
+      "modifiers": [],
+      "exported": false,
+      "module": "lib/extract-graph",
+      "methods": [
+        "loadGraphInput"
       ]
     },
     {
@@ -6504,7 +6615,7 @@
       "layerConfidence": "high",
       "layerSignal": "dir-name",
       "lang": "javascript",
-      "lineCount": 297
+      "lineCount": 313
     },
     {
       "id": "lib/index#stripInventory",
@@ -17120,84 +17231,84 @@
       "to": "file:scripts/ci-drift-action.mjs",
       "type": "declared-in",
       "file": "scripts/ci-drift-action.mjs",
-      "line": 31
+      "line": 32
     },
     {
       "from": "scripts/ci-drift-action#resolveBaselineChanged",
       "to": "file:scripts/ci-drift-action.mjs",
       "type": "declared-in",
       "file": "scripts/ci-drift-action.mjs",
-      "line": 59
+      "line": 60
     },
     {
       "from": "scripts/ci-drift-action#runDriftCheck",
       "to": "file:scripts/ci-drift-action.mjs",
       "type": "declared-in",
       "file": "scripts/ci-drift-action.mjs",
-      "line": 67
+      "line": 68
     },
     {
       "from": "scripts/ci-drift-action#suggestActions",
       "to": "file:scripts/ci-drift-action.mjs",
       "type": "declared-in",
       "file": "scripts/ci-drift-action.mjs",
-      "line": 78
+      "line": 79
     },
     {
       "from": "scripts/ci-drift-action#viewLabel",
       "to": "file:scripts/ci-drift-action.mjs",
       "type": "declared-in",
       "file": "scripts/ci-drift-action.mjs",
-      "line": 109
+      "line": 110
     },
     {
       "from": "scripts/ci-drift-action#formatDriftComment",
       "to": "file:scripts/ci-drift-action.mjs",
       "type": "declared-in",
       "file": "scripts/ci-drift-action.mjs",
-      "line": 114
+      "line": 115
     },
     {
       "from": "scripts/ci-drift-action#footer",
       "to": "file:scripts/ci-drift-action.mjs",
       "type": "declared-in",
       "file": "scripts/ci-drift-action.mjs",
-      "line": 204
+      "line": 205
     },
     {
       "from": "scripts/ci-drift-action#shouldWriteComment",
       "to": "file:scripts/ci-drift-action.mjs",
       "type": "declared-in",
       "file": "scripts/ci-drift-action.mjs",
-      "line": 210
+      "line": 211
     },
     {
       "from": "scripts/ci-drift-action#postGiteeComment",
       "to": "file:scripts/ci-drift-action.mjs",
       "type": "declared-in",
       "file": "scripts/ci-drift-action.mjs",
-      "line": 217
+      "line": 218
     },
     {
       "from": "scripts/ci-drift-action#postDriftComment",
       "to": "file:scripts/ci-drift-action.mjs",
       "type": "declared-in",
       "file": "scripts/ci-drift-action.mjs",
-      "line": 231
+      "line": 232
     },
     {
       "from": "scripts/ci-drift-action#printHelp",
       "to": "file:scripts/ci-drift-action.mjs",
       "type": "declared-in",
       "file": "scripts/ci-drift-action.mjs",
-      "line": 255
+      "line": 256
     },
     {
       "from": "scripts/ci-drift-action#main",
       "to": "file:scripts/ci-drift-action.mjs",
       "type": "declared-in",
       "file": "scripts/ci-drift-action.mjs",
-      "line": 271
+      "line": 272
     },
     {
       "from": "scripts/prepare-landing-static#copyDir",
@@ -17813,77 +17924,77 @@
       "to": "file:lib/cli.js",
       "type": "declared-in",
       "file": "lib/cli.js",
-      "line": 104
+      "line": 106
     },
     {
       "from": "lib/cli#openInBrowser",
       "to": "file:lib/cli.js",
       "type": "declared-in",
       "file": "lib/cli.js",
-      "line": 122
+      "line": 124
     },
     {
       "from": "lib/cli#findGitRoot",
       "to": "file:lib/cli.js",
       "type": "declared-in",
       "file": "lib/cli.js",
-      "line": 139
+      "line": 141
     },
     {
       "from": "lib/cli#formatFindingsText",
       "to": "file:lib/cli.js",
       "type": "declared-in",
       "file": "lib/cli.js",
-      "line": 150
+      "line": 152
     },
     {
       "from": "lib/cli#printIssues",
       "to": "file:lib/cli.js",
       "type": "declared-in",
       "file": "lib/cli.js",
-      "line": 164
+      "line": 166
     },
     {
       "from": "lib/cli#loadEvalConfig",
       "to": "file:lib/cli.js",
       "type": "declared-in",
       "file": "lib/cli.js",
-      "line": 184
+      "line": 200
     },
     {
       "from": "lib/cli#runEval",
       "to": "file:lib/cli.js",
       "type": "declared-in",
       "file": "lib/cli.js",
-      "line": 193
+      "line": 209
     },
     {
       "from": "lib/cli#printGenerateResult",
       "to": "file:lib/cli.js",
       "type": "declared-in",
       "file": "lib/cli.js",
-      "line": 320
+      "line": 336
     },
     {
       "from": "lib/cli#writeLayerSuggestions",
       "to": "file:lib/cli.js",
       "type": "declared-in",
       "file": "lib/cli.js",
-      "line": 368
+      "line": 384
     },
     {
       "from": "lib/cli#wantsRefine",
       "to": "file:lib/cli.js",
       "type": "declared-in",
       "file": "lib/cli.js",
-      "line": 382
+      "line": 398
     },
     {
       "from": "lib/cli#main",
       "to": "file:lib/cli.js",
       "type": "declared-in",
       "file": "lib/cli.js",
-      "line": 386
+      "line": 402
     },
     {
       "from": "lib/diff-graph#canonical",
@@ -18073,6 +18184,27 @@
       "type": "declared-in",
       "file": "lib/exit-codes.js",
       "line": 51
+    },
+    {
+      "from": "lib/exit-codes#codedError",
+      "to": "file:lib/exit-codes.js",
+      "type": "declared-in",
+      "file": "lib/exit-codes.js",
+      "line": 55
+    },
+    {
+      "from": "lib/exit-codes#exitCodeFromError",
+      "to": "file:lib/exit-codes.js",
+      "type": "declared-in",
+      "file": "lib/exit-codes.js",
+      "line": 61
+    },
+    {
+      "from": "lib/exit-codes#exitCodeForCheck",
+      "to": "file:lib/exit-codes.js",
+      "type": "declared-in",
+      "file": "lib/exit-codes.js",
+      "line": 69
     },
     {
       "from": "lib/export-archify#shortHash",
@@ -18367,6 +18499,20 @@
       "type": "declared-in",
       "file": "lib/extract-graph.js",
       "line": 1178
+    },
+    {
+      "from": "lib/extract-graph#isGraphPayload",
+      "to": "file:lib/extract-graph.js",
+      "type": "declared-in",
+      "file": "lib/extract-graph.js",
+      "line": 1187
+    },
+    {
+      "from": "lib/extract-graph#loadGraphInput",
+      "to": "file:lib/extract-graph.js",
+      "type": "declared-in",
+      "file": "lib/extract-graph.js",
+      "line": 1195
     },
     {
       "from": "lib/flowchart-sanitize#isFlowchartHeader",
@@ -23170,7 +23316,7 @@
     },
     {
       "from": "file:scripts/ci-drift-action.mjs",
-      "to": "file:lib/rules.js",
+      "to": "file:lib/exit-codes.js",
       "type": "import",
       "file": "scripts/ci-drift-action.mjs",
       "line": 22,
@@ -23178,7 +23324,7 @@
     },
     {
       "from": "file:scripts/ci-drift-action.mjs",
-      "to": "file:lib/pr-comment.js",
+      "to": "file:lib/rules.js",
       "type": "import",
       "file": "scripts/ci-drift-action.mjs",
       "line": 23,
@@ -23186,10 +23332,18 @@
     },
     {
       "from": "file:scripts/ci-drift-action.mjs",
-      "to": "file:lib/drift-locate.js",
+      "to": "file:lib/pr-comment.js",
       "type": "import",
       "file": "scripts/ci-drift-action.mjs",
       "line": 24,
+      "isType": false
+    },
+    {
+      "from": "file:scripts/ci-drift-action.mjs",
+      "to": "file:lib/drift-locate.js",
+      "type": "import",
+      "file": "scripts/ci-drift-action.mjs",
+      "line": 25,
       "isType": false
     },
     {
@@ -23725,7 +23879,7 @@
       "to": "file:lib/pro/funnel.js",
       "type": "import",
       "file": "lib/cli.js",
-      "line": 351,
+      "line": 367,
       "isType": false
     },
     {
@@ -23733,7 +23887,7 @@
       "to": "file:lib/analyzers/index.js",
       "type": "import",
       "file": "lib/cli.js",
-      "line": 549,
+      "line": 585,
       "isType": false
     },
     {
@@ -23741,7 +23895,7 @@
       "to": "file:lib/analyzers/index.js",
       "type": "import",
       "file": "lib/cli.js",
-      "line": 666,
+      "line": 720,
       "isType": false
     },
     {
@@ -23749,7 +23903,7 @@
       "to": "file:lib/green-light.js",
       "type": "import",
       "file": "lib/cli.js",
-      "line": 751,
+      "line": 810,
       "isType": false
     },
     {
@@ -23757,7 +23911,7 @@
       "to": "file:lib/pro/funnel.js",
       "type": "import",
       "file": "lib/cli.js",
-      "line": 764,
+      "line": 823,
       "isType": false
     },
     {
@@ -23765,7 +23919,7 @@
       "to": "file:lib/pro/auth-client.js",
       "type": "import",
       "file": "lib/cli.js",
-      "line": 954,
+      "line": 1013,
       "isType": false
     },
     {
@@ -23773,7 +23927,7 @@
       "to": "file:lib/pro/auth-client.js",
       "type": "import",
       "file": "lib/cli.js",
-      "line": 989,
+      "line": 1048,
       "isType": false
     },
     {
@@ -23781,7 +23935,7 @@
       "to": "file:lib/pro/features.js",
       "type": "import",
       "file": "lib/cli.js",
-      "line": 990,
+      "line": 1049,
       "isType": false
     },
     {
@@ -23789,7 +23943,7 @@
       "to": "file:lib/telemetry.js",
       "type": "import",
       "file": "lib/cli.js",
-      "line": 1092,
+      "line": 1151,
       "isType": false
     },
     {
@@ -23929,6 +24083,14 @@
       "isType": false
     },
     {
+      "from": "file:lib/extract-graph.js",
+      "to": "file:lib/exit-codes.js",
+      "type": "import",
+      "file": "lib/extract-graph.js",
+      "line": 1196,
+      "isType": false
+    },
+    {
       "from": "file:lib/flowchart-sanitize.js",
       "to": "file:lib/orch/lib.js",
       "type": "import",
@@ -24045,7 +24207,7 @@
       "to": "file:lib/rules.js",
       "type": "import",
       "file": "lib/index.js",
-      "line": 261,
+      "line": 275,
       "isType": false
     },
     {
@@ -24053,7 +24215,7 @@
       "to": "file:lib/refine-route.js",
       "type": "import",
       "file": "lib/index.js",
-      "line": 294,
+      "line": 310,
       "isType": false
     },
     {
@@ -24061,7 +24223,7 @@
       "to": "file:lib/refine-route.js",
       "type": "import",
       "file": "lib/index.js",
-      "line": 295,
+      "line": 311,
       "isType": false
     },
     {
@@ -25688,6 +25850,12 @@
       "signal": "dir-name",
       "files": 7
     },
+    "scripts": {
+      "layer": "controller",
+      "confidence": "low",
+      "signal": "structure:high-fan-out",
+      "files": 6
+    },
     "pm/scripts": {
       "layer": "domain",
       "confidence": "low",
@@ -25731,5 +25899,5 @@
       "files": 10
     }
   },
-  "sessionStartedAt": "2026-09-09T05:00:29.067Z"
+  "sessionStartedAt": "2026-09-09T05:04:36.084Z"
 }
