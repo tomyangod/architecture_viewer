@@ -95,7 +95,7 @@ describe('web product API', () => {
   });
 
   it('records landing deploy SOP', () => {
-    const deploy = fs.readFileSync(path.join(__dirname, '..', 'docs', 'landing-deploy.md'), 'utf8');
+    const deploy = fs.readFileSync(path.join(__dirname, '..', 'docs', 'commercial', 'landing-deploy.md'), 'utf8');
     assert.match(deploy, /127\.0\.0\.1:3847/);
     assert.match(deploy, /prepare-landing-static/);
     assert.match(deploy, /landing-pages\.yml/);

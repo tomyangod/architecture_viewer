@@ -2,7 +2,7 @@
 
 > **一句话**：装一次之后只说话；AI 改完在对话里给你看灯（verdict）。绿灯可提交，**commit 即接受**当前结构。不必先拍照、不必默认打开 HTML。  
 > **适用对象**：第一次把 Architecture Viewer 用到**自己的新项目 / 陌生仓库**上的人。  
-> **适用版本**：arch-viewer **0.12.x 预览**（8 个 MCP 工具 · `av_guard` · git HEAD 基线 · 会话报告）。本文 2026-09-10。  
+> **适用版本**：arch-viewer **0.12.0**（8 个 MCP 工具 · `av_guard` · git HEAD 基线 · 会话报告）。本文 2026-09-10。  
 > **零外部分析器**：不需要安装 `lint-imports` 或 dependency-cruiser；分层与契约由 builtin 直接评估。  
 > **职责**：本篇是**唯一**「通用怎么用」（安装、8 工具、日常闭环、读灯、CI）。零基础也可从 §10 迷你仓脚本跟做。舆情仓实测见 [MCP-DEMO](../demos/MCP-DEMO-publicopinionmonitor.md)。
 
@@ -17,6 +17,7 @@ npm i -g arch-viewer
 cd /path/to/你的新项目
 arch-viewer setup                 # 用户级 MCP
 arch-viewer setup . --project     # 本仓 hooks + AGENTS.md（停手自动跑结构门）
+# 卸干净再升级：arch-viewer uninstall . [--npm] [--purge]
 ```
 
 贴一句口令给 AI（全文见 §8，与 `arch-viewer setup` 打印的 magicPrompt 相同）：
@@ -148,7 +149,20 @@ arch-viewer setup
 arch-viewer setup . --project   # 推荐：写入本仓 Cursor/Claude hooks + AGENTS.md
 ```
 
-`setup` 会探测本机 Cursor / Claude Code / Claude Desktop / Windsurf / DeepSeek Harness，把 MCP 写进配置。`--project` 再写停手强制层（Cursor `stop` / Claude `Stop`）和跨宿主规则。  
+`setup` 会探测本机 Cursor / Claude Code / Claude Desktop / Windsurf / DeepSeek Harness，把 MCP 写进配置。`--project` 再写停手强制层（Cursor `stop` / Claude `Stop`）和跨宿主规则。
+
+**卸载 / 升级**（不必手改 JSON）：
+
+```bash
+cd "$REPO"
+arch-viewer uninstall              # 只卸用户级 MCP / dsh（其它 MCP 保留）
+arch-viewer uninstall .            # 再卸本仓 hooks、规则、项目级 mcp.json
+arch-viewer uninstall . --npm      # 连全局 `npm i -g arch-viewer` 一起卸
+arch-viewer uninstall . --purge    # 再删 .av 会话报告与快照（**仍保留** `.av/layers.json`）
+```
+
+默认不删业务代码、不删分层锁定、不删别人的 MCP。写入前会备份为 `.av-bak`。卸完后**完全退出并重开**编辑器；再装：`arch-viewer setup` 与 `setup . --project`。
+
 然后：**完全退出并重启编辑器** → 打开 `$REPO` → 新开对话问：
 
 > 列出你可用的 MCP 工具，有没有 `av_guard`？
@@ -626,6 +640,7 @@ cd "$LAB/showcase-shop/architecture_viewer" && python3 -m http.server 8081
 | 全楼摸底 | `av_check_layering` | 日常不用 |
 | 导出稀疏图 | `av_archify_export` | `arch-viewer archify-export` |
 | 生成分层图 | — | `init` → `generate` |
+| 卸载接入 | — | `arch-viewer uninstall [repo] [--npm] [--purge]` |
 | 漂移（目录/服务/入口） | — | `check --filled --drift --repo .` |
 | 影响面 | （含在 report） | `arch-viewer impact <base> <head> --open` |
 
@@ -700,7 +715,8 @@ av_session_start / av_session_report 仍可用（脚本/高级），但日常优
 14. **`generate` 把我精修的六视图盖掉了** → 预期行为。精修请用 git；showcase 只 check、不要在原路径 generate（§0.3、§6.4）。  
 15. **开源仓图挤 / 层不对** → 拷 `docs/labs/oss-labs/*.layers.json` 为仓库根 `architecture.layers.json` 再 generate（§6.4）；字段见 LAYERED-STYLE。  
 16. **红灯一定是错吗** → 不一定。表示「值得亲眼看一眼」；你接受就 **commit**（§9）。  
-17. **电脑还没装 Node** → 先装 [Node LTS](https://nodejs.org/)（≥18），终端里 `node -v` 有版本号后再 `npm i -g arch-viewer`。
+17. **电脑还没装 Node** → 先装 [Node LTS](https://nodejs.org/)（≥18），终端里 `node -v` 有版本号后再 `npm i -g arch-viewer`。  
+18. **换电脑 / 升级版本怎么卸干净** → `arch-viewer uninstall .`；连全局包加 `--npm`；要清会话报告加 `--purge`（保留 layers.json）。不要手改别人的 MCP。卸完重启编辑器再 `setup`。
 
 ---
 ## 12. 相关文档
@@ -726,6 +742,7 @@ av_session_start / av_session_report 仍可用（脚本/高级），但日常优
 npm i -g arch-viewer
 cd $REPO
 arch-viewer session report          # 对照 HEAD；加 --open 才打开图
+# 卸接入：arch-viewer uninstall .
 ```
 
 ### 13.2 日常循环
@@ -753,6 +770,7 @@ arch-viewer session report --renderer builtin --open
 | 导出稀疏图 | `archify-export` | `av_archify_export` |
 | 漂移检查（目录/服务/入口） | `check --filled --drift --repo .` | — |
 | 影响面 | `impact <base> <head> --open` | 含在 report |
+| 卸载接入 | `uninstall [repo] [--npm] [--purge]` | — |
 
 ### 13.4 什么时候考虑接 MCP
 
