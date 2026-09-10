@@ -3,6 +3,11 @@
 #   mkdir -p .github/workflows
 #   curl -fsSL https://gitee.com/heyangyan/architecture_viewer/raw/master/templates/architecture-check.yml \
 #     -o .github/workflows/architecture-check.yml
+#
+# 门的是「新模块 / 服务 / 入口没上图」，不是「每个新文件都必须出现在图上」。
+# 已有包内加文件：本检查仍绿；文件级变化用 session report。
+# 非目标：逻辑错 / N+1 / 吞异常 / 业务对错——本 Action 不管（见 docs/guides/quickstart.md「管什么/不管什么」）。
+# 若本 PR 改了 .av/graph-baseline.json：合入前须人工确认，防把红灯「洗进」新基线。
 
 name: Architecture Check
 

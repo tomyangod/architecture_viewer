@@ -4,7 +4,43 @@
 
 ## \[Unreleased\]
 
-（下一拍：首笔 Pro 到账、npm 后续补丁。）
+### Added
+
+- **退出码契约（W16-02）**：`session report` / `check` / `diff` 统一 `0` 通过 / `1` 架构门未通过 / `2` 参数配置错 / `3` 扫描解析失败 / `4` 基线不存在或失效。`diff` 支持目录或 graph JSON，以及 `--fail-on`。
+- **实现差异（函数体）**：对 JS/TS、Python、Java、Go 的函数/方法做注释剥离后的函数体指纹。只改日志字符串 / 返回值 / 控制流时，结构图仍是 0 变化，但报告列出「实现差异」（文案/常量、调用、控制流），并出 `impl-changed`（info，不阻断架构门）。**不判定业务对错**，需配合测试与审查。纯注释改动仍只报源码内容变化。
+
+### Breaking
+
+- **报告契约 schemaVersion 2**：`diff.summary.riskLevel` 删除，改为 `summary.changeScale`（变更规模启发式）。权威风险统一为 `risk.level`（HTML 与 `.av/session-report.json` 同路径）；MCP 仍用顶层 `riskLevel` / `summary.riskLevel`（与 `risk.level` 同值）。`riskSummary.level` 保留为落盘别名。旧消费者：`diff.summary.riskLevel` → 风险用 `risk.level`，规模用 `changeScale`。
+
+### Security
+
+- **Webview CSP（W02-03）**：Preview 与 Session 报告共用本地 CSP（`default-src 'none'`），去掉 `https:` 通配与 CDN 白名单；六视图源内联 + `vendor/mermaid.min.js`。`npm test` 含断网渲染回归（切 tab / 搜索 / 导出）。
+
+### Fixed
+
+- **风险字段**：`diff.summary` 的变更规模启发式改名为 `changeScale`，不再叫 `riskLevel`。权威风险只在 `risk.level` 与 MCP 顶层 `riskLevel`（findings 严重度）。MCP 返回里的 `summary.riskLevel` 仍存在，且与顶层 `riskLevel` 一致。
+- **易用性（主仓/worktree）**：MCP `repo` 必须显式传当前工作区绝对路径；`editDir` 或进程 Git 根与 `repo` 不一致时返回 `PATH_MISMATCH` 并中止（不写基线）；`confirmRepo` / `--confirm-repo` 为确认逃生门。
+- **`av_status`**：回显基线、监听仓、防抖剩余、报告是否缓存/过期、实时指纹。
+- **idle 竞态**：`av_session_changes` 在 idle 时做实时指纹比对，不再只信 `fs.watch`。
+- **易用性回显**：`av_session_start` 回显检查目录 / 基线目录 / 报告目录 / Git 根 / cwd。
+- **安装入口**：`setup` 识别全局包名为 `arch-viewer`，并直接启动该安装目录中的 MCP server，避免 `npx` 解析到不同版本。
+- **防抖**：MCP 默认 8s（原 20s）；`av_session_changes` 返回 `remainingSec`；`av_session_report` 取消防抖并立即重算；可用 `.av/session.json` / `AV_SESSION_DEBOUNCE_MS` 配置。
+- **风险建议**：`suggestForFinding` 按依赖方向区分（穿透 vs 反向 vs util 职责），不再对 storage→controller 套「加中间人」。
+- **报告入口**：文档与口令统一指向 `.av/session-report.html`；刷新基线仍清除旧报告（已有）。
+- **动态 import（#1）**：字面量 / `"a"+".b"` / JS 静态模板可解析到真实模块；变量或 `${}` 插值记 `unresolved-dynamic-import` + LOW finding，不再静默漏报。静态分析仍无法解析配置驱动 / 插件入口 / DI。
+- **源码 vs 结构（#2）**：图谱增加 `contentFingerprint`。函数体/注释改了会写「检测到源码内容变化，未检测到架构结构变化」；两边都没改写「源码与结构均未变化」。
+- **再导出（#3）**：Python 再导出链、字面量 `__all__`、`from pkg import *`；JS barrel `export { X } from './x'` 落到源文件。
+- **HTML 顶栏（#4）**：「新增/删除关系」= 架构边（与 Delta 同口径）；「重连」用 `reroutedArchitecturalEdges`；「修改类型」不计文件节点。
+- **`from=session` 静默扫全仓（#5）**：找不到本轮 finding 时返回 `NO_SESSION_FINDING`。
+- **`tools/` 分层（#6）**：helper 仍为 util；diagnostics/cli/crawl 等目录为 entrypoint；其余 `tools/*` 不再默认 entrypoint，仅 `__main__` / argparse / click 等入口模式才放宽，避免误报与误放行。
+- **风险 vs 退出码（#7）**：表 + `--fail-on high|medium|low|none`（`none` 不再被当成 high）。
+
+### Docs
+
+- 明确 MCP 自动监听 vs CLI 手动 report；版本用 `arch-viewer --version` 核对。
+- 风险等级 ↔ 退出码表（high=1 阻断，medium/low/none=0；可用 `--fail-on`）。
+- 绿灯文案区分源码内容变化与结构变化。
 
 ## \[0.11.2\] — 2026-09-08
 
@@ -278,4 +314,3 @@
 - 官方演示仓 `examples/showcase-shop`（Coffee Shop）：compose / 前后端 / 领域类 / Worker / K8s
 
 - 静态分享页 `/samples/showcase/` 与漂移红灯页 `/samples/drift-fail/`（`npm run bake:samples`）
-

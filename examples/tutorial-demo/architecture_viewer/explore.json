@@ -1,0 +1,15 @@
+{
+  "shape": "web",
+  "confidence": "low",
+  "trunkStory": [],
+  "mustPaths": [],
+  "forbidAsFrontend": [],
+  "emptyLayers": [],
+  "externalSystems": [],
+  "evidence": {
+    "fallback": true,
+    "shapeName": "Web 应用（前后端）",
+    "shapeSignal": ""
+  },
+  "_shapeSource": "fallback"
+}

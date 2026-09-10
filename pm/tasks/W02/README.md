@@ -2,7 +2,7 @@
 
 > 阶段：Phase 0 ｜ 周期：2026-09-07 ~ 2026-09-11 ｜ 周截止：2026-09-11
 >
-> 完成度：4/6 ███████░░░ 67%
+> 完成度：5/6 ████████░░ 83%
 
 > 本文件由 `node pm/scripts/wbs-cards.mjs` 自动生成，请勿手改；状态请改 `pm/tasks/tasks.json` 或用 `node pm/scripts/wbs.mjs set <任务号> <状态>`。
 
@@ -80,24 +80,24 @@
 
 ---
 
-### <a id="w02-03"></a>⬜ W02-03 · Webview 离线回归与 CSP 加固 
+### <a id="w02-03"></a>✅ W02-03 · Webview 离线回归与 CSP 加固 
 
 | 字段 | 内容 |
 |---|---|
 | 优先级 | **P2** |
-| 状态 | 未开始（进度 0%） |
+| 状态 | 已完成（进度 100%） |
 | 工时预估 | 3h |
 | 截止 | 2026-09-11 |
 | 依赖 | [W01-01](../W01/README.md#w01-01) |
 | 负责人 | heyangyan |
-| 标签 | extension / security / deferred |
+| 标签 | extension / security |
 
 
-**背景**：暂缓：VS Code 扩展方向推迟，Webview CSP 加固一并暂缓。W01-01 离线化已消除 CDN 依赖，扩展重启时直接收紧 CSP 即可。
+**背景**：W01-01 已去掉 CDN。Session 报告 CSP 仍有 img-src https: 通配；Preview 装配与 CSP 需共用、可测，断网也能渲染六图。
 
-**目标**：（暂缓）Webview CSP 无远程域名；F5 开发宿主与侧载 vsix 两条路径断网均可 Preview。
+**目标**：Webview CSP 无远程域名、无 https: 通配；Preview / Session 报告离线可开；切 tab、搜索、导出可用。
 
-**涉及文件**：`src/extension.js`
+**涉及文件**：`src/extension.js` `src/extension-session.js` `src/webview-csp.js` `src/webview-preview.js` `test/webview-csp.test.js`
 
 **验收标准**（逐条勾选，全部满足才能标 done）：
 - [ ] CSP 中不含 cdn.jsdelivr / https: 通配
@@ -108,11 +108,15 @@
   ```bash
   grep -q "cdn.jsdelivr" src/extension.js && echo CSP_FAIL || echo CSP_OK
   ```
+  ```bash
+  node --test test/webview-csp.test.js
+  ```
 
 **参考文档**：`src/extension.js`
 
 **活动记录**：
   - 2026-09-04 状态变更 done→todo（暂缓）：随 VS Code 扩展方向一并暂缓；W01-01 离线化已消除 CDN 依赖，重启时只需收紧 CSP
+  - 2026-09-09 状态变更 todo→done：收紧 Preview/Session Webview CSP（去掉 https: 通配与 CDN）；六视图源内联 + vendor mermaid；npm test 含断网渲染、切 tab/搜索/导出回归
 
 ---
 

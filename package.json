@@ -105,9 +105,9 @@
         },
         "architectureViewer.session.debounceSeconds": {
           "type": "number",
-          "default": 30,
+          "default": 8,
           "minimum": 2,
-          "description": "代码停止变更多少秒后触发架构分析（防抖等待，避免 AI 连续写入时频繁重算）"
+          "description": "代码停止变更多少秒后触发架构分析（防抖等待，避免 AI 连续写入时频繁重算；MCP 默认同为 8，可用 .av/session.json 覆盖）"
         },
         "architectureViewer.session.analyzeOnOpen": {
           "type": "boolean",
@@ -173,6 +173,7 @@
     "assets/",
     "vendor/",
     "templates/",
+    "docs/guides/welcome.html",
     "docs/welcome.html",
     ".cursor/rules/architecture-viewer.mdc",
     "architecture_visualized.html",

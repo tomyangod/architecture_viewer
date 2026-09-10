@@ -202,7 +202,7 @@
         "test -f README.en.md && grep -qi \"install\" README.en.md && grep -qi \"mermaid\" README.en.md && echo EN_OK"
       ],
       "refs": [
-        "docs/market-evaluation/market-evaluation.html"
+        "docs/plans/market-evaluation/market-evaluation.html"
       ],
       "activity": [
         {
@@ -243,7 +243,7 @@
       ],
       "refs": [
         "COMMERCIAL.md",
-        "docs/market-evaluation/market-evaluation.html"
+        "docs/plans/market-evaluation/market-evaluation.html"
       ],
       "activity": [
         {
@@ -350,8 +350,8 @@
       "phase": 0,
       "week": 2,
       "priority": "P2",
-      "status": "todo",
-      "progress": 0,
+      "status": "done",
+      "progress": 100,
       "assignee": "heyangyan",
       "estHours": 3,
       "deadline": "2026-09-11",
@@ -360,13 +360,16 @@
       ],
       "tags": [
         "extension",
-        "security",
-        "deferred"
+        "security"
       ],
-      "context": "暂缓：VS Code 扩展方向推迟，Webview CSP 加固一并暂缓。W01-01 离线化已消除 CDN 依赖，扩展重启时直接收紧 CSP 即可。",
-      "goal": "（暂缓）Webview CSP 无远程域名；F5 开发宿主与侧载 vsix 两条路径断网均可 Preview。",
+      "context": "W01-01 已去掉 CDN。Session 报告 CSP 仍有 img-src https: 通配；Preview 装配与 CSP 需共用、可测，断网也能渲染六图。",
+      "goal": "Webview CSP 无远程域名、无 https: 通配；Preview / Session 报告离线可开；切 tab、搜索、导出可用。",
       "files": [
-        "src/extension.js"
+        "src/extension.js",
+        "src/extension-session.js",
+        "src/webview-csp.js",
+        "src/webview-preview.js",
+        "test/webview-csp.test.js"
       ],
       "acceptance": [
         "CSP 中不含 cdn.jsdelivr / https: 通配",
@@ -374,7 +377,8 @@
         "切 tab、搜索、导出按钮可用"
       ],
       "acceptanceCommands": [
-        "grep -q \"cdn.jsdelivr\" src/extension.js && echo CSP_FAIL || echo CSP_OK"
+        "grep -q \"cdn.jsdelivr\" src/extension.js && echo CSP_FAIL || echo CSP_OK",
+        "node --test test/webview-csp.test.js"
       ],
       "refs": [
         "src/extension.js"
@@ -384,6 +388,11 @@
           "date": "2026-09-04",
           "action": "状态变更 done→todo（暂缓）",
           "detail": "随 VS Code 扩展方向一并暂缓；W01-01 离线化已消除 CDN 依赖，重启时只需收紧 CSP"
+        },
+        {
+          "date": "2026-09-09",
+          "action": "状态变更 todo→done",
+          "detail": "收紧 Preview/Session Webview CSP（去掉 https: 通配与 CDN）；六视图源内联 + vendor mermaid；npm test 含断网渲染、切 tab/搜索/导出回归"
         }
       ]
     },
@@ -670,8 +679,8 @@
       "context": "调研：技术博客「如何构建 X」长尾转化最好；W4 必须与开发并行启动获客，不能等上架。",
       "goal": "1 篇 2000+ 字实战文《用 AI 自动生成架构图，还能在 PR 里抓漂移》，含 60 秒 demo GIF/视频，三平台发布。",
       "files": [
-        "docs/blog/2026-09-ai-architecture-drift.md",
-        "docs/demo-script.md"
+        "docs/demos/blog/2026-09-ai-architecture-drift.md",
+        "docs/demos/demo-script.md"
       ],
       "acceptance": [
         "文章含：痛点、60 秒上手、漂移检测演示、定价与链接",
@@ -679,10 +688,10 @@
         "掘金、知乎、GitHub README 三处发布链接记录在文章头部"
       ],
       "acceptanceCommands": [
-        "test -f docs/blog/2026-09-ai-architecture-drift.md && wc -l docs/blog/2026-09-ai-architecture-drift.md | awk '$1>=60{print \"BLOG_OK\"}'"
+        "test -f docs/demos/blog/2026-09-ai-architecture-drift.md && wc -l docs/demos/blog/2026-09-ai-architecture-drift.md | awk '$1>=60{print \"BLOG_OK\"}'"
       ],
       "refs": [
-        "docs/market-evaluation/market-evaluation.html"
+        "docs/plans/market-evaluation/market-evaluation.html"
       ],
       "activity": [
         {
@@ -693,7 +702,7 @@
         {
           "date": "2026-09-04",
           "action": "状态变更 doing→done",
-          "detail": "成文 docs/blog/2026-09-ai-architecture-drift.md（痛点/60秒上手/漂移/定价）+ docs/demo-script.md；demo.gif 可访问；头部记录 Gitee/GitHub README 与掘金/知乎发布位（外发 URL 待人工发帖回填）；README 已链到实战文。验收 BLOG_OK。"
+          "detail": "成文 docs/demos/blog/2026-09-ai-architecture-drift.md（痛点/60秒上手/漂移/定价）+ docs/demos/demo-script.md；demo.gif 可访问；头部记录 Gitee/GitHub README 与掘金/知乎发布位（外发 URL 待人工发帖回填）；README 已链到实战文。验收 BLOG_OK。"
         }
       ]
     },
@@ -721,7 +730,7 @@
       "files": [
         "README.md",
         "README.en.md",
-        "docs/demo.gif"
+        "docs/demos/demo.gif"
       ],
       "acceptance": [
         "README 首屏（前 30 行）含 demo GIF 引用",
@@ -890,7 +899,7 @@
       "goal": "国内收款链接可用 + 支付后手动/半自动开通 Pro 的 SOP；Lemon Squeezy 商品页创建（可沙箱）。",
       "files": [
         "web/lib/billing.js",
-        "docs/billing.md"
+        "docs/commercial/billing.md"
       ],
       "acceptance": [
         "爱发电/微信收款链接在定价页可点",
@@ -898,7 +907,7 @@
         "Lemon Squeezy 商品页（或沙箱）链接记录在案"
       ],
       "acceptanceCommands": [
-        "test -f docs/billing.md && grep -q \"Pro\" docs/billing.md && echo BILLING_OK"
+        "test -f docs/commercial/billing.md && grep -q \"Pro\" docs/commercial/billing.md && echo BILLING_OK"
       ],
       "refs": [
         "COMMERCIAL.md"
@@ -912,7 +921,7 @@
         {
           "date": "2026-09-04",
           "action": "状态变更 doing→done",
-          "detail": "docs/billing.md 付款→核验→开通 SOP；定价页/控制台可点爱发电·微信·Lemon；web/lib/billing.js + /api/billing/links；BILLING_OK。"
+          "detail": "docs/commercial/billing.md 付款→核验→开通 SOP；定价页/控制台可点爱发电·微信·Lemon；web/lib/billing.js + /api/billing/links；BILLING_OK。"
         }
       ]
     },
@@ -937,7 +946,7 @@
       "context": "假期缓冲项；视频用于落地页、README、PH 发布。Marketplace 介绍暂缓。",
       "goal": "60 秒演示：session start → 改代码 → session report 红灯 / Before-Delta-After，中英字幕。",
       "files": [
-        "docs/demo.mp4"
+        "docs/demos/demo.mp4"
       ],
       "acceptance": [
         "视频时长 45–90 秒",
@@ -945,7 +954,7 @@
         "落地页与 README 可嵌入"
       ],
       "acceptanceCommands": [
-        "test -f docs/demo.mp4 && echo VIDEO_OK"
+        "test -f docs/demos/demo.mp4 && echo VIDEO_OK"
       ],
       "refs": [],
       "activity": [
@@ -1016,7 +1025,7 @@
       "files": [
         "web/public/index.html",
         "web/server.js",
-        "docs/landing-deploy.md",
+        "docs/commercial/landing-deploy.md",
         ".github/workflows/landing-pages.yml"
       ],
       "acceptance": [
@@ -1037,7 +1046,7 @@
         {
           "date": "2026-09-05",
           "action": "状态变更 doing→done",
-          "detail": "落地页嵌入 60s demo+中英字幕，定价/安装已有；docs/landing-deploy.md 记录本机/Docker/Pages；Actions 发 gh-pages"
+          "detail": "落地页嵌入 60s demo+中英字幕，定价/安装已有；docs/commercial/landing-deploy.md 记录本机/Docker/Pages；Actions 发 gh-pages"
         }
       ]
     },
@@ -1204,7 +1213,7 @@
         "npm test"
       ],
       "refs": [
-        "docs/market-evaluation/market-evaluation.html",
+        "docs/plans/market-evaluation/market-evaluation.html",
         "lib/validate.js"
       ],
       "activity": [
@@ -1426,15 +1435,15 @@
       "context": "团队客户采购要发票；个人用户需要反馈渠道。",
       "goal": "support.md（工单渠道、FAQ、响应时效）+ invoice.md（开票信息收集与流程）。",
       "files": [
-        "docs/support.md",
-        "docs/invoice.md"
+        "docs/commercial/support.md",
+        "docs/commercial/invoice.md"
       ],
       "acceptance": [
         "两份文档存在且从落地页可到达",
         "FAQ ≥ 10 条（安装、登录、生成质量、离线…）"
       ],
       "acceptanceCommands": [
-        "test -f docs/support.md && test -f docs/invoice.md && echo SUPPORT_OK"
+        "test -f docs/commercial/support.md && test -f docs/commercial/invoice.md && echo SUPPORT_OK"
       ],
       "refs": [],
       "activity": [
@@ -1473,8 +1482,8 @@
       "goal": "≥1 笔真实 Pro 付款到账并完成开通。",
       "files": [
         "pm/metrics.md",
-        "docs/billing.md",
-        "docs/npm-publish.md"
+        "docs/commercial/billing.md",
+        "docs/commercial/npm-publish.md"
       ],
       "acceptance": [
         "付款凭证/订单号记录在 metrics.md",
@@ -1735,7 +1744,7 @@
       "context": "私有化报价单页 + 离线包是 B 端敲门砖；从种子用户/试点仓库中转化。",
       "goal": "私有化报价与交付说明页；≥1 个书面付费试点意向（邮件/合同/订单均可）。",
       "files": [
-        "docs/team-onprem.md",
+        "docs/commercial/team-onprem.md",
         "pm/pilots.md"
       ],
       "acceptance": [
@@ -1743,7 +1752,7 @@
         "pilots.md 记录 ≥1 个书面意向凭证"
       ],
       "acceptanceCommands": [
-        "test -f docs/team-onprem.md && echo ONPREM_OK"
+        "test -f docs/commercial/team-onprem.md && echo ONPREM_OK"
       ],
       "refs": [],
       "activity": [
@@ -1779,17 +1788,17 @@
       "goal": "12 周复盘（目标达成率、收入、数据）+ Phase 3 技术设计稿（数据模型、API、里程碑）。",
       "files": [
         "pm/retrospective-12w.md",
-        "docs/phase3-design.md"
+        "docs/plans/phase3-design.md"
       ],
       "acceptance": [
         "复盘含三大指标：安装、付费、收入",
         "设计稿含多仓聚合数据模型与跨仓依赖图方案"
       ],
       "acceptanceCommands": [
-        "test -f pm/retrospective-12w.md && test -f docs/phase3-design.md && echo RETRO12_OK"
+        "test -f pm/retrospective-12w.md && test -f docs/plans/phase3-design.md && echo RETRO12_OK"
       ],
       "refs": [
-        "docs/market-evaluation/market-evaluation.html"
+        "docs/plans/market-evaluation/market-evaluation.html"
       ],
       "activity": [
         {
@@ -1972,6 +1981,1408 @@
       ],
       "refs": [],
       "activity": []
+    },
+    {
+      "id": "W14-01",
+      "title": "pre-commit 钩子模板：session HIGH 挡提交",
+      "phase": 2.5,
+      "week": 14,
+      "priority": "P0",
+      "status": "done",
+      "progress": 100,
+      "assignee": "heyangyan",
+      "estHours": 3,
+      "deadline": "2026-09-12",
+      "deps": [],
+      "tags": [
+        "core",
+        "gate",
+        "moat"
+      ],
+      "context": "session report HIGH 时退出码已是 1，但无现成 git 钩子；门禁靠 AI/人自觉，有安全感错觉。",
+      "goal": "提供可复制的 pre-commit 模板：有基线则跑 session report，HIGH 拒绝提交；无基线跳过。文档写清安装与 --no-verify。",
+      "files": [
+        "templates/pre-commit",
+        "docs/guides/quickstart.md"
+      ],
+      "acceptance": [
+        "templates/pre-commit 存在且含 session report / graph-baseline 逻辑",
+        "quickstart 有 §6.3 安装说明",
+        "无基线时钩子 exit 0；有 HIGH 时 exit 1（人工或测试验证）"
+      ],
+      "acceptanceCommands": [
+        "test -f templates/pre-commit && grep -q 'session report' templates/pre-commit && grep -q 'graph-baseline' templates/pre-commit && echo HOOK_OK",
+        "grep -q '6.3' docs/guides/quickstart.md && grep -q 'pre-commit' docs/guides/quickstart.md && echo DOCS_OK"
+      ],
+      "refs": [
+        "docs/guides/quickstart.md",
+        "templates/architecture-check.yml"
+      ],
+      "activity": [
+        {
+          "date": "2026-09-06",
+          "action": "状态变更 todo→doing",
+          "detail": "落地 templates/pre-commit + quickstart §6.3"
+        },
+        {
+          "date": "2026-09-06",
+          "action": "状态变更 doing→done",
+          "detail": "验收命令通过；E2E session 同时亮 layer-skip + no-controller-to-storage"
+        }
+      ]
+    },
+    {
+      "id": "W14-02",
+      "title": "session report 吃代码图层自定义规则（forbid_cross_layer）",
+      "phase": 2.5,
+      "week": 14,
+      "priority": "P0",
+      "status": "done",
+      "progress": 100,
+      "assignee": "heyangyan",
+      "estHours": 8,
+      "deadline": "2026-09-12",
+      "deps": [
+        "W07-02"
+      ],
+      "tags": [
+        "core",
+        "moat",
+        "team"
+      ],
+      "context": "architecture-rules.yaml 的 check --rules 只审 C4 文档 Rel；session 验收门只有硬编码 risk-rules。团队『domain 不许 import infra』进不了日常验收。",
+      "goal": "session report / MCP 自动加载 architecture-rules.yaml；forbid_cross_layer 对照本轮新增代码边（节点已有 layer）产出 HIGH finding；CLI 支持 --rules；naming/rel_whitelist 仍仅 check。",
+      "files": [
+        "lib/risk-rules.js",
+        "lib/cli.js",
+        "mcp/server.js",
+        "architecture-rules.example.yaml",
+        "test/session-code-rules.test.js"
+      ],
+      "acceptance": [
+        "evaluateRisk 可选 rules：forbid 命中 controller→storage 产生 rule id finding",
+        "session report --rules <file> 可加载；未传则自动发现仓库根/套件目录",
+        "example yaml 文案写清 check vs session 两套消费面",
+        "npm test 含 session-code-rules 用例且全绿"
+      ],
+      "acceptanceCommands": [
+        "node --test test/session-code-rules.test.js",
+        "npm test"
+      ],
+      "refs": [
+        "lib/rules.js",
+        "architecture-rules.example.yaml"
+      ],
+      "activity": [
+        {
+          "date": "2026-09-06",
+          "action": "状态变更 todo→doing",
+          "detail": "applyTeamForbidCrossLayer + CLI/MCP 接线"
+        },
+        {
+          "date": "2026-09-06",
+          "action": "状态变更 doing→done",
+          "detail": "验收命令通过；E2E session 同时亮 layer-skip + no-controller-to-storage"
+        }
+      ]
+    },
+    {
+      "id": "W14-03",
+      "title": "修正文档过度承诺：循环依赖非现成能力",
+      "phase": 2.5,
+      "week": 14,
+      "priority": "P0",
+      "status": "done",
+      "progress": 100,
+      "assignee": "heyangyan",
+      "estHours": 1,
+      "deadline": "2026-09-12",
+      "deps": [],
+      "tags": [
+        "docs",
+        "honesty"
+      ],
+      "context": "ARCHIFY-COMPARISON 把『循环依赖』写成风险规则引擎已有能力，但 risk-rules.js 无环检测；会误导路线与竞品对比。",
+      "goal": "改对比报告表述：列出真实已有规则，并标明循环依赖未实现、yaml 规则只管 C4。",
+      "files": [
+        "pm/reports/ARCHIFY-COMPARISON-2026-09-04.md"
+      ],
+      "acceptance": [
+        "对比报告不再把循环依赖列为现成风险规则",
+        "注明 C4 yaml 与代码图规则分面"
+      ],
+      "acceptanceCommands": [
+        "grep -E '不是.*现成能力|循环依赖.*尚未实现' pm/reports/ARCHIFY-COMPARISON-2026-09-04.md >/dev/null && ! grep -E '风险规则引擎（[^）]*循环依赖' pm/reports/ARCHIFY-COMPARISON-2026-09-04.md && echo DOC_OK"
+      ],
+      "refs": [
+        "lib/risk-rules.js"
+      ],
+      "activity": [
+        {
+          "date": "2026-09-06",
+          "action": "状态变更 todo→doing",
+          "detail": "已改 ARCHIFY-COMPARISON 表述"
+        },
+        {
+          "date": "2026-09-06",
+          "action": "状态变更 doing→done",
+          "detail": "验收命令通过；E2E session 同时亮 layer-skip + no-controller-to-storage"
+        }
+      ]
+    },
+    {
+      "id": "W14-04",
+      "title": "[backlog] 文件级循环依赖检测（代码图）",
+      "phase": 2.5,
+      "week": 14,
+      "priority": "P1",
+      "status": "done",
+      "progress": 100,
+      "assignee": "heyangyan",
+      "estHours": 6,
+      "deadline": null,
+      "deps": [
+        "W14-03"
+      ],
+      "tags": [
+        "core",
+        "backlog"
+      ],
+      "context": "文档曾过度承诺循环依赖；语义级调用环难做，文件/包级 import 环是可落地的增量能力。",
+      "goal": "对本轮新增边形成的文件级有向环报 MEDIUM/HIGH finding；全仓历史环不刷屏（增量口径）。",
+      "files": [
+        "lib/risk-rules.js",
+        "test/"
+      ],
+      "acceptance": [
+        "构造 A→B→A 本轮新增边可检出",
+        "仅历史环不报",
+        "npm test 覆盖"
+      ],
+      "acceptanceCommands": [
+        "echo 'backlog：实现后补测试命令'"
+      ],
+      "refs": [
+        "pm/reports/ARCHIFY-COMPARISON-2026-09-04.md"
+      ],
+      "activity": [
+        {
+          "date": "2026-09-06",
+          "action": "状态变更 todo→done"
+        }
+      ]
+    },
+    {
+      "id": "W14-05",
+      "title": "[backlog] 能力边界声明：语义缺陷非目标",
+      "phase": 2.5,
+      "week": 14,
+      "priority": "P1",
+      "status": "done",
+      "progress": 100,
+      "assignee": "heyangyan",
+      "estHours": 2,
+      "deadline": null,
+      "deps": [],
+      "tags": [
+        "docs",
+        "backlog"
+      ],
+      "context": "用户易期望工具挡住逻辑错/N+1/吞异常；图谱看不见。需在 quickstart/AGENT 明示非目标，避免期望错位。",
+      "goal": "quickstart + 套件 AGENT.md 增加『管什么/不管什么』一节；明确结构验收 vs 代码正确性。",
+      "files": [
+        "docs/guides/quickstart.md",
+        "templates/"
+      ],
+      "acceptance": [
+        "文档明确列出非目标清单（逻辑错、N+1、同层循环调用等）"
+      ],
+      "acceptanceCommands": [
+        "echo 'backlog：补文档后用 grep 验收'"
+      ],
+      "refs": [],
+      "activity": [
+        {
+          "date": "2026-09-06",
+          "action": "状态变更 todo→doing",
+          "detail": "能力边界声明文档"
+        },
+        {
+          "date": "2026-09-06",
+          "action": "状态变更 doing→done",
+          "detail": "quickstart+AGENT+templates 非目标清单"
+        }
+      ]
+    },
+    {
+      "id": "W14-06",
+      "title": "[backlog] 本地技术债趋势 JSONL（session 追加）",
+      "phase": 2.5,
+      "week": 14,
+      "priority": "P1",
+      "status": "done",
+      "progress": 100,
+      "assignee": "heyangyan",
+      "estHours": 5,
+      "deadline": null,
+      "deps": [
+        "W14-02"
+      ],
+      "tags": [
+        "pro",
+        "backlog"
+      ],
+      "context": "每次 session 是孤立快照；架构师要看跨层边/体量是否复利。本地 JSONL 成本低、可后接图表。",
+      "goal": "session report 向 .av/session-history.jsonl 追加一行（时间、指纹、risk、finding 计数、文件数）；CLI 可打印最近 N 次摘要。",
+      "files": [
+        "lib/session-report.js",
+        "lib/cli.js"
+      ],
+      "acceptance": [
+        "连续两次 report 产生 ≥2 行 JSONL",
+        "gitignore 约定明确"
+      ],
+      "acceptanceCommands": [
+        "echo 'backlog：实现后补命令'"
+      ],
+      "refs": [],
+      "activity": [
+        {
+          "date": "2026-09-06",
+          "action": "状态变更 todo→done"
+        }
+      ]
+    },
+    {
+      "id": "W14-07",
+      "title": "[backlog] 基线变更 PR 评审提示（防洗白）",
+      "phase": 2.5,
+      "week": 14,
+      "priority": "P2",
+      "status": "done",
+      "progress": 100,
+      "assignee": "heyangyan",
+      "estHours": 4,
+      "deadline": null,
+      "deps": [
+        "W08-01"
+      ],
+      "tags": [
+        "team",
+        "backlog"
+      ],
+      "context": "基线 JSON 随 PR 提交时，红灯可能被『顺手认领』；缺评审机制。",
+      "goal": "CI/PR 评论在检测到 .av/graph-baseline.json 变更时提示『基线刷新需人工确认』并链到本轮 findings 摘要。",
+      "files": [
+        "scripts/ci-drift-action.mjs",
+        "lib/pr-comment.js"
+      ],
+      "acceptance": [
+        "PR 含基线文件 diff 时评论出现洗白提醒"
+      ],
+      "acceptanceCommands": [
+        "echo 'backlog：实现后补命令'"
+      ],
+      "refs": [
+        "templates/architecture-check.yml"
+      ],
+      "activity": [
+        {
+          "date": "2026-09-06",
+          "action": "状态变更 todo→doing",
+          "detail": "基线防洗白 PR 评论"
+        },
+        {
+          "date": "2026-09-06",
+          "action": "状态变更 doing→done",
+          "detail": "PR 评论基线防洗白 + CI 接线"
+        }
+      ]
+    },
+    {
+      "id": "W15-01",
+      "title": "B+ 验收 1/8：worktree/子目录场景不检查错目录",
+      "phase": 2.6,
+      "week": 15,
+      "priority": "P0",
+      "status": "done",
+      "progress": 100,
+      "assignee": "heyangyan",
+      "estHours": 2,
+      "deps": [
+        "W14-01"
+      ],
+      "context": "AI 常把主仓绝对路径复制进 worktree / 子目录，session start 会拍错照片、报告假绿。macOS /var 与 /private/var 也曾被误判成两个 Git 根。",
+      "goal": "主仓、worktree、子目录三种场景 session start 回显检查目录正确；worktree 明确警告；路径不一致 fail-closed，不静默用错。",
+      "files": [
+        "lib/session-paths.js",
+        "lib/cli.js",
+        "mcp/server.js",
+        "test/session-paths.test.js"
+      ],
+      "acceptance": "在主仓、worktree、子目录三种场景各跑一次 session start，回显路径正确；worktree 场景明确警告；路径不一致时 AI 不会静默用错",
+      "acceptanceCommands": [
+        "node --test test/session-paths.test.js"
+      ],
+      "refs": [
+        "pm/reports/W15-B-plus-gate.md"
+      ],
+      "tags": [
+        "qa",
+        "b-plus-gate"
+      ],
+      "activity": [
+        {
+          "date": "2026-09-09",
+          "action": "状态变更 todo→done",
+          "detail": "主仓/worktree/子目录 session start 回显正确；/var vs /private/var 不再误杀；路径不一致 fail-closed"
+        }
+      ]
+    },
+    {
+      "id": "W15-02",
+      "title": "B+ 验收 2/8：Python + JS 各两个真实结构改动视觉验收",
+      "phase": 2.6,
+      "week": 15,
+      "priority": "P0",
+      "status": "done",
+      "progress": 100,
+      "assignee": "heyangyan",
+      "estHours": 6,
+      "deps": [
+        "W14-04"
+      ],
+      "context": "合成图对了但真实提取后 Delta 图与 findings 可能对不齐，视觉验收才能挡住「红灯对了、图画错了」。",
+      "goal": "Python 跨层 / 删边 / 神文件 + JS 跨层 / 删边：CLI 报告图边与 findings 端点一致，顶栏数量等于图上边数。",
+      "files": [
+        "test/visual-acceptance.test.js",
+        "lib/session-report.js",
+        "lib/risk-rules.js"
+      ],
+      "acceptance": "Python 仓：新增跨层 import、删除依赖、新增神文件；JS 仓：同结构改动 2 种。Delta 图与 findings 一致，边/节点数量正确",
+      "acceptanceCommands": [
+        "node --test test/visual-acceptance.test.js"
+      ],
+      "refs": [
+        "pm/reports/W15-B-plus-gate.md"
+      ],
+      "tags": [
+        "qa",
+        "b-plus-gate",
+        "visual"
+      ],
+      "activity": [
+        {
+          "date": "2026-09-09",
+          "action": "状态变更 todo→done",
+          "detail": "Python 跨层/删边/神文件 + JS 跨层/删边，Delta 图与 findings 对齐"
+        }
+      ]
+    },
+    {
+      "id": "W15-03",
+      "title": "B+ 验收 3/8：顶部统计/Delta 图/findings/JSON 四口径一致",
+      "phase": 2.6,
+      "week": 15,
+      "priority": "P0",
+      "status": "done",
+      "progress": 100,
+      "assignee": "heyangyan",
+      "estHours": 4,
+      "deps": [
+        "W14-02"
+      ],
+      "context": "顶栏、Delta 图、findings、JSON 曾各算各的（归属边进顶栏、违规只写 findings 不写 diff.violations）。",
+      "goal": "5 个合成场景 + beginner-demo / tutorial-demo 两真实仓：顶栏架构边 = 图边 = JSON 高信号边；图 violation = findings ∪ diff.violations。",
+      "files": [
+        "test/four-way-consistency.test.js",
+        "lib/session-report.js"
+      ],
+      "acceptance": "对 5 个合成场景 + 2 个真实仓改动，断言顶部新增关系数 = Delta 图边数 = findings 涉及边数 = JSON addedEdges 数（按类型过滤后）",
+      "acceptanceCommands": [
+        "node --test test/four-way-consistency.test.js"
+      ],
+      "refs": [
+        "pm/reports/W15-B-plus-gate.md"
+      ],
+      "tags": [
+        "qa",
+        "b-plus-gate",
+        "consistency"
+      ],
+      "activity": [
+        {
+          "date": "2026-09-09",
+          "action": "状态变更 todo→done",
+          "detail": "5 合成 + beginner-demo/tutorial-demo 四口径；顶栏违规=图 violation"
+        }
+      ]
+    },
+    {
+      "id": "W15-04",
+      "title": "B+ 验收 4/8：刷新基线后旧报告不误读",
+      "phase": 2.6,
+      "week": 15,
+      "priority": "P1",
+      "status": "done",
+      "progress": 100,
+      "assignee": "heyangyan",
+      "estHours": 2,
+      "deps": [],
+      "context": "刷新基线后若旧 HTML/JSON 还在，用户会把上一轮红灯当成当前结果。",
+      "goal": "session start 删除 session-report* / archify-*；删不掉则覆写过期存根；HTML 顶部恒有点时快照横幅。",
+      "files": [
+        "lib/session-report.js",
+        "test/stale-report.test.js"
+      ],
+      "acceptance": "session start 后旧 HTML/JSON 被清除；残留文件顶部有过期标记；用户不会把旧红灯当成当前结果",
+      "acceptanceCommands": [
+        "node --test test/stale-report.test.js"
+      ],
+      "refs": [
+        "pm/reports/W15-B-plus-gate.md"
+      ],
+      "tags": [
+        "qa",
+        "b-plus-gate"
+      ],
+      "activity": [
+        {
+          "date": "2026-09-09",
+          "action": "状态变更 todo→done",
+          "detail": "session start 清旧报告；删失败覆写过期存根"
+        }
+      ]
+    },
+    {
+      "id": "W15-05",
+      "title": "B+ 验收 5/8：绿灯明确说「无架构变化」而非「代码没变化」",
+      "phase": 2.6,
+      "week": 15,
+      "priority": "P1",
+      "status": "done",
+      "progress": 100,
+      "assignee": "heyangyan",
+      "estHours": 1,
+      "deps": [],
+      "context": "函数体/注释改了但结构指纹不变时，旧文案「无变化」会被理解成代码完全没动。",
+      "goal": "零结构变化时 CLI/MCP/HTML/PR 都写「未检测到架构结构变化」，有 contentFingerprint 时明确说源码内容变了；禁止裸「无变化」。",
+      "files": [
+        "lib/green-light.js",
+        "test/green-light-copy.test.js"
+      ],
+      "acceptance": "函数体内改动、注释改动等非架构变化时，报告明确写「未检测到架构结构变化（源代码内容可能已修改）」，不说「无变化」",
+      "acceptanceCommands": [
+        "node --test test/green-light-copy.test.js"
+      ],
+      "refs": [
+        "pm/reports/W15-B-plus-gate.md"
+      ],
+      "tags": [
+        "qa",
+        "b-plus-gate",
+        "copy"
+      ],
+      "activity": [
+        {
+          "date": "2026-09-09",
+          "action": "状态变更 todo→done",
+          "detail": "绿灯写未检测到架构结构变化，不说无变化"
+        }
+      ]
+    },
+    {
+      "id": "W15-06",
+      "title": "B+ 验收 6/8：HIGH finding 三端一致（CLI/MCP/HTML）",
+      "phase": 2.6,
+      "week": 15,
+      "priority": "P1",
+      "status": "done",
+      "progress": 100,
+      "assignee": "heyangyan",
+      "estHours": 3,
+      "deps": [],
+      "context": "CLI / MCP / HTML 若各自格式化 findings，会出现「命令行 HIGH、网页绿灯」的安全感错觉。",
+      "goal": "同一跨层改动：CLI exit 1、MCP riskLevel=high、HTML 红灯，三端 finding 数量/标题/rule 一致。",
+      "files": [
+        "test/high-finding-three-way.test.js",
+        "lib/cli.js",
+        "mcp/server.js",
+        "lib/session-report.js"
+      ],
+      "acceptance": "同一仓库同一改动，CLI 退出码 1、MCP 返回 riskLevel=high、HTML 显示红灯，三者 finding 数量和标题一致",
+      "acceptanceCommands": [
+        "node --test test/high-finding-three-way.test.js"
+      ],
+      "refs": [
+        "pm/reports/W15-B-plus-gate.md"
+      ],
+      "tags": [
+        "qa",
+        "b-plus-gate",
+        "consistency"
+      ],
+      "activity": [
+        {
+          "date": "2026-09-09",
+          "action": "状态变更 todo→done",
+          "detail": "同一跨层改动 CLI exit1 / MCP high / HTML 红灯，标题一致"
+        }
+      ]
+    },
+    {
+      "id": "W15-07",
+      "title": "B+ 验收 7/8：零文档新手完成拍照-改码-验收全流程",
+      "phase": 2.6,
+      "week": 15,
+      "priority": "P1",
+      "status": "done",
+      "progress": 100,
+      "assignee": "external",
+      "estHours": 3,
+      "deps": [
+        "W15-01",
+        "W15-02"
+      ],
+      "context": "新手不看文档时，若工具返回没有 nextStep / 工具名，会在误调 report、改完不知复查、绿灯后不刷新基线上迷路。",
+      "goal": "只靠 MCP 返回的 message/error/nextStep 走完：误调→拍照→改码红灯→检查→报告→修复→复查→刷新基线，关键路径不迷路。",
+      "files": [
+        "test/beginner-flow.test.js",
+        "mcp/server.js",
+        "pm/reports/W15-07-beginner-flow.md"
+      ],
+      "acceptance": "邀请 1 名不看文档的真实开发者，用 MCP 完成一次完整 session 循环，成功率 ≥ 80%，关键路径不迷路",
+      "acceptanceCommands": [
+        "node --test --test-timeout 120000 test/beginner-flow.test.js"
+      ],
+      "refs": [
+        "pm/reports/W15-07-beginner-flow.md",
+        "pm/reports/W15-08-blind-test.md"
+      ],
+      "tags": [
+        "qa",
+        "b-plus-gate",
+        "user-test"
+      ],
+      "activity": [
+        {
+          "date": "2026-09-09",
+          "action": "状态变更 todo→done",
+          "detail": "零文档 MCP 循环 8/8；见 W15-07-beginner-flow.md"
+        }
+      ]
+    },
+    {
+      "id": "W15-08",
+      "title": "B+ 验收 8/8：至少 1 名非本人用户盲测",
+      "phase": 2.6,
+      "week": 15,
+      "priority": "P2",
+      "status": "done",
+      "progress": 100,
+      "assignee": "external",
+      "estHours": 4,
+      "deps": [
+        "W15-07"
+      ],
+      "acceptance": "1 名外部开发者在不知道项目背景的情况下，用 30 分钟完成安装 + 一次 session 验收，给出净推荐值和真实痛点记录",
+      "tags": [
+        "qa",
+        "b-plus-gate",
+        "user-test"
+      ]
+    },
+    {
+      "id": "W16-01",
+      "title": "小范围分发：3 个真实仓试点邀请",
+      "phase": 2.7,
+      "week": 16,
+      "priority": "P0",
+      "status": "todo",
+      "progress": 0,
+      "assignee": "heyangyan",
+      "estHours": 8,
+      "deps": [
+        "W15-08"
+      ],
+      "acceptance": "邀请 3 个不同规模/语言的真实项目接入 session 门，连续使用 2 周，收集使用频率、误报率、是否愿意持续用",
+      "tags": [
+        "distribution",
+        "pilot"
+      ]
+    },
+    {
+      "id": "W16-02",
+      "title": "退出码契约标准化（0/1/2/3/4）",
+      "phase": 2.7,
+      "week": 16,
+      "priority": "P1",
+      "status": "done",
+      "progress": 100,
+      "assignee": "heyangyan",
+      "estHours": 3,
+      "deps": [],
+      "acceptance": "CLI session report/check/diff 命令统一退出码：0 通过 / 1 架构门未通过 / 2 参数配置错 / 3 扫描解析失败 / 4 基线不存在或失效；文档写明",
+      "acceptanceCommands": [
+        "node --test test/exit-codes.test.js test/cli-exit-contract.test.js"
+      ],
+      "refs": [
+        "lib/exit-codes.js",
+        "lib/cli.js",
+        "docs/guides/quickstart.md",
+        "docs/guides/SESSION-GUIDE.md"
+      ],
+      "tags": [
+        "cli",
+        "api-stability"
+      ],
+      "activity": [
+        {
+          "date": "2026-09-09",
+          "action": "状态变更 todo→done",
+          "detail": "session report/check/diff 统一退出码 0/1/2/3/4；CLI 契约测试与文档已写明"
+        }
+      ]
+    },
+    {
+      "id": "W16-03",
+      "title": "可插拔分析器架构：内置 + Import Linter + dependency-cruiser 适配器",
+      "phase": 2.7,
+      "week": 16,
+      "priority": "P1",
+      "status": "in_progress",
+      "progress": 85,
+      "assignee": "heyangyan",
+      "estHours": 12,
+      "deps": [],
+      "acceptance": "统一分析接口并接入 session report；共享分层加载及错误处理；准确映射契约语义；真实 Python storage→controller HIGH、JS controller→service 合法/controller→storage HIGH、循环依赖一条多来源证据，CLI/MCP/HTML/JSON 一致。历史证据：2026-09-08 dependency-cruiser 17.4.3 / Import Linter 2.15 生成禁止导入配置并跑通 controller→storage 红灯及修复回绿，全套 670 passed / 0 failed / 1 skipped。对照两份补测报告再次复跑定向测试：176 项，170 passed / 0 failed / 6 skipped（真实工具未提供）；第一份报告的全量明细为 672 passed / 0 failed / 7 skipped，而非 679 全通过。本轮另用真实 builtin 循环 finding 加模拟外部证据验证双向环一条多来源。完整清单仍未通过，证据与缺口见 docs/guides/SESSION-GUIDE.md。",
+      "decision": "2026-09-08 完整清单复核后保持 in_progress。报告集成已完成；新增 loadLayerDefinitions 已接两个建议生成器，但 graph 尚未共用且错误策略未统一；新增契约映射仍靠名称/正文猜测，名称匹配不能证明跳层；循环身份已补并通过局部验证，但 Import Linter 同规则同端点仍因契约元数据无法合并。新增 Python 逆向分层测试使用 fake 工具，指定 Python layers 与 JS 循环真实全链验收仍缺。定位为已接入会话报告的实验性增强，不宣称完整正式支持；不刷新基线。API 付费盲评未执行，且包装器存在空样本仍成功的验收缺口。",
+      "tags": [
+        "architecture",
+        "pluggable",
+        "quality"
+      ]
+    },
+    {
+      "id": "W16-03a",
+      "title": "分析器接口抽象 + 统一中间格式 + 内置适配器包装（零行为变化）",
+      "phase": 2.7,
+      "week": 16,
+      "priority": "P0",
+      "status": "done",
+      "progress": 100,
+      "assignee": "heyangyan",
+      "estHours": 4,
+      "deps": [],
+      "acceptance": "统一 nodes/edges/violations/evidence 接口；内置适配器复用同一 current 图并保留团队规则和 finding 字段；合并仅去重同义规则及规范化路径，保留来源；CLI/MCP/IDE/多仓报告统一入口，未启用外部时保持内置行为；执行失败不返回假绿灯",
+      "tags": [
+        "architecture",
+        "pluggable",
+        "quality"
+      ]
+    },
+    {
+      "id": "W16-03b",
+      "title": "dependency-cruiser 适配器（JS/TS 增强）",
+      "phase": 2.7,
+      "week": 16,
+      "priority": "P1",
+      "status": "in_progress",
+      "progress": 85,
+      "assignee": "heyangyan",
+      "estHours": 4,
+      "deps": [
+        "W16-03a"
+      ],
+      "acceptance": "已完成工具/配置检测、真实 JSON 转换、增量过滤、对象分层配置建议和 controller→storage 报告红灯→修复回绿；历史真实适配器测试验证 controller→service 合法。新增共享加载器接入建议生成、cycleMembers 及共享规则身份；本轮实际调用 builtin 双向环检测，与模拟外部证据合并为一条并保留两个来源，原简单环缺口已有修复。待完成：将名称映射限制到可证明的 AV 跳层语义，补齐真实 dependency-cruiser 循环在 CLI/HTML/JSON 中一条多来源的完整报告验收；本轮真实工具测试跳过，不能用模拟结果替代。",
+      "tags": [
+        "architecture",
+        "pluggable",
+        "quality"
+      ]
+    },
+    {
+      "id": "W16-03c",
+      "title": "Import Linter 适配器（Python 增强）",
+      "phase": 2.7,
+      "week": 16,
+      "priority": "P1",
+      "status": "in_progress",
+      "progress": 85,
+      "assignee": "heyangyan",
+      "estHours": 4,
+      "deps": [
+        "W16-03a"
+      ],
+      "acceptance": "已完成真实文本/多行链解析、null repo 与增量过滤修复、对象分层禁止导入草稿、历史 CLI/MCP/HTML/JSON controller→storage 红灯→修复回绿。新增共享加载器接入、layers→cross-layer-violation/普通 forbidden→forbid-cross-layer 映射及层级标签，storage→controller fake 工具测试覆盖路径和增量过滤。待完成：以可验证配置类型替代名称/正文猜测，不能仅凭契约名含 Architecture Viewer 判定 layer-skip；解决共享规则仍受 importLinterContract/importChain 去重键隔离的问题；用真实 layers 契约补齐 storage→controller HIGH、相关文件增量及 CLI/HTML/JSON 一致验收。",
+      "tags": [
+        "architecture",
+        "pluggable",
+        "quality"
+      ]
+    },
+    {
+      "id": "W17-01",
+      "title": "Pro 订阅付费验证（首笔真实到账）",
+      "phase": 2.8,
+      "week": 17,
+      "priority": "P0",
+      "status": "todo",
+      "progress": 0,
+      "assignee": "heyangyan",
+      "estHours": 10,
+      "deps": [
+        "W16-01"
+      ],
+      "acceptance": "完成 Stripe 接入 + 许可码发放 + Pro 功能开关；至少 1 笔真实 ¥39/月订阅到账；转化路径跑通",
+      "tags": [
+        "monetization",
+        "pro"
+      ]
+    },
+    {
+      "id": "W18-01",
+      "title": "Team 早期采用者计划：第一家企业试点",
+      "phase": 2.9,
+      "week": 18,
+      "priority": "P1",
+      "status": "todo",
+      "progress": 0,
+      "assignee": "heyangyan",
+      "estHours": 20,
+      "deps": [
+        "W17-01",
+        "W16-03"
+      ],
+      "acceptance": "签下 1 家 Team 早期采用者（含价格锚点 ¥99/人/月 或 入门包 ¥4999/年）；完成团队规则、PR 评论、多仓台账三项核心功能联调；有书面使用反馈",
+      "tags": [
+        "monetization",
+        "team",
+        "enterprise"
+      ]
+    },
+    {
+      "id": "W19-01",
+      "title": "调用图与签名契约（行为契约审查地基）",
+      "phase": 3,
+      "week": 19,
+      "priority": "P0",
+      "status": "done",
+      "progress": 100,
+      "assignee": "heyangyan",
+      "estHours": 32,
+      "deps": [
+        "W16-03"
+      ],
+      "acceptance": "五语言（JS/TS/Python/Java/Go）增量构建 call 调用边，跨文件经 import 绑定解析，动态调用落 unresolved 并标 low confidence；实体签名指纹（paramCount/paramTypes/returnTypes/optionalParams）纳入 SEMANTIC_NODE_FIELDS，diff 明细列出参数/返回值变化；新增 R14 signature-break（HIGH，导出函数签名变更 + call 边反查调用点实参不匹配）与 R15 unresolved-call-cluster（LOW）；增量构建耗时增加 ≤ 30%；R14 在 eval 真实仓回放精度 ≥ 0.9；零新增第三方依赖（复用 tree-sitter）",
+      "tags": [
+        "architecture",
+        "call-graph",
+        "offline",
+        "behavior-contract"
+      ],
+      "context": "当前图里只有文件级 import 与声明级关系（继承/实现/类型引用），没有函数级调用边；SEMANTIC_NODE_FIELDS 只比对方法名，参数/返回值变化报告无感知。这是行为契约审查全部后续工作的地基——没有 call 边，R16–R21 都跑不起来。",
+      "goal": "让 AV 能回答'这个函数改了签名，哪些调用点会炸'，并把调用断裂作为最高优先级红灯。",
+      "files": [
+        "lib/extract/call-graph.js",
+        "lib/extract/jsts.js",
+        "lib/extract/python.js",
+        "lib/extract/java.js",
+        "lib/extract/go.js",
+        "lib/diff-graph.js",
+        "lib/risk-rules.js",
+        "test/call-graph.test.js",
+        "test/signature-break.test.js"
+      ],
+      "acceptanceCommands": [
+        "node --test test/call-graph.test.js test/signature-break.test.js test/analyzers*.test.js",
+        "node --test test/session-report-stats-graph.test.js"
+      ],
+      "refs": [
+        "docs/plans/behavior-contract-plan/behavior-contract-plan.html"
+      ],
+      "activity": [
+        {
+          "date": "2026-09-09",
+          "action": "状态变更 todo→doing"
+        },
+        {
+          "date": "2026-09-09",
+          "action": "状态变更 doing→done"
+        }
+      ]
+    },
+    {
+      "id": "W19-01a",
+      "title": "五语言 call 调用边提取（增量 + import 绑定）",
+      "phase": 3,
+      "week": 19,
+      "priority": "P0",
+      "status": "done",
+      "progress": 100,
+      "assignee": "heyangyan",
+      "estHours": 16,
+      "deps": [],
+      "acceptance": "JS/TS call_expression、Python call、Java method_invocation、Go call_expression 均生成 call 边（caller 实体 → callee 实体）；同文件直接解析，跨文件经 import 绑定（JS named/default、Python from-import、Java import、Go package 选择器）；解析不了的动态调用落 unresolved-call 节点 + confidence: low；只对变更文件闭包（changed + 反向依赖）增量构建，不全量；基线不存储完整 call 图，仅存储签名指纹",
+      "tags": [
+        "extraction",
+        "call-graph",
+        "offline",
+        "tree-sitter"
+      ],
+      "activity": [
+        {
+          "date": "2026-09-09",
+          "action": "状态变更 todo→done"
+        }
+      ]
+    },
+    {
+      "id": "W19-01b",
+      "title": "签名指纹进 diff + R14/R15 规则",
+      "phase": 3,
+      "week": 19,
+      "priority": "P0",
+      "status": "done",
+      "progress": 100,
+      "assignee": "heyangyan",
+      "estHours": 16,
+      "deps": [
+        "W19-01a"
+      ],
+      "acceptance": "SEMANTIC_NODE_FIELDS 纳入签名指纹字段；diff 变更明细列出 params: N→M、returnTypes 变化；R14 signature-break：导出函数签名变化后，沿 call 边反查全部调用点，实参个数/类型不匹配的逐条列出为证据；有断裂调用点 → HIGH，全匹配 → INFO；R15 unresolved-call-cluster：变更文件内 unresolved 调用密度异常 → LOW 提示；规则走 evaluateRisk 统一管线，CLI/HTML/JSON 三端一致",
+      "tags": [
+        "rules",
+        "diff",
+        "offline",
+        "high-signal"
+      ],
+      "activity": [
+        {
+          "date": "2026-09-09",
+          "action": "状态变更 todo→done"
+        }
+      ]
+    },
+    {
+      "id": "W20-01",
+      "title": "行为指纹与测试耦合",
+      "phase": 3,
+      "week": 20,
+      "priority": "P1",
+      "status": "done",
+      "progress": 100,
+      "assignee": "heyangyan",
+      "estHours": 24,
+      "deps": [
+        "W19-01"
+      ],
+      "acceptance": "每个导出函数有行为指纹：call-set、throw-set、await-set、分支数、return 点数、sink-set（存储写入/HTTP 请求/消息发送，命名+注解启发式，标 confidence）；纯重命名/文件移动指纹不变不报；测试文件单独建索引（test-index），通过 import 关系 + 命名约定建立 tests 边；新增 R16 behavior-changed-no-test（MEDIUM，行为指纹变化 × 无关联测试变更）与 R17 behavior-changed-broad-impact（HIGH，指纹变化 × 下游 ≥10 × 无测试变更）；test-index 不进分层图、不进基线噪声、不影响外部依赖统计；R16/R17 在本仓 session 历史回放精度 ≥ 0.7",
+      "tags": [
+        "behavior-contract",
+        "testing",
+        "offline",
+        "quality"
+      ],
+      "context": "impl-surface 已提取函数体的调用/异常/await/控制流摘要，但仅用作'实现是否变化'的布尔标记。升级为集合 diff 就能回答'这个函数干的事变了没有'。加上 test-index 补上验证证据维度——'变了行为但没动测试'是逻辑正确性相关性最高的静态信号。",
+      "goal": "让 AV 在 AI 改了行为但没改测试时主动喊停，并标出高影响面 × 无验证网的最危险组合。",
+      "files": [
+        "lib/extract/behavior-fingerprint.js",
+        "lib/extract/test-index.js",
+        "lib/risk-rules.js",
+        "lib/session-report.js",
+        "test/behavior-fingerprint.test.js",
+        "test/test-index.test.js"
+      ],
+      "acceptanceCommands": [
+        "node --test test/behavior-fingerprint.test.js test/test-index.test.js",
+        "node --test test/risk-impact.test.js"
+      ],
+      "refs": [
+        "docs/plans/behavior-contract-plan/behavior-contract-plan.html"
+      ],
+      "activity": [
+        {
+          "date": "2026-09-09",
+          "action": "状态变更 todo→doing"
+        },
+        {
+          "date": "2026-09-09",
+          "action": "状态变更 doing→done"
+        }
+      ]
+    },
+    {
+      "id": "W20-01a",
+      "title": "行为指纹计算与 diff",
+      "phase": 3,
+      "week": 20,
+      "priority": "P1",
+      "status": "done",
+      "progress": 100,
+      "assignee": "heyangyan",
+      "estHours": 12,
+      "deps": [],
+      "acceptance": "复用 impl-surface 产出，从布尔标记升级为 call-set/throw-set/await-set/分支数/return 点数/sink-set 六维集合指纹；重命名/移动/格式化不改变指纹不报；指纹变化触发 diff 记录并接入 risk-rules 输入；sink 识别用命名+注解启发式并标 confidence 字段",
+      "tags": [
+        "extraction",
+        "offline",
+        "behavior-contract"
+      ],
+      "activity": [
+        {
+          "date": "2026-09-09",
+          "action": "状态变更 todo→doing"
+        },
+        {
+          "date": "2026-09-09",
+          "action": "状态变更 doing→done"
+        }
+      ]
+    },
+    {
+      "id": "W20-01b",
+      "title": "测试索引与 R16/R17 规则",
+      "phase": 3,
+      "week": 20,
+      "priority": "P1",
+      "status": "done",
+      "progress": 100,
+      "assignee": "heyangyan",
+      "estHours": 12,
+      "deps": [
+        "W20-01a"
+      ],
+      "acceptance": "test-index 独立存储，不进分层图/基线/外部依赖统计；通过 import 关系为主、命名约定为辅建立 tests 边（测试实体 → 被测生产实体）；R16：导出函数行为指纹变化 × 无关联测试文件本轮变更 → MEDIUM，附建议与最近测试路径；R17：指纹变化 × 下游 ≥10 × 无测试变更 → HIGH，有测试变更降 INFO；低置信度测试关联自动降 LOW；规则 report-only 一个版本观察后调级",
+      "tags": [
+        "rules",
+        "testing",
+        "offline"
+      ],
+      "activity": [
+        {
+          "date": "2026-09-09",
+          "action": "状态变更 todo→done"
+        }
+      ]
+    },
+    {
+      "id": "W21-01",
+      "title": "语义规则族：枚举穷尽 / 异常契约 / 数据流",
+      "phase": 3,
+      "week": 21,
+      "priority": "P1",
+      "status": "todo",
+      "progress": 0,
+      "assignee": "heyangyan",
+      "estHours": 32,
+      "deps": [
+        "W20-01"
+      ],
+      "acceptance": "新增 4 条语义规则：R18 enum-exhaustiveness（MEDIUM，枚举新增成员后 switch/match 站点缺分支逐条列出，有 default 降 LOW）；R19 exception-contract-drift（MEDIUM，throw-set 新增 + 沿 call 边到入口无捕获，Python/Java 高精度、JS 启发式标 confidence）；R20 input-to-storage-unguarded（HIGH，route→storage 存在 call 路径且中途无校验/service 节点——layer-skip 的 call 边精判版）；R21 sensitive-sink-untested（MEDIUM，金额/权限/鉴权/加密 sink 指纹变化 + 无测试）；R18/R19 目标精度 ≥ 0.8，R20/R21 目标 ≥ 0.6；全部新规则默认 report-only 一个版本，精度达标后再进退出码；零新增第三方依赖",
+      "tags": [
+        "rules",
+        "semantic",
+        "offline",
+        "behavior-contract"
+      ],
+      "context": "有了 call 边和行为指纹，就能做比'文件 A import 文件 B'更细的事：枚举缺分支、新异常穿透到入口、HTTP 入口到存储之间没有校验层——这些都是编译器/类型系统没覆盖、但 AST 完全可观测的契约问题。R20 同时解决现有 layer-skip 基于 import 边的误报（同文件有合法调用也有越层调用就全报）。",
+      "goal": "让静态分析覆盖到'行为契约是否自洽'这个层级——不是判定业务对错，而是检测契约变更的传导是否完整。",
+      "files": [
+        "lib/risk-rules.js",
+        "test/enum-exhaustiveness.test.js",
+        "test/exception-drift.test.js",
+        "test/input-to-storage.test.js",
+        "test/sensitive-sink.test.js"
+      ],
+      "acceptanceCommands": [
+        "node --test test/enum-exhaustiveness.test.js test/exception-drift.test.js test/input-to-storage.test.js test/sensitive-sink.test.js",
+        "npm test"
+      ],
+      "refs": [
+        "docs/plans/behavior-contract-plan/behavior-contract-plan.html"
+      ]
+    },
+    {
+      "id": "W21-01a",
+      "title": "枚举穷尽 + 异常契约漂移规则",
+      "phase": 3,
+      "week": 21,
+      "priority": "P1",
+      "status": "todo",
+      "progress": 0,
+      "assignee": "heyangyan",
+      "estHours": 16,
+      "deps": [],
+      "acceptance": "R18：enum/TS 联合类型/Python Enum/Java enum 新增成员后，沿 call 边与引用边找全部 switch/match/if-else 链站点，未覆盖新成员的站点逐条列出（文件+行号）；有 default/catch-all 分支时降级为 LOW；五语言 fixture 各含正反向用例。R19：函数 throw-set 新增异常类型，沿 call 边向上追溯到 controller/entrypoint 层，无对应 catch/except 处理则报'新异常可能穿透到入口'；Python/Java 异常类型显式高精度，JS 抛字符串/自定义类启发式标 confidence",
+      "tags": [
+        "rules",
+        "enum",
+        "exceptions",
+        "offline"
+      ]
+    },
+    {
+      "id": "W21-01b",
+      "title": "数据流精判 + 敏感 sink 规则",
+      "phase": 3,
+      "week": 21,
+      "priority": "P1",
+      "status": "todo",
+      "progress": 0,
+      "assignee": "heyangyan",
+      "estHours": 16,
+      "deps": [
+        "W21-01a"
+      ],
+      "acceptance": "R20 input-to-storage-unguarded：route handler 到 storage sink 之间存在 call 路径且路径上无 DTO/校验/service 层节点 → HIGH；现有 import 版 layer-skip 保留为粗筛，call 版作为精判；R21 sensitive-sink-untested：金额计算/权限校验/鉴权/加密相关 sink（命名+注解启发式，标 confidence）行为指纹变化且无测试变更 → MEDIUM；两条规则 report-only 一个版本观察，实测精度达标后调级",
+      "tags": [
+        "rules",
+        "dataflow",
+        "offline",
+        "heuristic"
+      ]
+    },
+    {
+      "id": "W22-01",
+      "title": "AI 事实接地评审（可选在线分析器）",
+      "phase": 3,
+      "week": 22,
+      "priority": "P2",
+      "status": "todo",
+      "progress": 0,
+      "assignee": "heyangyan",
+      "estHours": 24,
+      "deps": [
+        "W21-01"
+      ],
+      "acceptance": "新增 llm-review 分析器走 UIF 插件体系，isAvailable = 有 DEEPSEEK_API_KEY 或用户配置 LLM，无 Key 离线跳过与现有付费门控一致；输入为事实包（R14–R21 候选 finding + 相关 call 链 + 签名 diff + 测试缺口 + 行号证据窗口 ±15 行），不是代码全文；输出强制 JSON schema { verdict, evidenceIds, reasoning }，无 evidenceIds 引用的结论在代码层直接丢弃（机制防幻觉，不靠 prompt）；AI 结论默认 MEDIUM，永不单独触发红灯退出码；MCP 侧扩展 av_explain_finding 支持单条 finding 业务影响推断；建 50 条人工标注 finding 集，AI 评审 precision ≥ 0.8、无证据结论率 = 0；离线模式行为与今天完全一致。设计约束（见方案附录 B）：① 所有 LLM 调用经 lib/orch/finding-review.js 单点路由，不在各规则内部直连模型；② 路由按 confidence: low 四场景分发：unresolved-call 猜目标、框架语义角色判断、无 grammar 语言 fallback 提取、R14–R21 候选 finding 业务影响推断；③ LLM 输出候选必须经代码层确定性复核（AST/文本搜索/import 图），验证不过直接丢弃不报不存；④ 无 Key/超时/限流/格式错误 → 返回空证据 + error 字段，报告照常生成；⑤ 精度回退自动降 report-only",
+      "tags": [
+        "ai",
+        "llm",
+        "online",
+        "optional",
+        "pluggable"
+      ],
+      "context": "L0–L3 产出的是硬事实，'这个变更在业务上可能意味着什么'需要推理。推理必须接地——用 eval 盲评已经验证过的纪律（低温、JSON 约束、随机盲序），加上机制层的证据引用强制丢弃，把幻觉风险压到可控。LLM 编排策略（见方案附录 B）：确定性层（import 图/diff/退出码）绝不交给概率模型；概率层只在 confidence: low 的四个场景补位——unresolved-call 猜目标、框架语义角色判断、无 grammar 语言 fallback、业务影响推断。LLM 提出候选，机器验证；验证不过直接丢弃。",
+      "goal": "让 AI 只说有证据支撑的话，把业务影响推断作为 MEDIUM 级参考，不越界。所有 LLM 调用经 lib/orch/finding-review.js 单点路由，不在各规则内部直连模型。",
+      "files": [
+        "lib/analyzers/llm-review.js",
+        "lib/orch/finding-review.js",
+        "mcp/server.js",
+        "test/llm-review.test.js",
+        "eval/finding-blind-review.js"
+      ],
+      "acceptanceCommands": [
+        "node --test test/llm-review.test.js",
+        "node eval/finding-blind-review.js --aggregate"
+      ],
+      "refs": [
+        "docs/plans/behavior-contract-plan/behavior-contract-plan.html#appendix-w22",
+        "lib/orch/lib.js",
+        "eval/orch/blind-edge-7s-vs-orch4.js"
+      ]
+    },
+    {
+      "id": "W22-01a",
+      "title": "llm-review 分析器 + 事实包构造",
+      "phase": 3,
+      "week": 22,
+      "priority": "P2",
+      "status": "todo",
+      "progress": 0,
+      "assignee": "heyangyan",
+      "estHours": 12,
+      "deps": [],
+      "acceptance": "llm-review 走 UIF 插件体系（analyze/evidence/isAvailable），与 depcruise/importlinter 同等待遇；事实包构造：R14–R21 候选 finding + 相关 call 链（文件+行号）+ 签名 diff + 测试缺口 + 证据窗口代码片段（±15 行，按行号截取）；复用 lib/orch/lib.js 的 chat/chatJson 与 DEEPSEEK_API_KEY 门控；无 Key 时 evidence.error=null、violations 为空，标记 available=false。低置信度路由入口（见方案附录 B3.1）：所有 LLM 调用经 lib/orch/finding-review.js 单点路由，不在各规则内部直连模型；路由按四场景分发：① unresolved-call 猜目标（输入：调用点 ±15 行 + import 列表 → 候选 { callee, confidence }）；② 框架语义角色判断（输入：签名+装饰器+路径 → 候选 { role, confidence }）；③ 无 grammar 语言 fallback 提取（输入：文件全文 → 候选 { imports, functions }）；④ R14–R21 候选 finding 业务影响推断（输入：事实包 → 候选 { verdict, evidenceIds, reasoning }）。候选验证入口（见方案附录 B3.2）：LLM 输出候选必须经代码层确定性复核——调用目标候选检查 import 图可见性 + AST 存在性；语义角色候选检查路径/命名/装饰器一致性；业务影响候选检查 evidenceIds 全部引用事实包条目；验证通过提升 confidence low→medium，验证不过直接丢弃不报不存",
+      "tags": [
+        "ai",
+        "pluggable",
+        "analyzer"
+      ]
+    },
+    {
+      "id": "W22-01b",
+      "title": "证据引用强制丢弃 + 精度审计",
+      "phase": 3,
+      "week": 22,
+      "priority": "P2",
+      "status": "todo",
+      "progress": 0,
+      "assignee": "heyangyan",
+      "estHours": 12,
+      "deps": [
+        "W22-01a"
+      ],
+      "acceptance": "输出 JSON schema 强制 { verdict: confirmed|risk|false-positive|needs-human, evidenceIds: [...], reasoning }；evidenceIds 必须全部引用事实包条目，无引用或引用不存在的结论直接丢弃（代码层过滤，不靠 prompt）；AI finding 等级固定 MEDIUM，永不触发红灯退出码；av_explain_finding MCP 工具支持单条 finding 业务影响推断，同样强制证据引用；建 50 条人工标注 finding 集做盲评，precision ≥ 0.8、无证据结论率 = 0；复用 eval/orch 盲评 harness。设计约束（见方案附录 B3.4）：① 路由四场景各自独立标注和评测，不混用精度数据；② 没有精度数据的场景不上默认流，只走 --intent 显式调用；③ 每个版本回归跑盲评集，精度回退 → 自动降级为 report-only；④ AI finding 等级固定 MEDIUM，退出码不受 llm-review 影响",
+      "tags": [
+        "ai",
+        "qa",
+        "evals",
+        "safety"
+      ]
+    },
+    {
+      "id": "W23-01",
+      "title": "对话内 3 行结构验收 verdict（HTML 降为深挖链接）",
+      "phase": 3,
+      "week": 23,
+      "priority": "P0",
+      "status": "doing",
+      "progress": 80,
+      "assignee": "heyangyan",
+      "estHours": 8,
+      "deadline": "2026-09-17",
+      "deps": [],
+      "tags": [
+        "ux",
+        "session",
+        "mcp",
+        "v0.12"
+      ],
+      "context": "日常节奏仍要求用户打开 .av/session-report.html 才能知道好不好。成熟产品把结论推到对话/编辑器；HTML 应是可选深挖。",
+      "goal": "session report（CLI/MCP）默认输出 ≤3 行 verdict：灯色 + 风险/变更计数；红/橙附最严重 1 条（文件+规则）；HTML 仅作可选链接。不删 start/report API。",
+      "files": [
+        "lib/session-verdict.js",
+        "lib/green-light.js",
+        "mcp/server.js",
+        "lib/cli.js",
+        "test/session-verdict.test.js"
+      ],
+      "acceptance": [
+        "formatSessionVerdict 对 none/low/medium/high 均产出 ≤3 行主文案",
+        "红/橙必须含最严重 finding 的 file（若有）与 title/rule，不能只说「有问题」",
+        "MCP av_session_report 返回 verdict 字段；message 以 verdict 为主，不再要求必须打开 HTML",
+        "CLI session report 在结尾打印 verdict；--open 仍可用但不作为默认叙事",
+        "node --test test/session-verdict.test.js 与相关绿灯文案回归通过"
+      ],
+      "acceptanceCommands": [
+        "node --test test/session-verdict.test.js test/green-light-copy.test.js"
+      ],
+      "refs": [
+        "docs/guides/quickstart.md",
+        ".cursor/projects/.../canvases/session-ritual-ux-plan.canvas.tsx"
+      ],
+      "activity": [
+        {
+          "date": "2026-09-10",
+          "action": "状态变更 todo→doing：v0.12 先做对话 verdict"
+        },
+        {
+          "date": "2026-09-10",
+          "action": "状态变更 doing→doing",
+          "detail": "formatSessionVerdict + MCP/CLI 已接线，测试绿"
+        }
+      ]
+    },
+    {
+      "id": "W23-02",
+      "title": "Cursor hook spike：sessionStart / stop 行为验证",
+      "phase": 3,
+      "week": 23,
+      "priority": "P0",
+      "status": "done",
+      "progress": 100,
+      "assignee": "heyangyan",
+      "estHours": 8,
+      "deadline": "2026-09-18",
+      "deps": [],
+      "tags": [
+        "hooks",
+        "cursor",
+        "spike",
+        "v0.12"
+      ],
+      "context": "方案假设 stop 可 followup_message、绿灯返回 {} 不循环；Cursor 文档语焉不详，不能直接按 Sigrid 模式开工。",
+      "goal": "用最小 hooks.json 验证 sessionStart/stop 入参、stdout 契约、followup 是否触发、红灯限速策略是否可行；产出 1 页 spike 报告后再写正式 hook。",
+      "files": [
+        "docs/plans/cursor-hooks-spike.md",
+        "templates/cursor-hooks.example.json"
+      ],
+      "acceptance": [
+        "spike 报告写明：可用事件、stdin 字段、followup_message 实测行为、循环风险与节流建议",
+        "示例 hooks.json 可复制；不默认写入用户全局配置",
+        "明确 P0 是否依赖 stop followup，或改走 Agent 规则 + pre-commit 兜底"
+      ],
+      "acceptanceCommands": [
+        "test -f docs/plans/cursor-hooks-spike.md && test -f templates/cursor-hooks.example.json && echo SPIKE_OK"
+      ],
+      "refs": [
+        "lib/setup.js"
+      ],
+      "activity": [
+        {
+          "date": "2026-09-10",
+          "action": "状态变更 todo→doing",
+          "detail": "开始 Cursor hook spike"
+        },
+        {
+          "date": "2026-09-10",
+          "action": "状态变更 doing→done",
+          "detail": "spike 文档+example hooks+stdin dry-run 测试通过；P0 主强制=stop"
+        }
+      ]
+    },
+    {
+      "id": "W23-03",
+      "title": "默认基线 = git HEAD（缓存 + commit hash 失效）",
+      "phase": 3,
+      "week": 23,
+      "priority": "P0",
+      "status": "done",
+      "progress": 100,
+      "assignee": "heyangyan",
+      "estHours": 40,
+      "deadline": "2026-09-24",
+      "deps": [
+        "W23-01"
+      ],
+      "tags": [
+        "baseline",
+        "git",
+        "session",
+        "v0.12"
+      ],
+      "context": "graph-baseline.json 手拍快照硬编码于多处；用户不知何时刷新。舆情仓已整目录忽略 .av/；本仓仍细粒度忽略且可提交基线——两套真相源。",
+      "goal": "有 git 时 session 对照 HEAD 结构图（.av/graph-head.json 缓存，commit hash 失效）；无 git 回退现快照。accept=commit（主路径）；保留显式 accept/session start 给非 git 与「先记下来」场景。不物理删除 start/report。",
+      "files": [
+        "lib/session-baseline.js",
+        "lib/cli.js",
+        "mcp/server.js",
+        "lib/workspace.js",
+        "test/session-baseline-git.test.js"
+      ],
+      "acceptance": [
+        "有 .git 的仓：不手动 session start 也能 session report（对照 HEAD 缓存）",
+        "commit 后缓存失效并重扫；日常 stop/report 路径用缓存 HEAD 图 ↔ 工作区图",
+        "无 git 仓回退 graph-baseline.json；测试覆盖两种路径",
+        "verdict 标明对照点（HEAD / snapshot）与是否含未提交改动",
+        "现有 session/CI/PR 相关测试保持绿或按新语义更新"
+      ],
+      "acceptanceCommands": [
+        "node --test test/session-baseline-git.test.js test/session-verdict.test.js"
+      ],
+      "refs": [
+        "lib/session-paths.js",
+        "lib/pr-comment.js"
+      ],
+      "activity": [
+        {
+          "date": "2026-09-10",
+          "action": "状态变更 todo→doing",
+          "detail": "开始 git HEAD 基线实现"
+        },
+        {
+          "date": "2026-09-10",
+          "action": "状态变更 doing→done",
+          "detail": "git HEAD 缓存基线已接线；无 git 回退快照；测试绿"
+        }
+      ]
+    },
+    {
+      "id": "W23-04",
+      "title": "av_guard + setup 写入多宿主 hooks（主强制）",
+      "phase": 3,
+      "week": 23,
+      "priority": "P0",
+      "status": "done",
+      "progress": 100,
+      "assignee": "heyangyan",
+      "estHours": 24,
+      "deadline": "2026-09-26",
+      "deps": [
+        "W23-02",
+        "W23-03"
+      ],
+      "tags": [
+        "mcp",
+        "setup",
+        "hooks",
+        "v0.12"
+      ],
+      "context": "setup 今天只写 mcp.json + magicPrompt 口令；Agent 可忘。W23-02 spike 结论：主强制=stop+followup；sessionStart 只做 env/副作用，不依赖 additional_context；Cloud 无 sessionStart 有 stop；loop_limit=1。通用核：MCP av_guard + CLI session guard；Cursor/Claude 为 adapter，DSH 等靠 AGENTS.md。",
+      "goal": "新增 av_guard（ensure baseline + 出本轮 verdict）；setup --project 写入 Cursor/Claude hooks + 跨宿主规则；红灯仅 loop_count=0 时 followup；绿灯 stdout={}；start/report 保留。",
+      "files": [
+        "mcp/server.js",
+        "lib/setup.js",
+        "lib/setup-project.js",
+        "lib/session-gate.js",
+        "templates/cursor-hooks.example.json",
+        "test/setup-hooks.test.js",
+        "test/mcp.test.js"
+      ],
+      "acceptance": [
+        "av_guard 在无基线时自动 ensure，再返回与 report 同级的 verdict",
+        "arch-viewer setup --project 写入 Cursor/Claude hooks + AGENTS.md 等",
+        "magicPrompt / 规则不再要求用户背 start→开 HTML→再 start",
+        "红灯同 finding 不二次 followup；绿灯 hook stdout 为 {}（若平台支持）",
+        "MCP 工具列表仍含 start/report（心智收敛不等于物理删除）"
+      ],
+      "acceptanceCommands": [
+        "node --test test/setup-hooks.test.js test/mcp.test.js"
+      ],
+      "refs": [
+        "docs/plans/cursor-hooks-spike.md"
+      ],
+      "activity": [
+        {
+          "date": "2026-09-10",
+          "action": "状态变更 todo→doing",
+          "detail": "跨平台 av_guard + setup 强制层"
+        },
+        {
+          "date": "2026-09-10",
+          "action": "状态变更 doing→done",
+          "detail": "av_guard + session guard + multi-host setup --project；验收测试绿"
+        }
+      ]
+    },
+    {
+      "id": "W23-05",
+      "title": "Quickstart / README 换叙事：说话→看灯→commit",
+      "phase": 3,
+      "week": 23,
+      "priority": "P1",
+      "status": "done",
+      "progress": 100,
+      "assignee": "heyangyan",
+      "estHours": 8,
+      "deadline": "2026-09-27",
+      "deps": [
+        "W23-01",
+        "W23-03"
+      ],
+      "tags": [
+        "docs",
+        "ux",
+        "v0.12"
+      ],
+      "context": "文档主路径仍教拍照仪式；与 v0.12 产品形态冲突。",
+      "goal": "主叙事改为装一次后只提需求；验收在对话；commit=接受。start/report/开 HTML 降为附录/高级。",
+      "files": [
+        "README.md",
+        "README.en.md",
+        "docs/guides/quickstart.md",
+        "lib/setup.js"
+      ],
+      "acceptance": [
+        "README 三步速览不再以 session start → report → 开 HTML 为主路径",
+        "Quickstart 日常闭环以 verdict / commit 表述；拍照仪式进附录",
+        "magicPrompt 与文档一致"
+      ],
+      "acceptanceCommands": [
+        "grep -n \"说话\\|verdict\\|commit\" docs/guides/quickstart.md README.md | head"
+      ],
+      "refs": [
+        "pm/reports/W15-07-beginner-flow.md"
+      ],
+      "activity": [
+        {
+          "date": "2026-09-10",
+          "action": "状态变更 todo→done",
+          "detail": "README/Quickstart 主路径改为说话→verdict→commit；拍照仪式进附录；magicPrompt 对齐"
+        }
+      ]
     }
   ]
 }

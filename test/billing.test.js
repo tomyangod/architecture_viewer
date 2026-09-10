@@ -85,8 +85,8 @@ describe('W05-02 billing links', () => {
     assert.match(page.body, /afdian\.com/);
   });
 
-  it('docs/billing.md records pay → verify → grant SOP', () => {
-    const md = fs.readFileSync(path.join(__dirname, '..', 'docs', 'billing.md'), 'utf8');
+  it('docs/commercial/billing.md records pay → verify → grant SOP', () => {
+    const md = fs.readFileSync(path.join(__dirname, '..', 'docs', 'commercial', 'billing.md'), 'utf8');
     assert.match(md, /付款/);
     assert.match(md, /核验/);
     assert.match(md, /开通 Pro/);
@@ -100,7 +100,7 @@ describe('W05-02 billing links', () => {
 describe('W11-01 Team yearly per-repo', () => {
   it('pricing page and COMMERCIAL.md list ¥999 / 年 / 仓库', () => {
     const html = fs.readFileSync(path.join(__dirname, '..', 'web', 'public', 'index.html'), 'utf8');
-    const commercial = fs.readFileSync(path.join(__dirname, '..', 'COMMERCIAL.md'), 'utf8');
+    const commercial = fs.readFileSync(path.join(__dirname, '..', 'docs', 'commercial', 'COMMERCIAL.md'), 'utf8');
     assert.match(html, /999/);
     assert.match(html, /年\/仓库|年 \/ 仓库/);
     assert.match(html, /id="team-order"/);
@@ -135,8 +135,8 @@ describe('W11-01 Team yearly per-repo', () => {
 
 describe('W09-02 support + invoice', () => {
   it('docs exist with FAQ ≥ 10 and landing footer links', () => {
-    const support = fs.readFileSync(path.join(__dirname, '..', 'docs', 'support.md'), 'utf8');
-    const invoice = fs.readFileSync(path.join(__dirname, '..', 'docs', 'invoice.md'), 'utf8');
+    const support = fs.readFileSync(path.join(__dirname, '..', 'docs', 'commercial', 'support.md'), 'utf8');
+    const invoice = fs.readFileSync(path.join(__dirname, '..', 'docs', 'commercial', 'invoice.md'), 'utf8');
     const faq = support.match(/^\d+\.\s/gm) || [];
     assert.ok(faq.length >= 10, 'FAQ count ' + faq.length);
     assert.match(support, /安装/);
@@ -149,14 +149,14 @@ describe('W09-02 support + invoice', () => {
   it('landing footer reaches support.md and invoice.md', async () => {
     const page = await request('GET', '/');
     assert.equal(page.status, 200);
-    assert.match(page.body, /docs\/support\.md/);
-    assert.match(page.body, /docs\/invoice\.md/);
+    assert.match(page.body, /docs\/commercial\/support\.md/);
+    assert.match(page.body, /docs\/commercial\/invoice\.md/);
   });
 });
 
 describe('W12-01 team on-prem quote', () => {
   it('team-onprem.md has tiers, deliverables, SLA', () => {
-    const text = fs.readFileSync(path.join(__dirname, '..', 'docs', 'team-onprem.md'), 'utf8');
+    const text = fs.readFileSync(path.join(__dirname, '..', 'docs', 'commercial', 'team-onprem.md'), 'utf8');
     assert.match(text, /19,?999/);
     assert.match(text, /交付物/);
     assert.match(text, /SLA/);

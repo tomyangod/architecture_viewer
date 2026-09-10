@@ -27,6 +27,21 @@ function makeRepo(files) {
 
 const imp = (specifier, names = []) => ({ specifier, names });
 
+describe('layer-infer: persisted directory definitions', () => {
+  it('round-trips nested object definitions and prefers specific paths', () => {
+    const definitions = aggregateDirectorySignals([
+      { file: 'src/api/route.py', layer: 'controller', confidence: 'high', signal: 'dir-name' },
+      { file: 'src/api/internal/store.py', layer: 'storage', confidence: 'high', signal: 'dir-name' }
+    ]);
+    const config = { '.': { layer: 'util' }, src: 'service', ...definitions };
+    assert.equal(matchUserLayer('src/api/route.py', config).layer, 'controller');
+    assert.equal(matchUserLayer('src/api/internal/store.py', config).layer, 'storage');
+    assert.equal(matchUserLayer('src/apix/route.py', config).layer, 'service');
+    assert.equal(matchUserLayer('scripts/run.py', config).layer, 'util');
+    assert.equal(matchUserLayer('src\\api\\route.py', config).layer, 'controller');
+  });
+});
+
 describe('layer-infer: import 语义信号', () => {
   it('storage: sqlalchemy / mongoose / gorm / JPA Repository 高置信', () => {
     assert.equal(inferLayerByImports([imp('sqlalchemy')]).layer, 'storage');

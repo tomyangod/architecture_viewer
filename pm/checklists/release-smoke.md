@@ -28,6 +28,7 @@
 - [ ] ~~.vsix **不含** `.data/`、`archify-main/`、`web/`、`.av/`、`eval/`、`test/`、`pm/`（.vscodeignore 生效）~~
 - [ ] ~~VS Code 安装 .vsix 后命令面板可见 `AV: Session Start` 等命令~~
 - [ ] ~~状态栏角标正常显示~~
+- [x] Webview CSP 无 `cdn.jsdelivr` / `https:` 通配（`node --test test/webview-csp.test.js`）
 
 ## 网页冒烟
 
@@ -47,8 +48,8 @@
 
 - [ ] CHANGELOG 最新版本号与 package.json 一致
 - [ ] README Quick Start 步骤可复现
-- [ ] docs/welcome.html 浏览器打开正常渲染
-- [ ] docs/SESSION-GUIDE.md 无死链
+- [ ] docs/guides/welcome.html 浏览器打开正常渲染
+- [ ] docs/guides/quickstart.md 无死链（术语表、§10 迷你仓）
 
 ## 架构门
 

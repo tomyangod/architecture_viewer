@@ -8,7 +8,7 @@
  *     [--filled] [--drift] [--no-drift] [--comment-on-pass] [--no-comment]
  *     [--out comment.md] [--json] [--post]
  *
- * 退出码：协议 / 漂移 / 规范任一失败为 1；参数错误为 2。
+ * 退出码与 CLI check 相同：0 通过 / 1 门未通过 / 2 配置错 / 3 扫描失败 / 4 无套件或 repo。
  * 无漂移时默认不评论（--comment-on-pass 可改为贴通过）。
  */
 
@@ -19,8 +19,9 @@ import { fileURLToPath } from 'url';
 
 const require = createRequire(import.meta.url);
 const { checkKit, findKitDir } = require('../lib/index.js');
+const { exitCodeForCheck } = require('../lib/exit-codes.js');
 const { formatRuleViolations } = require('../lib/rules.js');
-const { postPullRequestComment } = require('../lib/pr-comment.js');
+const { postPullRequestComment, formatBaselineWashWarning, baselineChangedViaGit, baselineFileChanged } = require('../lib/pr-comment.js');
 const { enrichDriftItems, DIAGRAM_VIEWS } = require('../lib/drift-locate.js');
 
 const MARKER = '<!-- arch-viewer:architecture-drift -->';
@@ -29,16 +30,22 @@ const HOMEPAGE = 'https://gitee.com/heyangyan/architecture_viewer';
 export { MARKER, parseCli, runDriftCheck, formatDriftComment, postDriftComment };
 
 function parseCli(argv) {
-  const out = { _: [], drift: true, comment: true, commentOnPass: false, post: false, filled: false };
+  const out = {
+    _: [], drift: true, comment: true, commentOnPass: false, post: false, filled: false,
+    baselineChanged: null, baseDir: null
+  };
   for (let i = 0; i < argv.length; i++) {
     const a = argv[i];
-    if (a === '--kit' || a === '--repo' || a === '--rules' || a === '--out') {
-      out[a.slice(2)] = argv[++i];
+    if (a === '--kit' || a === '--repo' || a === '--rules' || a === '--out' || a === '--base-dir') {
+      const key = a === '--base-dir' ? 'baseDir' : a.slice(2);
+      out[key] = argv[++i];
     } else if (a === '--filled') out.filled = true;
     else if (a === '--drift') out.drift = true;
     else if (a === '--no-drift') out.drift = false;
     else if (a === '--comment-on-pass') out.commentOnPass = true;
     else if (a === '--no-comment') out.comment = false;
+    else if (a === '--baseline-changed') out.baselineChanged = true;
+    else if (a === '--no-baseline-changed') out.baselineChanged = false;
     else if (a === '--post') out.post = true;
     else if (a === '--json') out.json = true;
     else if (a === '--help' || a === '-h') out.help = true;
@@ -46,7 +53,16 @@ function parseCli(argv) {
   }
   if (!out.kit && out._[0]) out.kit = out._[0];
   if (process.env.ARCH_DRIFT_COMMENT_ON_PASS === '1') out.commentOnPass = true;
+  if (process.env.ARCH_BASELINE_CHANGED === '1') out.baselineChanged = true;
   return out;
+}
+
+function resolveBaselineChanged(opts) {
+  if (opts.baselineChanged === true) return true;
+  if (opts.baselineChanged === false) return false;
+  const repo = opts.repo ? path.resolve(opts.repo) : process.cwd();
+  if (opts.baseDir) return baselineFileChanged(opts.baseDir, repo);
+  return baselineChangedViaGit(repo);
 }
 
 function runDriftCheck(opts) {
@@ -99,6 +115,7 @@ function viewLabel(file) {
 function formatDriftComment(result, opts) {
   const kit = (opts && opts.kit) || (result.protocol && result.protocol.dir) || '';
   const repoRoot = opts && opts.repo ? path.resolve(opts.repo) : null;
+  const baselineChanged = !!(opts && opts._baselineChanged);
   const lines = [MARKER];
   lines.push('## 🏛️ 架构漂移 / 规范检查');
   lines.push('');
@@ -108,10 +125,20 @@ function formatDriftComment(result, opts) {
   const ruleN = (result.rules && result.rules.violations && result.rules.violations.length) || 0;
   // W10-02：精确定位缺失项（视图 + 源码行号 + 修复 prompt）
   const enriched = driftN ? enrichDriftItems(rawMissing, repoRoot, kit) : [];
+
+  if (baselineChanged) {
+    lines.push(formatBaselineWashWarning({ findings: [], riskSummary: { level: result.ok ? 'none' : 'medium', total: protoN + driftN + ruleN } }));
+    lines.push(
+      '漂移检查侧提示：基线文件变更不会自动清零协议/漂移/规范红灯；' +
+      '请确认刷新理由，并保证架构图与代码仍一致。'
+    );
+    lines.push('');
+  }
+
   if (result.ok) {
     lines.push('**结果：✅ 通过** · 协议 / 漂移 / 团队规范均无红灯。');
     lines.push('');
-    lines.push(footer(opts));
+    lines.push(footer(opts, baselineChanged));
     return lines.join('\n');
   }
   lines.push(`**结果：❌ 未通过** · 协议 ${protoN} · 漂移 ${driftN} · 规范 ${ruleN}`);
@@ -159,6 +186,9 @@ function formatDriftComment(result, opts) {
   }
 
   const actions = suggestActions(result);
+  if (baselineChanged) {
+    actions.unshift('人工确认 `.av/graph-baseline.json` 刷新理由（防洗白），并在 PR 描述注明');
+  }
   if (actions.length) {
     lines.push('### 建议动作');
     lines.push('');
@@ -168,17 +198,19 @@ function formatDriftComment(result, opts) {
 
   if (kit) lines.push(`<sub>kit \`${kit}\`</sub>`);
   lines.push('');
-  lines.push(footer(opts));
+  lines.push(footer(opts, baselineChanged));
   return lines.join('\n');
 }
 
-function footer(opts) {
+function footer(opts, baselineChanged) {
   const extra = opts && opts.repo ? ` · repo \`${opts.repo}\`` : '';
-  return `<sub>由 [arch-viewer](${HOMEPAGE}) 自动生成${extra} · 本地复现：\`npx arch-viewer check --filled --drift --repo .\`${opts && opts.rules ? ' `--rules ' + opts.rules + '`' : ''}</sub>`;
+  const wash = baselineChanged ? ' · 含基线变更（需人工确认）' : '';
+  return `<sub>由 [arch-viewer](${HOMEPAGE}) 自动生成${extra}${wash} · 本地复现：\`npx arch-viewer check --filled --drift --repo .\`${opts && opts.rules ? ' `--rules ' + opts.rules + '`' : ''}</sub>`;
 }
 
 function shouldWriteComment(result, opts) {
   if (opts.comment === false) return false;
+  if (opts._baselineChanged) return true; // 基线变更即使检查通过也要贴洗白提醒
   if (!result.ok) return true;
   return !!opts.commentOnPass;
 }
@@ -227,10 +259,13 @@ function printHelp() {
 Usage:
   node scripts/ci-drift-action.mjs --kit <dir> [--repo <root>] [--rules <file>]
     [--filled] [--drift|--no-drift] [--comment-on-pass] [--no-comment]
+    [--baseline-changed|--no-baseline-changed] [--base-dir <checkout>]
     [--out comment.md] [--json] [--post]
 
 Exit 1 if protocol, drift, or architecture-rules fail.
 On pass, skip the PR comment unless --comment-on-pass (or ARCH_DRIFT_COMMENT_ON_PASS=1).
+If .av/graph-baseline.json changed (auto-detect via git / --base-dir, or --baseline-changed),
+the comment always includes an anti-wash reminder and is posted even on pass.
 `);
 }
 
@@ -251,6 +286,7 @@ async function main(argv) {
     return 2;
   }
   opts.kit = kit;
+  opts._baselineChanged = resolveBaselineChanged(opts);
   const result = runDriftCheck(opts);
   const comment = formatDriftComment(result, opts);
   if (opts.out) fs.writeFileSync(path.resolve(opts.out), comment);
@@ -258,6 +294,7 @@ async function main(argv) {
     console.log(JSON.stringify({
       ok: result.ok,
       kit,
+      baselineChanged: opts._baselineChanged,
       protocolErrors: (result.protocol && result.protocol.errors) || [],
       driftMissing: (result.drift && result.drift.missing) || [],
       rules: result.rules,
@@ -273,10 +310,10 @@ async function main(argv) {
     } catch (e) {
       console.error('PR comment failed: ' + e.message);
     }
-  } else if (!result.ok) {
+  } else if (!result.ok || opts._baselineChanged) {
     console.error('Comment ready (not posted). Use --post in a PR job, or --out file.md');
   }
-  return result.ok ? 0 : 1;
+  return exitCodeForCheck(result);
 }
 
 const isMain = process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url);
@@ -289,4 +326,4 @@ if (isMain) {
   });
 }
 
-export { main, shouldWriteComment, suggestActions, postGiteeComment };
+export { main, shouldWriteComment, suggestActions, postGiteeComment, resolveBaselineChanged };

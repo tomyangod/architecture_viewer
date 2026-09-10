@@ -24,7 +24,7 @@
 
 **目标**：1 篇 2000+ 字实战文《用 AI 自动生成架构图，还能在 PR 里抓漂移》，含 60 秒 demo GIF/视频，三平台发布。
 
-**涉及文件**：`docs/blog/2026-09-ai-architecture-drift.md` `docs/demo-script.md`
+**涉及文件**：`docs/demos/blog/2026-09-ai-architecture-drift.md` `docs/demos/demo-script.md`
 
 **验收标准**（逐条勾选，全部满足才能标 done）：
 - [ ] 文章含：痛点、60 秒上手、漂移检测演示、定价与链接
@@ -33,14 +33,14 @@
 
 **验收命令**（退出码 0 即通过；人工验收项需在周报中记录证据）：
   ```bash
-  test -f docs/blog/2026-09-ai-architecture-drift.md && wc -l docs/blog/2026-09-ai-architecture-drift.md | awk '$1>=60{print "BLOG_OK"}'
+  test -f docs/demos/blog/2026-09-ai-architecture-drift.md && wc -l docs/demos/blog/2026-09-ai-architecture-drift.md | awk '$1>=60{print "BLOG_OK"}'
   ```
 
-**参考文档**：`docs/market-evaluation/market-evaluation.html`
+**参考文档**：`docs/plans/market-evaluation/market-evaluation.html`
 
 **活动记录**：
   - 2026-09-04 状态变更 todo→doing：开工：实战教程文 + demo 脚本
-  - 2026-09-04 状态变更 doing→done：成文 docs/blog/2026-09-ai-architecture-drift.md（痛点/60秒上手/漂移/定价）+ docs/demo-script.md；demo.gif 可访问；头部记录 Gitee/GitHub README 与掘金/知乎发布位（外发 URL 待人工发帖回填）；README 已链到实战文。验收 BLOG_OK。
+  - 2026-09-04 状态变更 doing→done：成文 docs/demos/blog/2026-09-ai-architecture-drift.md（痛点/60秒上手/漂移/定价）+ docs/demos/demo-script.md；demo.gif 可访问；头部记录 Gitee/GitHub README 与掘金/知乎发布位（外发 URL 待人工发帖回填）；README 已链到实战文。验收 BLOG_OK。
 
 ---
 
@@ -61,7 +61,7 @@
 
 **目标**：首屏放 60 秒 demo GIF、一行价值主张（架构验收门）、npm/CLI 安装命令、中英链接。Marketplace badge 仅占位、不挡验收。
 
-**涉及文件**：`README.md` `README.en.md` `docs/demo.gif`
+**涉及文件**：`README.md` `README.en.md` `docs/demos/demo.gif`
 
 **验收标准**（逐条勾选，全部满足才能标 done）：
 - [ ] README 首屏（前 30 行）含 demo GIF 引用

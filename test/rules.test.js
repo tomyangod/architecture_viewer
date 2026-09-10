@@ -126,7 +126,7 @@ describe('CLI check --rules', () => {
     const r = spawnSync(process.execPath, [cli, 'check', VIOLATE, '--rules', EXAMPLE], {
       encoding: 'utf8'
     });
-    assert.notEqual(r.status, 0);
+    assert.equal(r.status, 1, r.stderr + r.stdout);
     const out = (r.stdout || '') + (r.stderr || '');
     assert.match(out, /--- rules ---/);
     assert.match(out, /node-id-snake/);

@@ -1,24 +1,23 @@
 # Architecture Viewer
 
-**AI 写完代码后，自动看清架构变了什么。**
+**AI 写完代码后，对话里就能看到架构灯。绿灯可提交；commit 即接受。**
 
-会话基线 → 变更图谱 → 影响面分析：CLI / MCP / 网页 / PR 评论四端可用。
-免费开源（Apache-2.0），零配置、秒级出图，不依赖 LLM。
+装一次 → 说话改代码 → 对话看灯 → `git commit`。
+CLI / MCP / 网页 / PR 评论四端可用。免费开源（Apache-2.0），零配置、秒级出图，不依赖 LLM。
 
 > **定位：AI 改码后的增量架构验收门，不是全量架构治理平台。**
-> 与语言级硬规则工具**互补不竞争**：Python 用 [Import Linter](https://import-linter.readthedocs.io/)、JS/TS 用 [dependency-cruiser](https://github.com/sverweij/dependency-cruiser) 管「规则是否被违反」；Architecture Viewer 管「**这一轮 AI 会话改了什么、有没有跨层、波及谁**」。需要正式架构治理平台时看 Sonargraph / CodeScene；需要 5 分钟装好、每次 AI 改完看一眼，用本工具。
+> 分层与契约：用 `.av/layers.json` + `architecture-rules.yaml`；若仓库已有 `.importlinter` / `setup.cfg` / `pyproject.toml` 中的 Import Linter 契约，builtin 会直接在依赖图上评估（无需安装 `lint-imports`）。需要正式架构治理平台时看 Sonargraph / CodeScene；需要 5 分钟装好、每次 AI 改完看一眼，用本工具。
 
-![demo](docs/demo.gif)
+![demo](docs/demos/demo.gif)
 
-落地页（定价 / 60 秒成片 / 安装）：本地 `npm run web` → http://127.0.0.1:3847/ ；部署见 [docs/landing-deploy.md](docs/landing-deploy.md)。成片：[docs/demo.mp4](docs/demo.mp4)。
+落地页（定价 / 60 秒成片 / 安装）：本地 `npm run web` → http://127.0.0.1:3847/ ；部署见 [docs/commercial/landing-deploy.md](docs/commercial/landing-deploy.md)。成片：[docs/demos/demo.mp4](docs/demos/demo.mp4)。文档总索引：[docs/README.md](docs/README.md)。
 
 > **English**: [README.en.md](README.en.md)
 
-> **新手入门**：如果你不太懂技术术语，先看 [小白超详细攻略](docs/beginner-guide/index.html)（图文版）
-> 或 [会话验收指南](docs/SESSION-GUIDE.md)（大白话版，无技术术语）。
-> 把工具接到**任意新项目**：功能全景 + 报告怎么读 → [Quickstart](docs/quickstart.md)。
+> **新手入门**：不太懂术语？先看 [小白图文攻略](docs/guides/beginner-guide/index.html)。
+> 接到任意新项目：装一次、说话、看灯、commit → [Quickstart](docs/guides/quickstart.md)。
 >
-> **实战文**：[用 AI 自动生成架构图，还能在 PR 里抓漂移](docs/blog/2026-09-ai-architecture-drift.md) · [60 秒 Demo 分镜](docs/demo-script.md)
+> **实战文**：[用 AI 自动生成架构图，还能在 PR 里抓漂移](docs/demos/blog/2026-09-ai-architecture-drift.md) · [60 秒 Demo 分镜](docs/demos/demo-script.md)
 >
 > 痛点：AI 编码会话一次改动几十个文件，**合入前没人说得清架构到底变了什么**——
 > 删了哪个被广泛依赖的类型？有没有跨层调用？新引入了哪些第三方包？谁会被波及？
@@ -28,28 +27,29 @@
 
 ## 四种用法
 
-### 1. CLI 会话验收门（AI 编码会话收尾）
+### 1. 一键接入 AI 工具（推荐 · Cursor / Claude / DeepSeek）
 
 ```bash
-npx arch-viewer session start        # ① 让 AI 改代码前：记录架构基线
-# ……AI 写代码 / 你自己写代码……
-npx arch-viewer session report       # ② 会话结束：Before/After 对比 + 风险分级
-npx arch-viewer session start        # ③ 确认变更符合预期：刷新基线，开始下一轮
+npx arch-viewer setup              # 用户级 MCP
+npx arch-viewer setup . --project  # 本仓 hooks + 跨宿主规则（停手时自动跑结构门）
 ```
 
-报告输出：实体新增/删除/修改/重命名计数、外部依赖变化、风险发现
-（🔴 跨层违规 / 类型删除 / 层级穿透 / 新外部依赖）、**反向依赖影响面**（谁会被波及），
-并生成可分享的 HTML 前后对比图（`.av/session-report.html`）。
-高风险时退出码为 1，可直接卡进 AI 编码工作流（规则示例见 `.trae/rules/`）。
+自动检测已安装的 AI 编程工具（Cursor、Claude、DeepSeek Harness），写入 MCP。
+之后对 AI 说「改完用架构门检查一下」即可。Agent 应调用 `av_guard`；对话里回最多 3 行 verdict。
+有 git 时对照 **HEAD**，**commit 即接受**当前结构。不必先拍照、不必默认打开 HTML。
 
-### 2. 一键接入 AI 工具（Cursor / Claude / DeepSeek）
+### 2. CLI 结构门（脚本 / CI / 无 MCP）
 
 ```bash
-npx arch-viewer@0.11.2 setup   # 自动装好、打开图文引导；npm latest 升到 0.11 后可去掉版本钉
+npx arch-viewer session report     # 对照 git HEAD（无 git 时用快照基线）
+npx arch-viewer session guard --adapter generic   # hooks / CI 通用结构门
 ```
 
-自动检测已安装的 AI 编程工具（Cursor、Claude、DeepSeek Harness），把架构检查规则
-写进它们的配置目录。之后对 AI 说「改代码前先拍照，改完检查有没有改坏」即可。
+日常不必 `session start`。无 git 的仓，`av_guard` / `session guard` 会自动补快照。
+完整 Before/After HTML（`.av/session-report.html`）是可选深挖。
+高风险时退出码为 1。`session report` / `check` / `diff` 共用：`0` 通过 · `1` 架构门未通过 · `2` 参数配置错 · `3` 扫描解析失败 · `4` 基线不存在或失效。详见 [Quickstart §6.3](docs/guides/quickstart.md)。
+
+拍照仪式（`session start` → 开 HTML → 再 `session start`）见 [Quickstart 附录](docs/guides/quickstart.md#附录a-拍照仪式高级)。
 
 ### 3. PR 自动评论（GitHub Actions）
 
@@ -99,21 +99,23 @@ npm i -g arch-viewer        # CLI 全局安装
 
 ## Quick Start（30 秒）
 
-**最省事的方式（推荐小白）**——一条命令自动接入 Cursor / Claude，不用编辑任何配置文件：
+**最省事的方式（推荐）**——装一次，之后只说话：
 
 ```bash
-npx arch-viewer@0.11.2 setup   # 自动装好、打开图文引导；npm latest 升到 0.11 后可去掉版本钉
+npx arch-viewer setup
+# 本仓要强制停手检查：npx arch-viewer setup . --project
 ```
 
-**手动方式**：
+然后对 AI 说：「改完用架构门检查一下」。把对话里的 **verdict**（最多 3 行）当验收：
+绿灯 → `git commit`（即接受）；红灯 → 先修或解释，可用 `av_explain_finding`。
+
+**无 MCP 时用 CLI：**
 
 ```bash
-npx arch-viewer session start .        # ① 改代码之前：拍"改之前"的结构照片
-echo '// 随便改点代码：新增/删除一个类或改个 import'
-npx arch-viewer session report .       # ② 改完后：对比前后照片，看有没有改坏（加 --open 浏览器看对比图）
+npx arch-viewer session report .       # 对照 HEAD；加 --open 才打开对比图
 ```
 
-> **不懂技术术语？** 拍照片 = 记录改之前的结构。对比照片 = 看 AI 改了什么、有没有"串门"（跨层引用）。红灯 = 可能改坏了，绿灯 = 没问题。详见 [术语对照表](docs/SESSION-GUIDE.md#术语对照表遇到看不懂的词查这里)。
+> **不懂技术术语？** 基线 = 对照物（有 git 就是 HEAD）。verdict = 对话里那几行灯。红灯 = 可能改坏了，绿灯 = 结构上没问题。详见 [Quickstart 术语速查](docs/guides/quickstart.md#术语速查)。
 
 其他常用命令：
 
@@ -148,7 +150,7 @@ arch-viewer auth whoami                           # 查看当前登录邮箱与 
 3. **目录名/文件名约定**——`services/`、`*Controller.java`、`data_collection/` 等；
 4. **结构位置兜底**——被很多模块依赖且自己不依赖别人 → domain，只出不进 → controller。
 
-每次 `session start` / `extract` 后，推断结果会写入 `.av/layers.suggested.json`
+每次 `session report` / `extract` 后，推断结果会写入 `.av/layers.suggested.json`
 （按目录聚合，含置信度和判定依据；import 信号与目录名冲突的文件会单列）。
 审阅没问题就不用管；想锁定或纠正，复制为 `.av/layers.json` 即可——它永远优先、
 不会被覆盖。实测 246 文件的 Python 爬虫仓分层覆盖率从 57% 提升到 92%。
@@ -177,8 +179,8 @@ CI 模板：
 npm run web    # http://127.0.0.1:3847 — 粘贴仓库 URL 生成六视图，/p/<id> 内联分享
 ```
 
-新叙事落地页：[landing-new.html](landing-new.html)（`open landing-new.html` 直接浏览）。
-小白超详细攻略（含 AI 会话验收 Demo）：[docs/beginner-guide/index.html](docs/beginner-guide/index.html)。
+新叙事落地页：[docs/demos/landing-new.html](docs/demos/landing-new.html)（浏览器直接打开）。
+新手跟做：[小白图文攻略](docs/guides/beginner-guide/index.html) · [Quickstart §10](docs/guides/quickstart.md#10-五分钟最小路径抄这个)（`npm run demo:beginner`）。
 
 ---
 
@@ -196,6 +198,7 @@ npm run web    # http://127.0.0.1:3847 — 粘贴仓库 URL 生成六视图，/p
 ├── .github/workflows/                # check 红灯 + diff 评论 + drift 规范评论
 ├── .gitee/workflows/                 # Gitee 等价 drift pipeline
 ├── templates/                        # 可复制的套件与 CI 模板
+├── docs/                             # 文档（见 docs/README.md：guides / demos / commercial / plans …）
 └── eval/                             # 多语言解析夹具与评测
 ```
 
@@ -210,7 +213,7 @@ arch-viewer pro sync                     # 增量同步占位（同上）
 ```
 
 首次登录自动建档为 7 天 Pro 试用。token 存于 `~/.config/arch-viewer/auth.json`（权限 0600），
-重启终端仍登录。`generate` / `check` / `session` / `--refine`（自带 Key）属 Community，**永不要求登录**。详见 [lib/pro/README.md](lib/pro/README.md)、[COMMERCIAL.md](COMMERCIAL.md)。
+重启终端仍登录。`generate` / `check` / `session` / `--refine`（自带 Key）属 Community，**永不要求登录**。详见 [lib/pro/README.md](lib/pro/README.md)、[COMMERCIAL.md](docs/commercial/COMMERCIAL.md)。
 
 ## 隐私与遥测
 
@@ -233,4 +236,4 @@ export ARCH_TELEMETRY=1    # 开启
 | Pro | ¥29/月 | 托管 PR 评论 + 增量同步 + 邮箱账号 |
 | Team | ¥999/年/仓 | 组织规范 + 门禁托管 |
 
-详见 [COMMERCIAL.md](COMMERCIAL.md)。
+详见 [COMMERCIAL.md](docs/commercial/COMMERCIAL.md)。

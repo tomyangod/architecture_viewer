@@ -11,7 +11,7 @@
  */
 
 const DOCS_BILLING =
-  'https://gitee.com/heyangyan/architecture_viewer/blob/master/docs/billing.md';
+  'https://gitee.com/heyangyan/architecture_viewer/blob/master/docs/commercial/billing.md';
 
 const DEFAULTS = {
   afdian: 'https://afdian.com/a/architecture-viewer',
@@ -51,7 +51,7 @@ function paymentLinks() {
     priceCny: 29,
     priceLabel: '¥29 / 月',
     team,
-    note: '先收款再人工/半自动开通；SOP 见 docs/billing.md'
+    note: '先收款再人工/半自动开通；SOP 见 docs/commercial/billing.md'
   };
 }
 

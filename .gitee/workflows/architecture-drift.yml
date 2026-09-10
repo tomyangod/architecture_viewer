@@ -1,11 +1,14 @@
 # Gitee 等价 pipeline：漂移检测 + 团队规范 + PR 评论
 # 与 GitHub 版共用 scripts/ci-drift-action.mjs
+# 粒度：目录 / 服务 / 入口，不是每一个新文件（文件级看 session report）。
+# 若 MR 改了 .av/graph-baseline.json：评论含「基线刷新需人工确认（防洗白）」。
 #
 # 在 Gitee Go / Gitee Actions 中配置环境变量：
 #   GITEE_TOKEN                  评论权限 token
 #   GITEE_OWNER / GITEE_REPO     仓库
 #   GITEE_PULL_REQUEST_NUMBER    PR 编号
 # 无漂移时默认不评论；ARCH_DRIFT_COMMENT_ON_PASS=1 可贴通过。
+# 基线变更检测：可设 GITHUB_BASE_SHA / ARCH_BASELINE_CHANGED=1 / --baseline-changed。
 
 name: architecture-drift
 

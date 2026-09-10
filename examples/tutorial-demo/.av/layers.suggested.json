@@ -1,0 +1,36 @@
+{
+  "_note": "自动生成的分层推断建议（信号：config 用户配置 > import 框架语义 > 目录名 > 结构位置）。审阅无误无需操作；想锁定或修改，复制为同目录 layers.json 即可（layers.json 优先且不会被覆盖）。confidence: high>medium>low；signalConflicts 是 import 信号与目录名判断不一致的文件，请人工确认。",
+  "generatedAt": "2026-09-06T15:09:04.595Z",
+  "directories": {
+    "app": {
+      "layer": "controller",
+      "confidence": "high",
+      "signal": "import:python-web-framework",
+      "files": 2
+    },
+    "app/services": {
+      "layer": "service",
+      "confidence": "high",
+      "signal": "dir-name",
+      "files": 2
+    },
+    "app/routes": {
+      "layer": "controller",
+      "confidence": "high",
+      "signal": "dir-name",
+      "files": 2
+    },
+    "app/models": {
+      "layer": "domain",
+      "confidence": "high",
+      "signal": "dir-name",
+      "files": 2
+    },
+    "app/database": {
+      "layer": "storage",
+      "confidence": "high",
+      "signal": "dir-name",
+      "files": 2
+    }
+  }
+}

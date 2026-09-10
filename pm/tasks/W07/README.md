@@ -76,7 +76,7 @@
   npm test
   ```
 
-**参考文档**：`docs/market-evaluation/market-evaluation.html` `lib/validate.js`
+**参考文档**：`docs/plans/market-evaluation/market-evaluation.html` `lib/validate.js`
 
 **活动记录**：
   - 2026-09-04 状态变更 todo→doing

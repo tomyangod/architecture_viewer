@@ -65,6 +65,23 @@ test('W14-04: same ring via two new edges reported once', () => {
   assert.strictEqual(findings.length, 1);
 });
 
+test('W14-04: 4-node ring closed by one new edge → MEDIUM, Tarjan SCC', () => {
+  const nodes = [file('a.py'), file('b.py'), file('c.py'), file('d.py')];
+  const headEdges = [imp('a.py', 'b.py'), imp('b.py', 'c.py'), imp('c.py', 'd.py'), imp('d.py', 'a.py', { file: 'd.py', line: 4 })];
+  const baseEdges = [imp('a.py', 'b.py'), imp('b.py', 'c.py'), imp('c.py', 'd.py')];
+  const findings = [];
+  detectCircularImports(
+    findings,
+    { nodes, edges: headEdges },
+    { nodes, edges: baseEdges },
+    [imp('d.py', 'a.py', { file: 'd.py', line: 4 })]
+  );
+  assert.strictEqual(findings.length, 1);
+  assert.strictEqual(findings[0].severity, 'medium');
+  assert.match(findings[0].message, /4 个文件/);
+  assert.match(findings[0].detail, /d\.py/);
+});
+
 test('W14-04: non-import edges and self-imports ignored', () => {
   const findings = [];
   detectCircularImports(

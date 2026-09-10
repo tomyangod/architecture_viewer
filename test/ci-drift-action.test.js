@@ -51,5 +51,19 @@ describe('W08-01 ci-drift-action', () => {
     assert.match(yml, /ci-drift-action\.mjs/);
     assert.match(yml, /--rules/);
     assert.match(yml, /demo-drift/);
+    assert.match(yml, /GITHUB_BASE_SHA/);
+    assert.match(yml, /防洗白/);
+  });
+
+  it('W14-07：--baseline-changed 时评论含防洗白提醒（即使检查通过）', () => {
+    const r = run([
+      '--kit', OK, '--no-drift', '--rules', EXAMPLE,
+      '--baseline-changed', '--no-comment', '--out', path.join(ROOT, 'tmp-wash-comment.md')
+    ]);
+    assert.equal(r.status, 0, r.stderr);
+    const out = (r.stdout || '') + (r.stderr || '');
+    assert.match(out, /基线刷新需人工确认/);
+    assert.match(out, /防洗白/);
+    assert.match(out, /含基线变更/);
   });
 });

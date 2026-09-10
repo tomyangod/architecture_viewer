@@ -42,7 +42,20 @@
 5. 用 `classDef` + `class` 给节点上色；箭头必须有中文标签（调用/读写/投递…）
 6. **禁止**把分层图画成只有 L1→L2→L3 三个空框；节点要落到真实文件/服务名
 7. 可选覆盖：仓库根 `architecture.layers.json`（见 `templates/architecture.layers.example.json`）
-8. C4 图保持标准建模即可；「好看、一眼分层」优先保证 block-diagram
+8. `--refine` 时 6 张图都走读仓摘要（文件树 + 源码摘录）；C4/class/deploy 按视图专用规范画，禁止 `unknown` / 「协作」占位。骨架模式下「好看、一眼分层」仍优先保证 block-diagram
+
+## deployment-ops.md 视觉规范（复用 Block 语法 · 不上编排状态机）
+
+目标观感与 block-diagram **同构**：flowchart + 分层 subgraph + `classDef` 填色 + 图标/中文名/`<small>` 路径 + stadium 外部角色。内容视角是交付/启动，不是业务分层全景。
+
+1. 子图1 `flowchart TB`：`L_ops`（Dockerfile / compose / Actions / 本地启动）→ `L_api`（真实入口文件）→ 有证据才画 `L_storage`；**空层不画**
+2. 节点：`id["图标 中文名<br/><small>真实路径或交付物名</small>"]`；数据文件用圆柱 `id[("💾 …")]`
+3. 开发者用 stadium：`dev(["👤 开发者<br/><small>(外部)</small>"])`，写在所有 subgraph 外
+4. 色板与 Block 对齐：`ops #c8e6c9`、`api #ede7f6`、`storage #e0f7fa`、`actor #eceff1`
+5. ops → 运行时用虚线 `-.->`；边标签中文动宾（本地启动/进入运行时/注册蓝图）
+6. 子图2：`flowchart LR` 全员 stadium 短名、禁止 `<small>` 路径；场景是 **本地启动链**，禁止与 container「HTTP 进出」双胞胎
+7. **禁止**编造 Docker/k8s/Ingress/Prometheus；仓库没有交付物就画本地进程 + 数据文件
+8. 实现入口：`lib/generate.js` 的 `deployment()`（骨架）；`--refine` 走 `FLOWCHART_VISUAL_RULE`
 
 ## 扫描优先级（零 API Key 即可完成）
 1. 包管理器：package.json / pom.xml / go.mod / requirements.txt / Cargo.toml
@@ -51,6 +64,16 @@
 4. 入口与路由：main.*、app.*、routes/、controller/
 5. 模块/import：src/ 下的 import / require / from 语句
 6. 数据模型：entity/、model/、domain/ 下的类/结构体
+
+## 能力边界（管什么 / 不管什么）
+
+本套件 + `session report` / `check --drift` 做的是**结构验收**（分层、依赖边、入口、体量、图是否漏模块），**不是**代码正确性证明。
+
+**不管（非目标）**：逻辑错误、N+1 / 慢查询、吞异常、无环时的同层乱调、安全漏洞、业务该不该存在——请用测试、审查或专用工具。  
+**管**：跨层串门、层级穿透、文件级循环 import、神文件、新模块未上图、本轮对外路由/数据契约面、以及 `architecture-rules.yaml` 的 `invariants`。  
+**标出但不判定**：函数体实现差异（日志字符串、常量、调用、控制流）——`impl-changed`（info）+ 报告「实现差异」节。只告诉你改了哪个符号、哪类变化，**不验证算得对不对**。
+
+绿灯只表示结构门禁通过，**不等于**业务逻辑正确。session report 若亮「对外表面变更 / 数据契约被改动 / 团队不变量 / 意图不对齐 / 业务实现有变化」，只说明结构、契约面或函数体被碰到，仍不证明功能算对。
 
 ## 输出禁忌
 - 禁止把 .env / 密钥 / token 写进 .md

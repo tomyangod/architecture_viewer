@@ -14,7 +14,7 @@ function emptyDiff() {
       addedNodes: 0, removedNodes: 0, modifiedNodes: 0, renamedNodes: 0,
       addedEdges: 0, removedEdges: 0, addedTypes: 0, removedTypes: 0,
       addedPackages: 0, removedPackages: 0, addedExternalDeps: 0, removedExternalDeps: 0,
-      violations: 0, totalChanges: 0, riskLevel: 'none'
+      violations: 0, totalChanges: 0, changeScale: 'none'
     },
     addedNodes: [], removedNodes: [], modifiedNodes: [], renamedNodes: [],
     addedEdges: [], removedEdges: [], addedTypes: [], removedTypes: [],
@@ -41,7 +41,7 @@ describe('T2 PR 架构评论 Markdown 生成', () => {
     diff.summary = {
       ...diff.summary,
       addedNodes: 1, removedNodes: 1, modifiedNodes: 1, addedEdges: 2, removedEdges: 1,
-      addedExternalDeps: 1, totalChanges: 6, riskLevel: 'medium'
+      addedExternalDeps: 1, totalChanges: 6, changeScale: 'medium'
     };
     diff.addedExternalDeps = [{ id: 'ext:lodash', name: 'lodash', builtin: false }];
     const md = formatPullRequestComment({
@@ -93,6 +93,43 @@ describe('T2 PR 架构评论 Markdown 生成', () => {
     assert.match(md, /🔴 高风险/);
     assert.match(md, /类型删除/);
     assert.match(md, /core\/user\.js/);
+  });
+
+  test('W14-07：基线文件变更时评论含防洗白提醒 + findings 摘要', () => {
+    const { baselineFileChanged, formatBaselineWashWarning } = require('../lib/pr-comment');
+    const base = fs.mkdtempSync(path.join(os.tmpdir(), 'av-base-'));
+    const head = fs.mkdtempSync(path.join(os.tmpdir(), 'av-head-'));
+    fs.mkdirSync(path.join(base, '.av'), { recursive: true });
+    fs.mkdirSync(path.join(head, '.av'), { recursive: true });
+    fs.writeFileSync(path.join(base, '.av', 'graph-baseline.json'), '{"fingerprint":"aaa"}');
+    fs.writeFileSync(path.join(head, '.av', 'graph-baseline.json'), '{"fingerprint":"bbb"}');
+    assert.equal(baselineFileChanged(base, head), true);
+    assert.equal(baselineFileChanged(base, base), false);
+
+    const findings = [
+      { rule: 'cross-layer-violation', severity: 'high', title: '跨层违规', message: 'controller→storage', detail: 'x' }
+    ];
+    const wash = formatBaselineWashWarning({
+      findings,
+      riskSummary: { level: 'high', total: 1, counts: { high: 1, medium: 0, low: 0, info: 0 } }
+    });
+    assert.match(wash, /基线刷新需人工确认/);
+    assert.match(wash, /防洗白/);
+    assert.match(wash, /跨层违规/);
+
+    const diff = emptyDiff();
+    diff.summary.totalChanges = 1;
+    diff.summary.addedNodes = 1;
+    const md = formatPullRequestComment({
+      diff,
+      impact: { changedCount: 1, impactedCount: 0, items: [] },
+      findings,
+      riskSummary: { counts: { high: 1, medium: 0, low: 0, info: 0 }, level: 'high', total: 1 },
+      baselineChanged: true
+    });
+    assert.match(md, /基线刷新需人工确认（防洗白）/);
+    assert.match(md, /含基线变更（需人工确认）/);
+    assert.match(md, /跨层违规/);
   });
 });
 

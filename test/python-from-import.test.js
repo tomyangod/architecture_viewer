@@ -101,4 +101,81 @@ describe('Python from pkg import mod 精确解析', () => {
     assert.equal(pkg.kind, 'module');
     assert.equal(pkg.file, 'services/__init__.py');
   });
+
+  it('__init__ 再导出：from pkg import Alert → alerts.py，不是 __init__.py', () => {
+    const dir = makeRepo({
+      'pkg/__init__.py': 'from .alerts import Alert\n',
+      'pkg/alerts.py': 'class Alert:\n    pass\n',
+      'app/main.py': 'from pkg import Alert\nclass App:\n    def run(self, a: Alert):\n        pass\n'
+    });
+    try {
+      const g = buildGraph(dir);
+      const imports = g.edges.filter((e) => e.type === 'import' && e.from === 'file:app/main.py');
+      assert.ok(
+        imports.some((e) => e.to === 'file:pkg/alerts.py'),
+        '再导出应落到 alerts.py: ' + imports.map((e) => e.to).join(',')
+      );
+      assert.ok(
+        !imports.some((e) => e.to === 'file:pkg/__init__.py'),
+        '不应只落在 __init__: ' + imports.map((e) => e.to).join(',')
+      );
+    } finally {
+      fs.rmSync(dir, { recursive: true, force: true });
+    }
+  });
+
+  it('多级再导出：pkg → subpkg/__init__ → alerts.py', () => {
+    const dir = makeRepo({
+      'pkg/__init__.py': 'from .subpkg import Alert\n',
+      'pkg/subpkg/__init__.py': 'from .alerts import Alert\n',
+      'pkg/subpkg/alerts.py': 'class Alert:\n    pass\n',
+      'app/main.py': 'from pkg import Alert\nclass App:\n    def run(self, a: Alert):\n        pass\n'
+    });
+    try {
+      const g = buildGraph(dir);
+      const imports = g.edges.filter((e) => e.type === 'import' && e.from === 'file:app/main.py');
+      assert.ok(
+        imports.some((e) => e.to === 'file:pkg/subpkg/alerts.py'),
+        '链式再导出应落到 alerts.py: ' + imports.map((e) => e.to).join(',')
+      );
+    } finally {
+      fs.rmSync(dir, { recursive: true, force: true });
+    }
+  });
+
+  it('__all__ 字面量 + from pkg import * 落到再导出文件', () => {
+    const dir = makeRepo({
+      'pkg/__init__.py': 'from .alerts import Alert\n__all__ = ["Alert"]\n',
+      'pkg/alerts.py': 'class Alert:\n    pass\n',
+      'app/main.py': 'from pkg import *\nclass App:\n    def run(self, a: Alert):\n        pass\n'
+    });
+    try {
+      const g = buildGraph(dir);
+      const imports = g.edges.filter((e) => e.type === 'import' && e.from === 'file:app/main.py');
+      assert.ok(
+        imports.some((e) => e.to === 'file:pkg/alerts.py'),
+        'star + __all__ 应落到 alerts.py: ' + imports.map((e) => e.to).join(',')
+      );
+    } finally {
+      fs.rmSync(dir, { recursive: true, force: true });
+    }
+  });
+
+  it('JS barrel export { Alert } from 落到源文件', () => {
+    const dir = makeRepo({
+      'pkg/index.js': "export { Alert } from './alerts.js';\n",
+      'pkg/alerts.js': 'export class Alert {}\n',
+      'app.js': "import { Alert } from './pkg';\nexport class App { run(a) { return a; } }\n"
+    });
+    try {
+      const g = buildGraph(dir);
+      const imports = g.edges.filter((e) => e.type === 'import' && e.from === 'file:app.js');
+      assert.ok(
+        imports.some((e) => e.to === 'file:pkg/alerts.js'),
+        'JS barrel 应落到 alerts.js: ' + imports.map((e) => e.to).join(',')
+      );
+    } finally {
+      fs.rmSync(dir, { recursive: true, force: true });
+    }
+  });
 });

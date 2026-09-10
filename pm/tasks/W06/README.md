@@ -60,7 +60,7 @@
 
 **目标**：公网可访问的落地页：价值主张、demo 视频、定价三档、安装按钮、GitHub 链接。
 
-**涉及文件**：`web/public/index.html` `web/server.js` `docs/landing-deploy.md` `.github/workflows/landing-pages.yml`
+**涉及文件**：`web/public/index.html` `web/server.js` `docs/commercial/landing-deploy.md` `.github/workflows/landing-pages.yml`
 
 **验收标准**（逐条勾选，全部满足才能标 done）：
 - [ ] 落地页公网 URL 可访问（部署方式记录）
@@ -76,7 +76,7 @@
 
 **活动记录**：
   - 2026-09-05 状态变更 todo→doing：落地页嵌入 demo 视频、VTT、部署 SOP、Pages 工作流
-  - 2026-09-05 状态变更 doing→done：落地页嵌入 60s demo+中英字幕，定价/安装已有；docs/landing-deploy.md 记录本机/Docker/Pages；Actions 发 gh-pages
+  - 2026-09-05 状态变更 doing→done：落地页嵌入 60s demo+中英字幕，定价/安装已有；docs/commercial/landing-deploy.md 记录本机/Docker/Pages；Actions 发 gh-pages
 
 ---
 

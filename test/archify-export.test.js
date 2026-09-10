@@ -6,7 +6,7 @@ const fs = require('fs');
 const os = require('os');
 const path = require('path');
 
-const { exportArchify, findArchifyCli, tryRenderArchify, finalizeSessionHtml, SCOPES } = require('../lib/archify-export');
+const { exportArchify, findArchifyCli, tryRenderArchify, finalizeSessionHtml, injectDeltaBanner, SCOPES } = require('../lib/archify-export');
 
 function makeRepo(files) {
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'av-ax-'));
@@ -149,5 +149,12 @@ describe('archify-export 编排模块', () => {
     assert.ok(fs.existsSync(out.builtinPath));
     assert.match(fs.readFileSync(out.htmlPath, 'utf8'), /builtin-marker/);
     assert.match(fs.readFileSync(out.builtinPath, 'utf8'), /builtin-marker/);
+  });
+
+  it('injectDeltaBanner 在 body 后插入内置三栏入口', () => {
+    const out = injectDeltaBanner('<html><body class="x"><h1>archify</h1></body></html>');
+    assert.match(out, /session-report\.builtin\.html/);
+    assert.match(out, /av-delta-banner/);
+    assert.ok(out.indexOf('av-delta-banner') < out.indexOf('<h1>archify</h1>'));
   });
 });

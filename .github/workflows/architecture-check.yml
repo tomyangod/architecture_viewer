@@ -3,7 +3,10 @@
 # 用法：复制到你的仓库 `.github/workflows/architecture-check.yml`
 # 前置：先跑一次 `npx arch-viewer init` 并把 `architecture_viewer/` 提交进仓库。
 #
-# 卖点：图与代码不一致时 CI 失败，坏图进不了主干。
+# 卖点：新模块 / 服务 / 入口没上图时 CI 失败，坏图进不了主干。
+# 粒度是目录与部署单元，不是每一个新文件（文件级看 session report）。
+# 非目标：逻辑错 / N+1 / 吞异常——本 Action 不管。
+# 若 PR 改了 .av/graph-baseline.json：须人工确认（防洗白）；完整评论见 architecture-drift / architecture-diff。
 # Pro / Team 再在此之上提供：托管门禁、PR 评论、增量同步（见 COMMERCIAL.md）。
 
 name: Architecture Check

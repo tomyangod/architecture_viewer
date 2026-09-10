@@ -8,7 +8,8 @@ const path = require('path');
 
 const { buildGraph, extractGraphTo } = require('../lib/extract-graph');
 const { diffGraphs, formatDiffText } = require('../lib/diff-graph');
-const { buildReportData, generateReport } = require('../lib/session-report');
+const { buildReportData, generateReport, formatFileLocLabel, fileLocSeverity } = require('../lib/session-report');
+const { evaluateRisk, summarizeFindings } = require('../lib/risk-rules');
 
 /* --- 临时仓库 fixture --- */
 function makeRepo(files) {
@@ -86,7 +87,8 @@ describe('diff: 架构图差分', () => {
     assert.equal(d.summary.removedNodes, 0);
     assert.equal(d.summary.addedEdges, 0);
     assert.equal(d.summary.removedEdges, 0);
-    assert.equal(d.summary.riskLevel, 'none');
+    assert.equal(d.summary.changeScale, 'none');
+    assert.equal(d.summary.riskLevel, undefined);
   });
 
   it('新增类型检测', () => {
@@ -103,7 +105,7 @@ describe('diff: 架构图差分', () => {
     const d = diffGraphs(gBase, gHead);
     assert.ok(d.summary.addedNodes > 0, `addedNodes=${d.summary.addedNodes}`);
     assert.ok(d.addedTypes.some((t) => t.node.kind === 'class' && t.node.name === 'OrderService'));
-    assert.ok(d.summary.riskLevel !== 'none');
+    assert.ok(d.summary.changeScale !== 'none');
   });
 
   it('删除类型检测', () => {
@@ -374,7 +376,8 @@ describe('B1-3: 报告过滤（高信号优先）', () => {
         addedNodes: 1, removedNodes: 0, modifiedNodes: 1, movedNodes: 0, renamedNodes: 1,
         addedEdges: 2, removedEdges: 0, reroutedEdges: 0, addedTypes: 1, removedTypes: 0,
         addedPackages: 0, removedPackages: 0, addedExternalDeps: 0,
-        removedExternalDeps: 0, violations: 0, totalChanges: 5, riskLevel: 'low'
+        removedExternalDeps: 0, violations: 0, totalChanges: 5, changeScale: 'low',
+        addedArchitecturalEdges: 1, removedArchitecturalEdges: 0, reroutedArchitecturalEdges: 0
       }
     };
     return { baseGraph, headGraph, diff };
@@ -393,6 +396,8 @@ describe('B1-3: 报告过滤（高信号优先）', () => {
     // 归属边（declared-in）不进入架构图
     assert.ok(data.edges.every((e) => e.type !== 'declared-in'), 'attachment edges must be excluded');
     assert.ok(data.edges.some((e) => e.from === 'cls:Added' && e.status === 'added'));
+    assert.equal(data.summary.addedArchitecturalEdges, data.edges.filter((e) => e.status === 'added').length);
+    assert.ok(data.summary.addedEdges > data.summary.addedArchitecturalEdges);
   });
 
   it('HTML 默认「仅变更」过滤（未变更项折叠）', () => {
@@ -406,7 +411,24 @@ describe('B1-3: 报告过滤（高信号优先）', () => {
     // 重命名组在前端脚本中有渲染入口
     assert.match(html, /重命名/);
     assert.match(html, /id="graph-delta"/, 'must include Delta middle panel');
+    assert.match(html, /addedArchitecturalEdges/);
     assert.match(html, /Before \/ Delta \/ After/);
+    assert.match(html, /av-delta-glow/, 'delta nodes must pulse/highlight');
+    assert.match(html, /node-badge-bg/, 'changed nodes carry a corner +/~/− chip');
+    assert.match(html, /绿=新增/);
+    assert.match(html, /FILE_HEADER_H = 36/, 'file header is two lines so path and badges do not collide');
+    assert.match(html, /svgEl\.setAttribute\('width', tw\)/, 'SVG uses content width so After text does not shrink into overlap');
+    assert.match(html, /empty-inline/, 'empty edge list is compact, not a huge checkmark');
+    assert.match(html, /locInfo\.label/, 'loc badge uses preformatted label (skips fake +100%)');
+  });
+
+  it('行数角标：无基线数据不写 +100%，有基线才标增长', () => {
+    assert.equal(formatFileLocLabel({ base: 0, head: 1095, delta: 1095, deltaPercent: 100 }), '');
+    assert.equal(fileLocSeverity({ base: 0, head: 1095, delta: 1095, deltaPercent: 100 }), '');
+    assert.equal(formatFileLocLabel({ base: 200, head: 360, delta: 160, deltaPercent: 80 }), '+160行 · +80%');
+    assert.equal(fileLocSeverity({ base: 200, head: 360, delta: 160, deltaPercent: 80 }), 'growth');
+    assert.equal(fileLocSeverity({ base: 400, head: 750, delta: 350, deltaPercent: 88 }), 'growth-med');
+    assert.equal(formatFileLocLabel({ base: 400, head: 390, delta: -10, deltaPercent: -3 }), '');
   });
 
   it('HTML 内联脚本必须可解析（浏览器里不能白屏）', () => {
@@ -523,7 +545,7 @@ describe('guessLayer: 分层识别智能化', () => {
     const dir = makeRepo({
       'tools/helper.py': 'class Helper:\n    pass\n'
     });
-    // tools 内置映射为 util，用户配置覆盖为 service
+    // tools/helper.py 内置映射为 util，用户配置覆盖为 service
     fs.mkdirSync(path.join(dir, '.av'), { recursive: true });
     fs.writeFileSync(path.join(dir, '.av', 'layers.json'),
       JSON.stringify({ tools: 'service' }));
@@ -540,5 +562,29 @@ describe('guessLayer: 分层识别智能化', () => {
     const g = buildGraph(dir);
     const node = g.nodes.find(n => n.path === 'services/svc.py');
     assert.equal(node.layer, 'service');
+  });
+});
+
+describe('summary.changeScale vs 权威 risk.level', () => {
+  it('storage→controller：changeScale 是规模启发式，risk.level 才是 findings 严重度', () => {
+    const dir = makeRepo({
+      'storage/repo.py': 'class Repo:\n    pass\n',
+      'controller/api.py': 'class Api:\n    pass\n'
+    });
+    const base = buildGraph(dir);
+    fs.writeFileSync(path.join(dir, 'storage/repo.py'), 'from controller import api\nclass Repo:\n    pass\n');
+    const head = buildGraph(dir);
+    const diff = diffGraphs(base, head);
+    const findings = evaluateRisk(diff, head, base);
+    const risk = summarizeFindings(findings);
+    const report = buildReportData(base, head, diff, findings, null, 'audit', null);
+
+    assert.equal(diff.summary.riskLevel, undefined, 'diff.summary 不得再叫 riskLevel');
+    assert.equal(diff.summary.changeScale, 'medium', `violations*5 规模应为 medium，实际 ${diff.summary.changeScale}`);
+    assert.equal(risk.level, 'high');
+    assert.equal(report.risk.level, 'high');
+    assert.equal(report.summary.changeScale, 'medium');
+    assert.equal(report.summary.riskLevel, undefined);
+    assert.ok(findings.some((f) => f.rule === 'cross-layer-violation' && f.severity === 'high'));
   });
 });

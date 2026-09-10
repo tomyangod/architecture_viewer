@@ -120,7 +120,7 @@ hr
 
 c_bold "下一步可以试什么？"
 echo "  A. 打开 HTML，点「仅变更 / 仅违规」过滤按钮"
-echo "  B. 看完整图文攻略：docs/beginner-guide/index.html"
+echo "  B. 看图文攻略：docs/guides/beginner-guide/index.html"
 echo "  C. 在自己的项目里："
 echo "       node lib/cli.js session start ."
 echo "       # … 让 AI / 自己改代码 …"

@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>P0 技术设计：动态加载依赖检测</title>
+<style>
+:root {
+  --bg: #0d1117;
+  --fg: #e6edf3;
+  --dim: #8b949e;
+  --accent: #58a6ff;
+  --green: #3fb950;
+  --yellow: #d29922;
+  --red: #f85149;
+  --purple: #bc8cff;
+  --card: #161b22;
+  --border: #30363d;
+  --code-bg: #0d1117;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans SC', sans-serif;
+  background: var(--bg);
+  color: var(--fg);
+  line-height: 1.7;
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 32px 24px 64px;
+}
+h1 {
+  font-size: 1.8em;
+  border-bottom: 2px solid var(--accent);
+  padding-bottom: 12px;
+  margin-bottom: 8px;
+}
+h1 small { font-size: 0.5em; color: var(--dim); font-weight: normal; }
+h2 {
+  font-size: 1.3em;
+  color: var(--accent);
+  margin-top: 40px;
+  margin-bottom: 12px;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 6px;
+}
+h3 {
+  font-size: 1.1em;
+  color: var(--purple);
+  margin-top: 28px;
+  margin-bottom: 8px;
+}
+p { margin-bottom: 12px; }
+ul, ol { margin-left: 24px; margin-bottom: 12px; }
+li { margin-bottom: 6px; }
+code {
+  font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', monospace;
+  background: var(--card);
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 0.88em;
+  color: var(--accent);
+}
+pre {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 16px;
+  overflow-x: auto;
+  margin: 12px 0 20px;
+  font-size: 0.85em;
+  line-height: 1.5;
+}
+pre code {
+  background: none;
+  padding: 0;
+  color: var(--fg);
+}
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 12px 0 20px;
+  font-size: 0.9em;
+}
+th, td {
+  border: 1px solid var(--border);
+  padding: 8px 12px;
+  text-align: left;
+}
+th { background: var(--card); color: var(--accent); }
+tr:nth-child(even) { background: rgba(22,27,34,0.5); }
+.callout {
+  border-left: 4px solid var(--yellow);
+  background: rgba(210,153,34,0.08);
+  padding: 12px 16px;
+  border-radius: 0 8px 8px 0;
+  margin: 12px 0;
+}
+.callout.green { border-left-color: var(--green); background: rgba(63,185,80,0.08); }
+.callout.red { border-left-color: var(--red); background: rgba(248,81,73,0.08); }
+.callout.blue { border-left-color: var(--accent); background: rgba(88,166,255,0.08); }
+.tag {
+  display: inline-block;
+  padding: 1px 8px;
+  border-radius: 12px;
+  font-size: 0.75em;
+  font-weight: 600;
+  margin-left: 4px;
+}
+.tag-h { background: rgba(248,81,73,0.2); color: var(--red); }
+.tag-m { background: rgba(210,153,34,0.2); color: var(--yellow); }
+.tag-l { background: rgba(63,185,80,0.2); color: var(--green); }
+.tag-done { background: rgba(63,185,80,0.2); color: var(--green); }
+.tag-gap { background: rgba(248,81,73,0.2); color: var(--red); }
+.hr { border: none; border-top: 1px solid var(--border); margin: 32px 0; }
+.toc {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 16px 24px;
+  margin-bottom: 32px;
+}
+.toc ol { margin-left: 20px; }
+.toc a { color: var(--accent); text-decoration: none; }
+.toc a:hover { text-decoration: underline; }
+</style>
+</head>
+<body>
+
+<h1>P0 技术设计：动态加载依赖检测
+  <br><small>Architecture Viewer · 补全架构图谱盲区</small>
+</h1>
+
+<div class="toc">
+<strong>目录</strong>
+<ol>
+  <li><a href="#bg">背景与目标</a></li>
+  <li><a href="#status">现状分析</a></li>
+  <li><a href="#gap">三个真实缺口</a></li>
+  <li><a href="#design-gap1">Gap 1 设计：DI 装饰器依赖提取</a></li>
+  <li><a href="#design-gap2">Gap 2 设计：动态边差异化渲染</a></li>
+  <li><a href="#design-gap3">Gap 3 设计：变量动态导入启发式解析</a></li>
+  <li><a href="#plan">实施计划与排期</a></li>
+  <li><a href="#risk">风险评估</a></li>
+  <li><a href="#test">测试策略</a></li>
+</ol>
+</div>
+
+<h2 id="bg">1. 背景与目标</h2>
+
+<p>Architecture Viewer 的核心定位是<strong>架构关系增量检测器</strong>。字面量动态导入已经做完（<code>import()</code>、<code>importlib.import_module()</code>、<code>dynamic: true</code>、变量路径记 <code>unresolved-dynamic-import</code>）。本设计不把 AV 扩成代码质量总验收，只补<strong>静态写在装饰器里、但当前不成架构边</strong>的装配关系。</p>
+
+<ul>
+  <li><strong>P0：NestJS <code>@Module</code> 装配</strong>——<code>imports / controllers / providers</code> 里的类名往往已有文件 import 边；缺的是「这个模块把谁装进来了」。只改装饰器数组、不改 import 时，增量报告会漏。</li>
+  <li><strong>不是盲区：TS 构造注入</strong>——<code>constructor(private svc: FooService)</code> 已走 <code>method-param</code>。不要再为 <code>@Injectable()</code> 重做一遍。</li>
+  <li><strong>不是盲区：<code>@Controller('users')</code></strong>——参数是路由前缀字符串，不是类型引用。</li>
+  <li><strong>P1：Java 类型边</strong>——字段/构造参数已抽到 <code>members</code>，但 <code>extract-graph.js</code> 对 Java 只落 <code>extends/implements</code>。补边后 Spring 注入大多会自动出现，不必先做注解引擎。</li>
+  <li><strong>可选：动态边画虚线</strong>——数据已在边上，渲染层未消费。这是可读性，不是漏报。</li>
+  <li><strong>不做：配置驱动 / 插件入口 / 跨文件变量</strong>——CHANGELOG 已划界；静态分析到此为止。</li>
+</ul>
+
+<p>目标：<strong>不扩展产品边界，补图谱盲区</strong>。条件写反、慢 SQL、安全漏洞、登录态、UI/日志文案不进本设计。</p>
+
+<h2 id="status">2. 现状分析</h2>
+
+<p>调研发现，AV 的提取器已经比预期更完善——动态导入的基本检测已存在，但存在三个可精确定位的缺口。</p>
+
+<h3>已实现部分 <span class="tag tag-done">已完成</span></h3>
+
+<table>
+<tr><th>能力</th><th>文件</th><th>关键行</th><th>说明</th></tr>
+<tr><td>JS/TS <code>import()</code> 检测</td><td><code>lib/extract/jsts.js</code></td><td>676-717</td><td>遍历 <code>call_expression</code>，匹配 <code>fnText === 'import'</code>，提取字符串字面量参数</td></tr>
+<tr><td>JS/TS <code>require()</code> 检测</td><td>同上</td><td>682</td><td>匹配 <code>fnText === 'require'</code>，与 <code>import()</code> 同一处理路径</td></tr>
+<tr><td>Python <code>importlib.import_module()</code></td><td><code>lib/extract/python.js</code></td><td>504-539</td><td><code>extractDynamicPyImports()</code> 函数，匹配 <code>.*import_module$</code> 和 <code>__import__</code></td></tr>
+<tr><td>动态边标记</td><td><code>lib/extract-graph.js</code></td><td>621,678,681,684</td><td><code>addEdge()</code> 时传入 <code>dynamic: !!imp.dynamic</code></td></tr>
+<tr><td>unresolved 风险规则</td><td><code>lib/risk-rules.js</code></td><td>485-500</td><td>Rule 12：<code>unresolved-dynamic-import</code> 类型边触发 LOW 级 finding</td></tr>
+</table>
+
+<h3>数据流</h3>
+
+<pre><code>源码文件
+  │
+  ▼
+extractFile()          ← lib/extract/jsts.js | python.js
+  │  产出 FileExtract.imports[]
+  │  每个 import 对象: { specifier, line, dynamic, isCjs, names, unresolved }
+  ▼
+extractGraph()         ← lib/extract-graph.js
+  │  遍历 imports[]，resolve 模块路径
+  │  ├─ 可解析字符串 → addEdge({ type:'import', dynamic:true/false })
+  │  └─ 不可解析变量 → addUnresolvedDynamic() → edge → 'dyn:unresolved'
+  ▼
+edges[] 数组            ← 所有边统一存储
+  │
+  ├─→ diff-graph.js     → 增量对比 → 违规检测
+  ├─→ layers.js         → 分层 flowchart 渲染
+  └─→ generate.js       → C4/部署图渲染</code></pre>
+
+<h2 id="gap">3. 三个真实缺口</h2>
+
+<h3>Gap 1：模块装配边缺失（不是「完全看不见 DI」）<span class="tag tag-h">高</span></h3>
+
+<div class="callout red">
+<strong>问题</strong>：<code>@Module({ imports: [FooModule] })</code> 通常伴随着 <code>import { FooModule } from '…'</code>。文件级 <code>import</code> 边已在。缺的是实体级装配边：<code>AppModule → FooModule</code>（role=import）。只改数组、不改 import 时，当前 delta 为空。
+</div>
+
+<p><strong>不要做成</strong>：通用 DI 容器模拟、<code>@Inject('TOKEN')</code> 字符串令牌、<code>TypeOrmModule.forRoot()</code> 运行时配置、新 finding <code>di-dependency-removed</code>（边增删已在增量里）。</p>
+
+<p><strong>典型场景</strong>：</p>
+<pre><code>import { FooModule } from './foo/foo.module';  // 已有 import 边
+import { AppController } from './app.controller';
+import { AppService } from './app.service';
+
+@Module({
+  imports: [FooModule],          // ← 缺：AppModule -di-registered→ FooModule
+  controllers: [AppController],  // ← 缺：装配边（import 边已在）
+  providers: [AppService],
+})
+export class AppModule {}
+
+// 已覆盖，不要重复做：
+constructor(private svc: FooService) {}  // method-param
+
+// P1 再做：Java members 已有 type，但没落 field-type / method-param
+@Autowired
+private PaymentGateway gateway;</code></pre>
+
+<h3>Gap 2：动态边渲染无差异 <span class="tag tag-m">中</span></h3>
+
+<div class="callout">
+<strong>问题</strong>：<code>dynamic: true</code> 字段已存在于边对象中，但 <code>lib/layers.js</code> 的 <code>renderLayeredFlowchart()</code> 和 <code>lib/generate.js</code> 的 C4 生成器都<strong>不消费此字段</strong>。所有边统一渲染为实线 <code>--&gt;</code>。
+</div>
+
+<p><strong>影响</strong>：用户看到 <code>A --&gt; B</code> 时无法区分"静态 import（编译期固定）"还是"动态 import（运行时按需加载）"。这在评估变更影响面时会造成误判——动态依赖的断裂风险与静态依赖不同。</p>
+
+<p><strong>注意</strong>：<code>generate.js</code> 第 366/374 行已使用 <code>-.-&gt;</code>（虚线）渲染"进入运行时"边，说明渲染层已支持虚线语法，只是未应用到 <code>dynamic</code> 标志上。</p>
+
+<h3>Gap 3：变量动态导入无启发式解析 <span class="tag tag-l">低</span></h3>
+
+<div class="callout green">
+<strong>问题</strong>：<code>import(variableName)</code> 当前一律指向 <code>dyn:unresolved</code> 虚拟节点。对于简单常量赋值模式（<code>const mod = './foo'; import(mod)</code>），AV 可以通过 AST 变量追踪解析目标，但当前未实现。
+</div>
+
+<p><strong>影响</strong>：实际项目中变量驱动动态导入占比不高（大多数 <code>import()</code> 用静态字符串路径），但缺失会让图谱出现"黑洞节点"，影响可读性。</p>
+
+<h2 id="design-gap1">4. Gap 1 设计：DI 装饰器依赖提取</h2>
+
+<h3>4.1 设计原则</h3>
+
+<ul>
+  <li><strong>框架特定，不做通用 DI 容器模拟</strong>——只提取装饰器参数中引用的类/模块名，不做运行时注入行为推演</li>
+  <li><strong>复用已有 AST 基础设施</strong>——tree-sitter 已解析装饰器节点，只需增加遍历逻辑</li>
+  <li><strong>新增边类型 <code>di-registered</code></strong>——与 <code>import</code> 边区分，便于风险规则差异化处理</li>
+  <li><strong>默认启用，不需要额外配置</strong>——装饰器检测是纯静态分析，无外部依赖</li>
+</ul>
+
+<h3>4.2 检测范围</h3>
+
+<table>
+<tr><th>框架</th><th>模式</th><th>提取的边</th><th>优先级</th></tr>
+<tr><td>NestJS</td><td><code>@Module({ imports / controllers / providers })</code></td><td>当前 Module → 数组里的类（<code>di-registered</code> + role）</td><td>P0</td></tr>
+<tr><td>NestJS</td><td>构造函数参数类型</td><td>已有 <code>method-param</code></td><td>不做</td></tr>
+<tr><td>NestJS</td><td><code>@Controller('path')</code></td><td>字符串路由，不是类型</td><td>不做</td></tr>
+<tr><td>Java</td><td>字段 / 构造参数类型落边</td><td><code>field-type</code> / <code>method-param</code>（复用 members）</td><td>P1</td></tr>
+<tr><td>渲染</td><td><code>dynamic</code> / <code>di-registered</code> 虚线</td><td>已有数据，改 Mermaid 箭头</td><td>可选</td></tr>
+<tr><td>变量 import</td><td>同文件 <code>const</code> 字面量</td><td><code>resolvedFromVariable</code></td><td>P1 顺手</td></tr>
+</table>
+
+<h3>4.3 实现方案</h3>
+
+<p>在 <code>lib/extract/jsts.js</code> 中新增 <code>extractDecoratorDependencies(ast, result, filePath)</code> 函数：</p>
+
+<pre><code>// 伪代码 — 在 extractFile() 中，类型/函数提取之后调用
+function extractDecoratorDependencies(ast, result) {
+  // 1. 遍历所有 decorator 节点（TS: decorator / Java: annotation）
+  const decorators = collectNodes(ast, 'decorator');
+
+  for (const dec of decorators) {
+    const name = getDecoratorName(dec);       // @Module → "Module"
+    const arg = getDecoratorArgument(dec);     // ({ imports: [FooModule] })
+
+    if (DI_PATTERNS.has(name)) {
+      const pattern = DI_PATTERNS.get(name);
+
+      // 2. 从装饰器参数中提取引用的类名
+      const refs = pattern.extractRefs(arg);
+      //    refs = ['FooModule', 'AppController', 'AppService']
+
+      for (const ref of refs) {
+        result.diDependencies.push({
+          decorator: name,        // 'Module'
+          refName: ref,           // 'FooModule'
+          role: pattern.role,     // 'import' | 'provider' | 'controller'
+          line: dec.startPosition.row + 1,
+        });
+      }
+    }
+  }
+}
+
+// 框架模式注册表
+// 只认 @Module 的三个数组。不要扫 @Controller / @Injectable。
+const MODULE_ARRAY_KEYS = ['imports', 'controllers', 'providers'];
+// extractArrayElements(arg, key) → 标识符列表；role = key</code></pre>
+
+<p>在 <code>lib/extract-graph.js</code> 的图组装阶段，新增 <code>di-registered</code> 边创建逻辑：</p>
+
+<pre><code>// 在 extractGraph() 中，import 边处理之后
+for (const fe of allFiles) {
+  if (!fe.diDependencies) continue;
+  for (const di of fe.diDependencies) {
+    // 通过 name → entity 解析（复用现有 resolveEntityByName 逻辑）
+    const targetEntity = resolveEntityByName(di.refName, fe.file);
+    if (targetEntity) {
+      addEdge({
+        from: 'file:' + fe.file,    // 或 entity 级边
+        to: targetEntity.id,
+        type: 'di-registered',
+        file: fe.file,
+        line: di.line,
+        decorator: di.decorator,    // 'Module' | 'Controller' | ...
+        role: di.role,               // 'import' | 'controller' | ...
+      });
+    }
+  }
+}</code></pre>
+
+<h3>4.4 边类型与风险规则</h3>
+
+<table>
+<tr><th>属性</th><th>值</th><th>说明</th></tr>
+<tr><td>edgeType</td><td><code>di-registered</code></td><td>新边类型，区别于 <code>import</code></td></tr>
+<tr><td>WIRING_EDGE_TYPES</td><td>新增 <code>di-registered</code></td><td>计入"已接入架构"判定</td></tr>
+<tr><td>diff-graph.js 架构边列表</td><td>新增</td><td>第 307 行的 type 数组增加 <code>'di-registered'</code></td></tr>
+<tr><td>风险规则</td><td>跨层检测复用</td><td><code>di-registered</code> 边同样参与 <code>isReverseDependency</code> 检查</td></tr>
+<tr><td>finding</td><td>不新增规则</td><td>装配边的增删走现有 added/removed architectural edges；不要 <code>di-dependency-removed</code></td></tr>
+</table>
+
+<h2 id="design-gap2">5. Gap 2 设计：动态边差异化渲染</h2>
+
+<h3>5.1 渲染规则</h3>
+
+<table>
+<tr><th>边类型</th><th>Mermaid 语法</th><th>视觉含义</th></tr>
+<tr><td>静态 import</td><td><code>A --&gt; B</code></td><td>实线，编译期固定依赖</td></tr>
+<tr><td>动态 import (<code>dynamic: true</code>)</td><td><code>A -.-&gt; B</code></td><td>虚线，运行时按需加载</td></tr>
+<tr><td>DI 注册 (<code>di-registered</code>)</td><td><code>A -.-&gt;|注册| B</code></td><td>虚线 + 标签，框架容器管理</td></tr>
+<tr><td>unresolved 动态</td><td><code>A -.-&gt; dyn:unresolved</code></td><td>虚线 + 红色目标节点</td></tr>
+</table>
+
+<h3>5.2 实现方案</h3>
+
+<p>修改 <code>lib/layers.js</code> 的 <code>renderLayeredFlowchart()</code> 边输出逻辑：</p>
+
+<pre><code>// 当前代码（layers.js ~344行）：
+edges.push(`  ${from} -->|${verb}| ${to}`);
+
+// 修改后：
+function edgeToMermaid(edge) {
+  const arrow = edge.dynamic || edge.type === 'di-registered'
+    ? '-.->'   // 虚线
+    : '-->';   // 实线
+  const label = edge.label ? `|${edge.label}|` : '';
+  return `  ${edge.from} ${arrow}${label} ${edge.to}`;
+}</code></pre>
+
+<p>同时修改 <code>lib/generate.js</code> 的 C4 图生成器，在边输出时检查 <code>dynamic</code> 字段。</p>
+
+<h3>5.3 Delta 图中的动态边</h3>
+
+<p>在 <code>lib/diff-graph.js</code> 的 Delta 视图中，新增/删除的动态边也用虚线表示。修改 <code>edgeLabel()</code> 函数：</p>
+
+<pre><code>function edgeStyle(edge) {
+  if (edge.dynamic || edge.type === 'di-registered') return '-.->';
+  return '-->';
+}</code></pre>
+
+<h2 id="design-gap3">6. Gap 3 设计：变量动态导入启发式解析</h2>
+
+<h3>6.1 解析策略</h3>
+
+<p>对 <code>import(variableName)</code> 和 <code>require(variableName)</code>，按以下优先级尝试解析：</p>
+
+<ol>
+  <li><strong>同文件 const 字面量</strong>——<code>const mod = './foo'; import(mod)</code> → <code>./foo</code>，边带 <code>resolvedFromVariable</code></li>
+  <li><strong>其余一律不解析</strong>——<code>let</code>/<code>var</code>、跨文件、<code>config.modulePath</code>、环境变量、<code>${}</code> 插值：保持 <code>unresolved-dynamic-import</code></li>
+</ol>
+
+<h3>6.2 实现范围</h3>
+
+<p>仅实现策略 1（同文件常量赋值），ROI 最高且最可控：</p>
+
+<pre><code>// 在 jsts.js 的 call_expression 遍历中（~688行后）
+if (!spec) {
+  // 尝试从同文件变量赋值中解析
+  const varName = extractIdentifier(args);
+  if (varName) {
+    const constValue = findConstAssignment(ast, varName);
+    if (constValue && typeof constValue === 'string') {
+      spec = constValue;
+      // 标记来源，便于风险规则区分
+      result.imports.push({
+        specifier: spec,
+        line: call.startPosition.row + 1,
+        isCjs: isRequire,
+        dynamic: isImport,
+        names: [],
+        resolvedFromVariable: varName,  // 新标记
+      });
+      continue;
+    }
+  }
+  // 仍然无法解析 → unresolved
+  result.imports.push({
+    specifier: null,
+    line: call.startPosition.row + 1,
+    isCjs: isRequire,
+    dynamic: isImport,
+    unresolved: true,
+    names: []
+  });
+}</code></pre>
+
+<h3>6.3 边的区分标记</h3>
+
+<table>
+<tr><th>来源</th><th>edge.dynamic</th><th>edge.resolvedFromVariable</th><th>渲染</th></tr>
+<tr><td>静态 <code>import x from '...'</code></td><td>false</td><td>-</td><td>实线</td></tr>
+<tr><td><code>import('./foo')</code></td><td>true</td><td>-</td><td>虚线</td></tr>
+<tr><td><code>import(mod)</code> 解析成功</td><td>true</td><td>'mod'</td><td>虚线 + 浅色</td></tr>
+<tr><td><code>import(mod)</code> 解析失败</td><td>true</td><td>-</td><td>虚线 → dyn:unresolved</td></tr>
+</table>
+
+<h2 id="plan">7. 实施计划与排期</h2>
+
+<table>
+<tr><th>阶段</th><th>任务</th><th>涉及文件</th><th>预计工时</th><th>优先级</th></tr>
+<tr><td>S1</td><td>jsts 抽 <code>@Module</code> 数组标识符 → <code>diDependencies</code></td><td><code>lib/extract/jsts.js</code></td><td>1 天</td><td>P0</td></tr>
+<tr><td>S2</td><td>落 <code>di-registered</code>；WIRING / diff 认这条边</td><td><code>lib/extract-graph.js</code>, <code>lib/risk-rules.js</code>, <code>lib/diff-graph.js</code>, <code>lib/impact.js</code></td><td>1 天</td><td>P0</td></tr>
+<tr><td>S3</td><td>单测：只改 providers 数组能进 session delta</td><td><code>test/</code></td><td>0.5 天</td><td>P0</td></tr>
+<tr><td>S4</td><td>动态 / DI 边虚线（可选）</td><td><code>lib/layers.js</code>, HTML 报告图</td><td>0.5 天</td><td>可选</td></tr>
+<tr><td>P1</td><td>Java <code>members</code> → <code>field-type</code> / <code>method-param</code></td><td><code>lib/extract-graph.js</code></td><td>1 天</td><td>P1</td></tr>
+<tr><td>P1</td><td>同文件 const 变量 import（可选）</td><td><code>lib/extract/jsts.js</code></td><td>0.5 天</td><td>P1</td></tr>
+<tr><td colspan="2"><strong>P0 合计</strong></td><td></td><td><strong>2.5–3 天</strong></td><td></td></tr>
+</table>
+
+<p>P0 先做装配边，因为那才是漏报。虚线渲染不挡发布。</p>
+
+<h2 id="risk">8. 风险评估</h2>
+
+<table>
+<tr><th>风险</th><th>级别</th><th>缓解措施</th></tr>
+<tr><td>tree-sitter 装饰器解析不完整（TS decorator 语法曾有重大变更）</td><td><span class="tag tag-m">中</span></td><td>对 TS 5.x 装饰器语法做兼容性测试；decorator 节点解析失败时静默跳过，不中断提取</td></tr>
+<tr><td><code>di-registered</code> 边产生大量噪音（NestJS 项目模块多）</td><td><span class="tag tag-m">中</span></td><td>增量报告中默认折叠 DI 注册边（类似 declared-in 边的折叠策略），仅在 <code>--all</code> 时展开</td></tr>
+<tr><td>变量追踪误解析（变量在运行时被修改）</td><td><span class="tag tag-l">低</span></td><td>仅追踪 <code>const</code> 赋值（不含 <code>let</code>/<code>var</code>），并在边中标记 <code>resolvedFromVariable</code> 以便人工核查</td></tr>
+<tr><td>渲染虚线后图过于密集可读性下降</td><td><span class="tag tag-l">低</span></td><td>Delta 图中仅在"仅变更"和"仅违规" tab 中区分虚实线；全量视图保持实线</td></tr>
+</table>
+
+<h2 id="test">9. 测试策略</h2>
+
+<h3>9.1 单元测试</h3>
+
+<table>
+<tr><th>测试文件</th><th>测试用例</th><th>验证点</th></tr>
+<tr><td><code>test/extract-jsts.test.js</code></td><td>NestJS <code>@Module</code> 提取</td><td><code>diDependencies</code> 数组包含 <code>{decorator:'Module', refName:'FooModule'}</code></td></tr>
+<tr><td>同上</td><td>无装饰器的纯 TS 文件</td><td><code>diDependencies</code> 为空数组</td></tr>
+<tr><td>同上</td><td><code>const mod = './x'; import(mod)</code></td><td>import specifier 解析为 <code>./x</code>，<code>resolvedFromVariable: 'mod'</code></td></tr>
+<tr><td><code>test/extract-graph.test.js</code></td><td>DI 注册边创建</td><td>edges 数组包含 <code>{type:'di-registered', decorator:'Module'}</code></td></tr>
+<tr><td><code>test/extract-diff.test.js</code> 或 session fixture</td><td>只改 <code>providers</code> 数组</td><td>delta 出现 <code>di-registered</code> 增删；不新增 finding 规则</td></tr>
+<tr><td><code>test/diff-graph.test.js</code></td><td>动态边渲染为虚线</td><td>mermaid 输出包含 <code>-.-&gt;</code> 而非 <code>--&gt;</code></td></tr>
+</table>
+
+<h3>9.2 端到端验证</h3>
+
+<p>P0 不新建示例仓。用测试夹具即可：两个 TS module 文件 + 一次只改 <code>providers</code> 数组。P1 若要手验，再考虑最小 fixture，而不是完整 Nest 示例项目。</p>
+
+<h3>9.3 回归测试</h3>
+
+<p>对已有的 679 个测试全量回归，确保新增 <code>di-registered</code> 边类型和 <code>dynamic</code> 渲染逻辑不破坏现有行为。</p>
+
+<hr class="hr">
+<p style="color: var(--dim); font-size: 0.85em;">
+Architecture Viewer · P0 收窄版 · 2026-09-09<br>
+不扩展产品边界。P0 只补 NestJS @Module 装配边（约 2.5–3 天）。
+</p>
+
+</body>
+</html>

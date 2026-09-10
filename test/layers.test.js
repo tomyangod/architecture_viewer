@@ -92,8 +92,20 @@ describe('layers render', () => {
     assert.match(files['block-diagram.md'], /subgraph L_/);
   });
 
-  it('blockDiagramMarkdown is valid mermaid fence', () => {
-    const md = blockDiagramMarkdown(inv);
-    assert.match(md, /```mermaid\nflowchart TB/);
+  it('generateFiles deployment-ops reuses Block flowchart visual grammar', () => {
+    const files = generateFiles(inv);
+    const md = files['deployment-ops.md'];
+    assert.match(md, /flowchart TB/);
+    assert.match(md, /subgraph L_ops/);
+    assert.match(md, /subgraph L_api/);
+    assert.match(md, /classDef ops/);
+    assert.match(md, /classDef api/);
+    assert.match(md, /classDef actor/);
+    assert.match(md, /<small>/);
+    assert.match(md, /dev\(\["👤 开发者/);
+    assert.match(md, /-\.->\|进入运行时\|/);
+    assert.match(md, /flowchart LR/);
+    assert.doesNotMatch(md, /健康检查/);
+    assert.match(md, /Dockerfile/);
   });
 });

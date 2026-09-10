@@ -431,7 +431,7 @@ async function handler(req, res) {
     }
 
     if (/^\/demo\.(mp4|zh\.vtt|en\.vtt|zh\.srt|en\.srt)$/.test(url.pathname)) {
-      const demoPath = path.join(ROOT, 'docs', path.basename(url.pathname));
+      const demoPath = path.join(ROOT, 'docs', 'demos', path.basename(url.pathname));
       if (!fs.existsSync(demoPath)) {
         return send(res, 404, 'Not found', { 'Content-Type': 'text/plain; charset=utf-8' });
       }

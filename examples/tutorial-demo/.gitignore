@@ -1,0 +1,10 @@
+# Architecture Viewer：本地产物，不入库
+.av/session-report.*
+.av/habit-gate-log.md
+.av/archify-*.json
+
+# Python
+__pycache__/
+*.pyc
+*.db
+.venv/

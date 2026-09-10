@@ -61,7 +61,7 @@
 
 **目标**：support.md（工单渠道、FAQ、响应时效）+ invoice.md（开票信息收集与流程）。
 
-**涉及文件**：`docs/support.md` `docs/invoice.md`
+**涉及文件**：`docs/commercial/support.md` `docs/commercial/invoice.md`
 
 **验收标准**（逐条勾选，全部满足才能标 done）：
 - [ ] 两份文档存在且从落地页可到达
@@ -69,7 +69,7 @@
 
 **验收命令**（退出码 0 即通过；人工验收项需在周报中记录证据）：
   ```bash
-  test -f docs/support.md && test -f docs/invoice.md && echo SUPPORT_OK
+  test -f docs/commercial/support.md && test -f docs/commercial/invoice.md && echo SUPPORT_OK
   ```
 
 **参考文档**：—
@@ -97,7 +97,7 @@
 
 **目标**：≥1 笔真实 Pro 付款到账并完成开通。
 
-**涉及文件**：`pm/metrics.md` `docs/billing.md` `docs/npm-publish.md`
+**涉及文件**：`pm/metrics.md` `docs/commercial/billing.md` `docs/commercial/npm-publish.md`
 
 **验收标准**（逐条勾选，全部满足才能标 done）：
 - [ ] 付款凭证/订单号记录在 metrics.md

@@ -1,7 +1,7 @@
 # 12 周复盘（提前快照 · 2026-09-05）
 
 > 商业化 WBS 日历上 W12 截止约 2026-11-20；本文件是 **进度过半时的快照复盘**，数字与结论按今日状态，后续周五用 `npm run metrics:pull` 与周报刷新。  
-> 指标：[pm/metrics.md](metrics.md) · 行为复盘：[retrospective-w11.md](retrospective-w11.md) · Phase 3：[docs/phase3-design.md](../docs/phase3-design.md)
+> 指标：[pm/metrics.md](metrics.md) · 行为复盘：[retrospective-w11.md](retrospective-w11.md) · Phase 3：[docs/plans/phase3-design.md](../docs/plans/phase3-design.md)
 
 ## 一、目标达成率（W01–W12，不含 W13 backlog）
 

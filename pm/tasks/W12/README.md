@@ -24,7 +24,7 @@
 
 **目标**：私有化报价与交付说明页；≥1 个书面付费试点意向（邮件/合同/订单均可）。
 
-**涉及文件**：`docs/team-onprem.md` `pm/pilots.md`
+**涉及文件**：`docs/commercial/team-onprem.md` `pm/pilots.md`
 
 **验收标准**（逐条勾选，全部满足才能标 done）：
 - [ ] team-onprem.md 含报价档位、交付物、SLA 说明
@@ -32,7 +32,7 @@
 
 **验收命令**（退出码 0 即通过；人工验收项需在周报中记录证据）：
   ```bash
-  test -f docs/team-onprem.md && echo ONPREM_OK
+  test -f docs/commercial/team-onprem.md && echo ONPREM_OK
   ```
 
 **参考文档**：—
@@ -60,7 +60,7 @@
 
 **目标**：12 周复盘（目标达成率、收入、数据）+ Phase 3 技术设计稿（数据模型、API、里程碑）。
 
-**涉及文件**：`pm/retrospective-12w.md` `docs/phase3-design.md`
+**涉及文件**：`pm/retrospective-12w.md` `docs/plans/phase3-design.md`
 
 **验收标准**（逐条勾选，全部满足才能标 done）：
 - [ ] 复盘含三大指标：安装、付费、收入
@@ -68,10 +68,10 @@
 
 **验收命令**（退出码 0 即通过；人工验收项需在周报中记录证据）：
   ```bash
-  test -f pm/retrospective-12w.md && test -f docs/phase3-design.md && echo RETRO12_OK
+  test -f pm/retrospective-12w.md && test -f docs/plans/phase3-design.md && echo RETRO12_OK
   ```
 
-**参考文档**：`docs/market-evaluation/market-evaluation.html`
+**参考文档**：`docs/plans/market-evaluation/market-evaluation.html`
 
 **活动记录**：
   - 2026-09-05 状态变更 todo→doing：12 周快照复盘 + Phase3 设计稿

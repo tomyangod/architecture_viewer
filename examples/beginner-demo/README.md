@@ -42,6 +42,6 @@ node lib/cli.js session report "$DEMO" --open
 - 新增类型：`PaymentService`
 - 风险：控制器 → 仓储 **层级穿透**（HIGH）
 
-完整图文攻略：[docs/beginner-guide/index.html](../../docs/beginner-guide/index.html)
+完整图文攻略：[docs/guides/beginner-guide/index.html](../../docs/guides/beginner-guide/index.html) · 文字版：[Quickstart §10](../../docs/guides/quickstart.md#10-五分钟最小路径抄这个)
 
 离线预览一份已生成的报告样例：[sample-session-report.html](./sample-session-report.html)（打开后点「仅违规」）

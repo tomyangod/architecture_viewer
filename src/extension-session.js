@@ -18,10 +18,13 @@ const path = require('path');
 
 const { buildGraph } = require('../lib/extract-graph');
 const { diffGraphs } = require('../lib/diff-graph');
-const { evaluateRisk, summarizeFindings } = require('../lib/risk-rules');
-const { generateReport } = require('../lib/session-report');
+const { summarizeFindings } = require('../lib/risk-rules');
+const { runAnalyzers } = require('../lib/analyzers');
+const { generateReport, buildSessionReportJson } = require('../lib/session-report');
 const { computeImpact } = require('../lib/impact');
+const { resolveSessionBaseline, hasResolvableBaseline } = require('../lib/session-baseline');
 const { SKIP_DIRS, DEV_SKIP_DIRS, SKIP_FILE_RE } = require('../lib/extract/shared');
+const { applyWebviewCsp } = require('./webview-csp');
 
 const AV_DIR = '.av';
 const BASELINE_FILE = 'graph-baseline.json';
@@ -121,7 +124,7 @@ function activateSession(context) {
 
   // ---- initial render + optional initial analysis ----
   const root = rootPath();
-  state.hasBaseline = !!root && fs.existsSync(baselinePath(root));
+  state.hasBaseline = !!root && hasResolvableBaseline(root);
   renderStatus(state, status);
 
   if (cfg().analyzeOnOpen && root && state.hasBaseline) {
@@ -134,7 +137,7 @@ function activateSession(context) {
   context.subscriptions.push(
     vscode.workspace.onDidChangeWorkspaceFolders(() => {
       const r = rootPath();
-      state.hasBaseline = !!r && fs.existsSync(baselinePath(r));
+      state.hasBaseline = !!r && hasResolvableBaseline(r);
       state.result = null;
       renderStatus(state, status);
       setupWatcher(state, status, context);
@@ -166,7 +169,7 @@ function setupWatcher(state, status, context) {
     const r = rootPath();
     if (!r) return;
     if (!isRelevantSource(uri.fsPath, r)) return;
-    if (!fs.existsSync(baselinePath(r))) return; // 无基线不分析
+    if (!hasResolvableBaseline(r)) return; // 无基线不分析
     state.hasBaseline = true;
     scheduleAnalysis(state, status);
   };
@@ -224,9 +227,9 @@ async function sessionReport(state, status, context) {
     vscode.window.showErrorMessage('Architecture Viewer: 请先打开一个工作区文件夹');
     return;
   }
-  if (!fs.existsSync(baselinePath(root))) {
+  if (!hasResolvableBaseline(root)) {
     const pick = await vscode.window.showInformationMessage(
-      'Architecture Viewer: 尚未记录架构基线。现在记录基线，开始监听 AI 代码变更？',
+      'Architecture Viewer: 尚未记录架构基线（无 git HEAD / 快照）。现在记录快照，开始监听？',
       { modal: false },
       '记录基线'
     );
@@ -236,10 +239,12 @@ async function sessionReport(state, status, context) {
     return;
   }
 
-  // 若无缓存结果或正在等待，先跑一次分析
-  if (!state.result || state.running) {
-    await runAnalysis(state, status, true);
+  if (state.running) {
+    vscode.window.showInformationMessage('Architecture Viewer 正在分析，请完成后再打开报告。');
+    return;
   }
+  // External contracts can change without a watched source edit.
+  await runAnalysis(state, status, true);
   if (state.error) {
     vscode.window.showErrorMessage('Architecture Viewer 报告生成失败：' + state.error.message);
     return;
@@ -253,8 +258,8 @@ async function sessionReport(state, status, context) {
 async function runAnalysis(state, status, notify) {
   const root = rootPath();
   if (!root) return;
-  const basePath = baselinePath(root);
-  if (!fs.existsSync(basePath)) {
+  const resolved = resolveSessionBaseline(root);
+  if (!resolved.ok) {
     state.hasBaseline = false;
     renderStatus(state, status);
     return;
@@ -266,12 +271,13 @@ async function runAnalysis(state, status, notify) {
 
   try {
     await tick(); // 让出事件循环，刷新「分析中」角标
-    const baseline = JSON.parse(fs.readFileSync(basePath, 'utf8'));
-    const sessionStartTs = baseline.sessionStartedAt;
+    const baseline = resolved.graph;
+    const sessionStartTs = baseline.sessionStartedAt || baseline.cachedAt || null;
     const current = buildGraph(root);
     const diff = diffGraphs(baseline, current);
     const impact = computeImpact(diff, baseline, current);
-    const findings = evaluateRisk(diff, current, baseline, impact);
+    const { merged, sources: analyzerStatus } = runAnalyzers(root, { current, baseline, diff, impact });
+    const findings = merged.violations;
     const riskSummary = summarizeFindings(findings);
 
     fs.mkdirSync(avDir(root), { recursive: true });
@@ -280,6 +286,7 @@ async function runAnalysis(state, status, notify) {
       headGraph: current,
       diff,
       findings,
+      analyzerStatus,
       impact,
       repoName: path.basename(root),
       sessionStart: sessionStartTs
@@ -287,10 +294,14 @@ async function runAnalysis(state, status, notify) {
     fs.writeFileSync(reportHtmlPath(root), html);
     fs.writeFileSync(
       reportJsonPath(root),
-      JSON.stringify({ diff, findings, riskSummary, impact }, null, 2)
+      JSON.stringify(buildSessionReportJson({
+        diff, findings, riskSummary, impact, analyzerStatus,
+        baseGraph: baseline, headGraph: current,
+        repoName: path.basename(root)
+      }), null, 2)
     );
 
-    state.result = { diff, findings, riskSummary, impact, htmlPath: reportHtmlPath(root) };
+    state.result = { diff, findings, riskSummary, impact, analyzerStatus, htmlPath: reportHtmlPath(root) };
     state.hasBaseline = true;
 
     const s = diff.summary;
@@ -298,7 +309,7 @@ async function runAnalysis(state, status, notify) {
       || (s.addedEdges || 0) + (s.removedEdges || 0) > 0;
 
     if (notify) {
-      if (changed) {
+      if (changed || findings.length) {
         const high = findings.filter((f) => f.severity === 'high').length;
         vscode.window.showInformationMessage(
           `架构变更：+${s.addedTypes} -${s.removedTypes} ~${s.modifiedNodes} 类型，` +
@@ -331,17 +342,7 @@ function openReportWebview(context, result, root) {
     }
   );
 
-  let html = fs.readFileSync(result.htmlPath, 'utf8');
-  const csp = panel.webview.cspSource;
-  const cspTag =
-    `<meta http-equiv="Content-Security-Policy" content="default-src 'none'; ` +
-    `img-src ${csp} data: https:; style-src ${csp} 'unsafe-inline'; ` +
-    `script-src ${csp} 'unsafe-inline'; font-src ${csp} data:;">`;
-  if (html.includes('<head>')) {
-    html = html.replace('<head>', '<head>\n    ' + cspTag);
-  } else {
-    html = cspTag + html;
-  }
+  const html = applyWebviewCsp(fs.readFileSync(result.htmlPath, 'utf8'), panel.webview.cspSource);
   panel.webview.html = html;
 }
 
@@ -392,7 +393,7 @@ function renderStatus(state, status, opts) {
     (s.addedTypes || 0) + (s.removedTypes || 0) + (s.modifiedNodes || 0) +
     (s.addedEdges || 0) + (s.removedEdges || 0) > 0;
 
-  if (!changed) {
+  if (!changed && findings.length === 0) {
     status.text = '$(check) AV 无变更';
     status.tooltip = 'Architecture Viewer：代码结构与基线一致';
     status.backgroundColor = undefined;

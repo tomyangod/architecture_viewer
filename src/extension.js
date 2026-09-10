@@ -11,6 +11,7 @@ const {
   agentPrompt
 } = require('../lib');
 const { activateSession } = require('./extension-session');
+const { buildPreviewHtml, resolveMermaidFile } = require('./webview-preview');
 
 function workspaceRoot() {
   const folder = vscode.workspace.workspaceFolders && vscode.workspace.workspaceFolders[0];
@@ -125,35 +126,19 @@ async function openPreview(context, kitDir) {
       ]
     }
   );
-  panel.webview.html = buildPreviewHtml(panel.webview, kitDir, context.extensionPath);
+  panel.webview.html = buildExtensionPreviewHtml(panel.webview, kitDir, context.extensionPath);
 }
 
-function buildPreviewHtml(webview, kitDir, extensionPath) {
-  const htmlPath = path.join(kitDir, 'architecture_visualized.html');
-  let html = fs.readFileSync(htmlPath, 'utf8');
-  const configPath = path.join(kitDir, 'architecture.config.js');
-  const configJs = fs.existsSync(configPath) ? fs.readFileSync(configPath, 'utf8') : '';
-  const sources = {};
-  for (const f of ['c4-context.md', 'c4-container.md', 'c4-component.md', 'block-diagram.md', 'class-diagram.md', 'deployment-ops.md']) {
-    const p = path.join(kitDir, f);
-    if (fs.existsSync(p)) sources[f] = fs.readFileSync(p, 'utf8');
-  }
-  const mermaidKit = path.join(kitDir, 'vendor', 'mermaid.min.js');
-  const mermaidExt = path.join(extensionPath || '', 'vendor', 'mermaid.min.js');
-  const mermaidFile = fs.existsSync(mermaidKit) ? mermaidKit : mermaidExt;
-  const mermaidUri = webview.asWebviewUri(vscode.Uri.file(mermaidFile)).toString();
-  const csp = webview.cspSource;
-  const cspTag = `<meta http-equiv="Content-Security-Policy" content="default-src 'none'; img-src ${csp} data:; style-src ${csp} 'unsafe-inline'; script-src ${csp} 'unsafe-inline' 'unsafe-eval'; font-src ${csp} data:; connect-src ${csp};">`;
-  html = html.replace('<head>', `<head>\n    ${cspTag}`);
-  html = html.replace('src="vendor/mermaid.min.js"', 'src="' + mermaidUri + '"');
-  const inject = `<script>window.__ARCH_INLINE_SOURCES__ = ${JSON.stringify(sources)};</script>`;
-  html = html.replace(
-    '<script src="architecture.config.js"></script>',
-    `<script>${configJs}</script>\n    ${inject}`
-  );
-  return html;
+function buildExtensionPreviewHtml(webview, kitDir, extensionPath) {
+  const mermaidFile = resolveMermaidFile(kitDir, extensionPath);
+  const mermaidHref = webview.asWebviewUri(vscode.Uri.file(mermaidFile)).toString();
+  return buildPreviewHtml({
+    kitDir,
+    mermaidHref,
+    cspSource: webview.cspSource
+  });
 }
 
 function deactivate() {}
 
-module.exports = { activate, deactivate, buildPreviewHtml };
+module.exports = { activate, deactivate, buildPreviewHtml: buildExtensionPreviewHtml };

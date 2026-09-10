@@ -3,9 +3,12 @@
 /**
  * Architecture Viewer MCP Server
  *
- * 暴露 5 个工具给 AI Agent（Cursor/Claude/Codex）：
- *   av_session_start    — AI 改代码前记录基线
- *   av_session_report   — AI 改完后返回架构 diff + 风险 + 影响面
+ * 暴露 8 个工具给 AI Agent（Cursor / Claude / DeepSeek Harness / Windsurf…）：
+ *   av_guard           — 日常结构门：ensure 基线 + 本轮 verdict（优先）
+ *   av_session_start    — AI 改代码前记录快照基线（高级 / 无 git）
+ *   av_session_changes  — 轻量：有没有架构变更
+ *   av_session_report   — 完整报告（与 av_guard 同级 verdict；HTML 可选）
+ *   av_status           — 基线 / 监听 / 缓存 / 是否过期（给人看）
  *   av_check_layering   — 实时检测当前代码的跨层违规（不需要基线）
  *   av_explain_finding  — 解释一条违规的结构化事实
  *   av_archify_export   — 导出 Archify IR 稀疏图（可选顺带 archify validate）
@@ -19,14 +22,25 @@ const path = require('path');
 const readline = require('readline');
 const { buildGraph } = require('../lib/extract-graph');
 const { diffGraphs } = require('../lib/diff-graph');
-const { evaluateRisk, summarizeFindings, LAYER_LABEL, loadSessionRules } = require('../lib/risk-rules');
+const { evaluateRisk, summarizeFindings, LAYER_LABEL, loadSessionRules, suggestForFinding } = require('../lib/risk-rules');
+const { writeSessionIntent } = require('../lib/session-intent');
 const { computeImpact } = require('../lib/impact');
-const { generateReport, appendSessionHistory, clearStaleSessionReports } = require('../lib/session-report');
+const { generateReport, appendSessionHistory, clearStaleSessionReports, buildSessionReportJson, isStaleReport } = require('../lib/session-report');
+const { migrateReport } = require('../lib/report-contract');
 const { exportArchify, finalizeSessionHtml } = require('../lib/archify-export');
 const { exitCodeForRisk } = require('../lib/exit-codes');
+const { runAnalyzers } = require('../lib/analyzers');
+const { describeGreenLight } = require('../lib/green-light');
+const { formatSessionVerdict, nextStepForVerdict } = require('../lib/session-verdict');
+const { sessionPaths, detectPathMismatch, isGitWorktree } = require('../lib/session-paths');
+const { resolveSessionBaseline, ensureSessionBaseline, noBaselinePayload, headCachePath } = require('../lib/session-baseline');
 const PKG_VERSION = require('../package.json').version;
 
-/** MCP hosts do not guarantee cwd is the active workspace, so repo must be explicit. */
+/**
+ * Resolve the repo to check.
+ * MCP hosts do not guarantee that process.cwd() is the active IDE workspace.
+ * Fail closed unless the caller supplies the absolute workspace root.
+ */
 function resolveRepo(args) {
   const raw = args && typeof args.repo === 'string' ? args.repo.trim() : '';
   if (!raw) {
@@ -40,6 +54,30 @@ function resolveRepo(args) {
   return repo;
 }
 
+/** Default 8s; override with AV_SESSION_DEBOUNCE_MS or .av/session.json debounceSeconds. */
+const DEFAULT_DEBOUNCE_MS = 8000;
+
+function resolveDebounceMs(repo) {
+  const env = process.env.AV_SESSION_DEBOUNCE_MS;
+  if (env != null && String(env).trim() !== '') {
+    const n = Number(env);
+    if (Number.isFinite(n) && n >= 1000) return Math.round(n);
+  }
+  try {
+    const cfgPath = path.join(repo, '.av', 'session.json');
+    if (fs.existsSync(cfgPath)) {
+      const cfg = JSON.parse(fs.readFileSync(cfgPath, 'utf8'));
+      if (typeof cfg.debounceMs === 'number' && cfg.debounceMs >= 1000) {
+        return Math.round(cfg.debounceMs);
+      }
+      if (typeof cfg.debounceSeconds === 'number' && cfg.debounceSeconds >= 1) {
+        return Math.round(cfg.debounceSeconds * 1000);
+      }
+    }
+  } catch { /* ignore bad config */ }
+  return DEFAULT_DEBOUNCE_MS;
+}
+
 function avDir(repo) {
   return path.join(repo, '.av');
 }
@@ -48,28 +86,39 @@ function baselinePath(repo) {
   return path.join(avDir(repo), 'graph-baseline.json');
 }
 
-// Walk up to find nearest .git (dir or worktree/submodule file). Zero-dep.
-function findGitRoot(dir) {
-  let cur = path.resolve(dir);
-  for (let i = 0; i < 50; i++) {
-    if (fs.existsSync(path.join(cur, '.git'))) return cur;
-    const parent = path.dirname(cur);
-    if (parent === cur) return null;
-    cur = parent;
-  }
-  return null;
+function pathGuard(repo, args) {
+  return detectPathMismatch(repo, {
+    editDir: args && args.editDir,
+    confirmRepo: args && args.confirmRepo
+  });
 }
 
-// ─── 自动闭环：文件监听 + 防抖自动报告 ───────────────────────────
-// AI 改代码时文件不断保存，watcher 静默 DEBOUNCE_MS 毫秒后自动跑 diff，
-// 生成报告缓存。AI 调 av_session_report 时直接命中缓存（秒回），
-// 调 av_session_changes 做轻量轮询（不生成文件）。
+/** Structure/content peek without writing HTML (for idle race and av_status). */
+function peekSessionDiff(repo) {
+  const resolved = resolveSessionBaseline(repo);
+  if (!resolved.ok) return null;
+  const baseline = resolved.graph;
+  const current = buildGraph(repo);
+  return {
+    structChanged: current.fingerprint !== baseline.fingerprint,
+    contentChanged: (current.contentFingerprint || null) !== (baseline.contentFingerprint || null),
+    baseFingerprint: baseline.fingerprint || null,
+    headFingerprint: current.fingerprint || null,
+    sessionStartedAt: baseline.sessionStartedAt || baseline.cachedAt || null,
+    baselineKind: resolved.kind,
+    hasUncommitted: resolved.hasUncommitted
+  };
+}
 
-const DEBOUNCE_MS = 20000; // AI 停下 20 秒后自动出报告
+// ─── 自动闭环：文件监听 + 防抖自动报告（仅 MCP/长期进程）────────
+// CLI 的 session start 不会挂监听；改完请手动 session report。
+// MCP 里 AI 连续写文件时，静默 debounceMs 后预生成报告；
+// av_session_report 会取消防抖并立即重算。
+
 const WATCH_EXTENSIONS = new Set(['.js', '.ts', '.jsx', '.tsx', '.py', '.go', '.java', '.vue', '.svelte', '.mjs', '.cjs']);
 const IGNORE_DIRS = new Set(['node_modules', '.git', '.av', 'dist', 'build', '.next', 'coverage', '__pycache__', '.idea', '.vscode', '.trae']);
 
-/** repoPath -> { watcher, timer, autoReport, watching, pendingFiles } */
+/** repoPath -> { watcher, timer, autoReport, watching, pendingFiles, debounceMs, debounceDeadline } */
 const watchers = new Map();
 
 function shouldWatchFile(filePath) {
@@ -84,19 +133,30 @@ function shouldWatchFile(filePath) {
  * 生成 diff + 风险 + 影响面 + HTML/JSON 文件，返回结构化结果。
  */
 function generateSessionReport(repo) {
-  const bp = baselinePath(repo);
-  if (!fs.existsSync(bp)) return null;
-
-  const baseline = JSON.parse(fs.readFileSync(bp, 'utf8'));
-  const sessionStart = baseline.sessionStartedAt;
+  const resolved = resolveSessionBaseline(repo);
+  if (!resolved.ok) {
+    if (resolved.error === 'SCAN_FAILED') {
+      return { error: 'SCAN_FAILED', message: resolved.message, nextStep: resolved.nextStep };
+    }
+    return null;
+  }
+  const baseline = resolved.graph;
+  const sessionStart = baseline.sessionStartedAt || baseline.cachedAt || null;
   const current = buildGraph(repo);
+  require('../lib/extract-graph').attachCallEdges(current, { incremental: true, base: baseline });
   const diff = diffGraphs(baseline, current);
   const impact = computeImpact(diff, baseline, current);
-  let teamRules = null;
-  try {
-    teamRules = loadSessionRules(repo);
-  } catch { /* auto-discover miss or bad file: fall back to builtin rules only */ }
-  const findings = evaluateRisk(diff, current, baseline, impact, { rules: teamRules });
+  const teamRules = loadSessionRules(repo);
+  const { buildTestIndex } = require('../lib/extract/test-index');
+  const testIndexHead = buildTestIndex(repo);
+  const { merged, sources: analyzerStatus } = runAnalyzers(repo, {
+    current, baseline, diff, impact, rules: teamRules,
+    testIndexBase: baseline.testIndex || null,
+    testIndexHead
+  });
+  const findings = merged.violations;
+  const externalAdded = findings.filter(f => f.sourceAnalyzer !== 'builtin' && !f.secondarySource).length;
+
   const riskSummary = summarizeFindings(findings);
 
   // W14-06: append local trend record (best-effort, never blocks report)
@@ -105,9 +165,12 @@ function generateSessionReport(repo) {
   const dir = avDir(repo);
   fs.mkdirSync(dir, { recursive: true });
   const reportJsonPath = path.join(dir, 'session-report.json');
-  fs.writeFileSync(reportJsonPath, JSON.stringify({ diff, findings, riskSummary, impact }, null, 2));
+  fs.writeFileSync(reportJsonPath, JSON.stringify(buildSessionReportJson({
+    diff, findings, riskSummary, impact, analyzerStatus, baseGraph: baseline, headGraph: current,
+    repoName: path.basename(repo)
+  }), null, 2));
   const html = generateReport({
-    baseGraph: baseline, headGraph: current, diff, findings, impact,
+    baseGraph: baseline, headGraph: current, diff, findings, impact, analyzerStatus,
     repoName: path.basename(repo), sessionStart
   });
   const finalized = finalizeSessionHtml({ repo, builtinHtml: html });
@@ -118,6 +181,8 @@ function generateSessionReport(repo) {
       ...diff.summary,
       baseFingerprint: diff.base.fingerprint,
       headFingerprint: diff.head.fingerprint,
+      // Authoritative findings severity (same as top-level riskLevel).
+      // diff.summary.changeScale is the volume heuristic and must not be read as risk.
       riskLevel: riskSummary.level,
       riskCount: findings.length,
       riskCounts: riskSummary.counts
@@ -134,26 +199,78 @@ function generateSessionReport(repo) {
     riskLevel: riskSummary.level,
     findingsCount: findings.length,
     hasChanges: (diff.summary.totalChanges || 0) > 0,
-    exitCode: exitCodeForRisk(riskSummary.level, 'high'),
-    exitCodeHint: '默认 high→1 阻断，medium/low/none→0。CLI 可用 --fail-on 调整。',
-    message: riskSummary.level === 'high'
-      ? `🔴 红灯 — ${findings.length} 个问题需要你亲眼看一下，可能改坏了结构，建议先看再提交。`
-      : riskSummary.level === 'medium'
-        ? `🟠 黄灯 — ${findings.length} 个值得注意的地方，建议看一下。`
-        : riskSummary.level === 'low'
-          ? `🔵 蓝灯 — ${findings.length} 个小提示，有空可以看看。`
-          : ((diff.summary.totalChanges || 0) === 0
-            ? '✅ 绿灯 — 没有可识别的架构结构变化。不是源码没变：函数体、日志、注释不进结构指纹。'
-            : '✅ 绿灯 — 没发现架构风险。')
+    implementation: {
+      count: (diff.implChanges || []).length,
+      changes: (diff.implChanges || []).slice(0, 20).map((c) => ({
+        symbol: c.owner ? `${c.owner}.${c.method}` : (c.method || c.name),
+        change: c.change,
+        path: c.path || null,
+        addedLiterals: c.addedLiterals || [],
+        removedLiterals: c.removedLiterals || []
+      }))
+    },
+    analyzerStatus,
+    externalAdded,
+    exitCode: exitCodeForRisk(riskSummary.gateLevel || riskSummary.level, 'high'),
+    exitCodeHint: '默认 high→1 阻断，medium/low/none→0。CLI 可用 --fail-on 调整。reportOnly 观察期 finding 不计入 gateLevel。',
+    ...(() => {
+      const verdict = formatSessionVerdict({
+        riskSummary,
+        findings,
+        summary: {
+          ...diff.summary,
+          implChangedCount: (diff.implChanges || []).length || diff.summary.implChangedCount || 0
+        },
+        reportPath: finalized.htmlPath,
+        baselineKind: resolved.kind,
+        hasUncommitted: resolved.hasUncommitted
+      });
+      return {
+        baselineKind: resolved.kind,
+        gitHead: resolved.gitHead || null,
+        hasUncommitted: !!resolved.hasUncommitted,
+        verdict: {
+          level: verdict.level,
+          lines: verdict.lines,
+          text: verdict.text,
+          reportPath: verdict.reportPath,
+          topFinding: verdict.topFinding
+            ? {
+              rule: verdict.topFinding.rule || null,
+              severity: verdict.topFinding.severity || null,
+              title: verdict.topFinding.title || null,
+              file: verdict.topFinding.file || null,
+              line: verdict.topFinding.line != null ? verdict.topFinding.line : null
+            }
+            : null
+        },
+        message: verdict.text,
+        nextStep: nextStepForVerdict(verdict, {
+          summary: { implChangedCount: (diff.implChanges || []).length },
+          baselineKind: resolved.kind
+        })
+      };
+    })()
   };
 }
 
-/** 启动文件监听：AI 改代码后自动生成报告 */
+/** 启动文件监听：AI 改代码后自动生成报告（仅长期运行的 MCP 进程有效） */
 function startWatcher(repo) {
   // 已在监听则先停掉旧的（重新 start 时重置）
   stopWatcher(repo);
 
-  const state = { watcher: null, timer: null, autoReport: null, watching: true, pendingFiles: 0 };
+  const debounceMs = resolveDebounceMs(repo);
+  const debounceSec = Math.round(debounceMs / 1000);
+  const state = {
+    watcher: null,
+    timer: null,
+    autoReport: null,
+    watching: true,
+    pendingFiles: 0,
+    debounceMs,
+    debounceSec,
+    debounceDeadline: null
+  };
 
   try {
     const watcher = fs.watch(repo, { recursive: true }, (_event, filename) => {
@@ -161,9 +278,11 @@ function startWatcher(repo) {
       state.pendingFiles++;
       // 重置防抖计时器
       if (state.timer) clearTimeout(state.timer);
+      state.debounceDeadline = Date.now() + state.debounceMs;
       state.timer = setTimeout(() => {
         state.timer = null;
         state.pendingFiles = 0;
+        state.debounceDeadline = null;
         try {
           const report = generateSessionReport(repo);
           if (report) state.autoReport = report;
@@ -171,7 +290,7 @@ function startWatcher(repo) {
           // 自动报告失败不崩溃，手动 report 时会再试
           state.autoReport = { error: e.message, generatedAt: Date.now() };
         }
-      }, DEBOUNCE_MS);
+      }, state.debounceMs);
       // 定时器不阻止进程退出（MCP server 靠 stdio 保活）
       state.timer.unref?.();
     });
@@ -186,6 +305,20 @@ function startWatcher(repo) {
 
   watchers.set(repo, state);
   return state;
+}
+
+/** Cancel pending debounce. Returns whether a pending analysis was cancelled. */
+function flushWatcherDebounce(repo) {
+  const state = watchers.get(repo);
+  if (!state) return { state: null, hadPending: false };
+  const hadPending = !!(state.timer || state.pendingFiles > 0);
+  if (state.timer) {
+    clearTimeout(state.timer);
+    state.timer = null;
+  }
+  state.pendingFiles = 0;
+  state.debounceDeadline = null;
+  return { state, hadPending };
 }
 
 function stopWatcher(repo) {
@@ -220,7 +353,20 @@ function writeLayerSuggestions(repo, graph) {
 
 function formatFinding(f) {
   const icon = f.severity === 'high' ? '🔴' : f.severity === 'medium' ? '🟠' : f.severity === 'low' ? '🔵' : '⚪';
-  return `${icon} [${f.severity.toUpperCase()}] ${f.title}: ${f.message}\n   ${f.detail || ''}`;
+  return {
+    rule: f.rule,
+    severity: f.severity,
+    title: f.title,
+    message: f.message,
+    detail: f.detail || null,
+    suggestion: f.suggestion || null,
+    file: f.file || null,
+    line: f.line || null,
+    sourceAnalyzer: f.sourceAnalyzer || 'builtin',
+    confidence: f.confidence || 'medium',
+    ...(f.secondarySource ? { secondarySource: f.secondarySource } : {}),
+    text: `${icon} [${f.severity.toUpperCase()}] ${f.title}: ${f.message}\n   ${f.detail || ''}`
+  };
 }
 
 function formatImpact(impact) {
@@ -238,38 +384,55 @@ function formatImpact(impact) {
 
 function toolSessionStart(args) {
   const repo = resolveRepo(args);
+  const blocked = pathGuard(repo, args);
+  if (blocked) return blocked;
   fs.mkdirSync(avDir(repo), { recursive: true });
   const graph = buildGraph(repo);
-  const snapshot = { ...graph, sessionStartedAt: new Date().toISOString() };
+  const { toPersistableGraph } = require('../lib/extract-graph');
+  const { buildTestIndex } = require('../lib/extract/test-index');
+  const snapshot = {
+    ...toPersistableGraph(graph),
+    sessionStartedAt: new Date().toISOString(),
+    testIndex: buildTestIndex(repo)
+  };
   fs.writeFileSync(baselinePath(repo), JSON.stringify(snapshot, null, 2));
-  const clearedReports = clearStaleSessionReports(repo);
+  const intentRec = writeSessionIntent(repo, args.intent, { sessionStartedAt: snapshot.sessionStartedAt });
+  const clearedResult = clearStaleSessionReports(repo);
+  const clearedReports = [...clearedResult.deleted, ...clearedResult.stubbed];
   const suggested = writeLayerSuggestions(repo, graph);
 
-  // 启动文件监听：AI 改代码后自动生成报告，无需手动触发
+  // 启动文件监听：仅 MCP 长期进程有效；CLI session start 不走这里
   const watchState = startWatcher(repo);
+  const debounceSec = watchState.debounceSec || Math.round(DEFAULT_DEBOUNCE_MS / 1000);
 
-  // 路径回显：避免在 worktree/主仓之间检查错目录（AI 必须把这三行进最终回复）
-  const gitRoot = findGitRoot(repo);
-  const pathMismatch = gitRoot && path.resolve(gitRoot) !== path.resolve(repo);
+  const pathInfo = sessionPaths(repo);
+  pathInfo.repoSource = 'arg';
+  pathInfo.mismatch = !!(pathInfo.gitRoot && path.resolve(pathInfo.gitRoot) !== path.resolve(repo));
+  pathInfo.cwdMismatch = path.resolve(repo) !== pathInfo.cwd;
 
-  const pathInfo = {
-    checking: repo,
-    baselineSavedTo: baselinePath(repo),
-    reportDir: avDir(repo),
-    gitRoot: gitRoot || null,
-    mismatch: pathMismatch
-  };
-
-  let pathWarning;
-  if (pathMismatch) {
-    pathWarning = `当前检查目录不是 Git 根：\n  检查目录: ${repo}\n  Git 根:   ${gitRoot}\n基线与报告都基于「检查目录」。请确认这就是你正在改代码的目录（worktree/子目录场景尤其注意），并在回复中回显以上路径。`;
-  } else {
-    pathWarning = `正在检查：${repo}\n基线保存到：${baselinePath(repo)}\n（请在最终回复中回显检查目录与基线路径，三者一致才说明没检查错对象。）`;
+  const warnLines = [
+    `实际修改/检查目录：${pathInfo.checking}`,
+    `基线所在目录：${pathInfo.baselineDir}`,
+    `报告所在目录：${pathInfo.reportDir}`,
+    `报告入口：${pathInfo.reportEntry}`,
+    `MCP 进程 cwd：${pathInfo.cwd}`,
+    '必须在最终回复中同时回显以上三个目录；不一致则中止，不要当验收通过。'
+  ];
+  if (pathInfo.mismatch) {
+    warnLines.push(
+      `⚠ 检查目录不是 Git 根：Git 根 = ${pathInfo.gitRoot}`,
+      '基线与报告都基于「检查目录」。'
+    );
+  }
+  if (isGitWorktree(repo) || pathInfo.worktree) {
+    warnLines.push(
+      '⚠ 当前检查目录是 Git worktree，不是主仓。基线与报告写在这个 worktree 的 .av/ 下，不会写到主仓。'
+    );
   }
 
   return {
     path: pathInfo,
-    pathWarning,
+    pathWarning: warnLines.join('\n'),
     baseline: {
       files: graph.stats.files,
       types: graph.stats.types,
@@ -279,40 +442,85 @@ function toolSessionStart(args) {
       savedTo: baselinePath(repo)
     },
     autoWatch: watchState.watching
-      ? '已开启自动监听：你改代码时系统会自动检测，停下 20 秒后自动生成架构报告。改完后调 av_session_changes 轻量检查，或直接调 av_session_report 看详情（缓存命中秒回）。'
+      ? `已开启自动监听（仅 MCP/扩展进程）：停下约 ${debounceSec} 秒后预生成报告。不想等请直接调 av_session_report（立即重算）。CLI 的 session start 不会持续监听，改完请手动 session report。`
       : `自动监听不可用（${watchState.watchError || '当前环境不支持'}），改完代码后请手动调 av_session_report。`,
+    debounceSeconds: debounceSec,
     layerSuggestions: suggested
       ? { path: suggested, note: '工具自动帮你分好了楼层。觉得没问题就不用管；想锁定就复制为 .av/layers.json' }
       : null,
     clearedReports,
-    message: `已经拍好了"改之前"的照片（${graph.stats.files} 个文件、${graph.stats.types} 个组件）。现在可以放心改代码，系统会自动盯着结构变化。`
+    intent: intentRec && intentRec.text ? intentRec.text : null,
+    message: `已经拍好了"改之前"的照片（${graph.stats.files} 个文件、${graph.stats.types} 个组件）。请在最终回复中回显：实际修改目录、基线目录、报告目录。现在开始改代码；改完后优先调 av_session_report（不必等防抖），也可先用 av_session_changes。看状态用 av_status。报告确认无误后，再调 av_session_start 刷新基线，开始下一轮。`,
+    nextStep: '让 AI 改代码。改完后直接调 av_session_report 看完整报告和红灯（会取消防抖立即生成）；确认报告无误后，再调 av_session_start 刷新基线。'
   };
 }
 
 function toolSessionReport(args) {
   const repo = resolveRepo(args);
-  const bp = baselinePath(repo);
-  if (!fs.existsSync(bp)) {
-    return { error: 'NO_BASELINE', message: '还没拍"改之前"的照片。请先调用 av_session_start 再改代码。' };
-  }
+  const blocked = pathGuard(repo, args);
+  if (blocked) return blocked;
 
-  // 优先用 watcher 自动生成的新鲜缓存（10 分钟内），避免重复计算
-  const state = getWatcherState(repo);
-  if (state && state.autoReport && !state.autoReport.error) {
-    const ageMs = Date.now() - state.autoReport.generatedAt;
-    if (ageMs < 10 * 60 * 1000) {
-      return { ...state.autoReport, cached: true, cacheAgeSec: Math.round(ageMs / 1000) };
-    }
-  }
+  // 手动 report：若防抖还在等，立刻取消并重算（不必干等 8 秒）
+  const { state, hadPending } = flushWatcherDebounce(repo);
+  const live = state || getWatcherState(repo);
 
-  // 缓存不存在或过期：实时生成
+  // Contract/config/binary changes are not all watched. Explicit acceptance
+  // always rechecks; autoReport remains useful for lightweight status polling.
   const report = generateSessionReport(repo);
-  if (!report) {
-    return { error: 'NO_BASELINE', message: '还没拍"改之前"的照片。请先调用 av_session_start 再改代码。' };
+  if (!report) return noBaselinePayload();
+  if (report.error) return report;
+  if (live) live.autoReport = report;
+  return hadPending ? { ...report, flushedDebounce: true } : report;
+}
+
+/**
+ * Daily architecture gate for any MCP host (Cursor / Claude / DeepSeek / …).
+ * Ensures a baseline when missing, then returns the same verdict surface as report.
+ */
+function toolSessionGuard(args) {
+  const repo = resolveRepo(args);
+  const blocked = pathGuard(repo, args);
+  if (blocked) return blocked;
+
+  let ensured = false;
+  try {
+    const ensuredRes = ensureSessionBaseline(repo);
+    ensured = !!ensuredRes.ensured;
+    if (!ensuredRes.ok) {
+      return {
+        error: ensuredRes.error || 'NO_BASELINE',
+        message: ensuredRes.message,
+        nextStep: ensuredRes.nextStep,
+        ensured
+      };
+    }
+  } catch (e) {
+    return {
+      error: 'SCAN_FAILED',
+      message: '自动建立基线失败：' + (e.message || String(e)),
+      nextStep: '检查仓库路径与扫描依赖后重试 av_guard。',
+      ensured
+    };
   }
-  // 更新缓存
-  if (state) state.autoReport = report;
-  return report;
+
+  const { state, hadPending } = flushWatcherDebounce(repo);
+  const live = state || getWatcherState(repo);
+  const report = generateSessionReport(repo);
+  if (!report) return { ...noBaselinePayload(), ensured };
+  if (report.error) return { ...report, ensured };
+  if (live) live.autoReport = report;
+
+  const out = {
+    ...report,
+    ensured,
+    tool: 'av_guard',
+    gate: true
+  };
+  if (hadPending) out.flushedDebounce = true;
+  if (ensured) {
+    out.ensureNote = '已自动建立结构基线（无 git 时写入 .av/graph-baseline.json；有 git 时对照 HEAD）。';
+  }
+  return out;
 }
 
 /**
@@ -322,25 +530,35 @@ function toolSessionReport(args) {
  */
 function toolSessionChanges(args) {
   const repo = resolveRepo(args);
-  const bp = baselinePath(repo);
-  if (!fs.existsSync(bp)) {
-    return { error: 'NO_BASELINE', message: '还没拍"改之前"的照片。请先调 av_session_start。' };
+  const blocked = pathGuard(repo, args);
+  if (blocked) return blocked;
+  const resolved = resolveSessionBaseline(repo);
+  if (!resolved.ok) {
+    return resolved.error === 'SCAN_FAILED'
+      ? { error: 'SCAN_FAILED', message: resolved.message, nextStep: resolved.nextStep }
+      : noBaselinePayload();
   }
 
   const state = getWatcherState(repo);
+  const debounceSec = (state && state.debounceSec) || Math.round(DEFAULT_DEBOUNCE_MS / 1000);
 
   // watcher 正在防抖（检测到文件变更，等待 AI 停下）
   if (state && state.timer) {
+    const remainingMs = Math.max(0, (state.debounceDeadline || Date.now()) - Date.now());
+    const remainingSec = Math.ceil(remainingMs / 1000);
     return {
       watching: true,
       status: 'analyzing',
       hasChanges: true,
-      message: '检测到代码变更，正在等你停下（20 秒无新改动后自动出报告）。稍等片刻再调 av_session_report 看详情。'
+      debounceSeconds: debounceSec,
+      remainingSec,
+      message: `检测到代码变更，防抖还剩约 ${remainingSec} 秒（默认 ${debounceSec}s）。不想等请直接调 av_session_report——会取消防抖并立即生成报告。`,
+      nextStep: '直接调 av_session_report 立即看完整报告；或稍等防抖结束后再调。'
     };
   }
 
   // 有自动生成的报告
-  if (state && state.autoReport && !state.autoReport.error) {
+  if (state && state.watching && state.watcher && state.autoReport && !state.autoReport.error) {
     const r = state.autoReport;
     const ageSec = Math.round((Date.now() - r.generatedAt) / 1000);
     return {
@@ -353,24 +571,53 @@ function toolSessionChanges(args) {
       cacheAgeSec: ageSec,
       message: r.hasChanges
         ? `${r.message} 报告已自动生成（${ageSec} 秒前），调 av_session_report 看完整报告和架构图。`
-        : '没有检测到架构变更，结构没变。'
+        : describeGreenLight(r.summary).mcpShort,
+      nextStep: r.hasChanges
+        ? '调 av_session_report 看完整报告和架构图。'
+        : '确认变更符合预期后，调 av_session_start 刷新基线。'
     };
   }
 
-  // watcher 在监听但还没检测到变更
+  // watcher 在监听但还没检测到变更——不轻信 idle：fs.watch 可能尚未到达
   if (state && state.watching) {
+    const peek = peekSessionDiff(repo);
+    if (peek && peek.structChanged) {
+      return {
+        watching: true,
+        status: 'ready',
+        hasChanges: true,
+        peeked: true,
+        watchLag: true,
+        debounceSeconds: debounceSec,
+        summary: {
+          baseFingerprint: peek.baseFingerprint,
+          headFingerprint: peek.headFingerprint
+        },
+        message: 'watcher 事件可能尚未到达，但实时指纹已确认结构有变更。不要当成「没有变化」。请直接调 av_session_report（会立即重算）。',
+        nextStep: '直接调 av_session_report 看完整报告。'
+      };
+    }
     return {
       watching: true,
       status: 'idle',
       hasChanges: false,
-      message: '正在监听中，还没检测到代码变更。改完代码后停下 20 秒，系统会自动出报告。'
+      peeked: true,
+      contentChanged: !!(peek && peek.contentChanged),
+      debounceSeconds: debounceSec,
+      message: peek && peek.contentChanged
+        ? `结构指纹未变，但源码内容变了（函数体/注释不进结构指纹）。watcher 事件也可能尚未到达；若刚写完文件，可等 0.5–1 秒再问，或直接调 av_session_report。`
+        : `正在监听中，实时指纹与基线一致。若刚刚写完文件，watcher 事件可能尚未到达——可等 0.5–1 秒再调 av_session_changes，或直接调 av_session_report。`,
+      nextStep: '改完代码后直接调 av_session_report，或稍后再调 av_session_changes。'
     };
   }
 
-  // 没有 watcher（可能 server 重启过）：实时快速检查
+  // 没有 watcher（可能 server 重启过 / CLI 场景）：实时快速检查
   const report = generateSessionReport(repo);
   if (!report) {
-    return { watching: false, status: 'no-baseline', hasChanges: false, message: '请先调 av_session_start。' };
+    return { watching: false, status: 'no-baseline', hasChanges: false, ...noBaselinePayload() };
+  }
+  if (report.error) {
+    return { watching: false, status: 'error', hasChanges: false, ...report };
   }
   return {
     watching: false,
@@ -381,7 +628,102 @@ function toolSessionChanges(args) {
     summary: report.summary,
     message: report.hasChanges
       ? `${report.message} 调 av_session_report 看完整报告和架构图。`
-      : '没有检测到架构变更，结构没变。'
+      : describeGreenLight(report.summary).mcpShort,
+    nextStep: report.nextStep || (report.hasChanges
+      ? '调 av_session_report 看完整报告和架构图。'
+      : '确认变更符合预期后，调 av_session_start 刷新基线。')
+  };
+}
+
+function toolSessionStatus(args) {
+  const repo = resolveRepo(args);
+  const blocked = pathGuard(repo, args);
+  if (blocked) return { ...blocked, watching: false };
+  const paths = sessionPaths(repo);
+  const resolved = resolveSessionBaseline(repo);
+  const hasBaseline = !!(resolved.ok);
+  const baseline = resolved.ok ? resolved.graph : null;
+  const bp = resolved.ok && resolved.kind === 'git-head'
+    ? (resolved.cachePath || headCachePath(repo))
+    : baselinePath(repo);
+  const reportJsonPath = path.join(avDir(repo), 'session-report.json');
+  const reportHtmlPath = paths.reportEntry;
+  let report = null;
+  let reportStale = false;
+  if (fs.existsSync(reportJsonPath)) {
+    try {
+      report = migrateReport(JSON.parse(fs.readFileSync(reportJsonPath, 'utf8')));
+      reportStale = isStaleReport(report)
+        || !!(baseline && report.baseFingerprint && baseline.fingerprint && report.baseFingerprint !== baseline.fingerprint);
+    } catch { /* ignore */ }
+  }
+  const state = getWatcherState(repo);
+  const debounceSec = (state && state.debounceSec) || Math.round(DEFAULT_DEBOUNCE_MS / 1000);
+  let remainingSec = null;
+  if (state && state.timer && state.debounceDeadline) {
+    remainingSec = Math.max(0, Math.ceil((state.debounceDeadline - Date.now()) / 1000));
+  }
+  const peek = hasBaseline ? peekSessionDiff(repo) : null;
+  const cacheAgeSec = state && state.autoReport && state.autoReport.generatedAt
+    ? Math.round((Date.now() - state.autoReport.generatedAt) / 1000)
+    : null;
+  const watching = !!(state && state.watching && state.watcher);
+  const reportFresh = !!(report && !reportStale && fs.existsSync(reportHtmlPath));
+  return {
+    version: PKG_VERSION,
+    path: paths,
+    baseline: hasBaseline
+      ? {
+          present: true,
+          kind: resolved.kind,
+          savedTo: bp,
+          gitHead: resolved.gitHead || null,
+          hasUncommitted: !!resolved.hasUncommitted,
+          sessionStartedAt: baseline && (baseline.sessionStartedAt || baseline.cachedAt) || null,
+          fingerprint: baseline && baseline.fingerprint || null,
+          files: baseline && baseline.stats && baseline.stats.files || null
+        }
+      : { present: false, savedTo: bp },
+    watcher: {
+      running: watching,
+      repo: watching ? repo : null,
+      debounceSeconds: debounceSec,
+      pendingFiles: state ? state.pendingFiles || 0 : 0,
+      remainingSec,
+      lastError: state && state.watchError || null
+    },
+    report: {
+      html: reportHtmlPath,
+      json: reportJsonPath,
+      exists: reportFresh || fs.existsSync(reportHtmlPath),
+      stale: reportStale || (hasBaseline && fs.existsSync(reportHtmlPath) && !report),
+      generatedAt: report && report.generatedAt || null,
+      riskLevel: report && (report.risk && report.risk.level || report.riskSummary && report.riskSummary.level) || null,
+      cached: !!(state && state.autoReport && !state.autoReport.error),
+      cacheAgeSec
+    },
+    peek: peek
+      ? {
+          structChanged: peek.structChanged,
+          contentChanged: peek.contentChanged,
+          baseFingerprint: peek.baseFingerprint,
+          headFingerprint: peek.headFingerprint
+        }
+      : null,
+    message: !hasBaseline
+      ? (resolved.message || noBaselinePayload().message)
+      : reportStale
+        ? '基线已刷新或报告过期，不要打开旧 HTML。请调 av_session_report 生成最新报告。'
+        : watching
+          ? `基线在 ${paths.baselineDir}；正在监听 ${repo}。${peek && peek.structChanged ? '实时指纹已变，请调 av_session_report。' : remainingSec != null ? `防抖还剩约 ${remainingSec} 秒。` : '可调 av_session_changes 或直接 av_session_report。'}`
+          : '基线已建立，自动监听未运行（CLI 或 watcher 不可用）。改完请手动 av_session_report。',
+    nextStep: !hasBaseline
+      ? (resolved.nextStep || noBaselinePayload().nextStep)
+      : peek && peek.structChanged
+        ? '调 av_session_report 看完整报告。'
+        : (resolved.kind === 'git-head'
+          ? '改完后调 av_session_report；commit 即接受当前结构。'
+          : '改完后调 av_session_report；确认无误后再 av_session_start 刷新基线。')
   };
 }
 
@@ -446,13 +788,17 @@ function loadSessionFindings(repo) {
   }
   let report;
   try {
-    report = JSON.parse(fs.readFileSync(reportPath, 'utf8'));
+    report = migrateReport(JSON.parse(fs.readFileSync(reportPath, 'utf8')));
   } catch (e) {
     return { error: 'NO_SESSION_FINDING', message: '会话报告无法解析：' + e.message };
   }
+  // 过期存根：基线已刷新、旧报告被覆写为过期标记。拒绝把旧 findings 当成当前结果。
+  if (isStaleReport(report)) {
+    return { error: 'NO_SESSION_FINDING', message: '这份会话报告已过期（基线已刷新，旧红灯/绿灯失效）。请重新调用 av_session_report 生成最新结果。' };
+  }
   const findings = report.findings;
   if (!Array.isArray(findings) || findings.length === 0) {
-    return { error: 'NO_SESSION_FINDING', message: '会话报告里没有 finding。本轮可能是绿灯；不要把全楼历史问题当成这次红灯。' };
+    return { error: 'NO_SESSION_FINDING', message: '会话报告里没有 finding。本轮是绿灯——未检测到架构风险（源代码内容可能已修改，但结构指纹无变化）。不要把全楼历史问题当成这次红灯。' };
   }
   const bp = baselinePath(repo);
   if (!fs.existsSync(bp)) {
@@ -517,6 +863,9 @@ function buildExplainResult(target, diff, graph) {
         file: edge.file,
         line: edge.line
       };
+      // Fill missing layers on finding so direction-aware suggestion works
+      if (!target.fromLayer && fromNode?.layer) target.fromLayer = fromNode.layer;
+      if (!target.toLayer && toNode?.layer) target.toLayer = toNode.layer;
     }
   }
 
@@ -525,15 +874,7 @@ function buildExplainResult(target, diff, graph) {
     rule: target.rule,
     severity: target.severity,
     edgeEvidence,
-    suggestion: target.rule === 'cross-layer-violation' || target.rule === 'layer-skip'
-      ? '不要让前台直接跑去仓库拿东西——中间加一层"中间人"来中转，或者改成走接口。'
-      : isTeamForbid
-        ? '这是团队 architecture-rules.yaml 禁止的依赖方向，请改走允许的层，或更新规则文件并评审。'
-      : target.rule === 'removed-type'
-        ? '检查有没有其他代码用到被删掉的东西，必要的话保留或给个替代方案。'
-        : target.rule === 'new-external-dep'
-          ? '确认这个新引入的外购零件是不是真的需要，检查许可证和安全。'
-          : '请根据具体问题内容判断。'
+    suggestion: suggestForFinding(target)
   };
 }
 
@@ -578,58 +919,91 @@ function toolArchifyExport(args) {
 
 const TOOLS = [
   {
-    name: 'av_session_start',
-    description: '改代码之前拍一张"改之前"的照片（记录当前结构），并开启自动监听。在 Agent 开始改代码之前调用。调用后系统会自动盯着文件变化，AI 停下 20 秒后自动生成架构报告，不需要手动触发。完全离线。',
+    name: 'av_guard',
+    description: '日常结构验收（跨 Cursor / Claude / DeepSeek Harness 等）：无基线时自动 ensure，有 git 对照 HEAD，返回 ≤3 行 verdict。宣称完成前优先调这个。HTML 详情可选。必须显式传当前工作区绝对路径 repo。',
     inputSchema: {
       type: 'object',
       properties: {
-        repo: { type: 'string', description: '当前工作区根目录的绝对路径。必须显式传入，避免 MCP 进程 cwd 指向其他仓库。' }
+        repo: { type: 'string', description: '必填。当前工作区根目录的绝对路径。' },
+        editDir: { type: 'string', description: '可选。正在改代码的目录；与 repo 冲突时中止。' },
+        confirmRepo: { type: 'string', description: '可选。确认检查 repo（当 cwd 是另一个 Git 根时）。' }
+      },
+      required: ['repo']
+    }
+  },
+  {
+    name: 'av_session_start',
+    description: '改代码之前拍一张"改之前"的照片（记录当前结构）。MCP 长期进程还会开启自动监听（默认约 8 秒防抖）；CLI 不会持续监听，改完需手动 report。日常优先 av_guard。必须显式传当前工作区绝对路径 repo；务必回显返回的 path.checking。完全离线。',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        repo: { type: 'string', description: '必填。当前 IDE 工作区根目录的绝对路径。不要写死主仓路径——worktree 场景会拍错照片。' },
+        intent: { type: 'string', description: '可选。本次改动意图，例如「只修分层，不改 /todos」。报告会对照对外表面，不对齐只黄灯/信息，不阻断。' },
+        editDir: { type: 'string', description: '可选。正在改代码的目录绝对路径；与 repo 不是同一 Git 根时中止。' },
+        confirmRepo: { type: 'string', description: '可选。当 MCP cwd 与 repo 不是同一 Git 根、但你确认就要检查 repo 时，传入与 repo 相同的绝对路径。' }
       },
       required: ['repo']
     }
   },
   {
     name: 'av_session_changes',
-    description: '轻量检查"有没有架构变更"——不生成文件、秒回。每次你完成一批代码修改、准备回复用户之前调用。如果返回有变更，再调 av_session_report 看完整报告和架构图；如果返回 analyzing 说明还在等防抖，稍等再调。',
+    description: '轻量检查"有没有架构变更"——不生成文件、秒回。若 status=analyzing，看 remainingSec；不想等请直接调 av_session_report 或 av_guard（会取消防抖立即重算）。必须显式传当前工作区绝对路径 repo。',
     inputSchema: {
       type: 'object',
       properties: {
-        repo: { type: 'string', description: '当前工作区根目录的绝对路径。必须显式传入，避免 MCP 进程 cwd 指向其他仓库。' }
+        repo: { type: 'string', description: '必填。当前工作区根目录的绝对路径。' },
+        editDir: { type: 'string', description: '可选。正在改代码的目录；与 repo 冲突时中止。' },
+        confirmRepo: { type: 'string', description: '可选。确认检查 repo（当 cwd 是另一个 Git 根时）。' }
       },
       required: ['repo']
     }
   },
   {
     name: 'av_session_report',
-    description: '看完整架构变更报告（含 Before/After 对比图、风险红灯、影响面）。改完代码后调用。如果自动监听已生成报告会秒回缓存；否则实时生成。红灯建议先看再提交。需要先调 av_session_start。',
+    description: '看本轮结构验收结论（对话内 verdict：灯色 + 风险计数 + 最严重 1 条）与完整报告。有 git 时默认对照 HEAD，不必先 av_session_start。日常可用 av_guard（会自动 ensure）。有进行中的防抖时会取消并立即重算。HTML（.av/session-report.html）为可选深挖。必须显式传当前工作区绝对路径 repo。',
     inputSchema: {
       type: 'object',
       properties: {
-        repo: { type: 'string', description: '当前工作区根目录的绝对路径。必须显式传入，避免 MCP 进程 cwd 指向其他仓库。' },
-        from: { type: 'string', enum: ['session'], description: '可选：从会话报告取数据' }
+        repo: { type: 'string', description: '必填。当前工作区根目录的绝对路径。' },
+        from: { type: 'string', enum: ['session'], description: '可选：从会话报告取数据' },
+        editDir: { type: 'string', description: '可选。正在改代码的目录；与 repo 冲突时中止。' },
+        confirmRepo: { type: 'string', description: '可选。确认检查 repo（当 cwd 是另一个 Git 根时）。' }
+      },
+      required: ['repo']
+    }
+  },
+  {
+    name: 'av_status',
+    description: '给使用者看的会话状态：基线在哪、watcher 是否在跑、监听哪个仓、报告是缓存还是过期、实时指纹有没有变。必须显式传当前工作区绝对路径 repo。',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        repo: { type: 'string', description: '必填。当前工作区根目录的绝对路径。' },
+        editDir: { type: 'string', description: '可选。正在改代码的目录；与 repo 冲突时中止。' },
+        confirmRepo: { type: 'string', description: '可选。确认检查 repo（当 cwd 是另一个 Git 根时）。' }
       },
       required: ['repo']
     }
   },
   {
     name: 'av_check_layering',
-    description: '查全楼所有历史问题（不需要先拍照片）。适合第一次摸底，会列出全部"串门"。日常验收用 av_session_report 而不是这个。完全离线，1-2 秒完成。',
+    description: '查全楼所有历史问题（不需要先拍照片）。适合第一次摸底，会列出全部"串门"。日常验收用 av_guard / av_session_report 而不是这个。完全离线，1-2 秒完成。必须显式传当前工作区绝对路径 repo。',
     inputSchema: {
       type: 'object',
       properties: {
-        repo: { type: 'string', description: '当前工作区根目录的绝对路径。必须显式传入，避免 MCP 进程 cwd 指向其他仓库。' }
+        repo: { type: 'string', description: '必填。当前工作区根目录的绝对路径。' }
       },
       required: ['repo']
     }
   },
   {
     name: 'av_explain_finding',
-    description: '解释某条红灯的详情：谁串了谁的门、跳了哪一层、怎么修。按序号定位。from=session 时只读本轮报告，找不到就报错，不会静默改扫全楼。',
+    description: '解释某条红灯的详情：谁串了谁的门、跳了哪一层、怎么修。按违规方向给出不同建议。from=session 时只读本轮报告，找不到就报错，不会静默改扫全楼。必须显式传当前工作区绝对路径 repo。',
     inputSchema: {
       type: 'object',
       properties: {
-        repo: { type: 'string', description: '当前工作区根目录的绝对路径。必须显式传入，避免 MCP 进程 cwd 指向其他仓库。' },
-        rule: { type: 'string', description: '规则名（cross-layer-violation, layer-skip, removed-type, new-external-dep）' },
+        repo: { type: 'string', description: '必填。当前工作区根目录的绝对路径。' },
+        rule: { type: 'string', description: '规则名（cross-layer-violation, layer-skip, removed-type, new-external-dep, public-surface-changed, schema-touched, invariant-broken, intent-mismatch, behavior-untested）' },
         index: { type: 'integer', description: '问题列表中的序号（从0开始）' },
         from: { type: 'string', enum: ['session'], description: '从会话报告取本轮红灯；报告不存在或 findings 为空时返回 NO_SESSION_FINDING，绝不改扫全楼' }
       },
@@ -638,11 +1012,11 @@ const TOOLS = [
   },
   {
     name: 'av_archify_export',
-    description: '把本次会话的架构 diff 导出为 Archify IR 稀疏图（Before/After 两个 JSON + sidecar），写到项目 .av/ 目录，可喂给 archify validate/render/compare 出图。默认 scope=changed（只含变更文件）；图太密或纯新增文件时自动降级为 layers 层摘要图。需要先调 av_session_start 建立基线。validate=true 时若本机装了 archify 会顺带校验，校验失败不报错——回退内置报告图即可。',
+    description: '把本次会话的架构 diff 导出为 Archify IR 稀疏图（Before/After 两个 JSON + sidecar），写到项目 .av/ 目录，可喂给 archify validate/render/compare 出图。默认 scope=changed（只含变更文件）；图太密或纯新增文件时自动降级为 layers 层摘要图。需要可解析基线（git HEAD 或快照）。validate=true 时若本机装了 archify 会顺带校验，校验失败不报错——回退内置报告图即可。必须显式传当前工作区绝对路径 repo。',
     inputSchema: {
       type: 'object',
       properties: {
-        repo: { type: 'string', description: '当前工作区根目录的绝对路径。必须显式传入，避免 MCP 进程 cwd 指向其他仓库。' },
+        repo: { type: 'string', description: '必填。当前工作区根目录的绝对路径。' },
         scope: { type: 'string', enum: ['changed', 'violations', 'layers'], description: '导出范围：changed=变更文件（默认），violations=只看违规边，layers=层摘要图' },
         validate: { type: 'boolean', description: '是否顺带运行 archify validate（需要本机有 archify CLI，默认 false）' }
       },
@@ -724,9 +1098,11 @@ function handleToolCall(params) {
   const { name, arguments: args } = params;
   const validated = validateToolArgs(name, args || {});
   switch (name) {
+    case 'av_guard': return toolSessionGuard(validated);
     case 'av_session_start': return toolSessionStart(validated);
     case 'av_session_changes': return toolSessionChanges(validated);
     case 'av_session_report': return toolSessionReport(validated);
+    case 'av_status': return toolSessionStatus(validated);
     case 'av_check_layering': return toolCheckLayering(validated);
     case 'av_explain_finding': return toolExplainFinding(validated);
     case 'av_archify_export': return toolArchifyExport(validated);
@@ -787,7 +1163,13 @@ function createServer() {
   return { rl };
 }
 
-module.exports = { TOOLS, handleToolCall, validateToolArgs, toolSessionStart, toolSessionReport, toolSessionChanges, toolCheckLayering, toolExplainFinding, toolArchifyExport, buildExplainResult, createServer, generateSessionReport, startWatcher, stopWatcher, getWatcherState, shouldWatchFile, resolveRepo, PKG_VERSION };
+module.exports = {
+  TOOLS, handleToolCall, validateToolArgs,
+  toolSessionGuard, toolSessionStart, toolSessionReport, toolSessionChanges, toolSessionStatus, toolCheckLayering, toolExplainFinding, toolArchifyExport,
+  buildExplainResult, createServer, generateSessionReport, peekSessionDiff,
+  startWatcher, stopWatcher, getWatcherState, flushWatcherDebounce, shouldWatchFile,
+  resolveRepo, resolveDebounceMs, DEFAULT_DEBOUNCE_MS, PKG_VERSION
+};
 
 if (require.main === module) {
   createServer();

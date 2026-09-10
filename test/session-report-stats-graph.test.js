@@ -148,5 +148,7 @@ describe('HTML 图 vs 顶部统计（文案澄清，整文件展开保留）', (
       runFormatGraphCount(fn, [all[0]], [all[0]], 'changed'),
       '1 个变更 · 图上 1 个 · 0 条关系'
     );
+    assert.match(html, /未检测到架构结构变化/);
+    assert.match(html, /不是源码没变|不是源码 diff/);
   });
 });

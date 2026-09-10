@@ -1,29 +1,31 @@
-# architecture-rules.yaml — 团队制图规范（Architecture Viewer）
+# architecture-rules.yaml — 团队架构规范（Architecture Viewer）
 #
 # 用法：
-#   复制为本仓库根或套件目录下的 architecture-rules.yaml
-#   arch-viewer check . --rules architecture-rules.example.yaml
+#   复制为仓库根或套件目录下的 architecture-rules.yaml
+#   文档门：arch-viewer check . --rules architecture-rules.example.yaml
+#   代码门：arch-viewer session report . [--rules architecture-rules.example.yaml]
 #   未传 --rules 时，自动读取 kit/ 或仓库根的 architecture-rules.yaml
 #
-# 三类规则（差异化支点）：
-#   1. naming            节点 id 命名正则
-#   2. layers + forbid   分层归属 + 禁止跨层 Rel
-#   3. rel_whitelist     Rel 标签白名单
+# 两类消费面（不要混）：
+#   A. check（C4 文档）：naming / layers(glob 匹配节点 id) / forbid Rel / rel_whitelist
+#   B. session report（代码图）：forbid_cross_layer + invariants；
+#      from/to 是代码节点已推断的层名（controller/service/storage/…），不是 C4 id glob。
+#      naming / rel_whitelist 不会进入 session。
+#      invariants 只检查本轮新增路由/边（业务契约门，不是业务正确性证明）。
 #
-# 只对照 C4 图源（c4-*.md）的声明与 Rel；class / block / deployment 不参与。
-# 层归属按 layers 下声明顺序，第一条 glob 命中即停。
+# 层归属（仅 check）：按 layers 下声明顺序，第一条 glob 命中即停。
 
 version: 1
 name: team-default
 
-# 1) 节点命名：C4 id 必须是小写 snake_case
+# 1) 节点命名：C4 id 必须是小写 snake_case（仅 check）
 naming:
   - id: node-id-snake
     pattern: '^[a-z][a-z0-9_]*$'
     on: id
     message: 节点 id 必须是小写 snake_case（^[a-z][a-z0-9_]*$）
 
-# 2) 分层归属（glob，* 匹配任意长度）
+# 2) 分层归属（glob，* 匹配任意长度；仅 check 用 id 匹配）
 layers:
   controller:
     match: [user, web, '*_page', '*_handler', '*_controller']
@@ -33,17 +35,32 @@ layers:
     match: ['*_repo', '*_dao', '*_store', db, redis, queue]
 
 # 3) 禁止跨层：展示/控制层不得直连仓储
+#    - check：禁止 C4 Rel(controller → storage)
+#    - session：禁止本轮新增的代码边 controller → storage（与内置 layer-skip 同向，团队规则会额外报 rule id）
 forbid_cross_layer:
   - id: no-controller-to-storage
     from: controller
     to: storage
     message: 控制层不得直接依赖存储层，请经 service 中转
 
-# 4) Rel 标签白名单（大小写不敏感；无标签的 Rel 默认放行）
+# 4) Rel 标签白名单（仅 check；大小写不敏感；无标签的 Rel 默认放行）
 rel_whitelist:
   - id: allowed-rel-labels
     labels: [HTTP, gRPC, SQL, 调用, 访问, 读写, uses, use]
     allow_empty: true
+
+# 5) 业务/契约不变量（仅 session report；check 忽略）
+#    增量：只检查本轮新增的路由 / 依赖边。绿灯仍不等于业务逻辑正确。
+#    when.route 支持 * 通配，匹配 "METHOD /path"（如 "GET /todos*"）。
+#    forbid：禁止作用域内新增边；require.import_layer：路由文件必须 import 该层。
+invariants:
+  - id: new-route-no-direct-storage
+    message: 本轮新增路由所在文件不得直接依赖存储层，请经 service 访问
+    when:
+      route: "*"
+    forbid:
+      to_layer: storage
+      edge_type: import
 
 # 6) 风险规则策略（仅 session report；省略则用内置默认值）
 #    removed-type 分级：下游 < removed_type_low → low；≥ broad_impact → high；其余 medium。

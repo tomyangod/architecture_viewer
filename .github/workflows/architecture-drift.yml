@@ -4,10 +4,12 @@
 # 前置：`npx arch-viewer init` 并把 architecture_viewer/（以及可选的
 # architecture-rules.yaml）提交进仓库。
 #
+# 粒度：目录 / 服务 / 入口，不是每一个新文件（文件级看 session report）。
 # 行为：
 #   - check --filled --drift --rules 失败 → job 红灯，并在 PR 评论里写出
 #     视图名、缺失模块、规范规则名、建议动作
 #   - 无漂移时默认不评论（设 ARCH_DRIFT_COMMENT_ON_PASS=1 可改为贴通过）
+#   - 若 PR 改了 .av/graph-baseline.json → 评论必含「基线刷新需人工确认（防洗白）」
 #   - demo-drift 夹具必须红灯（本仓 fixture-lock 锁住）
 #
 # 本仓 dogfood：fixture-lock 验证夹具；用户仓把 drift-comment 的 kit 改成自己的目录。
@@ -67,14 +69,17 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - uses: actions/setup-node@v4
         with:
           node-version: '20'
       - name: Check kit + post drift comment
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_BASE_SHA: ${{ github.event.pull_request.base.sha }}
         run: |
-          # 用户仓：改成自己的 kit 目录。本仓若无 architecture_viewer/ 则跳过产品门禁
+          # 用户仓：改成自己的 kit 目录。本仓若用 architecture_viewer/ 则跳过产品门禁
           #（fixture-lock 已锁住 demo-drift / rules 红灯）。
           KIT="architecture_viewer"
           if [ ! -f "$KIT/architecture_visualized.html" ]; then

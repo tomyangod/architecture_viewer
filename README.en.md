@@ -1,11 +1,12 @@
 # Architecture Viewer
 
-**See what changed in your architecture after AI writes code.**
+**See architecture lights in chat after AI writes code. Green → commit (that accepts the structure).**
 
-Session baseline → change graph → impact analysis: CLI / MCP / Web / PR comment, four surfaces.
+Install once → state the request → read the verdict in chat → `git commit`.
+CLI / MCP / Web / PR comment, four surfaces.
 Free and open source (Apache-2.0), zero-config, seconds to diagram, no LLM dependency.
 
-![demo](docs/demo.gif)
+![demo](docs/demos/demo.gif)
 
 > **中文**: [README.md](README.md)
 
@@ -18,29 +19,30 @@ Free and open source (Apache-2.0), zero-config, seconds to diagram, no LLM depen
 
 ## Four Ways to Use
 
-### 1. CLI Session Gate (AI coding session wrap-up)
+### 1. One-Click Setup for AI Tools (recommended · Cursor / Claude / DeepSeek)
 
 ```bash
-npx arch-viewer session start        # 1. Before AI writes code: record architecture baseline
-# ...AI writes code / you write code...
-npx arch-viewer session report       # 2. Session end: Before/After diff + risk grading
-npx arch-viewer session start        # 3. Confirm changes look right: refresh baseline
+npx arch-viewer setup              # user-level MCP
+npx arch-viewer setup . --project  # project hooks + cross-host rules (gate on stop)
 ```
 
-Output: entity added/removed/modified/renamed counts, external dependency changes, risk findings
-(red cross-layer violations / type deletions / layer penetration / new external deps),
-**reverse dependency impact** (who's affected), plus a shareable HTML Before/After diagram.
-Exit code 1 on high risk — wire it into your AI coding workflow (see `.trae/rules/`).
+Detects installed AI coding tools (Cursor, Claude, DeepSeek Harness) and writes MCP config.
+Then tell your AI: "check architecture before you claim you're done." It should call `av_guard`
+and paste the ≤3-line **verdict**. With git, the baseline is **HEAD** — **commit = accept**.
+No snapshot ritual, no default HTML.
 
-### 2. One-Click Setup for AI Tools (Cursor / Claude / DeepSeek)
+### 2. CLI Session Gate (scripts / CI / no MCP)
 
 ```bash
-npx arch-viewer setup          # Auto-installs, opens visual guide, then just talk to your AI
+npx arch-viewer session report     # vs git HEAD (snapshot fallback when no git)
+npx arch-viewer session guard --adapter generic
 ```
 
-Auto-detects installed AI coding tools (Cursor, Claude, DeepSeek Harness) and writes architecture
-check rules into their config directories. Then tell your AI "take a snapshot before coding,
-check for breakage after."
+Daily use does not need `session start`. No-git repos: `av_guard` / `session guard` auto-ensure a snapshot.
+HTML (`.av/session-report.html`) is optional deep-dive.
+Exit code 1 on high risk. `session report` / `check` / `diff` share: `0` pass · `1` architecture gate failed · `2` bad args/config · `3` scan/parse failed · `4` missing or invalid baseline. See [Quickstart §6.3](docs/guides/quickstart.md).
+
+The old start → open HTML → start again loop is in the [Quickstart appendix](docs/guides/quickstart.md#附录a-拍照仪式高级).
 
 ### 3. PR Auto-Comment (GitHub Actions)
 
@@ -95,10 +97,20 @@ Requires Node.js >= 18. Supported languages: JavaScript / TypeScript (incl. Vue,
 
 ## Quick Start (30 seconds)
 
+Install once, then just talk:
+
 ```bash
-npx arch-viewer session start .        # 1. Before coding: snapshot the "before" structure
-echo '// change some code: add/remove a class or change an import'
-npx arch-viewer session report .       # 2. After: diff before/after, see if anything broke (--open for browser)
+npx arch-viewer setup
+# enforce on stop: npx arch-viewer setup . --project
+```
+
+Tell the AI: "run the architecture gate when you're done." Treat the chat **verdict** as acceptance:
+green → `git commit`; red → fix or explain (`av_explain_finding`).
+
+Without MCP:
+
+```bash
+npx arch-viewer session report .       # vs HEAD; add --open only if you want the diagram
 ```
 
 Other commands:
@@ -165,4 +177,4 @@ lib/                              # Scan / diff / impact / risk rules / report /
 | Pro | ¥29/mo | Hosted PR comments + incremental sync + email account |
 | Team | ¥999/yr/repo | Org rules + hosted CI gate |
 
-See [COMMERCIAL.md](COMMERCIAL.md).
+See [COMMERCIAL.md](docs/commercial/COMMERCIAL.md).

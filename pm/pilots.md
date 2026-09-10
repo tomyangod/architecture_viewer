@@ -92,10 +92,10 @@ arch-viewer check /Users/yanheyang/Desktop/v18/architecture_viewer \
 
 ## Team 私有化意向（W12-01）
 
-报价与 SLA：[docs/team-onprem.md](../docs/team-onprem.md)。**书面**意向（邮件 / 报价确认 / 订单号）才记入下表；口头不算。
+报价与 SLA：[docs/commercial/team-onprem.md](../docs/commercial/team-onprem.md)。**书面**意向（邮件 / 报价确认 / 订单号）才记入下表；口头不算。
 
 | 日期 | 组织 / 项目 | 联系渠道 | 凭证类型 | 档位 | 状态 |
 |------|-------------|---------|---------|------|------|
 | 2026-09-05 | v18 舆情平台 | 作者自有仓 | — | — | **技术试点**（W08-03），**不是**付费意向 |
 
-> 空着的付费行待种子用户或对公客户按 `docs/team-onprem.md` 模板回信后补。补上第一行书面凭证后本卡方可标 done。
+> 空着的付费行待种子用户或对公客户按 `docs/commercial/team-onprem.md` 模板回信后补。补上第一行书面凭证后本卡方可标 done。

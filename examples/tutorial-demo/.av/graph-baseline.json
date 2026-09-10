@@ -1,0 +1,701 @@
+{
+  "version": 1,
+  "root": "tutorial-demo",
+  "generatedAt": "2026-09-06T15:09:04.593Z",
+  "fingerprint": "d1e68ce4c9dff14a",
+  "languages": [
+    "python"
+  ],
+  "stats": {
+    "files": 10,
+    "filesParsed": 10,
+    "parseErrors": 0,
+    "types": 19,
+    "nodes": 32,
+    "edges": 27,
+    "externalPackages": 3
+  },
+  "nodes": [
+    {
+      "id": "file:app/__init__.py",
+      "kind": "file",
+      "name": "__init__.py",
+      "path": "app/__init__.py",
+      "layer": null,
+      "lang": "python",
+      "lineCount": 1
+    },
+    {
+      "id": "file:app/main.py",
+      "kind": "file",
+      "name": "main.py",
+      "path": "app/main.py",
+      "layer": "controller",
+      "layerConfidence": "high",
+      "layerSignal": "import:python-web-framework",
+      "lang": "python",
+      "lineCount": 15
+    },
+    {
+      "id": "app/main#create_app",
+      "kind": "function",
+      "name": "create_app",
+      "path": "app/main.py",
+      "line": 7,
+      "layer": "controller",
+      "layerConfidence": "high",
+      "layerSignal": "import:python-web-framework",
+      "lang": "python",
+      "modifiers": [],
+      "exported": true,
+      "module": "app/main",
+      "methods": [
+        "create_app"
+      ]
+    },
+    {
+      "id": "file:app/services/__init__.py",
+      "kind": "file",
+      "name": "__init__.py",
+      "path": "app/services/__init__.py",
+      "layer": "service",
+      "layerConfidence": "high",
+      "layerSignal": "dir-name",
+      "lang": "python",
+      "lineCount": 1
+    },
+    {
+      "id": "file:app/services/todo_service.py",
+      "kind": "file",
+      "name": "todo_service.py",
+      "path": "app/services/todo_service.py",
+      "layer": "service",
+      "layerConfidence": "high",
+      "layerSignal": "dir-name",
+      "lang": "python",
+      "lineCount": 39
+    },
+    {
+      "id": "app/services/todo_service#list_todos",
+      "kind": "function",
+      "name": "list_todos",
+      "path": "app/services/todo_service.py",
+      "line": 12,
+      "layer": "service",
+      "layerConfidence": "high",
+      "layerSignal": "dir-name",
+      "lang": "python",
+      "modifiers": [],
+      "exported": true,
+      "module": "app/services/todo_service",
+      "methods": [
+        "list_todos"
+      ]
+    },
+    {
+      "id": "app/services/todo_service#create_todo",
+      "kind": "function",
+      "name": "create_todo",
+      "path": "app/services/todo_service.py",
+      "line": 17,
+      "layer": "service",
+      "layerConfidence": "high",
+      "layerSignal": "dir-name",
+      "lang": "python",
+      "modifiers": [],
+      "exported": true,
+      "module": "app/services/todo_service",
+      "methods": [
+        "create_todo"
+      ]
+    },
+    {
+      "id": "app/services/todo_service#complete_todo",
+      "kind": "function",
+      "name": "complete_todo",
+      "path": "app/services/todo_service.py",
+      "line": 23,
+      "layer": "service",
+      "layerConfidence": "high",
+      "layerSignal": "dir-name",
+      "lang": "python",
+      "modifiers": [],
+      "exported": true,
+      "module": "app/services/todo_service",
+      "methods": [
+        "complete_todo"
+      ]
+    },
+    {
+      "id": "app/services/todo_service#clear_completed",
+      "kind": "function",
+      "name": "clear_completed",
+      "path": "app/services/todo_service.py",
+      "line": 30,
+      "layer": "service",
+      "layerConfidence": "high",
+      "layerSignal": "dir-name",
+      "lang": "python",
+      "modifiers": [],
+      "exported": true,
+      "module": "app/services/todo_service",
+      "methods": [
+        "clear_completed"
+      ]
+    },
+    {
+      "id": "app/services/todo_service#todo_stats",
+      "kind": "function",
+      "name": "todo_stats",
+      "path": "app/services/todo_service.py",
+      "line": 34,
+      "layer": "service",
+      "layerConfidence": "high",
+      "layerSignal": "dir-name",
+      "lang": "python",
+      "modifiers": [],
+      "exported": true,
+      "module": "app/services/todo_service",
+      "methods": [
+        "todo_stats"
+      ]
+    },
+    {
+      "id": "file:app/routes/__init__.py",
+      "kind": "file",
+      "name": "__init__.py",
+      "path": "app/routes/__init__.py",
+      "layer": "controller",
+      "layerConfidence": "high",
+      "layerSignal": "dir-name",
+      "lang": "python",
+      "lineCount": 1
+    },
+    {
+      "id": "file:app/routes/todos.py",
+      "kind": "file",
+      "name": "todos.py",
+      "path": "app/routes/todos.py",
+      "layer": "controller",
+      "layerConfidence": "high",
+      "layerSignal": "import:python-web-framework",
+      "lang": "python",
+      "lineCount": 43
+    },
+    {
+      "id": "app/routes/todos#get_todos",
+      "kind": "function",
+      "name": "get_todos",
+      "path": "app/routes/todos.py",
+      "line": 17,
+      "layer": "controller",
+      "layerConfidence": "high",
+      "layerSignal": "import:python-web-framework",
+      "lang": "python",
+      "modifiers": [],
+      "exported": true,
+      "module": "app/routes/todos",
+      "methods": [
+        "get_todos"
+      ]
+    },
+    {
+      "id": "app/routes/todos#add_todo",
+      "kind": "function",
+      "name": "add_todo",
+      "path": "app/routes/todos.py",
+      "line": 22,
+      "layer": "controller",
+      "layerConfidence": "high",
+      "layerSignal": "import:python-web-framework",
+      "lang": "python",
+      "modifiers": [],
+      "exported": true,
+      "module": "app/routes/todos",
+      "methods": [
+        "add_todo"
+      ]
+    },
+    {
+      "id": "app/routes/todos#mark_done",
+      "kind": "function",
+      "name": "mark_done",
+      "path": "app/routes/todos.py",
+      "line": 29,
+      "layer": "controller",
+      "layerConfidence": "high",
+      "layerSignal": "import:python-web-framework",
+      "lang": "python",
+      "modifiers": [],
+      "exported": true,
+      "module": "app/routes/todos",
+      "methods": [
+        "mark_done"
+      ]
+    },
+    {
+      "id": "app/routes/todos#clear_done",
+      "kind": "function",
+      "name": "clear_done",
+      "path": "app/routes/todos.py",
+      "line": 35,
+      "layer": "controller",
+      "layerConfidence": "high",
+      "layerSignal": "import:python-web-framework",
+      "lang": "python",
+      "modifiers": [],
+      "exported": true,
+      "module": "app/routes/todos",
+      "methods": [
+        "clear_done"
+      ]
+    },
+    {
+      "id": "app/routes/todos#stats",
+      "kind": "function",
+      "name": "stats",
+      "path": "app/routes/todos.py",
+      "line": 41,
+      "layer": "controller",
+      "layerConfidence": "high",
+      "layerSignal": "import:python-web-framework",
+      "lang": "python",
+      "modifiers": [],
+      "exported": true,
+      "module": "app/routes/todos",
+      "methods": [
+        "stats"
+      ]
+    },
+    {
+      "id": "file:app/models/__init__.py",
+      "kind": "file",
+      "name": "__init__.py",
+      "path": "app/models/__init__.py",
+      "layer": "domain",
+      "layerConfidence": "high",
+      "layerSignal": "dir-name",
+      "lang": "python",
+      "lineCount": 1
+    },
+    {
+      "id": "file:app/models/todo.py",
+      "kind": "file",
+      "name": "todo.py",
+      "path": "app/models/todo.py",
+      "layer": "domain",
+      "layerConfidence": "high",
+      "layerSignal": "dir-name",
+      "lang": "python",
+      "lineCount": 17
+    },
+    {
+      "id": "app/models/todo#Todo",
+      "kind": "class",
+      "name": "Todo",
+      "path": "app/models/todo.py",
+      "line": 6,
+      "layer": "domain",
+      "layerConfidence": "high",
+      "layerSignal": "dir-name",
+      "lang": "python",
+      "modifiers": [],
+      "exported": true,
+      "module": "app/models/todo",
+      "methods": [
+        "from_row",
+        "to_dict"
+      ]
+    },
+    {
+      "id": "file:app/database/__init__.py",
+      "kind": "file",
+      "name": "__init__.py",
+      "path": "app/database/__init__.py",
+      "layer": "storage",
+      "layerConfidence": "high",
+      "layerSignal": "dir-name",
+      "lang": "python",
+      "lineCount": 1
+    },
+    {
+      "id": "file:app/database/todo_repo.py",
+      "kind": "file",
+      "name": "todo_repo.py",
+      "path": "app/database/todo_repo.py",
+      "layer": "storage",
+      "layerConfidence": "high",
+      "layerSignal": "import:sqlite",
+      "lang": "python",
+      "lineCount": 57
+    },
+    {
+      "id": "app/database/todo_repo#_conn",
+      "kind": "function",
+      "name": "_conn",
+      "path": "app/database/todo_repo.py",
+      "line": 7,
+      "layer": "storage",
+      "layerConfidence": "high",
+      "layerSignal": "import:sqlite",
+      "lang": "python",
+      "modifiers": [],
+      "exported": true,
+      "module": "app/database/todo_repo",
+      "methods": [
+        "_conn"
+      ]
+    },
+    {
+      "id": "app/database/todo_repo#init_db",
+      "kind": "function",
+      "name": "init_db",
+      "path": "app/database/todo_repo.py",
+      "line": 13,
+      "layer": "storage",
+      "layerConfidence": "high",
+      "layerSignal": "import:sqlite",
+      "lang": "python",
+      "modifiers": [],
+      "exported": true,
+      "module": "app/database/todo_repo",
+      "methods": [
+        "init_db"
+      ]
+    },
+    {
+      "id": "app/database/todo_repo#select_all_todos",
+      "kind": "function",
+      "name": "select_all_todos",
+      "path": "app/database/todo_repo.py",
+      "line": 23,
+      "layer": "storage",
+      "layerConfidence": "high",
+      "layerSignal": "import:sqlite",
+      "lang": "python",
+      "modifiers": [],
+      "exported": true,
+      "module": "app/database/todo_repo",
+      "methods": [
+        "select_all_todos"
+      ]
+    },
+    {
+      "id": "app/database/todo_repo#insert_todo",
+      "kind": "function",
+      "name": "insert_todo",
+      "path": "app/database/todo_repo.py",
+      "line": 28,
+      "layer": "storage",
+      "layerConfidence": "high",
+      "layerSignal": "import:sqlite",
+      "lang": "python",
+      "modifiers": [],
+      "exported": true,
+      "module": "app/database/todo_repo",
+      "methods": [
+        "insert_todo"
+      ]
+    },
+    {
+      "id": "app/database/todo_repo#update_done",
+      "kind": "function",
+      "name": "update_done",
+      "path": "app/database/todo_repo.py",
+      "line": 37,
+      "layer": "storage",
+      "layerConfidence": "high",
+      "layerSignal": "import:sqlite",
+      "lang": "python",
+      "modifiers": [],
+      "exported": true,
+      "module": "app/database/todo_repo",
+      "methods": [
+        "update_done"
+      ]
+    },
+    {
+      "id": "app/database/todo_repo#delete_completed",
+      "kind": "function",
+      "name": "delete_completed",
+      "path": "app/database/todo_repo.py",
+      "line": 45,
+      "layer": "storage",
+      "layerConfidence": "high",
+      "layerSignal": "import:sqlite",
+      "lang": "python",
+      "modifiers": [],
+      "exported": true,
+      "module": "app/database/todo_repo",
+      "methods": [
+        "delete_completed"
+      ]
+    },
+    {
+      "id": "app/database/todo_repo#count_todos",
+      "kind": "function",
+      "name": "count_todos",
+      "path": "app/database/todo_repo.py",
+      "line": 51,
+      "layer": "storage",
+      "layerConfidence": "high",
+      "layerSignal": "import:sqlite",
+      "lang": "python",
+      "modifiers": [],
+      "exported": true,
+      "module": "app/database/todo_repo",
+      "methods": [
+        "count_todos"
+      ]
+    },
+    {
+      "id": "ext:flask",
+      "kind": "external",
+      "name": "flask",
+      "external": true,
+      "builtin": false
+    },
+    {
+      "id": "ext:dataclasses",
+      "kind": "external",
+      "name": "dataclasses",
+      "external": true,
+      "builtin": true
+    },
+    {
+      "id": "ext:sqlite3",
+      "kind": "external",
+      "name": "sqlite3",
+      "external": true,
+      "builtin": true
+    }
+  ],
+  "edges": [
+    {
+      "from": "app/main#create_app",
+      "to": "file:app/main.py",
+      "type": "declared-in",
+      "file": "app/main.py",
+      "line": 7
+    },
+    {
+      "from": "app/services/todo_service#list_todos",
+      "to": "file:app/services/todo_service.py",
+      "type": "declared-in",
+      "file": "app/services/todo_service.py",
+      "line": 12
+    },
+    {
+      "from": "app/services/todo_service#create_todo",
+      "to": "file:app/services/todo_service.py",
+      "type": "declared-in",
+      "file": "app/services/todo_service.py",
+      "line": 17
+    },
+    {
+      "from": "app/services/todo_service#complete_todo",
+      "to": "file:app/services/todo_service.py",
+      "type": "declared-in",
+      "file": "app/services/todo_service.py",
+      "line": 23
+    },
+    {
+      "from": "app/services/todo_service#clear_completed",
+      "to": "file:app/services/todo_service.py",
+      "type": "declared-in",
+      "file": "app/services/todo_service.py",
+      "line": 30
+    },
+    {
+      "from": "app/services/todo_service#todo_stats",
+      "to": "file:app/services/todo_service.py",
+      "type": "declared-in",
+      "file": "app/services/todo_service.py",
+      "line": 34
+    },
+    {
+      "from": "app/routes/todos#get_todos",
+      "to": "file:app/routes/todos.py",
+      "type": "declared-in",
+      "file": "app/routes/todos.py",
+      "line": 17
+    },
+    {
+      "from": "app/routes/todos#add_todo",
+      "to": "file:app/routes/todos.py",
+      "type": "declared-in",
+      "file": "app/routes/todos.py",
+      "line": 22
+    },
+    {
+      "from": "app/routes/todos#mark_done",
+      "to": "file:app/routes/todos.py",
+      "type": "declared-in",
+      "file": "app/routes/todos.py",
+      "line": 29
+    },
+    {
+      "from": "app/routes/todos#clear_done",
+      "to": "file:app/routes/todos.py",
+      "type": "declared-in",
+      "file": "app/routes/todos.py",
+      "line": 35
+    },
+    {
+      "from": "app/routes/todos#stats",
+      "to": "file:app/routes/todos.py",
+      "type": "declared-in",
+      "file": "app/routes/todos.py",
+      "line": 41
+    },
+    {
+      "from": "app/models/todo#Todo",
+      "to": "file:app/models/todo.py",
+      "type": "declared-in",
+      "file": "app/models/todo.py",
+      "line": 6
+    },
+    {
+      "from": "app/database/todo_repo#_conn",
+      "to": "file:app/database/todo_repo.py",
+      "type": "declared-in",
+      "file": "app/database/todo_repo.py",
+      "line": 7
+    },
+    {
+      "from": "app/database/todo_repo#init_db",
+      "to": "file:app/database/todo_repo.py",
+      "type": "declared-in",
+      "file": "app/database/todo_repo.py",
+      "line": 13
+    },
+    {
+      "from": "app/database/todo_repo#select_all_todos",
+      "to": "file:app/database/todo_repo.py",
+      "type": "declared-in",
+      "file": "app/database/todo_repo.py",
+      "line": 23
+    },
+    {
+      "from": "app/database/todo_repo#insert_todo",
+      "to": "file:app/database/todo_repo.py",
+      "type": "declared-in",
+      "file": "app/database/todo_repo.py",
+      "line": 28
+    },
+    {
+      "from": "app/database/todo_repo#update_done",
+      "to": "file:app/database/todo_repo.py",
+      "type": "declared-in",
+      "file": "app/database/todo_repo.py",
+      "line": 37
+    },
+    {
+      "from": "app/database/todo_repo#delete_completed",
+      "to": "file:app/database/todo_repo.py",
+      "type": "declared-in",
+      "file": "app/database/todo_repo.py",
+      "line": 45
+    },
+    {
+      "from": "app/database/todo_repo#count_todos",
+      "to": "file:app/database/todo_repo.py",
+      "type": "declared-in",
+      "file": "app/database/todo_repo.py",
+      "line": 51
+    },
+    {
+      "from": "file:app/main.py",
+      "to": "ext:flask",
+      "type": "uses-external",
+      "file": "app/main.py",
+      "line": 2,
+      "builtin": false
+    },
+    {
+      "from": "file:app/main.py",
+      "to": "file:app/routes/todos.py",
+      "type": "import",
+      "file": "app/main.py",
+      "line": 4
+    },
+    {
+      "from": "file:app/services/todo_service.py",
+      "to": "file:app/database/todo_repo.py",
+      "type": "import",
+      "file": "app/services/todo_service.py",
+      "line": 2
+    },
+    {
+      "from": "file:app/services/todo_service.py",
+      "to": "file:app/models/todo.py",
+      "type": "import",
+      "file": "app/services/todo_service.py",
+      "line": 9
+    },
+    {
+      "from": "file:app/routes/todos.py",
+      "to": "ext:flask",
+      "type": "uses-external",
+      "file": "app/routes/todos.py",
+      "line": 2,
+      "builtin": false
+    },
+    {
+      "from": "file:app/routes/todos.py",
+      "to": "file:app/services/todo_service.py",
+      "type": "import",
+      "file": "app/routes/todos.py",
+      "line": 4
+    },
+    {
+      "from": "file:app/models/todo.py",
+      "to": "ext:dataclasses",
+      "type": "uses-external",
+      "file": "app/models/todo.py",
+      "line": 2,
+      "builtin": true
+    },
+    {
+      "from": "file:app/database/todo_repo.py",
+      "to": "ext:sqlite3",
+      "type": "uses-external",
+      "file": "app/database/todo_repo.py",
+      "line": 2,
+      "builtin": true
+    }
+  ],
+  "layerSignals": {
+    "app": {
+      "layer": "controller",
+      "confidence": "high",
+      "signal": "import:python-web-framework",
+      "files": 2
+    },
+    "app/services": {
+      "layer": "service",
+      "confidence": "high",
+      "signal": "dir-name",
+      "files": 2
+    },
+    "app/routes": {
+      "layer": "controller",
+      "confidence": "high",
+      "signal": "dir-name",
+      "files": 2
+    },
+    "app/models": {
+      "layer": "domain",
+      "confidence": "high",
+      "signal": "dir-name",
+      "files": 2
+    },
+    "app/database": {
+      "layer": "storage",
+      "confidence": "high",
+      "signal": "dir-name",
+      "files": 2
+    }
+  },
+  "sessionStartedAt": "2026-09-06T15:09:04.594Z"
+}

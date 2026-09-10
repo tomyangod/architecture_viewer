@@ -21,8 +21,10 @@ function taskCard(t, byId) {
   const overdue = isOverdue(t) ? ' ⚠️**已逾期**' : '';
   const depLinks = (t.deps || []).map((d) => `[${d}](../${d.slice(0, 3)}/README.md#${d.toLowerCase()})`).join('、') || '无';
   const refs = (t.refs || []).map((r) => `\`${r}\``).join(' ');
-  const acc = t.acceptance.map((a) => `- [ ] ${a}`).join('\n');
-  const cmds = t.acceptanceCommands.map((c) => `  \`\`\`bash\n  ${c}\n  \`\`\``).join('\n');
+  const acceptance = Array.isArray(t.acceptance) ? t.acceptance : (t.acceptance ? [t.acceptance] : []);
+  const acceptanceCommands = Array.isArray(t.acceptanceCommands) ? t.acceptanceCommands : (t.acceptanceCommands ? [t.acceptanceCommands] : []);
+  const acc = acceptance.map((a) => `- [ ] ${a}`).join('\n');
+  const cmds = acceptanceCommands.map((c) => `  \`\`\`bash\n  ${c}\n  \`\`\``).join('\n');
   const files = (t.files || []).map((f) => `\`${f}\``).join(' ');
   const activity = (t.activity || []).length
     ? t.activity.map((a) => `  - ${a.date} ${a.action}${a.detail ? `：${a.detail}` : ''}${a.commit ? ` (${a.commit})` : ''}`).join('\n')

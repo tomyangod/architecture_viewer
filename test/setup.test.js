@@ -58,10 +58,10 @@ describe('setup: 一键接入', () => {
     assert.ok(out.includes('Cursor：之前已经装过，跳过'));
   });
 
-  it('口令文案面向小白，不含生硬术语', () => {
+  it('口令文案指向 av_guard，不含旧拍照仪式', () => {
     const out = runSetup(home);
-    assert.ok(out.includes('拍照片'));
-    assert.ok(out.includes('改坏'));
+    assert.ok(out.includes('av_guard'));
+    assert.ok(out.includes('架构门') || out.includes('结构'));
   });
 
   it('口令不写死绝对路径，即使传入 repo', () => {
@@ -141,18 +141,19 @@ describe('setup: DeepSeek Harness (dsh) 接入', () => {
   });
 });
 
-describe('setup: npx 启动方式（全局安装后免 clone 仓库）', () => {
+describe('setup: 全局安装启动方式（全局安装后免 clone 仓库）', () => {
   const {
     isGlobalInstalled, resolveLauncher, dshPatchBlock, writeDshPatch, NPM_PACKAGE
   } = require('../lib/setup');
 
-  /** 造一个假的「全局 node_modules」，里面装/不装 arch-viewer-mcp */
+  /** 造一个假的「全局 node_modules」，里面装/不装 arch-viewer */
   function fakeGlobalRoot(installed) {
     const root = fs.mkdtempSync(path.join(os.tmpdir(), 'av-global-'));
     if (installed) {
       const pkgDir = path.join(root, NPM_PACKAGE);
-      fs.mkdirSync(pkgDir, { recursive: true });
+      fs.mkdirSync(path.join(pkgDir, 'mcp'), { recursive: true });
       fs.writeFileSync(path.join(pkgDir, 'package.json'), JSON.stringify({ name: NPM_PACKAGE, version: '0.10.0' }));
+      fs.writeFileSync(path.join(pkgDir, 'mcp', 'server.js'), "'use strict';\n");
     }
     return root;
   }
@@ -179,12 +180,13 @@ describe('setup: npx 启动方式（全局安装后免 clone 仓库）', () => {
     assert.equal(isGlobalInstalled(() => { throw new Error('npm not found'); }), false);
   });
 
-  it('全局装了 → resolveLauncher 用 npx -y arch-viewer-mcp', () => {
+  it('全局装了 → resolveLauncher 直接使用该版本的 mcp/server.js', () => {
     const root = fakeGlobalRoot(true);
     const l = resolveLauncher(execReturning(root));
-    assert.equal(l.mode, 'npx');
-    assert.ok(l.command === 'npx' || l.command === 'npx.cmd', 'command 应为 npx（Win 下 npx.cmd）');
-    assert.deepEqual(l.args, ['-y', NPM_PACKAGE]);
+    assert.equal(l.mode, 'global');
+    assert.equal(l.command, process.execPath);
+    assert.deepEqual(l.args, [path.join(root, NPM_PACKAGE, 'mcp', 'server.js')]);
+    assert.equal(l.version, '0.10.0');
   });
 
   it('没装 → resolveLauncher 回退本地 node + mcp/server.js', () => {
@@ -195,18 +197,17 @@ describe('setup: npx 启动方式（全局安装后免 clone 仓库）', () => {
     assert.ok(l.args[0].endsWith(path.join('mcp', 'server.js')), 'args 应指向仓库内 server.js');
   });
 
-  it('npx launcher 生成的 dsh patch 用 npx，不含本地仓库路径', () => {
+  it('global launcher 生成的 dsh patch 固定使用已安装包路径', () => {
     const root = fakeGlobalRoot(true);
     const launcher = resolveLauncher(execReturning(root));
     const block = dshPatchBlock(launcher);
-    assert.ok(block.includes('command: npx'), '应使用 npx 启动');
-    assert.ok(block.includes('-y'), 'args 应含 -y');
-    assert.ok(block.includes(NPM_PACKAGE), 'args 应含包名');
-    assert.ok(!block.includes('mcp/server.js'), 'npx 模式不应出现本地 server.js 路径');
+    assert.ok(block.includes(process.execPath), '应使用当前 Node 启动');
+    assert.ok(block.includes(path.join(root, NPM_PACKAGE, 'mcp', 'server.js')), '应固定到检测到的全局安装');
+    assert.ok(!block.includes('npx'), '不得再次通过 npx 解析其他版本');
     assert.ok(block.includes('transport: stdio'), '仍应为 stdio');
   });
 
-  it('writeDshPatch 用 npx launcher 写出的文件可被 dsh 识别', () => {
+  it('writeDshPatch 用 global launcher 写出的文件可被 dsh 识别', () => {
     const root = fakeGlobalRoot(true);
     const launcher = resolveLauncher(execReturning(root));
     const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'av-dsh-npx-'));
@@ -218,9 +219,9 @@ describe('setup: npx 启动方式（全局安装后免 clone 仓库）', () => {
 
     const content = fs.readFileSync(patchPath, 'utf8');
     assert.ok(content.includes('id: mcp-arch-viewer'));
-    assert.ok(content.includes('command: npx'));
-    assert.ok(content.includes('arch-viewer-mcp'));
-    assert.ok(!content.includes(path.sep + 'mcp' + path.sep), '不应写入本地仓库绝对路径');
+    assert.ok(content.includes(process.execPath));
+    assert.ok(content.includes(path.join(root, NPM_PACKAGE, 'mcp', 'server.js')));
+    assert.ok(!content.includes('npx'), '不得写入未固定版本的 npx launcher');
     assert.ok(content.includes('# comment'), '原有注释应保留');
   });
 });

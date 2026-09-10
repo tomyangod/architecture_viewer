@@ -1,0 +1,87 @@
+{
+  "version": 1,
+  "manifestHash": "9aa423df59b9ed76",
+  "diagrams": {
+    "c4-context.md": "daca6c54867ef781",
+    "c4-container.md": "40f04f61304c61fa",
+    "c4-component.md": "60ac448e1ff7120a",
+    "block-diagram.md": "4a81d8a24806e8a4",
+    "class-diagram.md": "fbf307b5f65a726d",
+    "deployment-ops.md": "45950682dd63f2db"
+  },
+  "inventory": {
+    "title": "tutorial-demo",
+    "folder": "tutorial-demo",
+    "languages": [
+      "python"
+    ],
+    "packages": [
+      {
+        "name": "flask",
+        "kind": "python-import"
+      }
+    ],
+    "services": [],
+    "modules": [
+      {
+        "id": "app",
+        "label": "app",
+        "kind": "backend",
+        "layer": "api"
+      },
+      {
+        "id": "app_database",
+        "label": "app/database",
+        "kind": "backend",
+        "layer": "storage"
+      },
+      {
+        "id": "app_models",
+        "label": "app/models",
+        "kind": "backend",
+        "layer": "api"
+      },
+      {
+        "id": "app_routes",
+        "label": "app/routes",
+        "kind": "backend",
+        "layer": "api"
+      },
+      {
+        "id": "app_services",
+        "label": "app/services",
+        "kind": "backend",
+        "layer": "api"
+      }
+    ],
+    "artifacts": [
+      {
+        "id": "init_app",
+        "label": "__init__.py",
+        "path": "app/__init__.py",
+        "layer": "api"
+      },
+      {
+        "id": "main_app",
+        "label": "main.py",
+        "path": "app/main.py",
+        "layer": "api"
+      }
+    ],
+    "topDirs": [
+      "app"
+    ],
+    "entrypoints": [
+      "app/main.py"
+    ],
+    "deploy": [],
+    "classes": [
+      {
+        "name": "Todo",
+        "file": "models/todo.py"
+      }
+    ],
+    "fingerprint": "cf7a336e0e6041e4"
+  },
+  "savedAt": "2026-09-07T04:38:27.501Z"
+}

@@ -61,7 +61,7 @@
 
 **目标**：国内收款链接可用 + 支付后手动/半自动开通 Pro 的 SOP；Lemon Squeezy 商品页创建（可沙箱）。
 
-**涉及文件**：`web/lib/billing.js` `docs/billing.md`
+**涉及文件**：`web/lib/billing.js` `docs/commercial/billing.md`
 
 **验收标准**（逐条勾选，全部满足才能标 done）：
 - [ ] 爱发电/微信收款链接在定价页可点
@@ -70,14 +70,14 @@
 
 **验收命令**（退出码 0 即通过；人工验收项需在周报中记录证据）：
   ```bash
-  test -f docs/billing.md && grep -q "Pro" docs/billing.md && echo BILLING_OK
+  test -f docs/commercial/billing.md && grep -q "Pro" docs/commercial/billing.md && echo BILLING_OK
   ```
 
 **参考文档**：`COMMERCIAL.md`
 
 **活动记录**：
   - 2026-09-04 状态变更 todo→doing：开工：爱发电/微信收款 + Lemon 占位 + billing SOP
-  - 2026-09-04 状态变更 doing→done：docs/billing.md 付款→核验→开通 SOP；定价页/控制台可点爱发电·微信·Lemon；web/lib/billing.js + /api/billing/links；BILLING_OK。
+  - 2026-09-04 状态变更 doing→done：docs/commercial/billing.md 付款→核验→开通 SOP；定价页/控制台可点爱发电·微信·Lemon；web/lib/billing.js + /api/billing/links；BILLING_OK。
 
 ---
 
@@ -98,7 +98,7 @@
 
 **目标**：60 秒演示：session start → 改代码 → session report 红灯 / Before-Delta-After，中英字幕。
 
-**涉及文件**：`docs/demo.mp4`
+**涉及文件**：`docs/demos/demo.mp4`
 
 **验收标准**（逐条勾选，全部满足才能标 done）：
 - [ ] 视频时长 45–90 秒
@@ -107,7 +107,7 @@
 
 **验收命令**（退出码 0 即通过；人工验收项需在周报中记录证据）：
   ```bash
-  test -f docs/demo.mp4 && echo VIDEO_OK
+  test -f docs/demos/demo.mp4 && echo VIDEO_OK
   ```
 
 **参考文档**：—

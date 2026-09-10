@@ -66,7 +66,7 @@ arch-viewer pro sync [repo]
 Community 的 `generate` / `check` / `session` / `--refine`（自带 Key）**不要**调用门禁。
 
 特性开关（服务端）：`ARCH_PRO_FEATURES='{"cloud_refine":false}'` 或 `ARCH_PRO_FEATURES_OFF=incremental_sync`。  
-定价链接：`ARCH_PRICING_URL`（默认 COMMERCIAL.md）。
+定价链接：`ARCH_PRICING_URL`（默认 [docs/commercial/COMMERCIAL.md](../../docs/commercial/COMMERCIAL.md)）。
 
 `requireUser()` 只检查登录态，不谈升级；网页路由用 `auth.requireProFeature(req, feature)`。
 

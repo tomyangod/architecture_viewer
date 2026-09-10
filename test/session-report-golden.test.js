@@ -5,7 +5,7 @@ const assert = require('node:assert/strict');
 const fs = require('fs');
 const path = require('path');
 
-const { buildReportData, generateReport } = require('../lib/session-report');
+const { buildReportData, generateReport, buildSessionReportJson } = require('../lib/session-report');
 const { assertReportContract, normalizeReportForGolden } = require('../lib/report-contract');
 const { diffGraphs } = require('../lib/diff-graph');
 
@@ -58,7 +58,7 @@ describe('session-report golden + delivery contract', () => {
     const { base, head, diff } = miniGraphs();
     const data = buildReportData(base, head, diff, [], null, 'demo', null);
     assert.doesNotThrow(() => assertReportContract(data));
-    assert.equal(data.schemaVersion, 1);
+    assert.equal(data.schemaVersion, 2);
     assert.ok(data.moved.some((m) => m.id === 'cls:MoveMe'));
     assert.ok(data.rerouted.some((e) => e.from === 'cls:Keep' && e.to === 'cls:MoveMe'));
     assert.equal(data.entities.find((e) => e.id === 'cls:MoveMe').status, 'moved');
@@ -114,5 +114,22 @@ describe('session-report golden + delivery contract', () => {
     assert.ok(fs.existsSync(GOLDEN_PATH), `missing golden; run UPDATE_GOLDENS=1 to create ${GOLDEN_PATH}`);
     const expected = fs.readFileSync(GOLDEN_PATH, 'utf8').replace(/\r\n/g, '\n');
     assert.equal(rendered, expected);
+  });
+
+  it('落盘 JSON 与 HTML 共用 risk.level / summary.changeScale（schemaVersion 2）', () => {
+    const { base, head, diff } = miniGraphs();
+    const htmlData = buildReportData(base, head, diff, [], null, 'demo', null);
+    const disk = buildSessionReportJson({
+      diff, findings: [], riskSummary: { level: 'none', counts: {}, total: 0 },
+      impact: null, baseGraph: base, headGraph: head, repoName: 'demo'
+    });
+    assert.equal(disk.schemaVersion, 2);
+    assert.equal(disk.risk.level, htmlData.risk.level);
+    assert.equal(disk.riskSummary.level, disk.risk.level);
+    assert.equal(disk.summary.changeScale, htmlData.summary.changeScale);
+    assert.equal(disk.diff.summary.changeScale, htmlData.summary.changeScale);
+    assert.equal(disk.summary.riskLevel, undefined);
+    assert.doesNotThrow(() => assertReportContract(disk));
+    assert.doesNotThrow(() => assertReportContract(htmlData));
   });
 });

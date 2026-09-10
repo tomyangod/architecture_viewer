@@ -38,7 +38,7 @@ Architecture Viewer：AI 写完代码后自动出架构 diff + 风险分级。
 
 ```
 如果你们代码不能出网，也可以看私有化报价（入门 ¥19,999/年，含部署对接与一年）：
-https://gitee.com/heyangyan/architecture_viewer/blob/master/docs/team-onprem.md
+https://gitee.com/heyangyan/architecture_viewer/blob/master/docs/commercial/team-onprem.md
 
 方便的话回一封邮件写「同意按入门档启动试点 + 仓库数」，我按书面意向排期（不强制付费）。
 ```

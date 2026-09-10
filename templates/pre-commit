@@ -20,8 +20,12 @@ ROOT="$(git rev-parse --show-toplevel 2>/dev/null || pwd)"
 cd "$ROOT"
 
 if [ ! -f .av/graph-baseline.json ]; then
-  echo "[arch-viewer] 无会话基线，跳过门禁。需要时先跑: arch-viewer session start"
-  exit 0
+  if git rev-parse --is-inside-work-tree >/dev/null 2>&1 && git rev-parse --verify HEAD >/dev/null 2>&1; then
+    echo "[arch-viewer] 无快照基线，对照 git HEAD 验收"
+  else
+    echo "[arch-viewer] 无会话基线，跳过门禁。需要时先跑: arch-viewer session start"
+    exit 0
+  fi
 fi
 
 resolve_cli() {

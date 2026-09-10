@@ -48,12 +48,13 @@ archify-main/
 .archify-*/
 
 # Architecture Viewer session artifacts
-# graph-baseline.json is committed (team baseline); reports are local only
+# graph-baseline.json is committed (team snapshot, optional); HEAD cache and reports are local
 .av/session-report.*
 .av/archify-*.json
 .av/habit-gate-log.md
 .av/workspace.json
 .av/layers.suggested.json
+.av/graph-head.json
 
 *.vsix
 *.tgz

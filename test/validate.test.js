@@ -62,6 +62,118 @@ C4Component
     assert.deepEqual(r.errors, []);
   });
 
+  it('flowchart C4 does NOT warn missing UpdateLayoutConfig', () => {
+    const md = `## 子图1：x
+
+\`\`\`mermaid
+flowchart TB
+    subgraph APP["🧩 应用"]
+        A["🐍 入口<br/><small>app/main.py</small>"]
+    end
+    A -->|调用| B["📦 模型"]
+\`\`\`
+`;
+    const r = checkFile('c4-container.md', md, {});
+    assert.ok(!r.warnings.some((w) => /UpdateLayoutConfig/.test(w)),
+      'flowchart C4 should not require UpdateLayoutConfig');
+  });
+
+  it('native C4Context without UpdateLayoutConfig DOES warn', () => {
+    const md = `## 子图1：x
+
+\`\`\`mermaid
+C4Context
+    Person(user, "u")
+    System(sys, "s")
+    Rel(user, sys, "ok")
+\`\`\`
+`;
+    const r = checkFile('c4-context.md', md, {});
+    assert.ok(r.warnings.some((w) => /missing UpdateLayoutConfig/.test(w)),
+      'native C4Context still requires UpdateLayoutConfig');
+  });
+
+  it('native C4Container with UpdateLayoutConfig does NOT warn', () => {
+    const md = `## 子图1：x
+
+\`\`\`mermaid
+C4Container
+    Person(user, "u")
+    Container(web, "web", "n", "")
+    Rel(user, web, "ok")
+    UpdateLayoutConfig($c4ShapeInRow="3", $c4BoundaryInRow="1")
+\`\`\`
+`;
+    const r = checkFile('c4-container.md', md, {});
+    assert.ok(!r.warnings.some((w) => /UpdateLayoutConfig/.test(w)));
+  });
+
+  it('native C4Component without UpdateLayoutConfig DOES warn', () => {
+    const md = `## 子图1：x
+
+\`\`\`mermaid
+C4Component
+    Component(a, "a", "py", "")
+    Component(b, "b", "py", "")
+    Rel(a, b, "ok")
+\`\`\`
+`;
+    const r = checkFile('c4-component.md', md, {});
+    assert.ok(r.warnings.some((w) => /missing UpdateLayoutConfig/.test(w)));
+  });
+
+  it('native C4Context WITH UpdateLayoutConfig does NOT warn', () => {
+    const md = `## 子图1：x
+
+\`\`\`mermaid
+C4Context
+    Person(user, "u")
+    System(sys, "s")
+    Rel(user, sys, "ok")
+    UpdateLayoutConfig($c4ShapeInRow="3", $c4BoundaryInRow="1")
+\`\`\`
+`;
+    const r = checkFile('c4-context.md', md, {});
+    assert.ok(!r.warnings.some((w) => /UpdateLayoutConfig/.test(w)));
+  });
+
+  it('per-block: mixed native C4 (no ULC) + flowchart blocks warn once', () => {
+    const md = `## 子图1：原生
+
+\`\`\`mermaid
+C4Context
+    Person(user, "u")
+    System(sys, "s")
+    Rel(user, sys, "ok")
+\`\`\`
+
+## 子图2：flowchart
+
+\`\`\`mermaid
+flowchart LR
+    A["🧩 系统"] --> B["🗄️ 库"]
+\`\`\`
+`;
+    const r = checkFile('c4-context.md', md, {});
+    const ulc = r.warnings.filter((w) => /missing UpdateLayoutConfig/.test(w));
+    assert.equal(ulc.length, 1, 'only the native block warns');
+    assert.match(ulc[0], /sub-1/);
+  });
+
+  it('non-c4 files never warn UpdateLayoutConfig (isC4 gate)', () => {
+    const md = `## 子图1：x
+
+\`\`\`mermaid
+flowchart TB
+    A["🐍 入口"] --> B["🔌 路由"]
+\`\`\`
+`;
+    for (const f of ['deployment-ops.md', 'block-diagram.md']) {
+      const r = checkFile(f, md, {});
+      assert.ok(!r.warnings.some((w) => /UpdateLayoutConfig/.test(w)), f);
+    }
+  });
+
   it('fails demo-drift fixture', () => {
     const dir = path.join(__dirname, '..', 'eval', 'demo-drift');
     const r = validateDir(dir, { requireFilled: true });

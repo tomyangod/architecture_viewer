@@ -1,15 +1,15 @@
 # Architecture Viewer 商业化 · 项目总览
 
-> 单一事实源：[`project.config.json`](../project.config.json) + [`tasks/tasks.json`](./tasks/tasks.json)（46 个任务）。
+> 单一事实源：[`project.config.json`](../project.config.json) + [`tasks/tasks.json`](./tasks/tasks.json)（86 个任务）。
 > 本页由 `node pm/scripts/wbs-cards.mjs` 自动生成。
 
 ## 全局进度
 
 | 指标 | 数值 |
 |---|---|
-| 总任务 | 46 |
-| ✅ 已完成 | 33（72%） |
-| 🔵 进行中 | 3 |
+| 总任务 | 86 |
+| ✅ 已完成 | 59（69%） |
+| 🔵 进行中 | 5 |
 | 🔴 阻塞 | 0 |
 | ⚠️ 逾期 | 0 |
 
@@ -33,6 +33,12 @@
 - 里程碑：防漂移闭环 + 首笔 Pro 付费 + Team 试点意向
 - 准出闸门：PR 漂移评论在真实仓库运行 + 首笔付费到账
 
+### Phase 2.5 · 门禁硬化
+
+- 覆盖周次：W14–W14
+- 里程碑：session 红灯可强制 + 团队代码图层规则进验收门
+- 准出闸门：pre-commit 模板可用 + session 吃 forbid_cross_layer + 文档不过度承诺
+
 ### Phase 3 · 壁垒层（backlog）
 
 - 覆盖周次：W13–W13
@@ -44,7 +50,7 @@
 | 周 | 主题 | 截止 | 任务数 | 完成 | 状态 |
 |---|---|---|---|---|---|
 | [W01](./tasks/W01/README.md) | 离线化 / 合规 / 商业文档 | 2026-09-04 | 6 | 6/6 | ✅完成 |
-| [W02](./tasks/W02/README.md) | 网页离线包 / 冒烟清单 / 账号骨架（扩展暂缓） | 2026-09-11 | 6 | 4/6 | 🟢正常 |
+| [W02](./tasks/W02/README.md) | 网页离线包 / 冒烟清单 / 账号骨架（扩展暂缓） | 2026-09-11 | 6 | 5/6 | 🟢正常 |
 | [W03](./tasks/W03/README.md) | 生成质量打磨 / 五仓回归 | 2026-09-18 | 3 | 2/3 | 🟢正常 |
 | [W04](./tasks/W04/README.md) | 获客启动：教程文 / README / 种子博主 | 2026-09-25 | 4 | 4/4 | ✅完成 |
 | [W05](./tasks/W05/README.md) | 付费门禁 / 支付通道（国庆假期，轻量） | 2026-10-02 | 3 | 3/3 | ✅完成 |
@@ -56,6 +62,7 @@
 | [W11](./tasks/W11/README.md) | 按仓库年费 / PDF 导出 / 数据复盘 | 2026-11-13 | 3 | 3/3 | ✅完成 |
 | [W12](./tasks/W12/README.md) | Team 私有化试点 / 12 周复盘 | 2026-11-20 | 2 | 1/2 | 🟢正常 |
 | [W13](./tasks/W13/README.md) | 壁垒层 backlog（不排死期） | — | 5 | 0/5 | 🟢正常 |
+| [W14](./tasks/W14/README.md) | 门禁硬化：pre-commit + session 代码图层规则 | 2026-09-12 | 7 | 7/7 | ✅完成 |
 
 ## 常用命令
 
@@ -85,6 +92,6 @@ node pm/scripts/wbs.mjs webhook                # 启动 Gitee Webhook 服务（�
 ## 周报与记录
 
 - 周报目录：[`pm/reports/weekly/`](./reports/weekly/)
-- 现状全览：[`pm/reports/STATUS-2026-09-09.md`](./reports/STATUS-2026-09-09.md)（前一份：[STATUS-2026-09-05.md](./reports/STATUS-2026-09-05.md)）
+- 现状全览：[`pm/reports/STATUS-2026-09-05.md`](./reports/STATUS-2026-09-05.md)
 - 指标台账：[`pm/metrics.md`](./metrics.md)
 - Webhook 日志：`pm/reports/webhook.log`

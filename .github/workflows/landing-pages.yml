@@ -7,6 +7,7 @@ on:
     paths:
       - 'web/public/**'
       - 'docs/demo.*'
+      - 'docs/demos/demo.*'
       - 'scripts/prepare-landing-static.mjs'
       - '.github/workflows/landing-pages.yml'
   workflow_dispatch:

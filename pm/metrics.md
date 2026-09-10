@@ -69,7 +69,7 @@ npm run wbs -- report --week W06
 
 ## 付费订单流水
 
-> W09-03：至少 1 行 **真实** Pro 到账（订单号 + 开通确认）。沙箱 / 自测 grant **不算**。开通命令见 [docs/billing.md](../docs/billing.md)。
+> W09-03：至少 1 行 **真实** Pro 到账（订单号 + 开通确认）。沙箱 / 自测 grant **不算**。开通命令见 [docs/commercial/billing.md](../docs/commercial/billing.md)。
 
 | 日期 | 订单号 | 类型（Pro/Team） | 金额 | 渠道 | 注册邮箱（可打码） | 开通确认 | 状态 |
 |---|---|---|---|---|---|---|---|

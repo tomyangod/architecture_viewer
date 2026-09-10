@@ -1,5 +1,5 @@
 {
-  "schemaVersion": 1,
+  "schemaVersion": 2,
   "repo": "demo",
   "generatedAt": "<timestamp>",
   "sessionStart": null,
@@ -14,15 +14,23 @@
     "addedEdges": 1,
     "removedEdges": 1,
     "reroutedEdges": 1,
+    "addedArchitecturalEdges": 1,
+    "removedArchitecturalEdges": 1,
+    "reroutedArchitecturalEdges": 0,
     "addedTypes": 1,
     "removedTypes": 1,
+    "modifiedTypes": 1,
     "addedPackages": 0,
     "removedPackages": 0,
     "addedExternalDeps": 1,
     "removedExternalDeps": 1,
     "violations": 0,
     "totalChanges": 14,
-    "riskLevel": "medium"
+    "structureChanged": true,
+    "implChangedCount": 0,
+    "behaviorChangedCount": 0,
+    "sourceChanged": null,
+    "changeScale": "medium"
   },
   "risk": {
     "level": "none",
@@ -104,6 +112,8 @@
       "type": "import",
       "method": null,
       "field": null,
+      "dynamic": false,
+      "implicit": false,
       "status": "removed",
       "violation": false
     },
@@ -113,6 +123,8 @@
       "type": "implements",
       "method": null,
       "field": null,
+      "dynamic": false,
+      "implicit": false,
       "status": "removed",
       "violation": false
     },
@@ -122,6 +134,8 @@
       "type": "import",
       "method": null,
       "field": null,
+      "dynamic": false,
+      "implicit": false,
       "status": "rerouted",
       "fromType": "implements",
       "violation": false
@@ -132,6 +146,8 @@
       "type": "import",
       "method": null,
       "field": null,
+      "dynamic": false,
+      "implicit": false,
       "status": "added",
       "violation": false
     }
@@ -288,5 +304,9 @@
     ],
     "totalFiles": 4,
     "truncated": false
+  },
+  "implementation": {
+    "count": 0,
+    "changes": []
   }
 }

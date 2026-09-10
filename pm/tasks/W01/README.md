@@ -186,7 +186,7 @@
   test -f README.en.md && grep -qi "install" README.en.md && grep -qi "mermaid" README.en.md && echo EN_OK
   ```
 
-**参考文档**：`docs/market-evaluation/market-evaluation.html`
+**参考文档**：`docs/plans/market-evaluation/market-evaluation.html`
 
 **活动记录**：
   - 2026-08-29 状态变更 todo→done
@@ -223,7 +223,7 @@
   grep -q "¥29" COMMERCIAL.md && grep -q "999" COMMERCIAL.md && ! grep -q "按次" COMMERCIAL.md && echo BIZ_OK
   ```
 
-**参考文档**：`COMMERCIAL.md` `docs/market-evaluation/market-evaluation.html`
+**参考文档**：`COMMERCIAL.md` `docs/plans/market-evaluation/market-evaluation.html`
 
 **活动记录**：
   - 2026-08-29 状态变更 todo→done

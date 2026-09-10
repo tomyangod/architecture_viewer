@@ -51,7 +51,8 @@ Archify **完全没有**代码分析能力。它的"从仓库生成架构图"案
 - 4 种语言解析（JS/TS 走 ts-morph，Python 走 ast，Go 走纯解析，Java 走语法树）。
 - 分层检测（component / controller / service / domain / storage / dto / config / util）。
 - 依赖边提取（import / extends / implements / field-type / method-param / method-return）。
-- 风险规则引擎（跨层违规、循环依赖、命名漂移、外部依赖激增等）。
+- 风险规则引擎（跨层违规、层级穿透、神文件/文件增长、外部依赖激增、孤立实体、影响面等）。
+  - **不是**现成能力：代码图「循环依赖」检测尚未实现（勿写成已有）；文档侧 `architecture-rules.yaml` 只管 C4 Rel，不审代码 import。
 - 影响面计算（ripple effect）。
 
 **差距**：代码分析是你的独家壁垒，Archify 完全不碰这块。
