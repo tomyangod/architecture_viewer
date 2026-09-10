@@ -4,6 +4,16 @@
 
 ## \[Unreleased\]
 
+## \[0.12.1\] — 2026-09-10
+
+### Fixed
+
+- **Python 调用图崩溃**：`importlib.import_module(变量)` 产生 `specifier: null` 时，与裸调用 `object: null` 误判为 moduleHit，`resolvePyModule` 对 null 调 `.startsWith` → MCP `-32603` / CLI 退出码 3。现对空 specifier 安全跳过；JS/Go 解析同步防空；`av_session_report` 扫描失败返回 `SCAN_FAILED` 而不打成 Internal Error。
+
+### Added
+
+- **`arch-viewer uninstall`**：对称卸掉用户级 MCP / 本仓 hooks（`--project` 写入物）；`--npm` 卸全局包；`--purge` 清会话报告与快照（保留 `layers.json`）。
+
 ## \[0.12.0\] — 2026-09-10
 
 日常路径改为 **说话 → 对话看灯 → git commit**。有 git 时对照 HEAD（commit 即接受）；MCP `av_guard` 为日常入口；HTML / `session start` 降为附录。

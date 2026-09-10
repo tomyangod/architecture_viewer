@@ -24,12 +24,15 @@ Free and open source (Apache-2.0), zero-config, seconds to diagram, no LLM depen
 ```bash
 npx arch-viewer setup              # user-level MCP
 npx arch-viewer setup . --project  # project hooks + cross-host rules (gate on stop)
+npx arch-viewer uninstall .        # remove this repo's integration (other MCP untouched)
+# also remove global package: add --npm
+# also wipe session reports/snapshots (keeps .av/layers.json): add --purge
 ```
 
 Detects installed AI coding tools (Cursor, Claude, DeepSeek Harness) and writes MCP config.
 Then tell your AI: "check architecture before you claim you're done." It should call `av_guard`
 and paste the ≤3-line **verdict**. With git, the baseline is **HEAD** — **commit = accept**.
-No snapshot ritual, no default HTML.
+No snapshot ritual, no default HTML. Upgrade: `uninstall` (plus `--npm` if needed), then setup again.
 
 ### 2. CLI Session Gate (scripts / CI / no MCP)
 

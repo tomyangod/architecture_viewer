@@ -133,6 +133,18 @@ function shouldWatchFile(filePath) {
  * 生成 diff + 风险 + 影响面 + HTML/JSON 文件，返回结构化结果。
  */
 function generateSessionReport(repo) {
+  try {
+    return generateSessionReportUnsafe(repo);
+  } catch (e) {
+    return {
+      error: 'SCAN_FAILED',
+      message: '扫描当前仓库失败：' + (e && e.message ? e.message : String(e)),
+      nextStep: '确认仓库路径可读后重试 av_session_report / av_guard。'
+    };
+  }
+}
+
+function generateSessionReportUnsafe(repo) {
   const resolved = resolveSessionBaseline(repo);
   if (!resolved.ok) {
     if (resolved.error === 'SCAN_FAILED') {

@@ -91,6 +91,23 @@ def create():
     assert.ok(edge, `expected create → Order, got ${JSON.stringify(callEdges(g))}`);
   });
 
+  it('Python importlib 变量模块 + 同文件裸调用：不因 specifier=null 崩溃', () => {
+    // Regression: unresolved dynamic import has specifier:null + isModuleImport.
+    // Bare foo() has object:null; null===null looked like moduleHit → resolvePyModule threw.
+    const dir = makeRepo({
+      'dyn.py': `
+import importlib
+def run(name):
+    importlib.import_module(name)
+    foo()
+`
+    });
+    const g = buildGraph(dir, { calls: true });
+    assert.ok(g.nodes.length >= 1);
+    const u = unresolvedEdges(g);
+    assert.ok(u.length >= 1, 'bare foo() should be unresolved-call, not a crash');
+  });
+
   it('Java new / 静态类型调用经 import 绑定', () => {
     const dir = makeRepo({
       'src/main/java/com/shop/Order.java': `

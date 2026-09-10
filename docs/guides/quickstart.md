@@ -2,7 +2,7 @@
 
 > **一句话**：装一次之后只说话；AI 改完在对话里给你看灯（verdict）。绿灯可提交，**commit 即接受**当前结构。不必先拍照、不必默认打开 HTML。  
 > **适用对象**：第一次把 Architecture Viewer 用到**自己的新项目 / 陌生仓库**上的人。  
-> **适用版本**：arch-viewer **0.12.0**（8 个 MCP 工具 · `av_guard` · git HEAD 基线 · 会话报告）。本文 2026-09-10。  
+> **适用版本**：arch-viewer **0.12.1**（8 个 MCP 工具 · `av_guard` · git HEAD 基线 · 会话报告 · `uninstall`）。本文 2026-09-10。  
 > **零外部分析器**：不需要安装 `lint-imports` 或 dependency-cruiser；分层与契约由 builtin 直接评估。  
 > **职责**：本篇是**唯一**「通用怎么用」（安装、8 工具、日常闭环、读灯、CI）。零基础也可从 §10 迷你仓脚本跟做。舆情仓实测见 [MCP-DEMO](../demos/MCP-DEMO-publicopinionmonitor.md)。
 

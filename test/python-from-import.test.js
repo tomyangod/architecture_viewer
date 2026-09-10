@@ -102,6 +102,13 @@ describe('Python from pkg import mod 精确解析', () => {
     assert.equal(pkg.file, 'services/__init__.py');
   });
 
+  it('resolvePyModule 对 null/非字符串 specifier 返回 null（不抛）', () => {
+    const fe = { package: '', module: 'a' };
+    assert.equal(resolvePyModule(null, fe, new Map()), null);
+    assert.equal(resolvePyModule(undefined, fe, new Map()), null);
+    assert.equal(resolvePyModule(12, fe, new Map()), null);
+  });
+
   it('__init__ 再导出：from pkg import Alert → alerts.py，不是 __init__.py', () => {
     const dir = makeRepo({
       'pkg/__init__.py': 'from .alerts import Alert\n',

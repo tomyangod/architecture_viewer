@@ -32,11 +32,15 @@ CLI / MCP / 网页 / PR 评论四端可用。免费开源（Apache-2.0），零�
 ```bash
 npx arch-viewer setup              # 用户级 MCP
 npx arch-viewer setup . --project  # 本仓 hooks + 跨宿主规则（停手时自动跑结构门）
+npx arch-viewer uninstall .        # 对称卸载本仓接入（其它 MCP 不动）
+# 连全局包一起卸：npx arch-viewer uninstall . --npm
+# 再清会话报告/快照（仍保留 .av/layers.json）：加 --purge
 ```
 
 自动检测已安装的 AI 编程工具（Cursor、Claude、DeepSeek Harness），写入 MCP。
 之后对 AI 说「改完用架构门检查一下」即可。Agent 应调用 `av_guard`；对话里回最多 3 行 verdict。
 有 git 时对照 **HEAD**，**commit 即接受**当前结构。不必先拍照、不必默认打开 HTML。
+升级：先 `uninstall`（需要时 `--npm`），再装新版本后 `setup` / `setup . --project`。
 
 ### 2. CLI 结构门（脚本 / CI / 无 MCP）
 
