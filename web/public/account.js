@@ -116,9 +116,9 @@
               lampText +
               '</span>' +
               (p.lastAt ? ' · ' + esc(String(p.lastAt).replace('T', ' ').slice(0, 19)) : '') +
-              ' · 协议问题 ' +
+              ' · findings ' +
               esc(p.lastErrors || 0) +
-              ' · 漂移 ' +
+              ' · 高风险 ' +
               esc(p.lastMissing || 0) +
               (p.hasWecom ? ' · 已接企业微信' : '') +
               ' · 每 ' +
@@ -167,7 +167,7 @@
           (e.ok ? '绿灯' : '红灯') +
           ' · ' +
           (e.kind === 'local' ? '本地 ' + esc(e.label || '') : 'PR #' + esc(e.pr || '-')) +
-          ' · 漂移 ' +
+          ' · 高风险 ' +
           esc(e.missing || 0) +
           ' · ' +
           esc(String(e.at || '').replace('T', ' ').slice(0, 19)) +
@@ -337,23 +337,22 @@
     });
   });
 
-  var teamOrderForm = document.getElementById('team-order-form');
-  if (teamOrderForm) {
-    teamOrderForm.addEventListener('submit', function (e) {
+  var teamApplyForm = document.getElementById('team-apply-form');
+  if (teamApplyForm) {
+    teamApplyForm.addEventListener('submit', function (e) {
       e.preventDefault();
       var email = (window.__avMe && window.__avMe.user && window.__avMe.user.email) || '';
-      api('POST', '/api/billing/team-order', {
+      api('POST', '/api/billing/team-application', {
         email: email,
         repoUrl: document.getElementById('team-repo').value.trim(),
-        channel: 'lemon'
+        channel: 'console'
       }).then(function (r) {
-        var tip = document.getElementById('team-order-tip');
+        var tip = document.getElementById('team-apply-tip');
         if (!r.ok) {
-          showTip(tip, r.data.error || '下单失败', true);
+          showTip(tip, r.data.error || '申请失败', true);
           return;
         }
-        showTip(tip, '订单 ' + r.data.orderId + (r.data.granted ? ' · 沙箱已开通' : ' · 请完成结账'), false);
-        if (r.data.checkoutUrl && !r.data.granted) window.open(r.data.checkoutUrl, '_blank', 'noopener');
+        showTip(tip, '申请 ' + r.data.applicationId + ' 已登记，2 个工作日内人工联系报价。', false);
         refresh();
       });
     });

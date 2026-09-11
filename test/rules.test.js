@@ -8,6 +8,7 @@ const { spawnSync } = require('child_process');
 
 const {
   parseYaml,
+  normalizeRules,
   loadRules,
   evaluateRules,
   evaluateKitRules,
@@ -61,6 +62,86 @@ rel_whitelist:
     assert.equal(assignLayer('order_repo', layers), 'storage');
     assert.equal(assignLayer('app_core', layers), null);
   });
+
+  it('合法子集保留引号类型、逗号、注释及嵌套列表映射', () => {
+    const doc = parseYaml(`
+values: ['true', 'null', '123', "a,b", 'it''s # text', plain,]
+layers:
+  service:
+    match:
+      - '*_svc'
+invariants:
+  - when:
+      route: 'GET /items'
+    require:
+      import_layer: service
+`);
+    assert.deepEqual(doc.values, ['true', 'null', '123', 'a,b', "it's # text", 'plain']);
+    delete doc.values;
+    assert.equal(normalizeRules(doc).invariants[0].require.import_layer, 'service');
+    assert.deepEqual(normalizeRules(doc).layers.service, ['*_svc']);
+  });
+
+  it('list mappings align continuation keys with the actual key column', () => {
+    const rules = normalizeRules(parseYaml(`
+forbid_cross_layer:
+  -    from: controller
+       to: storage
+invariants:
+  -   when:
+        route: 'GET /items'
+      require:
+        import_layer: service
+`));
+    assert.equal(rules.forbid_cross_layer.length, 1);
+    assert.equal(rules.forbid_cross_layer[0].to, 'storage');
+    assert.equal(rules.invariants[0].require.import_layer, 'service');
+  });
+
+  for (const text of [
+    'forbid_cross_layer: [',
+    'forbid_cross_layer: [controller',
+    'labels: ["unclosed]',
+    'labels: [a,,b]',
+    'labels: [a]]',
+    'name: "unclosed',
+    'name: "done" trailing',
+    'name: demo\nnot a mapping',
+    'name: demo\n  misplaced: true',
+    'name: demo\nname: other',
+    'naming:\n  - id: a\n    id: b',
+    'layers:\n\tservice: [api]',
+    'name: demo\n- mixed-list',
+    'name: demo\n---\nname: other',
+    'forbid_cross_layer:\n  -    from: controller\n    to: storage'
+  ]) {
+    it('拒绝无效 YAML: ' + JSON.stringify(text), () => {
+      assert.throws(() => parseYaml(text), { code: 'RULES_CONFIG_ERROR' });
+    });
+  }
+
+  for (const text of [
+    '- not-a-root-mapping',
+    'forbid_cross_layer: [controller, storage]',
+    'forbid_cross_layer:\n  - from: controller',
+    'forbid_cross_layer:\n  - from: [controller]\n    to: storage',
+    'forbid_cross_layer:\n  - from: controller\n    to: storage\n    too: service',
+    'forbid_cross_layer:',
+    'forbid_cross_layers: []',
+    'naming:\n  - id: no-pattern',
+    "naming:\n  - pattern: '['",
+    'layers:\n  controller:\n    id: no-match',
+    'rel_whitelist:\n  - id: no-labels',
+    'rel_whitelist:\n  - labels: [HTTP]\n    allow_empty: no',
+    'invariants:\n  - id: no-constraint',
+    'invariants:\n  - forbid:\n      to_layer: [storage]',
+    'risk:\n  thresholds:\n    broad_impact: bad',
+    'risk:\n  exclude:\n    - rule: god-file'
+  ]) {
+    it('拒绝会丢约束的结构: ' + JSON.stringify(text), () => {
+      assert.throws(() => normalizeRules(parseYaml(text)), { code: 'RULES_CONFIG_ERROR' });
+    });
+  }
 });
 
 describe('C4 模型提取', () => {

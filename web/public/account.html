@@ -19,7 +19,7 @@
 
     <section class="hero" id="gate">
       <p class="eyebrow">Pro · ¥29 / 月</p>
-      <h1>账号 + 漂移提醒</h1>
+      <h1>账号 + 结构验收提醒</h1>
       <p class="lede">注册即开 7 天试用。不上 GitHub 也可以：填本机文件夹，图不对就红灯。试用到期后仍可手动检查；自动检查与企业微信需兑换许可证。</p>
       <form id="auth-form" class="account-form">
         <label>邮箱 <input type="email" id="email" required autocomplete="username" /></label>
@@ -43,13 +43,13 @@
         <a class="btn ghost" id="pay-lemon" href="https://arch-viewer.lemonsqueezy.com/" target="_blank" rel="noopener">Lemon</a>
       </div>
       <p class="section-copy" style="margin-top:-0.5rem">国内爱发电 / 微信、海外 Lemon：先付款再人工开通，步骤见 <a href="https://gitee.com/heyangyan/architecture_viewer/blob/master/docs/commercial/billing.md" target="_blank" rel="noopener">docs/commercial/billing.md</a>。</p>
-      <h3>Team · ¥999 / 年 / 仓库</h3>
-      <p class="section-copy">按仓库开通：CI 托管评论、规范包；共享图库为占位。先下单再按 <a href="https://gitee.com/heyangyan/architecture_viewer/blob/master/docs/commercial/billing.md" target="_blank" rel="noopener">SOP</a> 核验，或走 <a href="https://gitee.com/heyangyan/architecture_viewer/blob/master/docs/commercial/invoice.md" target="_blank" rel="noopener">对公开票</a>。</p>
-      <form id="team-order-form" class="account-form">
+      <h3>Team · ¥99 / 人 / 月（早期采用者）</h3>
+      <p class="section-copy">验证期不开放自助下单：CI 托管评论、规范包等团队能力统一走试点申请、人工报价，2 个工作日内联系。私有化见 <a href="https://gitee.com/heyangyan/architecture_viewer/blob/master/docs/commercial/team-onprem.md" target="_blank" rel="noopener">team-onprem.md</a>。</p>
+      <form id="team-apply-form" class="account-form">
         <label>仓库 HTTPS URL <input type="url" id="team-repo" required placeholder="https://gitee.com/org/repo" /></label>
-        <button type="submit" class="btn primary">下单 Team</button>
+        <button type="submit" class="btn primary">申请 Team 试点</button>
       </form>
-      <p id="team-order-tip" class="try-status" hidden></p>
+      <p id="team-apply-tip" class="try-status" hidden></p>
       <div id="team-feature-list"></div>
 
       <form id="redeem-form" class="account-form" hidden>

@@ -1,64 +1,68 @@
 'use strict';
 
+const { formatPullRequestComment } = require('../../../lib/pr-comment');
+
 const MARKER = '<!-- av-drift-bot -->';
 
-function formatComment(result) {
-  const ok = !!(result && result.ok);
-  const title = ok ? '绿灯 · 图与代码一致' : '红灯 · 架构图漂移';
+const ERROR_HEADINGS = {
+  NO_BASELINE: '无法对照基线',
+  SCAN_FAILED: '代码扫描失败',
+  RULES_CONFIG_ERROR: '团队规则配置错误'
+};
+
+const ERROR_HINTS = {
+  NO_BASELINE: '没有可解析的 PR base / git HEAD / `.av/graph-baseline.json`，无法做增量结构检查。',
+  SCAN_FAILED: '本轮代码无法完成结构扫描，请查看日志中的解析错误。',
+  RULES_CONFIG_ERROR: '团队规则文件存在但读取/解析失败。本次未按默认规则替代出结论，请修复规则文件后重跑。'
+};
+
+function formatNoBaseline(result) {
+  const heading = ERROR_HEADINGS[result.reason] || '检查未完成';
   const lines = [
     MARKER,
-    '## Architecture Viewer · 托管漂移检查',
+    '## Architecture Viewer · 增量结构验收',
     '',
-    '**结果：' + title + '**',
+    '**结果：' + heading + '**',
     result.repo ? ('仓库：`' + result.repo + '`') : '',
     result.pr ? ('PR：#' + result.pr) : '',
     result.sha ? ('提交：`' + String(result.sha).slice(0, 12) + '`') : '',
-    ''
+    '',
+    result.message || ERROR_HINTS[result.reason] || '检查未能完成。',
+    '',
+    '本地复现：',
+    '',
+    '```bash',
+    'npx arch-viewer session report',
+    '```',
+    '',
+    '---',
+    result.pr
+      ? '*Pro 托管门禁 · 对照 PR base 做增量结构风险，不需要你在仓库里维护 Action。*'
+      : '*Pro 本地检查 · 对照 git HEAD（或 session 快照）做增量结构风险。*'
   ].filter((x, i, arr) => !(x === '' && arr[i - 1] === ''));
-
-  const protocol = (result.protocol && result.protocol.errors) || [];
-  const missing = (result.drift && result.drift.missing) || [];
-
-  if (!result.kit) {
-    lines.push('未找到 `architecture_viewer/` 套件。请在仓库运行：');
-    lines.push('');
-    lines.push('```bash');
-    lines.push('npx arch-viewer init .');
-    lines.push('npx arch-viewer generate .');
-    lines.push('```');
-  } else {
-    if (protocol.length) {
-      lines.push('### 协议失败');
-      protocol.slice(0, 12).forEach((e) => lines.push('- ' + e));
-      lines.push('');
-    }
-    if (missing.length) {
-      lines.push('### 漂移（代码有、图上没有）');
-      missing.slice(0, 20).forEach((m) => {
-        lines.push('- `' + (m.kind || 'item') + '` **' + (m.label || m.term) + '**');
-      });
-      lines.push('');
-    }
-    if (ok) {
-      lines.push('协议与漂移检查均通过。继续保持图随 PR 更新。');
-    } else {
-      lines.push('本地修复：');
-      lines.push('');
-      lines.push('```bash');
-      lines.push('npx arch-viewer generate .');
-      lines.push('npx arch-viewer check architecture_viewer --filled --drift --repo .');
-      lines.push('```');
-    }
-  }
-
-  lines.push('');
-  lines.push('---');
-  if (result.pr) {
-    lines.push('*Pro 托管门禁 · 不需要你在仓库里维护 Action。Community 仍可用自托管模板。*');
-  } else {
-    lines.push('*Pro 本地检查 · 图与代码对不上时控制台变红，可推企业微信。*');
-  }
   return lines.join('\n');
+}
+
+function formatComment(result) {
+  if (!result) return MARKER + '\n';
+  if (result.reason === 'NO_BASELINE' || result.reason === 'SCAN_FAILED' || result.reason === 'RULES_CONFIG_ERROR' || !result.diff) {
+    return formatNoBaseline(result);
+  }
+
+  const md = formatPullRequestComment({
+    diff: result.diff,
+    impact: result.impact,
+    findings: result.findings || [],
+    riskSummary: result.riskSummary,
+    baseRef: result.baseSha || result.baseRef,
+    headRef: result.sha || result.headRef,
+    baselineChanged: !!result.baselineChanged
+  });
+  const body = md.replace(/^<!-- arch-viewer:architecture-diff -->\s*/, '');
+  const hosted = result.pr
+    ? '*Pro 托管门禁 · 增量结构风险（对照 PR base），不需要你在仓库里维护 Action。*'
+    : '*Pro 本地检查 · 增量结构风险（对照 git HEAD / session 快照）。*';
+  return [MARKER, body.trimEnd(), '', hosted].join('\n');
 }
 
 module.exports = { MARKER, formatComment };

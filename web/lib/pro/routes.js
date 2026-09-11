@@ -10,7 +10,7 @@ const billing = require('./billing');
 const providers = require('./providers');
 const { runHostedCheck } = require('./host-drift');
 const { formatComment } = require('./comment');
-const { safeClone, cleanup } = require('../clone');
+const { safeClone, cleanup, fetchSha } = require('../clone');
 const local = require('./local');
 
 function clientIp(req) {
@@ -364,15 +364,28 @@ async function handleIncomingWebhook(req, res, raw, body) {
       check = runHostedCheck(fixture, {
         repoLabel: job.owner + '/' + job.repo,
         pr: job.pr,
-        sha: job.sha
+        sha: job.sha,
+        baseSha: job.baseSha,
+        baseDir: body.fixtureBasePath || null
       });
     } else {
       const cloneUrl = job.cloneUrl || matched.url;
       cloned = await safeClone(cloneUrl, { token, branch: job.branch });
+      if (job.baseSha) {
+        try {
+          await fetchSha(cloned, job.baseSha, {
+            token,
+            url: job.baseCloneUrl || cloneUrl
+          });
+        } catch {
+          // archive may still work if the object is already present
+        }
+      }
       check = runHostedCheck(cloned, {
         repoLabel: job.owner + '/' + job.repo,
         pr: job.pr,
-        sha: job.sha
+        sha: job.sha,
+        baseSha: job.baseSha
       });
     }
   } finally {
@@ -391,8 +404,9 @@ async function handleIncomingWebhook(req, res, raw, body) {
     ok: check.ok,
     pr: job.pr,
     at: new Date().toISOString(),
-    missing: ((check.drift && check.drift.missing) || []).length,
-    errors: ((check.protocol && check.protocol.errors) || []).length
+    missing: check.highCount || 0,
+    errors: check.findingCount || 0,
+    reason: check.reason || null
   });
   db.events = db.events.slice(0, 200);
   store.save(db);

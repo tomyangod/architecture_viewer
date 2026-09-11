@@ -11,6 +11,8 @@ const {
   headCachePath,
   gitHeadSha
 } = require('../lib/session-baseline');
+const { buildGraph, toPersistableGraph } = require('../lib/extract-graph');
+const { diffGraphs } = require('../lib/diff-graph');
 
 const BIN = path.join(__dirname, '..', 'bin', 'arch-viewer.js');
 
@@ -142,6 +144,77 @@ describe('W23-03 git HEAD 基线', () => {
       assert.match(report.verdict.text, /对照 git HEAD/);
     } finally {
       try { stopWatcher(dir); } catch { /* ignore */ }
+      fs.rmSync(dir, { recursive: true, force: true });
+    }
+  });
+
+  for (const cached of [false, true]) {
+    for (const key of ['externalDirs', 'external_dirs']) {
+      it(`reports added ${key} with ${cached ? 'warm' : 'cold'} HEAD cache`, () => {
+        const dir = makeGitRepo();
+        try {
+          fs.mkdirSync(path.join(dir, 'crawler'));
+          fs.writeFileSync(path.join(dir, 'crawler/spider.py'), 'class Spider:\n    pass\n');
+          git(dir, ['add', 'crawler/spider.py']);
+          assert.equal(git(dir, ['commit', '-q', '-m', 'add crawler']).status, 0);
+          if (cached) assert.equal(resolveSessionBaseline(dir).ok, true);
+          fs.mkdirSync(path.join(dir, '.av'), { recursive: true });
+          fs.writeFileSync(path.join(dir, '.av/layers.json'), JSON.stringify({ [key]: ['crawler'] }));
+
+          const base = resolveSessionBaseline(dir);
+          assert.equal(base.ok, true, base.message);
+          assert.equal(base.cacheHit, cached);
+          const head = toPersistableGraph(buildGraph(dir));
+          const diff = diffGraphs(base.graph, head);
+          assert.deepEqual(diff.scopeChanged.added, ['crawler']);
+          assert(base.graph.nodes.some((n) => n.id === 'file:crawler/spider.py'));
+          assert(!head.nodes.some((n) => n.id === 'file:crawler/spider.py'));
+          const report = run(['session', 'report', dir, '--renderer', 'builtin'], dir);
+          assert.ok([0, 1].includes(report.status), report.stderr);
+          assert.match(report.stdout, /分析范围变化/);
+        } finally {
+          fs.rmSync(dir, { recursive: true, force: true });
+        }
+      });
+    }
+  }
+
+  it('retains committed exclusions when working layer config replaces them', () => {
+    const dir = makeGitRepo();
+    try {
+      fs.mkdirSync(path.join(dir, '.av'));
+      fs.mkdirSync(path.join(dir, 'crawler'));
+      fs.writeFileSync(path.join(dir, 'crawler/spider.py'), 'class Spider:\n    pass\n');
+      fs.writeFileSync(path.join(dir, '.av/layers.json'), JSON.stringify({ externalDirs: ['crawler'] }));
+      git(dir, ['add', '-f', '.av/layers.json', 'crawler/spider.py']);
+      assert.equal(git(dir, ['commit', '-q', '-m', 'exclude crawler']).status, 0);
+      fs.writeFileSync(path.join(dir, '.av/layers.json'), JSON.stringify({ external_dirs: ['src'] }));
+
+      const base = resolveSessionBaseline(dir);
+      assert.equal(base.ok, true, base.message);
+      const diff = diffGraphs(base.graph, toPersistableGraph(buildGraph(dir)));
+      assert.deepEqual(diff.scopeChanged.added, ['src']);
+      assert.deepEqual(diff.scopeChanged.removed, ['crawler']);
+      assert(!base.graph.nodes.some((n) => n.id === 'file:crawler/spider.py'));
+    } finally {
+      fs.rmSync(dir, { recursive: true, force: true });
+    }
+  });
+
+  it('discards caches created before revision-specific exclusions', () => {
+    const dir = makeGitRepo();
+    try {
+      const first = resolveSessionBaseline(dir);
+      assert.equal(first.ok, true);
+      const old = JSON.parse(fs.readFileSync(headCachePath(dir), 'utf8'));
+      delete old.baselineCacheVersion;
+      old.nodes = [];
+      fs.writeFileSync(headCachePath(dir), JSON.stringify(old));
+      const refreshed = resolveSessionBaseline(dir);
+      assert.equal(refreshed.ok, true);
+      assert.equal(refreshed.cacheHit, false);
+      assert(refreshed.graph.nodes.length > 0);
+    } finally {
       fs.rmSync(dir, { recursive: true, force: true });
     }
   });

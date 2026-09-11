@@ -33,17 +33,19 @@ function node(id, name, layer, kind, extra) {
 }
 
 describe('architecture-rules invariants', () => {
-  it('normalizeRules 加载 invariants；缺 forbid/require 的条目丢弃', () => {
+  it('normalizeRules 加载 invariants；缺 forbid/require 的条目显式报错', () => {
     const rules = normalizeRules({
       invariants: [
         { id: 'ok', when: { route: '*' }, forbid: { to_layer: 'storage' } },
-        { id: 'bad', message: 'no teeth' },
         { id: 'req', when: { route: 'GET /x' }, require: { calls_through_layer: 'service' } }
       ]
     });
     assert.equal(rules.invariants.length, 2);
     assert.equal(rules.invariants[0].id, 'ok');
     assert.equal(rules.invariants[1].require.import_layer, 'service');
+    assert.throws(() => normalizeRules({ invariants: [{ id: 'bad', message: 'no teeth' }] }), {
+      code: 'RULES_CONFIG_ERROR'
+    });
   });
 
   it('example.yaml 含 new-route-no-direct-storage', () => {

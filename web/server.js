@@ -244,8 +244,8 @@ async function handleApi(req, res, url) {
     return send(res, 200, paymentLinks());
   }
 
-  if (req.method === 'POST' && url.pathname === '/api/billing/team-order') {
-    const { createTeamOrder } = require('./lib/billing');
+  if (req.method === 'POST' && url.pathname === '/api/billing/team-application') {
+    const { createTeamApplication } = require('./lib/billing');
     const raw = await readBody(req);
     let body = {};
     try {
@@ -255,7 +255,7 @@ async function handleApi(req, res, url) {
       err.status = 400;
       throw err;
     }
-    return send(res, 200, createTeamOrder(body));
+    return send(res, 200, createTeamApplication(body));
   }
 
   if (req.method === 'GET' && url.pathname === '/api/metrics') {

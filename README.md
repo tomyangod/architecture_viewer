@@ -6,7 +6,25 @@
 CLI / MCP / 网页 / PR 评论四端可用。免费开源（Apache-2.0），零配置、秒级出图，不依赖 LLM。
 
 > **定位：AI 改码后的增量架构验收门，不是全量架构治理平台。**
-> 分层与契约：用 `.av/layers.json` + `architecture-rules.yaml`；若仓库已有 `.importlinter` / `setup.cfg` / `pyproject.toml` 中的 Import Linter 契约，builtin 会直接在依赖图上评估（无需安装 `lint-imports`）。需要正式架构治理平台时看 Sonargraph / CodeScene；需要 5 分钟装好、每次 AI 改完看一眼，用本工具。
+
+### 能力边界（先说清楚不做什么）
+
+- **不判断业务逻辑正确性**——不替代测试、类型检查、安全审查或人工 Code Review。
+- **不做全量架构治理**——需要组织级架构看板、Git 历史热点、多仓聚合时看 Sonargraph / CodeScene。
+- **不做 AI 泛审查**——不审查代码风格、性能、安全漏洞；只做可复核的结构事实：本轮改了哪些实体、有没有跨层违规、波及谁。
+
+### 与其他工具的关系
+
+| 工具 | 它做什么 | 和 AV 的关系 |
+|------|---------|-------------|
+| dependency-cruiser（开源） | JS/TS 架构规则、违规基线、`--affected` 影响范围 | **免费替代，部分重叠**——depcruise 已覆盖"本轮影响谁"的核心需求；AV 的差异在多语言、会话内 verdict、影响面 BFS |
+| Import Linter（开源） | Python import 契约、CI 硬阻断 | **免费替代，部分重叠**——AV builtin 已吸收其契约评估能力 |
+| Zügel（商业） | 面向 AI Agent 的 MCP 架构约束检查 | **直接竞品**——经 MCP 检查架构约束、识别依赖环 |
+| CodeScene MCP（开源） | 本地代码健康分析、提交前检查、基线对比 | **直接竞品**——"本地 + MCP + 增量验收"组合并非 AV 独有 |
+| CodeRabbit（商业） | AI PR 审查、Agent 工作流、MCP | **预算竞争**——争夺同一笔工具预算（~$24/开发者/月） |
+| Sonargraph / CodeScene（商业） | 企业级全量架构治理、热点、质量门 | **重型替代/迁移目标**——团队长大、需要正式治理流程时迁移过去 |
+
+> **差异化假设（待验证）**：①接入成本低于竞品组合；②只报本轮相关、噪音低；③每条结论附路径/依赖链/规则，可人工复核；④原生在 Agent 会话内出结论，不是又一个看板。
 
 ![demo](docs/demos/demo.gif)
 
@@ -232,12 +250,12 @@ export ARCH_TELEMETRY=1    # 开启
 **不记录**：文件路径、代码内容、仓库名/URL、用户邮箱。数据落本地
 `~/.config/arch-viewer/telemetry.log`（JSONL），可随时查看或删除。
 
-## 定价摘要
+## 定价摘要（验证期定价）
 
 | 档位 | 价格 | 要点 |
 |------|------|------|
 | Community | ¥0 | CLI 会话门 + 自托管 Actions（漂移红灯 + PR 评论） |
-| Pro | ¥29/月 | 托管 PR 评论 + 增量同步 + 邮箱账号 |
-| Team | ¥999/年/仓 | 组织规范 + 门禁托管 |
+| Pro | ¥29/月 | 托管 PR 评论 + 本机文件夹检查 + 邮箱账号 |
+| Team | ¥99/人/月 | 早期采用者计划，不主推——组织规范 + 门禁托管 |
 
-详见 [COMMERCIAL.md](docs/commercial/COMMERCIAL.md)。
+> 以下数字均为验证期定价，未经付费数据支撑。详见 [COMMERCIAL.md](docs/commercial/COMMERCIAL.md)。

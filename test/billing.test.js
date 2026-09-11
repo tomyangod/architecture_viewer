@@ -97,39 +97,49 @@ describe('W05-02 billing links', () => {
   });
 });
 
-describe('W11-01 Team yearly per-repo', () => {
-  it('pricing page and COMMERCIAL.md list ¥999 / 年 / 仓库', () => {
+describe('W11-01 Team pricing copy', () => {
+  it('pricing page and COMMERCIAL.md list Team as ¥99 / 人 / 月 with manual-application wording', () => {
     const html = fs.readFileSync(path.join(__dirname, '..', 'web', 'public', 'index.html'), 'utf8');
+    const account = fs.readFileSync(path.join(__dirname, '..', 'web', 'public', 'account.html'), 'utf8');
     const commercial = fs.readFileSync(path.join(__dirname, '..', 'docs', 'commercial', 'COMMERCIAL.md'), 'utf8');
-    assert.match(html, /999/);
-    assert.match(html, /年\/仓库|年 \/ 仓库/);
-    assert.match(html, /id="team-order"/);
-    assert.match(commercial, /999/);
-    assert.match(commercial, /年 \/ 仓库/);
+    assert.match(html, /¥99/);
+    assert.match(html, /人\/月|人 \/ 月/);
+    assert.match(html, /id="team-apply"/);
+    assert.match(html, /人工/);
+    assert.match(account, /id="team-apply-form"/);
+    assert.match(commercial, /¥99/);
+    assert.match(commercial, /人 \/ 月/);
   });
 
-  it('POST /api/billing/team-order creates sandbox grant for registered email', async () => {
-    const email = 'team-' + Date.now() + '@example.com';
-    const signup = await request('POST', '/api/pro/signup', { email, password: 'password1' });
-    assert.equal(signup.status, 200, signup.body);
-    const order = await request('POST', '/api/billing/team-order', {
+  it('POST /api/billing/team-application records intent without order, price, or grant', async () => {
+    const email = 'team-apply-' + Date.now() + '@example.com';
+    const r = await request('POST', '/api/billing/team-application', {
       email,
       repoUrl: 'https://gitee.com/org/demo-repo',
-      channel: 'lemon'
+      channel: 'landing'
     });
-    assert.equal(order.status, 200, order.body);
-    const d = JSON.parse(order.body);
+    assert.equal(r.status, 200, r.body);
+    const d = JSON.parse(r.body);
     assert.equal(d.ok, true);
-    assert.equal(d.priceCny, 999);
-    assert.equal(d.granted, true);
-    assert.equal(d.status, 'sandbox-granted');
-    assert.match(d.checkoutUrl, /http/);
-    assert.ok(d.features.includes('ci_hosted'));
+    assert.equal(d.status, 'pending');
+    assert.equal(d.mode, 'manual-application');
+    assert.ok(d.applicationId);
+    assert.equal(d.granted, undefined);
+    assert.equal(d.priceCny, undefined);
+    assert.match(d.message, /人工/);
   });
 
-  it('rejects invalid team order payload', async () => {
-    const r = await request('POST', '/api/billing/team-order', { email: 'nope', repoUrl: 'not-a-url' });
+  it('rejects invalid team application payload', async () => {
+    const r = await request('POST', '/api/billing/team-application', { email: 'nope', repoUrl: 'not-a-url' });
     assert.equal(r.status, 400);
+  });
+
+  it('legacy /api/billing/team-order route is gone (no self-serve ¥999 product)', async () => {
+    const r = await request('POST', '/api/billing/team-order', {
+      email: 'x@example.com',
+      repoUrl: 'https://gitee.com/org/x'
+    });
+    assert.notEqual(r.status, 200);
   });
 });
 

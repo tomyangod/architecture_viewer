@@ -316,6 +316,68 @@ function cleanup(dir) {
   }
 }
 
+const SHA_RE = /^[0-9a-f]{7,40}$/i;
+
+function isValidSha(sha) {
+  return typeof sha === 'string' && SHA_RE.test(sha.trim());
+}
+
+function gitAuthPrefix(url, token) {
+  const args = ['-c', 'credential.helper='];
+  if (token) args.push('-c', 'http.extraHeader=' + basicAuthHeader(hostOf(url), token));
+  return args;
+}
+
+/**
+ * Fetch a commit SHA into an existing shallow clone so `git archive <sha>` works.
+ * @param {string} cloneDir
+ * @param {string} sha
+ * @param {{ token?: string, url?: string }} [opts]
+ * @returns {Promise<void>}
+ */
+function fetchSha(cloneDir, sha, opts) {
+  const options = opts || {};
+  if (!isValidSha(sha)) {
+    const err = new Error('提交 SHA 不合法');
+    err.status = 400;
+    return Promise.reject(err);
+  }
+  const originUrl = options.url || '';
+  const token = options.token ? String(options.token).trim() : '';
+  const args = gitAuthPrefix(originUrl || 'https://github.com/x/y.git', token);
+  args.push('-C', cloneDir, 'fetch', '--depth', '1', 'origin', String(sha).trim());
+
+  return new Promise((resolve, reject) => {
+    const child = spawn('git', args, {
+      stdio: ['ignore', 'pipe', 'pipe'],
+      env: { ...process.env, GIT_TERMINAL_PROMPT: '0' }
+    });
+    let stderr = '';
+    child.stderr.on('data', (c) => { stderr += c.toString(); });
+    const timer = setTimeout(() => {
+      child.kill('SIGKILL');
+      const err = new Error('git fetch 超时（>60s）');
+      err.status = 504;
+      reject(err);
+    }, TIMEOUT_MS);
+    child.on('exit', (code) => {
+      clearTimeout(timer);
+      if (code === 0) {
+        resolve();
+        return;
+      }
+      const classified = classifyGitError(redactSecrets(stderr, token), !!token);
+      const err = new Error(classified.message);
+      err.status = classified.status;
+      reject(err);
+    });
+    child.on('error', (e) => {
+      clearTimeout(timer);
+      reject(e);
+    });
+  });
+}
+
 module.exports = {
   safeClone,
   cleanup,
@@ -323,6 +385,8 @@ module.exports = {
   authCloneUrl,
   buildCloneArgs,
   isValidBranch,
+  isValidSha,
+  fetchSha,
   redactSecrets,
   classifyGitError,
   basicAuthHeader,

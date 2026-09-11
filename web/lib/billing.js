@@ -17,7 +17,6 @@ const DEFAULTS = {
   afdian: 'https://afdian.com/a/architecture-viewer',
   wechat: DOCS_BILLING + '#微信收款',
   lemon: 'https://arch-viewer.lemonsqueezy.com/',
-  lemonTeam: 'https://arch-viewer.lemonsqueezy.com/checkout/buy/team-repo-year',
   docs: DOCS_BILLING
 };
 
@@ -26,12 +25,16 @@ function trimUrl(v) {
   return s || null;
 }
 
-function teamProduct() {
+/**
+ * Team 在验证期（选项 B，2026-09-11 起）不开放自助下单：
+ * 展示价保留 ¥99/人/月，但统一走「申请试点 → 人工报价」，
+ * 避免展示按人月、订单却是 ¥999/仓/年的口径漂移。
+ */
+function teamPlan() {
   return {
-    sku: 'team-repo-year',
-    priceCny: 999,
-    priceLabel: '¥999 / 年 / 仓库',
-    termDays: 365,
+    mode: 'manual-application',
+    priceLabel: '¥99 / 人 / 月',
+    note: '早期采用者计划，人工报价，2 个工作日内联系',
     features: ['ci_hosted', 'rules_pack', 'gallery']
   };
 }
@@ -41,31 +44,28 @@ function sandboxMode() {
 }
 
 function paymentLinks() {
-  const team = teamProduct();
   return {
     afdian: trimUrl(process.env.ARCH_PAY_AFDIAN_URL) || DEFAULTS.afdian,
     wechat: trimUrl(process.env.ARCH_PAY_WECHAT_URL) || DEFAULTS.wechat,
     lemon: trimUrl(process.env.ARCH_PAY_LEMON_URL) || DEFAULTS.lemon,
-    lemonTeam: trimUrl(process.env.ARCH_PAY_LEMON_TEAM_URL) || DEFAULTS.lemonTeam,
     docs: DEFAULTS.docs,
     priceCny: 29,
     priceLabel: '¥29 / 月',
-    team,
-    note: '先收款再人工/半自动开通；SOP 见 docs/commercial/billing.md'
+    team: teamPlan(),
+    note: 'Pro 先收款再人工/半自动开通；Team 验证期仅接受试点申请。SOP 见 docs/commercial/billing.md'
   };
 }
 
 /**
- * Team 下单：写入 pending 订单并返回 Lemon 结账链接。
- * 沙箱（NODE_ENV=test 或 ARCH_BILLING_SANDBOX=1）且邮箱已注册时当场开通。
+ * Team 试点申请：只登记意向，不产生订单、不带价格、不自动开通。
+ * 沙箱也不开通——Team 一律人工处理。
  */
-function createTeamOrder(body) {
+function createTeamApplication(body) {
   const store = require('../../lib/pro/store');
-  const { findUserByEmail } = require('../../lib/pro/auth');
-  const { grantTeam } = require('./pro/billing');
   const email = String((body && body.email) || '').trim().toLowerCase();
   const repoUrl = String((body && body.repoUrl) || '').trim();
-  const channel = String((body && body.channel) || 'lemon').trim() || 'lemon';
+  const note = String((body && body.note) || '').trim().slice(0, 500);
+  const channel = String((body && body.channel) || 'landing').trim() || 'landing';
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
     const err = new Error('请填写有效邮箱');
     err.status = 400;
@@ -76,39 +76,39 @@ function createTeamOrder(body) {
     err.status = 400;
     throw err;
   }
-  const product = teamProduct();
   const db = store.load();
-  db.orders = db.orders || [];
-  const order = {
+  db.applications = db.applications || [];
+  const dup = db.applications.find(
+    (a) => a.kind === 'team-application' && a.email === email && a.repoUrl === repoUrl && a.status === 'pending'
+  );
+  const application = {
     id: store.id(),
-    sku: product.sku,
+    kind: 'team-application',
     email,
     repoUrl,
+    note,
     channel,
-    priceCny: product.priceCny,
     status: 'pending',
     createdAt: new Date().toISOString()
   };
-  db.orders.push(order);
-  let granted = false;
-  const user = findUserByEmail(db, email);
-  if (sandboxMode() && user) {
-    grantTeam(user, product.termDays, 'sandbox', repoUrl);
-    order.status = 'sandbox-granted';
-    granted = true;
-  }
+  db.applications.push(application);
   store.save(db);
-  store.track('team_order', { orderId: order.id, email, granted, channel });
+  store.track('team_application', { applicationId: application.id, email, channel, duplicate: !!dup });
   return {
     ok: true,
-    orderId: order.id,
-    status: order.status,
-    priceCny: product.priceCny,
-    checkoutUrl: paymentLinks().lemonTeam,
-    granted,
-    features: product.features,
-    sandbox: sandboxMode()
+    applicationId: application.id,
+    status: 'pending',
+    duplicate: !!dup,
+    mode: teamPlan().mode,
+    message: '已收到 Team 试点申请，2 个工作日内人工联系报价。'
   };
 }
 
-module.exports = { paymentLinks, DEFAULTS, DOCS_BILLING, teamProduct, sandboxMode, createTeamOrder };
+module.exports = {
+  paymentLinks,
+  DEFAULTS,
+  DOCS_BILLING,
+  teamPlan,
+  sandboxMode,
+  createTeamApplication
+};

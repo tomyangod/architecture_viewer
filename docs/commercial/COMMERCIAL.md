@@ -1,57 +1,78 @@
 # 开源边界与商业版
 
+> 本文件是 Architecture Viewer 的**唯一商业文档**。旧版 v1（已废弃）和 v2 草案（已归档至 `docs/plans/archive/`）不再作为对外参考。  
+> 日期：2026-09-11 · 状态：验证期 · 所有定价均为验证期定价，未经付费数据支撑。
+
 本仓库以 **Apache License 2.0** 发布 **Community** 能力。你可以免费使用、修改、再分发 Viewer、模板、校验 CLI、网页自托管与 Cursor/VS Code 扩展（含署名与 NOTICE 义务，见 [LICENSE](../../LICENSE)、[NOTICE](../../NOTICE)）。
 
 生成结果（写入目标仓库的 6 个 `.md`）归你的项目所有。
 
-## 收费理由（顺序即卖点优先级）
+## 能力边界（先说清楚不做什么）
 
-1. **防漂移闭环（主楔子）**：Community 用 [templates/architecture-check.yml](../../templates/architecture-check.yml) 在 PR 上红灯；**Pro** 把同一检查做成托管评论与门禁看板，团队不用自己维护 Action。
-2. **自动同步**：增量重生成变动模块，架构图跟着仓库走。
-3. **团队制图规范**：`architecture-rules.yaml`（节点命名、禁止跨层、Rel 白名单）。
-4. **六视图门户**：C4 + 分层 + 类图 + 运维，作为交付物而非订阅本体。
+- **不判断业务逻辑正确性**——不替代测试、类型检查、安全审查或人工 Code Review。
+- **不做全量架构治理**——需要组织级架构看板、Git 历史热点、多仓聚合时看 Sonargraph / CodeScene。
+- **不做 AI 泛审查**——不审查代码风格、性能、安全漏洞；只做可复核的结构事实：本轮改了哪些实体、有没有跨层违规、波及谁。
 
-一句话：**出图是诱饵，漂移红灯才是订阅理由。**
+## 收费原则
 
-## 定价
+**分析能力永远免费；省人工、上云、进团队工作流才收费。**
 
-| 档位 | 价格 | 包含 |
-|------|------|------|
-| **Community** | ¥0 | 开源扩展 / CLI / 本机网页；Init、Generate（骨架）、`--refine`（自带 Key）；**Actions 漂移模板**；Preview、Validate、自托管分享页 |
-| **Pro** | **¥29 / 月** | 账号 + 7 天试用；**本机文件夹检查 + 企业微信提醒**；托管 PR 漂移评论；Stripe 或许可证 |
-| **Team** | **¥999 / 年 / 仓库** | **按仓库年费**（非席位）：CI 托管评论、`architecture-rules` 规范包、共享图库占位；落地页可下单（Lemon 沙箱 / 对公）；**私有化**见 [team-onprem.md](team-onprem.md)（¥19,999 / 年起） |
+| 能力 | Community | Pro | Team |
+|---|---|---|---|
+| extract / diff / session report / 风险 / 影响面 | 本地免费 | 同左 | 同左 |
+| MCP：`av_session_*` / `av_check_layering` / `av_explain_finding` | 免费 | 同左 | 同左 |
+| 自托管 Action 模板（自己跑 runner） | 免费 | — | — |
+| **托管 PR 评论**（不用自己养 Action） | — | 第一付费点 | 含 |
+| **本机文件夹看守 + 飞书/企微告警** | — | 第二付费点 | 含 |
+| **多仓聚合工作台** | — | — | 含 + 组织规范 |
+| SSO / 审计 / 共享图库 / 私有化 | — | — | 专属（未就绪，有书面合同再建） |
 
-Community 采用固定免费档，**不会**把单次调用次数当作付费墙。Pro 是固定月费；Team 按仓库年付。下单：落地页 `/#pricing` 或 `POST /api/billing/team-order`，开通见 [billing.md](billing.md)。
+不卡次数、不卡语言、不卡仓库体积。
 
-## 双产品形态
+## 定价（验证期）
 
-| 面 | 谁用 | Community | Pro / Team |
-|----|------|-----------|------------|
-| **Cursor / VS Code 扩展** | 作者，图写进仓库 | Init / Generate / Preview / Validate | 增量同步、漂移评论、账户 |
-| **网页版** (`web/`) | 评审、分享、无 IDE | 本机/自托管样例与分享页 `/p/<id>` | 云端 Git 导入、私密链接、组织图库 |
-| **CI** | 全员 | 自托管 Actions 模板 | 托管门禁 + PR 评论 |
+| 档 | 价格 | 谁买 |
+|---|---|---|
+| **Community** | ¥0 | 个人、会自己搭 CI 的小团队 |
+| **Pro** | **¥29 / 月** | 个人维护者、小团队 Tech Lead |
+| **Team（早期采用者）** | **¥99 / 人 / 月**，或 **¥799 / 人 / 年**；入门包 **¥4,999 / 年**（含 5 seat + 托管评论） | 有评审流程的组织；**当前阶段定位为早期采用者计划，不主推** |
+| 私有化 | **¥19,999 / 年起**（部署 + 对接 + 一年支持） | 不能出网的仓 |
 
-两条面共用 `lib/`。Viewer HTML 是交付物，不是收费本体。
+> **定价说明**：以上数字均为验证期定价。当前 0 付费订单、0 试用转化。6–8 周付费验证（见 [pilot-validation-6w.md](../../pm/plans/pilot-validation-6w.md)）结论出来前，任何收入数字不进入对外材料。
 
-## Community（开源，本仓库）
+7 天试用保留。收款：先 Stripe 或许可证，国内后补。
 
-| 能力 | 说明 |
-|------|------|
-| Viewer 套件 | HTML、配置、6 个图源、`AGENT.md`、离线 `vendor/mermaid.min.js` |
-| 扩展命令 | **Init** / **Generate** / **Preview** / **Validate** |
-| 网页 MVP | `npm run web` |
-| CLI | `node lib/cli.js init \| generate [--refine] \| check` |
-| CI | [templates/architecture-check.yml](../../templates/architecture-check.yml) + `eval/demo-drift` 坏图必须失败 |
+## Pro 付费交付
 
-## Pro / Team
+Pro 托管检查跑**增量结构风险管线**（session diff + 影响面 + contract-rules），产出与免费侧 `pr-comment` 同构的 verdict / 风险 / 证据。对照 PR base SHA（webhook 提供）；本机文件夹检查对照 git HEAD 或 `.av/graph-baseline.json`。无法解析基线时评论会明确写「无法对照基线」，不会静默把 PR head 和自己比较。
 
-- **Pro**：`/account.html` 账号与 7 天试用；**本地文件夹检查**（不用 GitHub/Gitee）+ 可选企业微信；以及 `POST /api/pro/webhook` 托管 PR 评论。见 [PRO-SAAS.md](PRO-SAAS.md)。
-- **Team**：¥999 / 年 / 仓库。购买后账号 `plan=team`，绑定该仓库的 CI 托管评论与规范包；共享图库为占位（控制台可见未就绪项）。下单 API：`POST /api/billing/team-order`。
-- 云端增量同步、SSO、组织级多仓聚合：仍为后续能力
-- 私有化报价、交付物与 SLA：[team-onprem.md](team-onprem.md)
-- 私有 LLM、离线安装包、审计、发票流程：[invoice.md](invoice.md)、[support.md](support.md)
+实现：`web/lib/pro/host-drift.js`。旧图文漂移检查（`checkKit`）不再作为付费档交付。
 
-Community 扩展与网页**不会**为 Generate/Validate「电检」许可证。Pro 登录是可选增值层。
+## Team / 私有化
+
+- **Team**：¥99 / 人 / 月。购买后账号 `plan=team`，绑定该仓库的 CI 托管评论与规范包；共享图库为占位（控制台可见未就绪项）。下单 API：`POST /api/billing/team-order`。
+- 第三方实测综合评价为"有潜力的内部工程工具，尚未达到成熟通用产品完整度"。Team 档**保留价格但不主推**，先靠 Pro 个人订阅验证付费意愿。
+- 私有化报价、交付物与 SLA：[team-onprem.md](team-onprem.md)。有书面合同再启动 SSO / 多仓 / 审计能力建设。
+
+## 收入结构（验证期假设，无数据支撑）
+
+| 来源 | 预期占比 | 备注 |
+|---|---|---|
+| Pro / Team 订阅 | 70% | 主业，待验证 |
+| 咨询 | 20% | 有单再扩，不计入产品验证成功 |
+| 赞助 / 联盟 | 10% | 学 Archify 货架，不堆云厂商 |
+
+> 以上比例是验证期假设。未达 3 付费试点前，不作为预测使用。
+
+## License
+
+维持 Apache 2.0，不改整仓为 GPL。
+
+1. **`lib/` 提取 / diff / 风险 / 影响面 / MCP：维持 Apache 2.0。**
+2. **托管与账号（`web/lib/pro/`、`account/`、SaaS API）：单独商业许可或源码可见、不可对外再分发。** 新文件新许可，不回溯整仓。
+3. 商标条款保留（衍生作品改名）。
+
+若以后真要双许可，只对**新写的托管代码**加商业条款，并先咨询律师。
 
 ## 第三方
 

@@ -1,6 +1,6 @@
-# Pro SaaS 最小闭环（账号 + 托管漂移评论）
+# Pro SaaS 最小闭环（账号 + 托管增量结构评论）
 
-Architecture Viewer **Community** 继续免费。本页说明如何把同一套 Web 进程当成 **Pro 云** 来卖：客户注册、试用、付费，把 GitHub / Gitee 的 Merge Request / Pull Request webhook 指到你的服务，**由你代跑 `check --filled --drift` 并在 PR 上评论红灯/绿灯**。
+Architecture Viewer **Community** 继续免费。本页说明如何把同一套 Web 进程当成 **Pro 云** 来卖：客户注册、试用、付费，把 GitHub / Gitee 的 Merge Request / Pull Request webhook 指到你的服务，**由你代跑增量结构验收（对照 PR base 的 session diff + 风险 + 影响面）并在 PR 上评论**。
 
 不引入新的 npm 运行时依赖。数据在 `.data/pro/store.json`。
 
@@ -76,3 +76,19 @@ docker compose up -d
 | 卖点 | 模板免费 | 不用维护 CI、评论始终在 |
 
 漏斗日志：`.data/pro/funnel.log`（signup / trial / login / pay / drift_ok / drift_found）。
+
+## 真实托管 PR 验收（发布后执行）
+
+> 当前本地自动化只覆盖模拟投递、基线比较与评论更新，不能证明公网部署、PAT、clone 和 provider API 已连通。真实远端验收状态：**NOT RUN**。需要维护者另行授权创建/更新 PR 或配置服务。
+
+使用经许可的演示仓，不使用客户私有代码；GitHub 和 Gitee 分别验收，只测一个平台不能宣称另一个已通过。
+
+1. 部署已经复验的固定版本，记录包版本或源提交及健康检查结果。密钥由维护者输入部署环境，验收记录不含 PAT、Webhook secret 或完整请求头。
+2. 演示仓配置明确的层边界。由维护者授权专用、最小权限、可撤销的凭据，并按上面的客户路径连接 webhook。
+3. 从无违规的 base 建 PR，只新增一条确定违例的 import。记录 PR URL、完整 base/head SHA、provider 投递状态与服务侧脱敏日志。
+4. 确认评论红灯指向该新增依赖，且比较的确是 PR base，而非 head 自比较或旧图文漂移。记录评论 ID。
+5. 在同一个 PR 修复该依赖并推送；确认下一次投递后同一评论 ID 被更新为绿灯，没有重复评论。
+6. 在隔离演示环境模拟无法获取 base、规则语法错误两种情况；确认控制台/任务状态明确失败（规则错误为 `RULES_CONFIG_ERROR`），不能把先前绿灯当成本次结果。不可为此修改生产正常仓的凭据或基线。
+7. 回收演示 webhook 和专用凭据；记录结果、未通过项、操作者和时间。只保留脱敏证据。
+
+验收记录最少包括：平台、部署版本、PR、base/head、红灯证据、修复 head、前后评论 ID、错误场景结果和清理状态。真实付款及续费另行验证，管理员开通和沙箱支付不能代替付费证据。

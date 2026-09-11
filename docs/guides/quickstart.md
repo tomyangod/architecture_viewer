@@ -214,8 +214,10 @@ python3 -m http.server 8080
 .av/graph-head.json
 ```
 
-可以提交（团队共享）：`.av/layers.json`、`architecture_viewer/` 下的六视图。  
+可以提交（团队共享）：`.av/layers.json`、`.arch-viewer-ignore`、`architecture_viewer/` 下的六视图。  
 `.av/graph-baseline.json` 仅无 git / 显式 pin snapshot 时需要；有 git 时默认对照 HEAD，不必提交快照。
+
+第三方 / vendored 子项目会制造误报。在仓库根放 `.arch-viewer-ignore`（每行一个目录名或路径前缀），或在 `.av/layers.json` 写 `"externalDirs": ["BmccMediaSpider-main"]`。这些目录不进图谱、不进漂移清单、不进风险检测。
 
 ### 0.5（可选）分层与契约——不用装别的工具
 
@@ -229,6 +231,10 @@ python3 -m http.server 8080
 | `.importlinter` / `setup.cfg` `[importlinter]` / `pyproject.toml` `[tool.importlinter]` | 已有 Import Linter 契约时，**直接在依赖图上评估** forbidden / layers / independence |
 
 会话报告**只跑内置分析器**，不 spawn 外部 CLI。不需要安装 `lint-imports` 或 dependency-cruiser。`session suggest-config` 已移除；需要草稿时手写上述文件，或沿用团队已有的 Import Linter 契约。`.av/layers.json` 损坏时会亮 `layer-config-error`（MEDIUM），不会静默降级。
+
+**规则配置校验**：`architecture-rules.yaml` 使用内置 YAML 子集（缩进映射、列表、行内数组、引号标量和注释），不是完整 YAML。请以根目录示例为模板；不支持的字段、重复键、未闭合引号/数组、缺少必需字段均明确报错，不再静默丢掉约束。比如 `forbid_cross_layer` 的每一项必须有字符串 `from` 和 `to`；不用该类约束时写 `forbid_cross_layer: []`，不要只写空键。
+
+规则文件缺失时仍可使用默认规则。文件存在但无效时，CLI report 返回配置错误（exit 2），MCP/托管返回 `RULES_CONFIG_ERROR`。托管还会拒绝 head 或 base 图中的解析/读取错误（`SCAN_FAILED`）及分层配置错误，不以不完整图出绿灯。
 
 ---
 

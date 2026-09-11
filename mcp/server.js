@@ -136,10 +136,13 @@ function generateSessionReport(repo) {
   try {
     return generateSessionReportUnsafe(repo);
   } catch (e) {
+    const rulesFailed = e && e.code === 'RULES_CONFIG_ERROR';
     return {
-      error: 'SCAN_FAILED',
-      message: '扫描当前仓库失败：' + (e && e.message ? e.message : String(e)),
-      nextStep: '确认仓库路径可读后重试 av_session_report / av_guard。'
+      error: rulesFailed ? 'RULES_CONFIG_ERROR' : 'SCAN_FAILED',
+      message: (rulesFailed ? '团队规则配置错误：' : '扫描当前仓库失败：') + (e && e.message ? e.message : String(e)),
+      nextStep: rulesFailed
+        ? '修复 architecture-rules.yaml 后重试 av_session_report / av_guard。'
+        : '确认仓库路径可读后重试 av_session_report / av_guard。'
     };
   }
 }
@@ -233,6 +236,7 @@ function generateSessionReportUnsafe(repo) {
           ...diff.summary,
           implChangedCount: (diff.implChanges || []).length || diff.summary.implChangedCount || 0
         },
+        scopeChanged: diff.scopeChanged || null,
         reportPath: finalized.htmlPath,
         baselineKind: resolved.kind,
         hasUncommitted: resolved.hasUncommitted
@@ -787,8 +791,7 @@ function liveScanFindings(repo) {
   const emptyBase = { nodes: [], edges: [], fingerprint: '', root: graph.root, stats: {} };
   const diff = diffGraphs(emptyBase, graph);
   const impact = computeImpact(diff, emptyBase, graph);
-  let teamRules = null;
-  try { teamRules = loadSessionRules(repo); } catch { /* ignore */ }
+  const teamRules = loadSessionRules(repo);
   const findings = evaluateRisk(diff, graph, emptyBase, impact, { rules: teamRules });
   return { graph, baseline: emptyBase, diff, impact, findings };
 }
@@ -841,8 +844,7 @@ function toolExplainFinding(args) {
 
   // 报告里若是格式化字符串，用同一份 diff/基线还原对象——禁止改走空基线全楼扫描
   if (!target && findings.length > 0 && typeof findings[0] === 'string') {
-    let teamRules = null;
-    try { teamRules = loadSessionRules(repo); } catch { /* ignore */ }
+    const teamRules = loadSessionRules(repo);
     const rawFindings = evaluateRisk(diff, graph, baseline, impact, { rules: teamRules });
     target = pickFinding(rawFindings, args);
   }

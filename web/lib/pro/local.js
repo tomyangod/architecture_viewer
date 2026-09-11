@@ -159,8 +159,8 @@ async function runLocalCheck(user, rec, opts) {
   }
   row.lastOk = !!check.ok;
   row.lastAt = new Date().toISOString();
-  row.lastMissing = ((check.drift && check.drift.missing) || []).length;
-  row.lastErrors = ((check.protocol && check.protocol.errors) || []).length;
+  row.lastMissing = check.highCount || 0;
+  row.lastErrors = check.findingCount || 0;
   db.events.unshift({
     id: store.id(),
     userId: user.id,

@@ -2972,7 +2972,7 @@
       "phase": 3,
       "week": 21,
       "priority": "P1",
-      "status": "todo",
+      "status": "paused",
       "progress": 0,
       "assignee": "heyangyan",
       "estHours": 32,
@@ -3049,7 +3049,7 @@
       "phase": 3,
       "week": 22,
       "priority": "P2",
-      "status": "todo",
+      "status": "paused",
       "progress": 0,
       "assignee": "heyangyan",
       "estHours": 24,
@@ -3128,8 +3128,8 @@
       "phase": 3,
       "week": 23,
       "priority": "P0",
-      "status": "doing",
-      "progress": 80,
+      "status": "done",
+      "progress": 100,
       "assignee": "heyangyan",
       "estHours": 8,
       "deadline": "2026-09-17",
@@ -3381,6 +3381,254 @@
           "date": "2026-09-10",
           "action": "状态变更 todo→done",
           "detail": "README/Quickstart 主路径改为说话→verdict→commit；拍照仪式进附录；magicPrompt 对齐"
+        }
+      ]
+    },
+    {
+      "id": "W24-01",
+      "title": "Pro 托管检查对齐增量结构风险管线",
+      "phase": 3,
+      "week": 24,
+      "priority": "P0",
+      "status": "done",
+      "progress": 100,
+      "assignee": "heyangyan",
+      "estHours": 6,
+      "deps": ["W23-01"],
+      "tags": ["pro", "hosted", "alignment"],
+      "context": "Pro 付费档 host-drift.js 仍跑旧图文漂移检查，与主打卖点（增量结构验收）错位。",
+      "goal": "runHostedCheck 从 checkKit 漂移检查切到 contract-rules + session diff + 影响面，产出与免费侧同构的 verdict/风险/证据。",
+      "files": [
+        "web/lib/pro/host-drift.js",
+        "web/lib/pro/comment.js",
+        "web/lib/pro/providers.js",
+        "web/lib/pro/routes.js",
+        "web/lib/clone.js",
+        "lib/session-baseline.js"
+      ],
+      "acceptance": [
+        "托管检查 markdown 含增量风险/影响面，不再调用 checkKit 做图文漂移",
+        "PR webhook 解析 baseSha；无基线时明确失败，不把 head 和自己比较",
+        "test/pro.test.js 红灯=跨层违规、绿灯=无结构 diff"
+      ],
+      "decision": "2026-09-11 新增，战略评估结论",
+      "activity": [
+        {
+          "date": "2026-09-11",
+          "action": "状态变更 todo→done",
+          "detail": "runHostedCheck 改为 session diff + evaluateRisk + 影响面；webhook 带 baseSha 并 fetch 后 archive"
+        }
+      ]
+    },
+    {
+      "id": "W24-02",
+      "title": "实现 vendored/第三方目录排除（ignore 配置）",
+      "phase": 3,
+      "week": 24,
+      "priority": "P0",
+      "status": "done",
+      "progress": 100,
+      "assignee": "heyangyan",
+      "estHours": 3,
+      "deps": ["W19-01b"],
+      "tags": ["config", "noise", "pilot"],
+      "context": "v18 试点首日误报率 46%，根因是 vendored 第三方子目录无法排除。",
+      "goal": "支持 .arch-viewer-ignore 或 layers.json 中的 externalDirs 字段，跳过指定目录的漂移与风险检测。",
+      "files": [
+        "lib/scan-ignore.js",
+        "lib/extract/shared.js",
+        "lib/scan.js",
+        "lib/drift-locate.js"
+      ],
+      "acceptance": [
+        ".arch-viewer-ignore 与 externalDirs 生效",
+        "被排除目录不出现在图谱节点与 drift modules",
+        "test/scan-ignore.test.js 通过"
+      ],
+      "decision": "2026-09-11 新增，解决 v18 试点 46% 误报问题",
+      "activity": [
+        {
+          "date": "2026-09-11",
+          "action": "状态变更 todo→done",
+          "detail": "新增 lib/scan-ignore.js，extract 与 scan 共用排除规则"
+        },
+        {
+          "date": "2026-09-11",
+          "action": "复检补强（阶段 A-3）",
+          "detail": "v18 复检确认 BmccMediaSpider-main 本就被 .gitignore 忽略但 drift 路径不读 gitignore；两路径排除语义已对齐，v18 克隆复检 19 个自有模块保留、第三方模块 0、绿灯 exit 0"
+        }
+      ]
+    },
+    {
+      "id": "W24-03",
+      "title": "Team 验证期转人工申请试点（收口定价/下单口径漂移）",
+      "phase": 3,
+      "week": 24,
+      "priority": "P0",
+      "status": "done",
+      "progress": 100,
+      "assignee": "heyangyan",
+      "estHours": 2,
+      "deps": ["W24-01"],
+      "tags": ["billing", "team", "pilot"],
+      "context": "展示 ¥99/人/月，但订单商品是 ¥999/仓/年 team-repo-year，测试全绿同时允许两种口径并存。",
+      "goal": "验证期不建 Team 席位计费：展示保留 ¥99/人/月，统一走申请试点→人工报价；下单侧不再生成错误商品。",
+      "files": [
+        "web/lib/billing.js",
+        "web/public/index.html",
+        "web/public/account.html",
+        "test/billing.test.js"
+      ],
+      "acceptance": [
+        "Team 下单入口改为 createTeamApplication 人工申请，不再有 team-repo-year 自助商品",
+        "定价页与账户页文案一致（¥99/人/月，人工报价，2 个工作日联系）",
+        "test/billing.test.js 覆盖申请流"
+      ],
+      "decision": "2026-09-11 阶段 A-1，评审指出的交付遗漏",
+      "activity": [
+        {
+          "date": "2026-09-11",
+          "action": "状态变更 todo→done",
+          "detail": "teamPlan 改 manual-application；UI 与测试同步"
+        }
+      ]
+    },
+    {
+      "id": "W24-04",
+      "title": "托管团队规则加载失败显式中止（禁止静默退回默认规则）",
+      "phase": 3,
+      "week": 24,
+      "priority": "P0",
+      "status": "done",
+      "progress": 100,
+      "assignee": "heyangyan",
+      "estHours": 2,
+      "deps": ["W24-01"],
+      "tags": ["pro", "hosted", "reliability"],
+      "context": "loadSessionRules 异常被吞掉后继续跑默认检查，客户配置错误时会产出未应用其约束的假验收结论。",
+      "goal": "无规则文件可用默认规则；规则文件存在但读取/解析失败必须返回 RULES_CONFIG_ERROR 并中止，评论不得呈现为正常验收。",
+      "files": [
+        "web/lib/pro/host-drift.js",
+        "web/lib/pro/comment.js",
+        "test/pro.test.js"
+      ],
+      "acceptance": [
+        "规则路径存在但不可读（EISDIR 等）返回 reason=RULES_CONFIG_ERROR 且无 findings",
+        "评论含规则配置错误文案，与 NO_BASELINE 区分",
+        "无规则文件时默认规则仍绿灯"
+      ],
+      "decision": "2026-09-11 阶段 A-2，与基线不可用不假绿灯同类可信度要求",
+      "activity": [
+        {
+          "date": "2026-09-11",
+          "action": "状态变更 todo→done",
+          "detail": "host-drift try/catch 显式中止；pro.test.js 增加 EISDIR 回归"
+        }
+      ]
+    },
+    {
+      "id": "W24-05",
+      "title": "分析范围变化提示（ignore 配置变更不被误读为代码删除）",
+      "phase": 3,
+      "week": 24,
+      "priority": "P0",
+      "status": "done",
+      "progress": 100,
+      "assignee": "heyangyan",
+      "estHours": 3,
+      "deps": ["W24-02"],
+      "tags": ["noise", "reporting", "credibility"],
+      "context": "仅改 .arch-viewer-ignore 时，被排除目录实体以删除形式出现在 diff，客户会误读为真实代码删除/改善。",
+      "goal": "图盖 scope.ignorePatterns 戳；diff 产出 scopeChanged（added/removed）；CLI verdict、MCP、PR 评论、HTML 四处提示非代码删除；旧基线无戳时不报假变化。",
+      "files": [
+        "lib/extract-graph.js",
+        "lib/diff-graph.js",
+        "lib/pr-comment.js",
+        "lib/session-report.js",
+        "lib/session-verdict.js",
+        "lib/cli.js",
+        "mcp/server.js",
+        "test/scan-ignore.test.js"
+      ],
+      "acceptance": [
+        "新增 ignore 规则时 diff.scopeChanged.added 含该规则，verdict/PR 评论/HTML 均出现分析范围变化提示",
+        "ignore 未变或旧基线缺 scope 戳时 scopeChanged=null",
+        "gitignore 条目不泄漏进 scope 戳"
+      ],
+      "decision": "2026-09-11 阶段 A-3 验收要求",
+      "activity": [
+        {
+          "date": "2026-09-11",
+          "action": "状态变更 todo→done",
+          "detail": "四处接线完成；scan-ignore.test.js 新增 4 个 scope 回归，10/10 通过"
+        }
+      ]
+    },
+    {
+      "id": "W24-06",
+      "title": "drift 清单与图提取的 .gitignore 排除语义对齐",
+      "phase": 3,
+      "week": 24,
+      "priority": "P1",
+      "status": "done",
+      "progress": 100,
+      "assignee": "heyangyan",
+      "estHours": 1.5,
+      "deps": ["W24-02"],
+      "tags": ["noise", "scan", "pilot"],
+      "context": "walkSourceFiles 读 .gitignore 而 scan.js makeDirSkip 不读，gitignored 的 vendored 目录在 drift 清单仍出现（v18 噪音根因）。",
+      "goal": "gitignore 简单目录名在两条路径同样跳过；canonical 读取器放 scan-ignore，shared.js 委托复用，避免两份语义漂移。",
+      "files": [
+        "lib/scan-ignore.js",
+        "lib/extract/shared.js",
+        "test/scan-ignore.test.js"
+      ],
+      "acceptance": [
+        "无 .arch-viewer-ignore 时 drift scan 也跳过 gitignored 目录，图提取行为一致",
+        "readGitignoreSkips 导出名保留、委托 canonical 实现",
+        "回归测试覆盖路径一致性"
+      ],
+      "decision": "2026-09-11 v18 复检发现的路径不一致，属报告可信度修复",
+      "activity": [
+        {
+          "date": "2026-09-11",
+          "action": "状态变更 todo→done",
+          "detail": "readGitignoreDirNames 落到 scan-ignore；makeDirSkip 合并 gitignore 名；shared 委托"
+        }
+      ]
+    },
+    {
+      "id": "W24-07",
+      "title": "阶段 A 发布前验收（托管 E2E + 干净安装 + 验证计划/台账修订）",
+      "phase": 3,
+      "week": 24,
+      "priority": "P0",
+      "status": "done",
+      "progress": 100,
+      "assignee": "heyangyan",
+      "estHours": 3,
+      "deps": ["W24-03", "W24-04", "W24-05", "W24-06"],
+      "tags": ["pilot", "release", "validation"],
+      "context": "试点前需证明待发布包在干净环境可信交付，且验证指标口径经得起复盘。",
+      "goal": "完成五项发布前验收并把计划/台账口径收紧。",
+      "files": [
+        "pm/plans/pilot-validation-6w.md",
+        "pm/metrics.md",
+        "web/lib/pro/providers.js",
+        "test/pro.test.js"
+      ],
+      "acceptance": [
+        "托管 E2E：违规红灯→修复后 PATCH 同一条评论（非重复发）、NO_BASELINE 显式报错，自动化测试覆盖",
+        "干净安装：npm pack 产物在全新目录安装，session start/报告红灯 exit 1/修复绿灯 exit 0",
+        "验证计划：误报三分类、漏报 N/M/K 口径、对照 A/B 组拆分、首次付款与续费分开、支持工时、日期锚点 10-09/11-06",
+        "指标台账：未测量项写未知不写 0；W07 标期间累计未完整周"
+      ],
+      "decision": "2026-09-11 选项 B 执行方案阶段 A",
+      "activity": [
+        {
+          "date": "2026-09-11",
+          "action": "状态变更 todo→done",
+          "detail": "upsert PATCH/POST 两分支测试；npm pack 0.12.1（141 文件）干净安装全链路通过；计划与台账修订完成"
         }
       ]
     }

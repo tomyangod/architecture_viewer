@@ -325,20 +325,20 @@ npm install
         </article>
         <article>
           <h3>Team</h3>
-          <p class="price">¥999<span>/年/仓库</span></p>
+          <p class="price">¥99<span>/人/月</span></p>
           <ul>
-            <li><strong>CI 托管评论</strong>（按仓库）</li>
+            <li><strong>CI 托管评论</strong>（按人）</li>
             <li>architecture-rules 规范包</li>
-            <li>共享图库占位 · <a href="https://gitee.com/heyangyan/architecture_viewer/blob/master/docs/commercial/team-onprem.md" target="_blank" rel="noopener">私有化报价</a></li>
+            <li>早期采用者计划 · <a href="https://gitee.com/heyangyan/architecture_viewer/blob/master/docs/commercial/team-onprem.md" target="_blank" rel="noopener">私有化报价</a></li>
           </ul>
-          <form id="team-order" class="account-form" style="margin-top:0.75rem">
+          <p class="section-copy" style="font-size:0.85rem;margin-bottom:0.5rem">验证期不开放自助下单，提交后 2 个工作日内人工联系报价。</p>
+          <form id="team-apply" class="account-form" style="margin-top:0.5rem">
             <label>工作邮箱 <input type="email" id="team-email" required autocomplete="email" placeholder="you@company.com" /></label>
             <label>仓库 HTTPS URL <input type="url" id="team-repo" required placeholder="https://gitee.com/org/repo" /></label>
             <div class="price-cta">
-              <button type="submit" class="btn primary" id="team-order-btn">下单 Team</button>
-              <a class="btn ghost" id="pay-lemon-team" href="https://arch-viewer.lemonsqueezy.com/checkout/buy/team-repo-year" target="_blank" rel="noopener">Lemon 沙箱</a>
+              <button type="submit" class="btn primary" id="team-apply-btn">申请 Team 试点</button>
             </div>
-            <p id="team-order-tip" class="try-status" hidden></p>
+            <p id="team-apply-tip" class="try-status" hidden></p>
           </form>
         </article>
       </div>

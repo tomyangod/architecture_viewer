@@ -65,8 +65,10 @@ function parseWebhook(headers, body, rawBody, secret) {
       repo: full[1] || repo.name,
       pr: pr.number,
       sha: pr.head && pr.head.sha,
+      baseSha: pr.base && pr.base.sha,
       branch: pr.head && pr.head.ref,
       cloneUrl: (pr.head && pr.head.repo && pr.head.repo.clone_url) || repo.clone_url,
+      baseCloneUrl: (pr.base && pr.base.repo && pr.base.repo.clone_url) || repo.clone_url,
       title: pr.title
     };
   }
@@ -100,6 +102,7 @@ function parseWebhook(headers, body, rawBody, secret) {
       repo: pathNs[1] || (parsed && parsed.repo) || project.name,
       pr: pr.number || pr.iid,
       sha: (pr.head && (pr.head.sha || pr.head_commit)) || pr.merge_commit_sha,
+      baseSha: (pr.base && (pr.base.sha || pr.base_commit)) || pr.merge_base_sha,
       branch: (pr.head && pr.head.ref) || pr.source_branch,
       cloneUrl: project.clone_url || (parsed && parsed.cloneUrl),
       title: pr.title
@@ -163,49 +166,53 @@ const { MARKER } = require('./comment');
 async function upsertPrComment(job, token, markdown, opts) {
   const options = opts || {};
   const post = options.post || defaultPost;
-  return post(job, token, markdown);
+  return post(job, token, markdown, options);
 }
 
-async function defaultPost(job, token, markdown) {
+async function defaultPost(job, token, markdown, opts) {
+  const options = opts || {};
   if (!token) {
     const err = new Error('未配置仓库访问令牌，无法发表 PR 评论');
     err.status = 400;
     throw err;
   }
+  // Test seam: inject (method, apiPath, token, json) => result.
+  const request = options.request
+    || (job.provider === 'gitee' ? giteeRequest : githubRequest);
   if (job.provider === 'gitee') {
-    const list = await giteeRequest(
+    const list = await request(
       'GET',
       '/repos/' + job.owner + '/' + job.repo + '/pulls/' + job.pr + '/comments',
       token
     );
     const existing = Array.isArray(list) ? list.find((c) => String(c.body || '').includes(MARKER)) : null;
     if (existing && existing.id) {
-      return giteeRequest(
+      return request(
         'PATCH',
         '/repos/' + job.owner + '/' + job.repo + '/pulls/comments/' + existing.id,
         token,
         { body: markdown }
       );
     }
-    return giteeRequest(
+    return request(
       'POST',
       '/repos/' + job.owner + '/' + job.repo + '/pulls/' + job.pr + '/comments',
       token,
       { body: markdown }
     );
   }
-  const list = await githubRequest(
+  const list = await request(
     'GET',
     '/repos/' + job.owner + '/' + job.repo + '/issues/' + job.pr + '/comments',
     token
   );
   const existing = Array.isArray(list) ? list.find((c) => String(c.body || '').includes(MARKER)) : null;
   if (existing && existing.id) {
-    return githubRequest('PATCH', '/repos/' + job.owner + '/' + job.repo + '/issues/comments/' + existing.id, token, {
+    return request('PATCH', '/repos/' + job.owner + '/' + job.repo + '/issues/comments/' + existing.id, token, {
       body: markdown
     });
   }
-  return githubRequest('POST', '/repos/' + job.owner + '/' + job.repo + '/issues/' + job.pr + '/comments', token, {
+  return request('POST', '/repos/' + job.owner + '/' + job.repo + '/issues/' + job.pr + '/comments', token, {
     body: markdown
   });
 }

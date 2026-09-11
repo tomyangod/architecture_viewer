@@ -363,8 +363,7 @@
       var map = {
         'pay-afdian': h.billing.afdian,
         'pay-wechat': h.billing.wechat,
-        'pay-lemon': h.billing.lemon,
-        'pay-lemon-team': h.billing.lemonTeam
+        'pay-lemon': h.billing.lemon
       };
       Object.keys(map).forEach(function (id) {
         var el = document.getElementById(id);
@@ -373,29 +372,25 @@
     }
   }).catch(function () { /* ignore */ });
 
-  var teamForm = document.getElementById('team-order');
+  var teamForm = document.getElementById('team-apply');
   if (teamForm) {
     teamForm.addEventListener('submit', function (e) {
       e.preventDefault();
-      var tip = document.getElementById('team-order-tip');
+      var tip = document.getElementById('team-apply-tip');
       var email = (document.getElementById('team-email') || {}).value || '';
       var repoUrl = (document.getElementById('team-repo') || {}).value || '';
-      fetch('/api/billing/team-order', {
+      fetch('/api/billing/team-application', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: email.trim(), repoUrl: repoUrl.trim(), channel: 'lemon' })
+        body: JSON.stringify({ email: email.trim(), repoUrl: repoUrl.trim(), channel: 'landing' })
       })
         .then(function (r) { return r.json().then(function (d) { return { ok: r.ok, data: d }; }); })
         .then(function (res) {
           if (!res.ok) {
-            if (tip) { tip.hidden = false; tip.textContent = res.data.error || '下单失败'; tip.classList.add('error'); }
+            if (tip) { tip.hidden = false; tip.textContent = res.data.error || '申请失败'; tip.classList.add('error'); }
             return;
           }
-          var msg = '订单 ' + res.data.orderId + ' · ¥' + res.data.priceCny + '/年/仓';
-          if (res.data.granted) msg += ' · 沙箱已开通';
-          else msg += ' · 请前往结账页付款后等运营开通';
-          if (tip) { tip.hidden = false; tip.textContent = msg; tip.classList.remove('error'); }
-          if (res.data.checkoutUrl && !res.data.granted) window.open(res.data.checkoutUrl, '_blank', 'noopener');
+          if (tip) { tip.hidden = false; tip.textContent = '申请 ' + res.data.applicationId + ' 已登记，2 个工作日内人工联系报价。'; tip.classList.remove('error'); }
         })
         .catch(function () {
           if (tip) { tip.hidden = false; tip.textContent = '网络错误'; tip.classList.add('error'); }

@@ -8,6 +8,7 @@ const {
   authCloneUrl,
   buildCloneArgs,
   isValidBranch,
+  isValidSha,
   redactSecrets,
   classifyGitError,
   basicAuthHeader,
@@ -124,6 +125,16 @@ describe('clone.buildCloneArgs (token via http.extraHeader, never in URL)', () =
     for (const good of ['main', 'feat/drift-check', 'release-0.3.0', 'refs/heads/dev', 'a.b_c', 'v1.2.x']) {
       assert.equal(isValidBranch(good), true, good);
     }
+  });
+});
+
+describe('clone.isValidSha', () => {
+  it('accepts hex SHAs and rejects flags', () => {
+    assert.equal(isValidSha('abc1234'), true);
+    assert.equal(isValidSha('0123456789abcdef0123456789abcdef01234567'), true);
+    assert.equal(isValidSha('--upload-pack=evil'), false);
+    assert.equal(isValidSha('HEAD'), false);
+    assert.equal(isValidSha(''), false);
   });
 });
 
