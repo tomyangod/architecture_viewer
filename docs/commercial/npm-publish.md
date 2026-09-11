@@ -1,10 +1,10 @@
 # 固定试点版发布：0.12.2-rc.2
 
-> 2026-09-11：候选版本仅在本地准备，尚未发布。查询时 registry `latest=0.12.1`、`next=0.12.2-rc.1`；不可重用已发布版本号。发布前重新查询。
+> 2026-09-11：本地提交准备发布。发布前查询：`latest=0.12.1`、`next=0.12.2-rc.1`；`0.12.2-rc.2` 尚不存在。发布使用 `--tag next`，不改 `latest`。
 
 包名：`arch-viewer`。二进制：`arch-viewer`、`arch-viewer-mcp`。
 
-## 本地准备（不提交、不发布）
+## 本地准备
 
 1. 审阅 `git status --short` 和 diff，保留他人改动。新增的 `lib/scan-ignore.js`、测试必须纳入最终提交；临时报告、客户代码、凭据、`.data/` 不得混入。
 2. 核对 `package.json`、`package-lock.json` 与 CHANGELOG 的候选版本一致。
@@ -25,7 +25,7 @@ npm pack --dry-run --json
 
 不得含 `.env`、`.data/`、`.av/`、客户仓库、测试产物、`pm/`、临时评论、视频或本地凭据。以 tarball 实际清单为准，不只检查 `files` 字段。
 
-## 提交和发布（必须另获授权）
+## 提交和发布
 
 1. 整理提交并确认源代码无遗漏；批准架构变更。认证由维护者交互完成，不在日志或材料中保存 token。
 2. 从该干净提交重新执行发布检查与打包、安装验证。若包内容变化，原来的校验结果不能替代复验。
@@ -33,11 +33,10 @@ npm pack --dry-run --json
 4. 只发布复验后的 tarball，候选版使用 `next`，不改 `latest`：
 
 ```bash
-# 以下为维护者批准后的手动操作，不属于本地准备
 npm publish <复验通过的tarball绝对路径> --tag next --access public --registry https://registry.npmjs.org
 ```
 
-`next` 已有旧候选版，移动该标签需要负责人确认。不要使用会自动升版本或创建 tag 的发布脚本代替本流程。
+`next` 原先指向 `0.12.2-rc.1`；发布本版会将 `next` 移到 `0.12.2-rc.2`。不要使用会自动升版本或创建 tag 的发布脚本代替本流程。
 
 ## 发布后复验
 
@@ -52,3 +51,12 @@ npx --no-install arch-viewer --version
 将 registry integrity 与已发布 tarball 的 integrity 对比，再跑绿灯、违规 exit 1、配置错误、scope 提示及 MCP 初始化。完成 [真实托管 PR 验收](PRO-SAAS.md#真实托管-pr-验收发布后执行) 后才标记远端链路通过。
 
 记录发布提交、版本、时间和结果至 [指标台账](../../pm/metrics.md)，不把本地 tarball 写成 npm 已发布。收到的首购与续费分别记账，沙箱开通不算到账。
+
+### 试点安装（发布后）
+
+```bash
+npm i -g arch-viewer@0.12.2-rc.2
+# 或 npm i -g arch-viewer@next
+```
+
+详见 [quickstart](../guides/quickstart.md)。
