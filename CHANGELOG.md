@@ -4,6 +4,10 @@
 
 ## \[Unreleased\]
 
+## \[0.12.2-rc.4\] — 2026-09-14
+
+试点候选包，发布到 npm 标签 `next`（不改 `latest`）。核心结构验收链路与 rc.3 一致；本版改变默认可视化交付。
+
 ### Changed
 
 - **默认交付不再是六张图。** `generate` 默认只写 Block 静态结构总览（有启动/编排证据才加 Deployment；有 `--focus` 或 git 改动才加局部类图）。C4 Context 需 `--confirm-context`；C4 Container/Component 退出默认交付。`--compat-six-views` 保留兼容生成器并停止扩张。
@@ -11,9 +15,13 @@
 - **session report 默认内置 Before/Delta/After HTML**，不再自动尝试 Archify 成片。`--renderer auto|archify` 仍可显式选用。
 - **Archify 导出需人工确认**：CLI `--confirm`，MCP `av_archify_export` 传 `confirm=true`。Schema/路径存在不能替代关系审查；`validation.status` 区分 validated / validate_failed / not_validated / not_requested。
 
-## \[0.12.2-rc.3\] — Unreleased
+### Fixed
 
-整合 RC1 独立加固与 RC2 已提交功能的新候选；不是 npm 上既有 RC2 的同一产物，不自动发布到 `next` 或 `latest`。
+- **Preview/webview 可选 Tab 误隐藏**：`probeOptionalTabs` 探测 `.md` 前先查 `__ARCH_INLINE_SOURCES__`，有内置内容的 Tab 不再因 fetch 404 被隐藏（webview-csp 回归）。
+
+## \[0.12.2-rc.3\] — 2026-09-14
+
+整合 RC1 独立加固与 RC2 已提交功能的新候选；已发布到 npm 标签 `next`（源提交 `81e6c43`）。
 
 ### Fixed
 

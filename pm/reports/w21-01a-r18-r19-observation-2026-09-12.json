@@ -1,0 +1,188 @@
+{
+  "date": "2026-09-12",
+  "fixture_tests": "16/16 R19 + from-import/call extras",
+  "rows": [
+    {
+      "id": "r18_tp_ts",
+      "r18": 1,
+      "r19": 0,
+      "gateLevel": "none",
+      "reportOnlyCount": 1,
+      "sample": [
+        {
+          "rule": "enum-exhaustiveness",
+          "severity": "medium",
+          "confidence": "medium",
+          "reportOnly": true,
+          "message": "\"Status\" 新增 Pending，1 处 switch/match 未点名覆盖",
+          "file": "src/status.ts",
+          "line": 3
+        }
+      ],
+      "human": "TP"
+    },
+    {
+      "id": "r18_tn_covered",
+      "r18": 0,
+      "r19": 0,
+      "gateLevel": "none",
+      "reportOnlyCount": 0,
+      "sample": [],
+      "human": "TN"
+    },
+    {
+      "id": "r18_tn_default_low",
+      "r18": 1,
+      "r19": 0,
+      "gateLevel": "none",
+      "reportOnlyCount": 1,
+      "sample": [
+        {
+          "rule": "enum-exhaustiveness",
+          "severity": "low",
+          "confidence": "medium",
+          "reportOnly": true,
+          "message": "\"Status\" 新增 Pending，1 处 switch/match 未点名覆盖",
+          "file": "src/status.ts",
+          "line": 3
+        }
+      ],
+      "human": "TP_soft"
+    },
+    {
+      "id": "r19_tp_js",
+      "r18": 0,
+      "r19": 1,
+      "gateLevel": "none",
+      "reportOnlyCount": 1,
+      "sample": [
+        {
+          "rule": "exception-contract-drift",
+          "severity": "medium",
+          "confidence": "medium",
+          "reportOnly": true,
+          "message": "\"save\" 新增抛出 QuotaError，沿 call 边到 controller「handle」未见捕获",
+          "file": "src/service/save.js",
+          "line": 1
+        }
+      ],
+      "human": "TP"
+    },
+    {
+      "id": "r19_tn_caught",
+      "r18": 0,
+      "r19": 0,
+      "gateLevel": "none",
+      "reportOnlyCount": 0,
+      "sample": [],
+      "human": "TN"
+    },
+    {
+      "id": "r19_tp_py",
+      "r18": 0,
+      "r19": 1,
+      "gateLevel": "low",
+      "reportOnlyCount": 1,
+      "sample": [
+        {
+          "rule": "exception-contract-drift",
+          "severity": "medium",
+          "confidence": "high",
+          "reportOnly": true,
+          "message": "\"save\" 新增抛出 QuotaError，沿 call 边到 controller「handle」未见捕获",
+          "file": "service/save.py",
+          "line": 3
+        }
+      ],
+      "human": "TP"
+    },
+    {
+      "id": "r19_low_conf_Error",
+      "r18": 0,
+      "r19": 1,
+      "gateLevel": "none",
+      "reportOnlyCount": 1,
+      "sample": [
+        {
+          "rule": "exception-contract-drift",
+          "severity": "medium",
+          "confidence": "low",
+          "reportOnly": true,
+          "message": "\"save\" 新增抛出 Error，沿 call 边到 controller「handle」未见捕获",
+          "file": "src/service/save.js",
+          "line": 1
+        }
+      ],
+      "human": "TP"
+    },
+    {
+      "id": "r18_tp_pom_paths",
+      "r18": 1,
+      "r19": 0,
+      "gateLevel": "none",
+      "reportOnlyCount": 1,
+      "sample": [
+        {
+          "rule": "enum-exhaustiveness",
+          "severity": "medium",
+          "confidence": "medium",
+          "reportOnly": true,
+          "message": "\"JobStatus\" 新增 PENDING，1 处 switch/match 未点名覆盖",
+          "file": "backend/services/status.py",
+          "line": 7
+        }
+      ],
+      "human": "TP"
+    },
+    {
+      "id": "r19_tp_pom_paths",
+      "r18": 0,
+      "r19": 1,
+      "gateLevel": "low",
+      "reportOnlyCount": 1,
+      "sample": [
+        {
+          "rule": "exception-contract-drift",
+          "severity": "medium",
+          "confidence": "high",
+          "reportOnly": true,
+          "message": "\"charge\" 新增抛出 PayError，沿 call 边到 controller「api」未见捕获",
+          "file": "backend/services/pay.py",
+          "line": 3
+        }
+      ],
+      "human": "TP"
+    }
+  ],
+  "recommendation": "hold-W21-01b; §15 week FP proxy: fired 0 / FP 0; daily patrol script; defer ungating",
+  "productCliScanWebServer": {
+    "after": "§13 loadGuard + lexical enclose",
+    "r19": 1,
+    "label": "TP",
+    "message": "scan 新增抛出 AvObsError，沿 call 边到 controller「server.js」未见捕获",
+    "reportOnly": true
+  },
+  "fpWeekProxy": {
+    "detail": "pm/reports/w21-01a-r18-r19-fp-week-proxy-2026-09-12.json",
+    "patrolScript": "pm/scripts/r18-r19-fp-patrol.mjs",
+    "r18_fired": 0,
+    "r19_fired": 0,
+    "fp": 0,
+    "tn_silence_with_addedThrows": [
+      {
+        "commit": "85a9f6a",
+        "note": "entry caught or no entry path"
+      }
+    ],
+    "recall_gaps": [
+      {
+        "commit": "b7b5b3f",
+        "note": "new fn await_page_call PageCallTimeout not in behaviorChanges"
+      }
+    ],
+    "openW2101b": false,
+    "conclusion": "FP pressure ~0 on week proxy; defer ungating for lack of positive denominator + recall gaps"
+  },
+  "openW2101b": false,
+  "updatedAt": "2026-09-12"
+}

@@ -1,0 +1,60 @@
+{
+  "version": 1,
+  "runner": {
+    "kind": "node:test",
+    "command": ["node", "--test"],
+    "timeoutMs": 60000
+  },
+  "rules": [
+    {
+      "id": "av-report-only-not-gating",
+      "title": "reportOnly 不得阻断门禁",
+      "meaning": "观察期 finding（R16/R17 等）即使标 HIGH 也不计入 gateLevel，不能单独把结构验收门打红。",
+      "source": "W20-01b / test/test-index.test.js",
+      "mustPass": true,
+      "selectors": {
+        "files": ["test/test-index.test.js"],
+        "namePattern": "reportOnly 不计入 gateLevel"
+      }
+    },
+    {
+      "id": "av-cross-layer-high-blocks",
+      "title": "跨层 HIGH 必须阻断",
+      "meaning": "默认 --fail-on=high 时，HIGH 风险（含跨层违规）退出码为 1；medium/low/none 不阻断。",
+      "source": "lib/exit-codes.js / test/exit-codes.test.js / test/analyzers-contract-rules.test.js",
+      "mustPass": true,
+      "selectors": {
+        "files": [
+          "test/exit-codes.test.js",
+          "test/analyzers-contract-rules.test.js"
+        ],
+        "namePattern": "默认 high：仅 high 阻断|lower layer importing higher layer is cross-layer-violation"
+      }
+    },
+    {
+      "id": "av-invalid-report-not-success",
+      "title": "无效/过期报告不得当作成功",
+      "meaning": "扫描失败、规则配置错误、过期 session 报告不能呈现为绿灯或成功验收。",
+      "source": "test/hosted-validation.test.js / test/stale-report.test.js",
+      "mustPass": true,
+      "selectors": {
+        "files": [
+          "test/hosted-validation.test.js",
+          "test/stale-report.test.js"
+        ],
+        "namePattern": "malformed layer config cannot produce a green check|staleJsonStub 可被 isStaleReport 识别"
+      }
+    },
+    {
+      "id": "av-cli-mcp-same-conclusion",
+      "title": "CLI 与 MCP 对同一输入结论一致",
+      "meaning": "同一损坏规则文件下，loadSessionRules / hosted / CLI session report / MCP 均返回 RULES_CONFIG_ERROR，不得一方绿灯。",
+      "source": "test/hosted-validation.test.js",
+      "mustPass": true,
+      "selectors": {
+        "files": ["test/hosted-validation.test.js"],
+        "namePattern": "loader, hosted, CLI and MCP reject"
+      }
+    }
+  ]
+}

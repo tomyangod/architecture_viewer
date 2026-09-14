@@ -1,0 +1,351 @@
+{
+  "generatedAt": "2026-09-12T12:10:32.198Z",
+  "method": "git parent..commit replay with current AV rules",
+  "giteePrs": 0,
+  "results": [
+    {
+      "title": "POM introduce XhsRendererDeadError",
+      "date": "2026-09-05",
+      "repo": "publicopinionmonitor_v2",
+      "baseRev": "b7b5b3f^",
+      "headRev": "b7b5b3f",
+      "ms": 12873,
+      "summary": {
+        "counts": {
+          "high": 0,
+          "medium": 0,
+          "low": 146,
+          "info": 3
+        },
+        "level": "low",
+        "gateLevel": "low",
+        "total": 149,
+        "reportOnlyCount": 0
+      },
+      "addedThrows": [],
+      "enumAdds": 0,
+      "r18": [],
+      "r19": []
+    },
+    {
+      "title": "POM await_page_call Weibo PageCallTimeout",
+      "date": "2026-09-05",
+      "repo": "publicopinionmonitor_v2",
+      "baseRev": "7d4e203^",
+      "headRev": "7d4e203",
+      "ms": 12421,
+      "summary": {
+        "counts": {
+          "high": 0,
+          "medium": 0,
+          "low": 145,
+          "info": 1
+        },
+        "level": "low",
+        "gateLevel": "low",
+        "total": 146,
+        "reportOnlyCount": 0
+      },
+      "addedThrows": [],
+      "enumAdds": 0,
+      "r18": [],
+      "r19": []
+    },
+    {
+      "title": "POM XhsVerifyChallengeError inline wait",
+      "date": "2026-09-07",
+      "repo": "publicopinionmonitor_v2",
+      "baseRev": "ed18077^",
+      "headRev": "ed18077",
+      "ms": 12810,
+      "summary": {
+        "counts": {
+          "high": 0,
+          "medium": 0,
+          "low": 143,
+          "info": 2
+        },
+        "level": "low",
+        "gateLevel": "low",
+        "total": 145,
+        "reportOnlyCount": 0
+      },
+      "addedThrows": [],
+      "enumAdds": 0,
+      "r18": [],
+      "r19": []
+    },
+    {
+      "title": "POM unify process ID checking",
+      "date": "2026-09-01",
+      "repo": "publicopinionmonitor_v2",
+      "baseRev": "a52c290^",
+      "headRev": "a52c290",
+      "ms": 13106,
+      "summary": {
+        "counts": {
+          "high": 0,
+          "medium": 0,
+          "low": 144,
+          "info": 4
+        },
+        "level": "low",
+        "gateLevel": "low",
+        "total": 148,
+        "reportOnlyCount": 0
+      },
+      "addedThrows": [],
+      "enumAdds": 0,
+      "r18": [],
+      "r19": []
+    },
+    {
+      "title": "POM encoding subprocess UTF-8",
+      "date": "2026-09-03",
+      "repo": "publicopinionmonitor_v2",
+      "baseRev": "5dcffc2^",
+      "headRev": "5dcffc2",
+      "ms": 12516,
+      "summary": {
+        "counts": {
+          "high": 0,
+          "medium": 0,
+          "low": 143,
+          "info": 1
+        },
+        "level": "low",
+        "gateLevel": "low",
+        "total": 144,
+        "reportOnlyCount": 0
+      },
+      "addedThrows": [],
+      "enumAdds": 0,
+      "r18": [],
+      "r19": []
+    },
+    {
+      "title": "POM job prioritization scheduler",
+      "date": "2026-09-01",
+      "repo": "publicopinionmonitor_v2",
+      "baseRev": "407b714^",
+      "headRev": "407b714",
+      "ms": 12144,
+      "summary": {
+        "counts": {
+          "high": 0,
+          "medium": 0,
+          "low": 143,
+          "info": 0
+        },
+        "level": "low",
+        "gateLevel": "low",
+        "total": 143,
+        "reportOnlyCount": 0
+      },
+      "addedThrows": [],
+      "enumAdds": 0,
+      "r18": [],
+      "r19": []
+    },
+    {
+      "title": "AV audit harden LLM/risk/scan",
+      "date": "2026-09-09",
+      "repo": "architecture_viewer",
+      "baseRev": "4e53b07^",
+      "headRev": "4e53b07",
+      "ms": 4211,
+      "summary": {
+        "counts": {
+          "high": 0,
+          "medium": 2,
+          "low": 55,
+          "info": 1
+        },
+        "level": "medium",
+        "gateLevel": "medium",
+        "total": 58,
+        "reportOnlyCount": 0
+      },
+      "addedThrows": [],
+      "enumAdds": 0,
+      "r18": [],
+      "r19": []
+    },
+    {
+      "title": "AV W15-01 worktree + fail-on",
+      "date": "2026-09-08",
+      "repo": "architecture_viewer",
+      "baseRev": "e9c436a^",
+      "headRev": "e9c436a",
+      "ms": 4303,
+      "summary": {
+        "counts": {
+          "high": 0,
+          "medium": 0,
+          "low": 54,
+          "info": 1
+        },
+        "level": "low",
+        "gateLevel": "low",
+        "total": 55,
+        "reportOnlyCount": 0
+      },
+      "addedThrows": [],
+      "enumAdds": 0,
+      "r18": [],
+      "r19": []
+    },
+    {
+      "title": "AV python from-import submodule",
+      "date": "2026-09-08",
+      "repo": "architecture_viewer",
+      "baseRev": "cad5333^",
+      "headRev": "cad5333",
+      "ms": 4179,
+      "summary": {
+        "counts": {
+          "high": 0,
+          "medium": 0,
+          "low": 53,
+          "info": 1
+        },
+        "level": "low",
+        "gateLevel": "low",
+        "total": 54,
+        "reportOnlyCount": 0
+      },
+      "addedThrows": [],
+      "enumAdds": 0,
+      "r18": [],
+      "r19": []
+    },
+    {
+      "title": "AV file line count risk rules",
+      "date": "2026-09-05",
+      "repo": "architecture_viewer",
+      "baseRev": "0600015^",
+      "headRev": "0600015",
+      "ms": 4151,
+      "summary": {
+        "counts": {
+          "high": 0,
+          "medium": 0,
+          "low": 53,
+          "info": 1
+        },
+        "level": "low",
+        "gateLevel": "low",
+        "total": 54,
+        "reportOnlyCount": 0
+      },
+      "addedThrows": [],
+      "enumAdds": 0,
+      "r18": [],
+      "r19": []
+    },
+    {
+      "title": "AV 0.12.1 null specifier + uninstall",
+      "date": "2026-09-10",
+      "repo": "architecture_viewer",
+      "baseRev": "4207188^",
+      "headRev": "4207188",
+      "ms": 6466,
+      "summary": {
+        "counts": {
+          "high": 0,
+          "medium": 1,
+          "low": 79,
+          "info": 1
+        },
+        "level": "medium",
+        "gateLevel": "medium",
+        "total": 81,
+        "reportOnlyCount": 0
+      },
+      "addedThrows": [],
+      "enumAdds": 0,
+      "r18": [],
+      "r19": []
+    },
+    {
+      "title": "AV 0.12.2-rc.2 release candidate",
+      "date": "2026-09-11",
+      "repo": "architecture_viewer",
+      "baseRev": "85a9f6a^",
+      "headRev": "85a9f6a",
+      "ms": 5866,
+      "summary": {
+        "counts": {
+          "high": 0,
+          "medium": 0,
+          "low": 81,
+          "info": 1
+        },
+        "level": "low",
+        "gateLevel": "low",
+        "total": 82,
+        "reportOnlyCount": 0
+      },
+      "addedThrows": [
+        {
+          "id": "lib/rules#loadRules",
+          "throws": [
+            "e"
+          ],
+          "path": "lib/rules.js"
+        },
+        {
+          "id": "lib/rules#parseInlineArray",
+          "throws": [
+            "rulesError"
+          ],
+          "path": "lib/rules.js"
+        },
+        {
+          "id": "lib/rules#parseScalar",
+          "throws": [
+            "rulesError"
+          ],
+          "path": "lib/rules.js"
+        },
+        {
+          "id": "lib/rules#parseYaml",
+          "throws": [
+            "e",
+            "rulesError"
+          ],
+          "path": "lib/rules.js"
+        },
+        {
+          "id": "lib/session-baseline#overlayWorkingConfig",
+          "throws": [
+            "Error"
+          ],
+          "path": "lib/session-baseline.js"
+        }
+      ],
+      "enumAdds": 0,
+      "r18": [],
+      "r19": []
+    }
+  ],
+  "labels": {
+    "r18_fired": 0,
+    "r19_fired": 0,
+    "fp": 0,
+    "tn_silence_with_addedThrows": [
+      {
+        "commit": "85a9f6a",
+        "note": "entry caught or no entry path"
+      }
+    ],
+    "recall_gaps": [
+      {
+        "commit": "b7b5b3f",
+        "note": "new fn await_page_call PageCallTimeout not in behaviorChanges"
+      }
+    ],
+    "openW2101b": false,
+    "conclusion": "FP pressure ~0 on week proxy; defer ungating for lack of positive denominator + recall gaps"
+  }
+}

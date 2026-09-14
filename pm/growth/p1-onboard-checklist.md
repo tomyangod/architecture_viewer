@@ -1,6 +1,6 @@
 # P1 首批 2 队接入检查清单（旁路周）
 
-> 版本钉死：`arch-viewer@0.12.2-rc.3`（registry / npm `next`）  
+> 版本钉死：`arch-viewer@0.12.2-rc.4`（registry / npm `next`）  
 > 主说明：[seed-users.md](seed-users.md) · 演示：[red-green-sample.md](red-green-sample.md)
 
 ## 接入前
@@ -10,8 +10,8 @@
 
 ## 接入当日（约 30 分钟，分记客户操作 vs 作者协助分钟）
 ```bash
-npx --yes --package arch-viewer@0.12.2-rc.3 arch-viewer --version
-npx --yes --package arch-viewer@0.12.2-rc.3 arch-viewer session report /绝对路径/to/repo --renderer builtin
+npx --yes --package arch-viewer@0.12.2-rc.4 arch-viewer --version
+npx --yes --package arch-viewer@0.12.2-rc.4 arch-viewer session report /绝对路径/to/repo --renderer builtin
 ```
 - [ ] 客户自己在真实仓跑通一次 session report
 - [ ] 若仓内已有 `.av/layers.json`：重新生成或对照源码复核（旧自动建议可能把调度/监控标成 util）；注意报告里的范围变化提示
