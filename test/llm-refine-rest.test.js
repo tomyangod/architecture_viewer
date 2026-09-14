@@ -25,6 +25,21 @@ const REST = [
 const DEMO = path.join(__dirname, '..', 'examples', 'tutorial-demo');
 
 describe('refine rest-view specs', () => {
+  it('does not inject tutorial business or storage into unrelated repositories', () => {
+    const inv = {
+      title: 'Metrics Collector', folder: 'collector', languages: ['python'],
+      entrypoints: ['collect.py'], modules: [], services: [], artifacts: [],
+      deploy: [], classes: [], packages: []
+    };
+    for (const file of REST) {
+      const prompt = restSystemPrompt(file, '') + '\n' + restUserPrompt(file, inv, {
+        treeText: 'collect.py', excerptText: 'def collect_metrics(): pass'
+      });
+      assert.doesNotMatch(prompt, /待办|Todo|list_todos|Flask|flask run|SQLite/, file);
+      assert.match(prompt, /证据|依据/, file);
+    }
+  });
+
   it('each of the 5 views has a dedicated mermaid-type contract', () => {
     // c4-* 精修片用 flowchart（Block 视觉语法）表达 C4 语义
     assert.match(viewSpecFor('c4-context.md'), /flowchart/);

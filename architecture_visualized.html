@@ -1527,6 +1527,11 @@
                 <h1>${PROJECT.headerIcon || '🏗️'} ${escapeHtml(PROJECT.title || '项目架构可视化全景')}</h1>
                 <p class="subtitle">${escapeHtml(PROJECT.subtitle || '系统架构多视图展示 · C4 模型 · 分层模块 · 代码结构 · 部署运维')}</p>
             </header>
+            <div id="av-evidence-notice" class="legend-bar" role="note">
+                图示需人工核实 / Human review required：协议校验通过不等于运行时架构正确。
+                静态 import / 继承 / 用户配置不代表实际调用或数据流；缺失连线不证明不可达。
+                大图可缩放查看，分层建议及旧配置需对照源码确认。
+            </div>
             <div class="viewer-toolbar">
                 <button class="tool-btn tool-pdf" onclick="exportPDF()" title="导出六视图合订 PDF（浏览器打印 → 另存为 PDF）">
                     <span class="tool-icon">📄</span> 导出 PDF

@@ -22,18 +22,20 @@ const path = require('path');
 const readline = require('readline');
 const { buildGraph } = require('../lib/extract-graph');
 const { diffGraphs } = require('../lib/diff-graph');
-const { evaluateRisk, summarizeFindings, LAYER_LABEL, loadSessionRules, suggestForFinding } = require('../lib/risk-rules');
+const { evaluateRisk, collectSnapshotInventory, summarizeFindings, LAYER_LABEL, loadSessionRules, suggestForFinding } = require('../lib/risk-rules');
 const { writeSessionIntent } = require('../lib/session-intent');
 const { computeImpact } = require('../lib/impact');
 const { generateReport, appendSessionHistory, clearStaleSessionReports, buildSessionReportJson, isStaleReport } = require('../lib/session-report');
 const { migrateReport } = require('../lib/report-contract');
 const { exportArchify, finalizeSessionHtml } = require('../lib/archify-export');
-const { exitCodeForRisk } = require('../lib/exit-codes');
+const { EXIT, exitCodeForAnalysis } = require('../lib/exit-codes');
 const { runAnalyzers } = require('../lib/analyzers');
 const { describeGreenLight } = require('../lib/green-light');
 const { formatSessionVerdict, nextStepForVerdict } = require('../lib/session-verdict');
 const { sessionPaths, detectPathMismatch, isGitWorktree } = require('../lib/session-paths');
 const { resolveSessionBaseline, ensureSessionBaseline, noBaselinePayload, headCachePath } = require('../lib/session-baseline');
+const { assessAnalysisCompleteness, applyCompletenessToRisk, serializeAnalysis } = require('../lib/analysis-completeness');
+const { getRuntimeIdentity } = require('../lib/runtime-identity');
 const PKG_VERSION = require('../package.json').version;
 
 /**
@@ -99,7 +101,10 @@ function peekSessionDiff(repo) {
   if (!resolved.ok) return null;
   const baseline = resolved.graph;
   const current = buildGraph(repo);
+  const completeness = assessAnalysisCompleteness(current);
   return {
+    analysis: serializeAnalysis(completeness),
+    analysisMessage: completeness.message,
     structChanged: current.fingerprint !== baseline.fingerprint,
     contentChanged: (current.contentFingerprint || null) !== (baseline.contentFingerprint || null),
     baseFingerprint: baseline.fingerprint || null,
@@ -158,6 +163,7 @@ function generateSessionReportUnsafe(repo) {
   const baseline = resolved.graph;
   const sessionStart = baseline.sessionStartedAt || baseline.cachedAt || null;
   const current = buildGraph(repo);
+  const runtime = getRuntimeIdentity();
   require('../lib/extract-graph').attachCallEdges(current, { incremental: true, base: baseline });
   const diff = diffGraphs(baseline, current);
   const impact = computeImpact(diff, baseline, current);
@@ -169,10 +175,11 @@ function generateSessionReportUnsafe(repo) {
     testIndexBase: baseline.testIndex || null,
     testIndexHead
   });
-  const findings = merged.violations;
-  const externalAdded = findings.filter(f => f.sourceAnalyzer !== 'builtin' && !f.secondarySource).length;
-
-  const riskSummary = summarizeFindings(findings);
+  const completeness = assessAnalysisCompleteness(current);
+  let findings = merged.violations;
+  let riskSummary = summarizeFindings(findings);
+  ({ findings, riskSummary } = applyCompletenessToRisk(findings, riskSummary, completeness));
+  const externalAdded = findings.filter(f => f.sourceAnalyzer !== 'builtin' && !f.secondarySource && f.rule !== 'analysis-failed' && f.rule !== 'analysis-incomplete').length;
 
   // W14-06: append local trend record (best-effort, never blocks report)
   appendSessionHistory(repo, { baseline, current, diff, riskSummary });
@@ -180,17 +187,22 @@ function generateSessionReportUnsafe(repo) {
   const dir = avDir(repo);
   fs.mkdirSync(dir, { recursive: true });
   const reportJsonPath = path.join(dir, 'session-report.json');
-  fs.writeFileSync(reportJsonPath, JSON.stringify(buildSessionReportJson({
-    diff, findings, riskSummary, impact, analyzerStatus, baseGraph: baseline, headGraph: current,
-    repoName: path.basename(repo)
-  }), null, 2));
+  fs.writeFileSync(reportJsonPath, JSON.stringify({
+    ...buildSessionReportJson({
+      diff, findings, riskSummary, impact, analyzerStatus, baseGraph: baseline, headGraph: current,
+      repoName: path.basename(repo), analysisCompleteness: completeness
+    }),
+    runtime
+  }, null, 2));
   const html = generateReport({
     baseGraph: baseline, headGraph: current, diff, findings, impact, analyzerStatus,
-    repoName: path.basename(repo), sessionStart
+    repoName: path.basename(repo), sessionStart, analysisCompleteness: completeness
   });
   const finalized = finalizeSessionHtml({ repo, builtinHtml: html });
 
   return {
+    mode: 'incremental',
+    runtime,
     generatedAt: Date.now(),
     summary: {
       ...diff.summary,
@@ -226,8 +238,9 @@ function generateSessionReportUnsafe(repo) {
     },
     analyzerStatus,
     externalAdded,
-    exitCode: exitCodeForRisk(riskSummary.gateLevel || riskSummary.level, 'high'),
-    exitCodeHint: '默认 high→1 阻断，medium/low/none→0。CLI 可用 --fail-on 调整。reportOnly 观察期 finding 不计入 gateLevel。',
+    analysis: serializeAnalysis(completeness),
+    exitCode: exitCodeForAnalysis(completeness, riskSummary.gateLevel || riskSummary.level, 'high'),
+    exitCodeHint: 'failed/incomplete → 3（分析不可用，不是违规）。ok 时默认 high→1 阻断。以 analysisStatus 区分。',
     ...(() => {
       const verdict = formatSessionVerdict({
         riskSummary,
@@ -239,12 +252,15 @@ function generateSessionReportUnsafe(repo) {
         scopeChanged: diff.scopeChanged || null,
         reportPath: finalized.htmlPath,
         baselineKind: resolved.kind,
-        hasUncommitted: resolved.hasUncommitted
+        hasUncommitted: resolved.hasUncommitted,
+        analysisCompleteness: completeness
       });
       return {
         baselineKind: resolved.kind,
         gitHead: resolved.gitHead || null,
         hasUncommitted: !!resolved.hasUncommitted,
+        analysisStatus: completeness.status,
+        analysisAllowGreen: completeness.allowGreen,
         verdict: {
           level: verdict.level,
           lines: verdict.lines,
@@ -260,11 +276,13 @@ function generateSessionReportUnsafe(repo) {
             }
             : null
         },
-        message: verdict.text,
-        nextStep: nextStepForVerdict(verdict, {
-          summary: { implChangedCount: (diff.implChanges || []).length },
-          baselineKind: resolved.kind
-        })
+        message: completeness.message || verdict.text,
+        nextStep: completeness.allowGreen
+          ? nextStepForVerdict(verdict, {
+            summary: { implChangedCount: (diff.implChanges || []).length },
+            baselineKind: resolved.kind
+          })
+          : '先修复解析依赖或扫描范围，再重新 av_session_report / av_guard；不要把不完整结果当通过。'
       };
     })()
   };
@@ -380,6 +398,13 @@ function formatFinding(f) {
     line: f.line || null,
     sourceAnalyzer: f.sourceAnalyzer || 'builtin',
     confidence: f.confidence || 'medium',
+    ...(f.from && f.to && f.edgeType ? {
+      from: f.from,
+      to: f.to,
+      edgeType: f.edgeType,
+      fromLayer: f.fromLayer || null,
+      toLayer: f.toLayer || null
+    } : {}),
     ...(f.secondarySource ? { secondarySource: f.secondarySource } : {}),
     text: `${icon} [${f.severity.toUpperCase()}] ${f.title}: ${f.message}\n   ${f.detail || ''}`
   };
@@ -584,11 +609,15 @@ function toolSessionChanges(args) {
       riskLevel: r.riskLevel,
       findingsCount: r.findingsCount,
       summary: r.summary,
+      analysis: r.analysis,
+      analysisStatus: r.analysisStatus,
+      analysisAllowGreen: r.analysisAllowGreen,
+      exitCode: r.exitCode,
       cacheAgeSec: ageSec,
-      message: r.hasChanges
+      message: r.analysisAllowGreen === false ? r.message : r.hasChanges
         ? `${r.message} 报告已自动生成（${ageSec} 秒前），调 av_session_report 看完整报告和架构图。`
         : describeGreenLight(r.summary).mcpShort,
-      nextStep: r.hasChanges
+      nextStep: r.analysisAllowGreen === false ? r.nextStep : r.hasChanges
         ? '调 av_session_report 看完整报告和架构图。'
         : '确认变更符合预期后，调 av_session_start 刷新基线。'
     };
@@ -597,6 +626,20 @@ function toolSessionChanges(args) {
   // watcher 在监听但还没检测到变更——不轻信 idle：fs.watch 可能尚未到达
   if (state && state.watching) {
     const peek = peekSessionDiff(repo);
+    if (peek && !peek.analysis.allowGreen) {
+      return {
+        watching: true,
+        status: 'ready',
+        hasChanges: peek.structChanged,
+        peeked: true,
+        analysis: peek.analysis,
+        analysisStatus: peek.analysis.status,
+        analysisAllowGreen: false,
+        exitCode: EXIT.SCAN_FAILED,
+        message: peek.analysisMessage,
+        nextStep: '先修复解析依赖或扫描范围，再调 av_session_report；不要刷新基线掩盖不完整结果。'
+      };
+    }
     if (peek && peek.structChanged) {
       return {
         watching: true,
@@ -642,7 +685,11 @@ function toolSessionChanges(args) {
     riskLevel: report.riskLevel,
     findingsCount: report.findingsCount,
     summary: report.summary,
-    message: report.hasChanges
+    analysis: report.analysis,
+    analysisStatus: report.analysisStatus,
+    analysisAllowGreen: report.analysisAllowGreen,
+    exitCode: report.exitCode,
+    message: report.analysisAllowGreen === false ? report.message : report.hasChanges
       ? `${report.message} 调 av_session_report 看完整报告和架构图。`
       : describeGreenLight(report.summary).mcpShort,
     nextStep: report.nextStep || (report.hasChanges
@@ -745,24 +792,56 @@ function toolSessionStatus(args) {
 
 function toolCheckLayering(args) {
   const repo = resolveRepo(args);
-  const graph = buildGraph(repo);
+  let teamRules = null;
+  try {
+    teamRules = loadSessionRules(repo);
+  } catch (e) {
+    return {
+      error: 'RULES_CONFIG_ERROR',
+      message: '团队规则加载失败：' + (e && e.message ? e.message : String(e)),
+      nextStep: '修复 architecture rules 配置后重试；CLI 与 MCP 应使用同一规则文件。'
+    };
+  }
+  const { graph, findings, riskSummary, completeness, inventory, runtime } = liveScanFindings(repo, teamRules);
 
-  const emptyBase = { nodes: [], edges: [], fingerprint: '', root: graph.root, stats: {} };
-  const diff = diffGraphs(emptyBase, graph);
-  const findings = evaluateRisk(diff, graph, emptyBase, null);
-  const riskSummary = summarizeFindings(findings);
-
-  const layered = graph.nodes.filter(n => n.layer && n.kind !== 'file' && n.kind !== 'external');
-  const total = graph.nodes.filter(n => n.kind !== 'file' && n.kind !== 'external');
+  const total = graph.nodes.filter(n => !['file', 'external', 'external-package'].includes(n.kind));
+  const layered = total.filter(n => n.layer);
   const layerDist = {};
   for (const n of layered) {
     layerDist[n.layer] = (layerDist[n.layer] || 0) + 1;
   }
 
+  const groups = { layerViolations: [], structuralFindings: [], analysisFindings: [] };
+  const analysisRules = new Set(['analysis-failed', 'analysis-incomplete', 'layer-config-error', 'unresolved-dynamic-import']);
+  for (const [index, finding] of findings.entries()) {
+    if (finding.rule === 'cross-layer-violation' || finding.rule === 'layer-skip' ||
+        (finding.source === 'architecture-rules.yaml' && finding.fromLayer && finding.toLayer)) {
+      groups.layerViolations.push(index);
+    } else if (analysisRules.has(finding.rule)) {
+      groups.analysisFindings.push(index);
+    } else {
+      groups.structuralFindings.push(index);
+    }
+  }
+  const breakdown = Object.fromEntries(Object.entries(groups).map(([group, indices]) =>
+    [group, { count: indices.length, findingIndices: indices }]));
+  breakdown.inventory = Object.fromEntries(Object.entries(inventory).map(([group, items]) => [group, items.length]));
+
+  const snapshotNote = '这是未与基线比较的当前仓库快照（包含历史存量，不能判定哪些来自本轮变更）。本轮验收请用 av_guard / av_session_report。';
+  const countsText = `已观察到分层违规 ${groups.layerViolations.length} 条、其他结构问题 ${groups.structuralFindings.length} 条、分析提示 ${groups.analysisFindings.length} 条；依赖、体量和孤立实体清单不计入违规数。`;
+  const message = `${completeness.allowGreen ? '' : completeness.message + ' '}${countsText} ${snapshotNote}`;
+
   return {
+    mode: 'snapshot',
+    baselineKind: 'none',
+    changeAttribution: 'unknown',
+    runtime,
     repo: graph.root,
     fingerprint: graph.fingerprint,
     stats: graph.stats,
+    analysisStatus: completeness.status,
+    analysisAllowGreen: completeness.allowGreen,
+    analysisReasons: completeness.reasons,
     layerCoverage: {
       layered: layered.length,
       total: total.length,
@@ -771,10 +850,12 @@ function toolCheckLayering(args) {
     layerDistribution: layerDist,
     riskLevel: riskSummary.level,
     riskCount: findings.length,
+    riskCounts: riskSummary.counts,
+    layerViolationCount: groups.layerViolations.length,
+    breakdown,
     findings: findings.map(formatFinding),
-    message: riskSummary.level === 'none'
-      ? `✅ 没有串门 — ${layered.length}/${total.length} 个组件已分到楼层（${total.length > 0 ? Math.round(layered.length / total.length * 100) : 0}%）。`
-      : `查到 ${findings.length} 个问题（${riskSummary.level === 'high' ? '红灯' : riskSummary.level === 'medium' ? '黄灯' : '蓝灯'}），这是全楼历史问题，不是这次改出来的。`
+    inventory,
+    message
   };
 }
 
@@ -786,14 +867,18 @@ function pickFinding(findings, args) {
   });
 }
 
-function liveScanFindings(repo) {
+function liveScanFindings(repo, teamRules = loadSessionRules(repo)) {
   const graph = buildGraph(repo);
-  const emptyBase = { nodes: [], edges: [], fingerprint: '', root: graph.root, stats: {} };
-  const diff = diffGraphs(emptyBase, graph);
-  const impact = computeImpact(diff, emptyBase, graph);
-  const teamRules = loadSessionRules(repo);
-  const findings = evaluateRisk(diff, graph, emptyBase, impact, { rules: teamRules });
-  return { graph, baseline: emptyBase, diff, impact, findings };
+  const runtime = getRuntimeIdentity();
+  const completeness = assessAnalysisCompleteness(graph);
+  const opts = { rules: teamRules, mode: 'snapshot' };
+  let findings = evaluateRisk(null, graph, null, null, opts);
+  let riskSummary = summarizeFindings(findings);
+  ({ findings, riskSummary } = applyCompletenessToRisk(findings, riskSummary, completeness));
+  return {
+    graph, baseline: null, diff: null, impact: null, findings, riskSummary, completeness,
+    inventory: collectSnapshotInventory(graph, opts), runtime
+  };
 }
 
 function loadSessionFindings(repo) {
@@ -821,6 +906,7 @@ function loadSessionFindings(repo) {
   }
   return {
     findings,
+    runtime: report.runtime || null,
     diff: report.diff,
     impact: report.impact,
     baseline: JSON.parse(fs.readFileSync(bp, 'utf8')),
@@ -830,14 +916,14 @@ function loadSessionFindings(repo) {
 
 function toolExplainFinding(args) {
   const repo = resolveRepo(args);
-  let graph, baseline, diff, impact, findings;
+  let graph, baseline, diff, impact, findings, runtime;
 
   if (args.from === 'session') {
     const loaded = loadSessionFindings(repo);
     if (loaded.error) return { error: loaded.error, message: loaded.message };
-    ({ graph, baseline, diff, impact, findings } = loaded);
+    ({ graph, baseline, diff, impact, findings, runtime } = loaded);
   } else {
-    ({ graph, baseline, diff, impact, findings } = liveScanFindings(repo));
+    ({ graph, baseline, diff, impact, findings, runtime } = liveScanFindings(repo));
   }
 
   let target = pickFinding(findings, args);
@@ -853,20 +939,21 @@ function toolExplainFinding(args) {
     return { error: 'NOT_FOUND', message: `没找到对应的红灯。当前共 ${findings.length} 条问题。` };
   }
 
-  return buildExplainResult(target, diff, graph);
+  return {
+    ...buildExplainResult(target, diff, graph),
+    mode: args.from === 'session' ? 'incremental' : 'snapshot',
+    ...(runtime ? { runtime } : {})
+  };
 }
 
 function buildExplainResult(target, diff, graph) {
   let edgeEvidence = null;
-  const layerRules = new Set(['cross-layer-violation', 'layer-skip']);
-  const isTeamForbid = target.source === 'architecture-rules.yaml' || target.title === '团队分层禁令';
-  if (layerRules.has(target.rule) || isTeamForbid) {
-    const edge = (diff.addedEdges || []).find(e => {
-      const fromNode = graph.nodes.find(n => n.id === e.from);
-      const toNode = graph.nodes.find(n => n.id === e.to);
-      return fromNode && toNode &&
-        target.detail && target.detail.includes(fromNode.name) && target.detail.includes(toNode.name);
-    });
+  if (target.from && target.to && target.edgeType) {
+    // Match identity and location, never display names (which can repeat across scopes).
+    const edge = (diff ? diff.addedEdges || [] : graph.edges).find(e =>
+      e.from === target.from && e.to === target.to && e.type === target.edgeType &&
+      (!target.file || !e.file || e.file === target.file) &&
+      (target.line == null || e.line === target.line));
     if (edge) {
       const fromNode = graph.nodes.find(n => n.id === edge.from);
       const toNode = graph.nodes.find(n => n.id === edge.to);
@@ -1001,7 +1088,7 @@ const TOOLS = [
   },
   {
     name: 'av_check_layering',
-    description: '查全楼所有历史问题（不需要先拍照片）。适合第一次摸底，会列出全部"串门"。日常验收用 av_guard / av_session_report 而不是这个。完全离线，1-2 秒完成。必须显式传当前工作区绝对路径 repo。',
+    description: '检查当前仓库快照（不使用基线，包含历史存量，不能归因于本轮变更）。分层违规、其他结构问题、分析提示分别计数；现有依赖/体量/孤立实体另列 inventory，不算分层违规。不执行本轮变更专用规则。日常验收用 av_guard / av_session_report。返回实际运行包及分析源码摘要。完全离线。必须显式传当前工作区绝对路径 repo。',
     inputSchema: {
       type: 'object',
       properties: {
@@ -1012,7 +1099,7 @@ const TOOLS = [
   },
   {
     name: 'av_explain_finding',
-    description: '解释某条红灯的详情：谁串了谁的门、跳了哪一层、怎么修。按违规方向给出不同建议。from=session 时只读本轮报告，找不到就报错，不会静默改扫全楼。必须显式传当前工作区绝对路径 repo。',
+    description: '解释某条 finding 的结构化边证据与修复建议。默认与 av_check_layering 使用同一仓库快照口径和 findings 索引（不含 inventory）。from=session 时只读本轮报告，找不到就报错，不会静默改扫全楼。必须显式传当前工作区绝对路径 repo。',
     inputSchema: {
       type: 'object',
       properties: {

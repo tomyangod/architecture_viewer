@@ -97,15 +97,30 @@ describe('layers render', () => {
     const md = files['deployment-ops.md'];
     assert.match(md, /flowchart TB/);
     assert.match(md, /subgraph L_ops/);
-    assert.match(md, /subgraph L_api/);
+    assert.match(md, /subgraph L_schedule/);
     assert.match(md, /classDef ops/);
-    assert.match(md, /classDef api/);
-    assert.match(md, /classDef actor/);
+    assert.match(md, /classDef schedule/);
     assert.match(md, /<small>/);
-    assert.match(md, /dev\(\["👤 开发者/);
-    assert.match(md, /-\.->\|进入运行时\|/);
-    assert.match(md, /flowchart LR/);
+    assert.doesNotMatch(md, /dev\(\["👤 开发者|进入运行时|-->|-\.->/);
+    assert.match(md, /static draft/);
     assert.doesNotMatch(md, /健康检查/);
     assert.match(md, /Dockerfile/);
+  });
+
+  it('retains evidenced imports without inventory-order or actor links', () => {
+    const md = renderLayeredFlowchart({
+      ...inv, relationships: [{ from: 'api', to: 'worker', type: 'import', file: 'api/main.py', line: 2 }]
+    });
+    assert.match(md, /api -->\|"import · api\/main.py:2"\| worker/);
+    assert.doesNotMatch(md, /user|frontend -->|worker -->|redis -->/);
+  });
+
+  it('preserves explicit user edges, including actor links, instead of deriving chains', () => {
+    const md = renderLayeredFlowchart(inv, {
+      override: { edges: [{ from: 'user', to: 'frontend', label: '访问' }, 'frontend --> api'] }
+    });
+    assert.match(md, /user -->\|"访问"\| frontend/);
+    assert.match(md, /frontend --> api/);
+    assert.doesNotMatch(md, /api --> worker|worker --> redis/);
   });
 });

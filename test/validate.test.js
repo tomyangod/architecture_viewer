@@ -231,7 +231,7 @@ describe('generate + check', () => {
     fs.rmSync(tmp, { recursive: true, force: true });
   });
 
-  it('c4-context does not list npm deps as System_Ext', () => {
+  it('context does not infer external systems from packages or compose inventory', () => {
     const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'arch-c4-'));
     fs.writeFileSync(path.join(tmp, 'package.json'), JSON.stringify({
       name: 'demo', dependencies: { express: '^4', pg: '^8' }
@@ -247,9 +247,10 @@ describe('generate + check', () => {
     // express (npm dep) must NOT appear as System_Ext
     assert.doesNotMatch(ctx, /System_Ext\(ext_express/);
     assert.doesNotMatch(ctx, /System_Ext\(ext_pg/);
-    // postgres and redis (infra services) SHOULD appear as System_Ext
-    assert.match(ctx, /System_Ext\(ext_postgres/);
-    assert.match(ctx, /System_Ext\(ext_redis/);
+    assert.doesNotMatch(ctx, /System_Ext\(/);
+    assert.match(files['c4-container.md'], /Container\(postgres/);
+    assert.match(files['c4-container.md'], /Container\(redis/);
+    assert.match(ctx, /static draft/);
     fs.rmSync(tmp, { recursive: true, force: true });
   });
 
@@ -259,11 +260,10 @@ describe('generate + check', () => {
     const inv = scan(tmp);
     const files = generateFiles(inv);
     const ctx = files['c4-context.md'];
-    // Count occurrences of "System(sys, " — should be exactly 1 (子图1 only)
-    const sysMatches = ctx.match(/System\(sys,/g) || [];
-    assert.equal(sysMatches.length, 1, 'System(sys, ...) should appear exactly once');
-    // 子图2 should use sys_deploy instead
-    assert.match(ctx, /System\(sys_deploy,/);
+    const sysMatches = ctx.match(/\bSystem\(/g) || [];
+    assert.equal(sysMatches.length, 1, 'one repository boundary, no invented deployment copy');
+    assert.match(ctx, /System\(repo_system,/);
+    assert.doesNotMatch(ctx, /sys_deploy|\bRel\(/);
     fs.rmSync(tmp, { recursive: true, force: true });
   });
 });

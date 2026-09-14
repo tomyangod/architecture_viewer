@@ -37,6 +37,8 @@ describe('W07-01 增量生成引擎', () => {
     mkRepo(repoRoot);
   });
 
+  afterEach(() => fs.rmSync(path.dirname(repoRoot), { recursive: true, force: true }));
+
   function snapshotDiagrams() {
     const out = {};
     for (const f of fs.readdirSync(kitDir)) {
@@ -114,6 +116,69 @@ describe('W07-01 增量生成引擎', () => {
     assert.equal(r.cached, false);
     assert.equal(r.written.length, 6);
     assert.ok(r.protocol.ok, 'regenerated diagrams still validate');
+  });
+
+  it('overwritten templates or manual output edits cannot reuse a cached PASS', () => {
+    generateToDir(repoRoot, kitDir);
+    const file = path.join(kitDir, 'c4-context.md');
+    const generated = fs.readFileSync(file, 'utf8');
+    fs.writeFileSync(file, '# Reinitialized\n*模板文件 · 请替换*\n');
+    const result = generateToDir(repoRoot, kitDir);
+    assert.equal(result.cached, false);
+    assert.ok(result.changedDiagrams.includes('c4-context.md'));
+    assert.equal(fs.readFileSync(file, 'utf8'), generated);
+    assert.equal(result.protocol.ok, true);
+  });
+
+  for (const change of [
+    data => { data.engine = 'llm'; },
+    data => { data.generationKey = 'previous-build'; },
+    data => { delete data.check; }
+  ]) {
+    it('requires the requested engine, generator identity and recorded validation', () => {
+      generateToDir(repoRoot, kitDir);
+      const data = cache.loadCache(kitDir);
+      change(data);
+      cache.saveCache(kitDir, data);
+      const result = generateToDir(repoRoot, kitDir);
+      assert.equal(result.cached, false);
+      assert.equal(result.protocol.ok, true);
+      assert.equal(result.semantics.status, 'unverified');
+    });
+  }
+
+  it('preserves full cached drift details rather than inventing an empty PASS', () => {
+    generateToDir(repoRoot, kitDir);
+    const data = cache.loadCache(kitDir);
+    data.check.drift = { ok: false, missing: [{ label: 'fixture-worker' }], extra: [] };
+    cache.saveCache(kitDir, data);
+    const result = generateToDir(repoRoot, kitDir);
+    assert.equal(result.cached, true);
+    assert.equal(result.drift.ok, false);
+    assert.deepEqual(result.drift.missing, data.check.drift.missing);
+  });
+
+  it('detects same-size source changes with preserved mtimes', () => {
+    const file = path.join(repoRoot, 'src', 'billing.js');
+    const stat = fs.statSync(file);
+    const before = cache.sourceManifest(repoRoot);
+    fs.writeFileSync(file, fs.readFileSync(file, 'utf8').replace('BillingService', 'InvoiceService'));
+    fs.utimesSync(file, stat.atime, stat.mtime);
+    assert.equal(fs.statSync(file).size, stat.size);
+    assert.notEqual(cache.sourceManifest(repoRoot).hash, before.hash);
+  });
+
+  it('tracks layer, exclusion and project-description inputs, including hidden config', () => {
+    for (const rel of [
+      'architecture.layers.json', '.av/layers.json', '.arch-viewer-ignore',
+      '.gitignore', 'README.md'
+    ]) {
+      const before = cache.sourceManifest(repoRoot);
+      const file = path.join(repoRoot, rel);
+      fs.mkdirSync(path.dirname(file), { recursive: true });
+      fs.writeFileSync(file, rel.endsWith('.json') ? '{}' : 'runtime/\n');
+      assert.notEqual(cache.sourceManifest(repoRoot).hash, before.hash, rel);
+    }
   });
 
   it('refinePayloadScale：无改动增量 payload 为 0，全量非 0', () => {
