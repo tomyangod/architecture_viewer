@@ -141,9 +141,9 @@ describe('offline Preview render (CSP + no remote)', () => {
       page.on('pageerror', (err) => pageErrors.push(String(err)));
 
       await page.goto(origin + '/', { waitUntil: 'domcontentloaded' });
-      await expectSvg(page, 'c4-context');
+      await expectSvg(page, 'block');
 
-      const tabs = ['c4-context', 'c4-container', 'c4-component', 'block', 'class', 'deployment'];
+      const tabs = ['block', 'c4-context', 'c4-container', 'c4-component', 'class', 'deployment'];
       for (const tabId of tabs) {
         await page.evaluate((id) => window.switchTab(id), tabId);
         await expectSvg(page, tabId);

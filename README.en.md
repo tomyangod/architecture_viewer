@@ -2,7 +2,7 @@
 
 **Review structural changes and risk hints after AI writes code, then decide whether to commit.**
 
-> **Local delivery scope:** six-view diagrams, CLI/MCP structural reports, and human-reviewed risk hints. Green does not guarantee that no dependencies or violations were missed; incomplete analysis is not a pass. See the bundled [delivery scope](docs/delivery-scope.md) for offline operation and limitations. AI refinement, IDE extensions, workspace aggregation, and SaaS are outside the initial quality commitment.
+> **Local delivery scope:** this-round structural change reports, a locatable source overview, and human-reviewed risk hints. Six-view diagrams are compatibility features, not the default deliverable. Green does not guarantee that no dependencies or violations were missed; incomplete analysis is not a pass. See the bundled [delivery scope](docs/delivery-scope.md) for offline operation and limitations. AI refinement, IDE extensions, workspace aggregation, and SaaS are outside the initial quality commitment.
 
 > **Current pilot: `0.12.2-rc.3` (npm tag `next`; `latest` remains `0.12.1`).** Pin `arch-viewer@0.12.2-rc.3` or `@next`; do not mix with a dirty workspace or `latest`. Source commit `81e6c43`; release notes: [docs/commercial/npm-publish.md](docs/commercial/npm-publish.md). Local pilot candidate with explicit boundaries — not a stable commercial release.
 

@@ -35,7 +35,7 @@ test.describe('Webview Preview offline + CSP', () => {
       fs.writeFileSync(target, content);
     }
     const kitDir = path.join(generatedRoot, 'architecture_viewer');
-    const generated = generateForRepo(generatedRoot);
+    const generated = generateForRepo(generatedRoot, 'architecture_viewer', { compatSix: true });
     expect(generated.protocol.ok).toBe(true);
     const generatedHtml = buildPreviewHtml({ kitDir, mermaidHref: '/vendor/mermaid.min.js', cspSource: "'self'" });
     const mermaidBuf = fs.readFileSync(path.join(root, 'vendor', 'mermaid.min.js'));

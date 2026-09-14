@@ -4,6 +4,13 @@
 
 ## \[Unreleased\]
 
+### Changed
+
+- **默认交付不再是六张图。** `generate` 默认只写 Block 静态结构总览（有启动/编排证据才加 Deployment；有 `--focus` 或 git 改动才加局部类图）。C4 Context 需 `--confirm-context`；C4 Container/Component 退出默认交付。`--compat-six-views` 保留兼容生成器并停止扩张。
+- **升级不删用户图。** 默认 generate 只清理未选中的模板占位稿；用户编辑过的旧图保留，并写入 `.generate-receipt.json` / CLI 提示「磁盘保留未更新」。HTML 对保留未更新的 Tab 标「未更新」。
+- **session report 默认内置 Before/Delta/After HTML**，不再自动尝试 Archify 成片。`--renderer auto|archify` 仍可显式选用。
+- **Archify 导出需人工确认**：CLI `--confirm`，MCP `av_archify_export` 传 `confirm=true`。Schema/路径存在不能替代关系审查；`validation.status` 区分 validated / validate_failed / not_validated / not_requested。
+
 ## \[0.12.2-rc.3\] — Unreleased
 
 整合 RC1 独立加固与 RC2 已提交功能的新候选；不是 npm 上既有 RC2 的同一产物，不自动发布到 `next` 或 `latest`。

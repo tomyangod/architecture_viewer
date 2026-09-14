@@ -29,7 +29,7 @@ describe('planRefineFromCache（--refine 不得被骨架缓存短路）', () => 
     const root = fs.mkdtempSync(path.join(os.tmpdir(), 'av-refine-cache-'));
     const kit = path.join(root, 'architecture_viewer');
     fs.writeFileSync(path.join(root, 'main.py'), 'class Collector: pass\n');
-    generateToDir(root, kit);
+    generateToDir(root, kit, { compatSix: true });
     const templates = Object.fromEntries(DIAGRAM_FILES.map(file =>
       [file, fs.readFileSync(path.join(kit, file), 'utf8')]));
     const calls = [];
@@ -49,11 +49,11 @@ describe('planRefineFromCache（--refine 不得被骨架缓存短路）', () => 
   describe('refine cache integration without model calls', () => {
     it('reuses a full verified refinement but repairs overwritten output', async (t) => {
       const fixture = mockRefinement(t);
-      assert.equal((await fixture.run()).cached, false, 'skeleton cannot satisfy refinement');
-      assert.equal((await fixture.run()).cached, true);
+      assert.equal((await fixture.run({ compatSix: true })).cached, false, 'skeleton cannot satisfy refinement');
+      assert.equal((await fixture.run({ compatSix: true })).cached, true);
       assert.equal(fixture.calls.length, 1);
       fs.writeFileSync(path.join(fixture.kit, 'c4-container.md'), '# Init template\n');
-      const repaired = await fixture.run();
+      const repaired = await fixture.run({ compatSix: true });
       assert.equal(repaired.cached, false);
       assert.equal(repaired.protocol.ok, true);
       assert.equal(repaired.semantics.status, 'unverified');
@@ -64,9 +64,9 @@ describe('planRefineFromCache（--refine 不得被骨架缓存短路）', () => 
       const fixture = mockRefinement(t);
       await fixture.run({ only: ['block-diagram.md'] });
       assert.deepEqual(fixture.calls[0], ['block-diagram.md']);
-      assert.equal((await fixture.run()).cached, false);
+      assert.equal((await fixture.run({ compatSix: true })).cached, false);
       assert.deepEqual(fixture.calls[1], DIAGRAM_FILES);
-      assert.equal((await fixture.run()).cached, true);
+      assert.equal((await fixture.run({ compatSix: true })).cached, true);
     });
 
     it('changed exclusions invalidate refinement and explicit skeleton changes engine', async (t) => {

@@ -72,7 +72,7 @@ arch-viewer setup . --project     # 本仓 hooks + AGENTS.md（停手自动跑�
 | 神文件 / 文件偏大 / 行数暴涨 | 单文件太大或本轮长胖太快 |
 | Archify 成片 vs 内置三栏 | 好看成片 vs 带颜色高亮的对比图 |
 | MCP | 让 AI 自动调用本工具，你不用敲命令 |
-| 漂移 | 代码里有**新目录 / 服务 / 入口**，六视图里漏画了（不是每个新文件） |
+| 漂移 | 代码里有**新目录 / 服务 / 入口**，结构总览里漏画了（不是每个新文件） |
 | 退出码 1 | 架构门未通过（报告已写出，不是工具崩溃） |
 
 ---
@@ -191,15 +191,19 @@ arch-viewer uninstall . --purge    # 再删 .av 会话报告与快照（**仍保
 | `av_archify_export` | 导出稀疏 Before/After JSON | 要喂 archify 出片时 |
 | `av_check_layering` | 全仓历史串门清单 | **仅摸底一次** |
 
-### 0.3（可选）生成六视图套件
+### 0.3（可选）生成结构总览
 
-若你还要「好看的分层架构图」给人看 / 给 PR 漂移用：
+若还要给人看的静态分层图（不是运行时真相）：
 
 ```bash
 cd "$REPO"
-arch-viewer init                 # 生成 architecture_viewer/ 套件
-arch-viewer generate             # 骨架图，秒级，无需 API Key
-# 可选精修（需 DEEPSEEK_API_KEY）：6 张图都会按视图精修（Block 读仓 Agent，其余 5 张专用 prompt + 源码摘录）
+arch-viewer init                 # 默认只带 Block 套件
+arch-viewer generate             # 默认写 block-diagram.md；有编排证据才加 Deploy
+# 按需局部类图：
+# arch-viewer generate --views class --focus src/foo.py
+# 兼容六视图（非默认、停止扩张）：
+# arch-viewer generate --compat-six-views
+# 精修不在首发质量承诺内：
 # arch-viewer generate --refine
 ```
 
@@ -213,7 +217,7 @@ python3 -m http.server 8080
 
 默认先看 **「分层模块 / Block」** Tab（彩色大框 = 层；空层不画）。C4 更素，是建模视图，不是观感主图。
 
-**注意**：`generate` 会**覆盖**套件里 6 个 `.md`。官方演示仓 `examples/showcase-shop` 里是手写精修稿——**不要**在原路径上 generate；先 `cp -R` 到 `/tmp` 或实验目录再练（见 §6.4）。字段与视觉通解见 [LAYERED-STYLE.md](./LAYERED-STYLE.md)。
+**注意**：默认 `generate` 覆盖 `block-diagram.md`，不会为凑齐六张而重写 C4。`--compat-six-views` 才会覆盖套件里仍存在的兼容 `.md`。官方演示仓 `examples/showcase-shop` 里是手写精修稿——**不要**在原路径上 generate；先 `cp -R` 到 `/tmp` 或实验目录再练（见 §6.4）。字段与视觉通解见 [LAYERED-STYLE.md](./LAYERED-STYLE.md)。
 
 ### 0.4 建议写入 `.gitignore`
 
@@ -481,9 +485,11 @@ AI 常在一个文件里堆上千行，后期难维护。本工具把体量放�
 
 ---
 
-## 6. 六视图与漂移（新项目可选）
+## 6. 结构总览与漂移（新项目可选）
 
-### 6.1 六视图是什么
+### 6.1 默认不是六视图
+
+默认给人看的是 **Block 静态结构总览**（定位模块、依赖、风险；不是运行时真相）。类图按需局部生成。C4 Context 要人工确认使用者/边界。C4 Container/Component 与无启动证据的 Deployment 不进入默认交付。旧六视图用 `--compat-six-views`，停止扩张。
 
 | 文件 | 视图 |
 |------|------|

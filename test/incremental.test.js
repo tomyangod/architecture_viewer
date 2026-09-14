@@ -48,7 +48,7 @@ describe('W07-01 增量生成引擎', () => {
   }
 
   it('首次生成写全部 6 张图并落缓存', () => {
-    const r = generateToDir(repoRoot, kitDir);
+    const r = generateToDir(repoRoot, kitDir, { compatSix: true });
     assert.equal(r.cached, false);
     assert.equal(r.written.length, 6);
     assert.ok(fs.existsSync(cache.cachePath(kitDir)), 'cache file written');
@@ -59,9 +59,9 @@ describe('W07-01 增量生成引擎', () => {
   });
 
   it('无改动二次生成命中缓存：written=0 且更快', () => {
-    const cold = generateToDir(repoRoot, kitDir);
+    const cold = generateToDir(repoRoot, kitDir, { compatSix: true });
     assert.equal(cold.cached, false);
-    const warm = generateToDir(repoRoot, kitDir);
+    const warm = generateToDir(repoRoot, kitDir, { compatSix: true });
     assert.equal(warm.cached, true, 'warm run should be cache hit');
     assert.equal(warm.written.length, 0, 'no diagrams rewritten');
     assert.equal(warm.changedDiagrams.length, 0);
@@ -71,7 +71,7 @@ describe('W07-01 增量生成引擎', () => {
   });
 
   it('清单指纹对源码改动敏感（mtime/size 变化）', () => {
-    generateToDir(repoRoot, kitDir);
+    generateToDir(repoRoot, kitDir, { compatSix: true });
     const before = cache.sourceManifest(repoRoot);
     // 改动一个源文件
     fs.writeFileSync(
@@ -83,7 +83,7 @@ describe('W07-01 增量生成引擎', () => {
   });
 
   it('单模块改动：仅相关视图重写，其余视图字节不变', () => {
-    generateToDir(repoRoot, kitDir);
+    generateToDir(repoRoot, kitDir, { compatSix: true });
     const before = snapshotDiagrams();
 
     // 架构级改动：新增一个 worker 模块（目录 + 新类），deployment 视图不应受影响
@@ -92,7 +92,7 @@ describe('W07-01 增量生成引擎', () => {
       path.join(repoRoot, 'worker', 'queue.js'),
       "class QueueWorker {\n  process(job) { return job; }\n}\nmodule.exports = { QueueWorker };\n"
     );
-    const r = generateToDir(repoRoot, kitDir);
+    const r = generateToDir(repoRoot, kitDir, { compatSix: true });
     assert.equal(r.cached, false);
     assert.ok(r.changedDiagrams.length >= 1, 'at least one diagram regenerated');
     assert.ok(r.changedDiagrams.length < 6, 'not all diagrams regenerated');
@@ -110,20 +110,20 @@ describe('W07-01 增量生成引擎', () => {
   });
 
   it('缓存文件损坏时安全回退全量生成', () => {
-    generateToDir(repoRoot, kitDir);
+    generateToDir(repoRoot, kitDir, { compatSix: true });
     fs.writeFileSync(cache.cachePath(kitDir), '{ not valid json');
-    const r = generateToDir(repoRoot, kitDir);
+    const r = generateToDir(repoRoot, kitDir, { compatSix: true });
     assert.equal(r.cached, false);
     assert.equal(r.written.length, 6);
     assert.ok(r.protocol.ok, 'regenerated diagrams still validate');
   });
 
   it('overwritten templates or manual output edits cannot reuse a cached PASS', () => {
-    generateToDir(repoRoot, kitDir);
+    generateToDir(repoRoot, kitDir, { compatSix: true });
     const file = path.join(kitDir, 'c4-context.md');
     const generated = fs.readFileSync(file, 'utf8');
     fs.writeFileSync(file, '# Reinitialized\n*模板文件 · 请替换*\n');
-    const result = generateToDir(repoRoot, kitDir);
+    const result = generateToDir(repoRoot, kitDir, { compatSix: true });
     assert.equal(result.cached, false);
     assert.ok(result.changedDiagrams.includes('c4-context.md'));
     assert.equal(fs.readFileSync(file, 'utf8'), generated);
@@ -136,11 +136,11 @@ describe('W07-01 增量生成引擎', () => {
     data => { delete data.check; }
   ]) {
     it('requires the requested engine, generator identity and recorded validation', () => {
-      generateToDir(repoRoot, kitDir);
+      generateToDir(repoRoot, kitDir, { compatSix: true });
       const data = cache.loadCache(kitDir);
       change(data);
       cache.saveCache(kitDir, data);
-      const result = generateToDir(repoRoot, kitDir);
+      const result = generateToDir(repoRoot, kitDir, { compatSix: true });
       assert.equal(result.cached, false);
       assert.equal(result.protocol.ok, true);
       assert.equal(result.semantics.status, 'unverified');
@@ -148,11 +148,11 @@ describe('W07-01 增量生成引擎', () => {
   }
 
   it('preserves full cached drift details rather than inventing an empty PASS', () => {
-    generateToDir(repoRoot, kitDir);
+    generateToDir(repoRoot, kitDir, { compatSix: true });
     const data = cache.loadCache(kitDir);
     data.check.drift = { ok: false, missing: [{ label: 'fixture-worker' }], extra: [] };
     cache.saveCache(kitDir, data);
-    const result = generateToDir(repoRoot, kitDir);
+    const result = generateToDir(repoRoot, kitDir, { compatSix: true });
     assert.equal(result.cached, true);
     assert.equal(result.drift.ok, false);
     assert.deepEqual(result.drift.missing, data.check.drift.missing);
@@ -182,7 +182,7 @@ describe('W07-01 增量生成引擎', () => {
   });
 
   it('refinePayloadScale：无改动增量 payload 为 0，全量非 0', () => {
-    const r = generateToDir(repoRoot, kitDir);
+    const r = generateToDir(repoRoot, kitDir, { compatSix: true });
     assert.ok(r.payloadScale.fullBytes > 0, 'full payload non-empty');
     // 模拟无改动：changed 为空
     const scale = cache.refinePayloadScale(

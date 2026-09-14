@@ -228,7 +228,7 @@ describe('MCP Server: av_session_report', () => {
     assert.ok(Array.isArray(result.findings));
     assert.ok(result.reportPaths.json);
     assert.ok(result.reportPaths.html);
-    assert.ok(['archify', 'builtin'].includes(result.reportPaths.renderer));
+    assert.equal(result.reportPaths.renderer, 'builtin');
   });
 
   it('W16-03: analyzerStatus 列出所有分析器状态（内置必可用，外部按需）', () => {
@@ -480,9 +480,16 @@ describe('MCP Server: stdio JSON-RPC 协议', () => {
 });
 
 describe('MCP Server: av_archify_export', () => {
-  it('无基线时返回 NO_BASELINE，不抛异常', () => {
+  it('无 confirm 时拒绝导出', () => {
     const repo = makeRepo(FIXTURE);
     const r = toolArchifyExport({ repo, scope: 'layers' });
+    assert.equal(r.error, 'CONFIRM_REQUIRED');
+    assert.match(r.message, /人工确认/);
+  });
+
+  it('无基线时返回 NO_BASELINE，不抛异常', () => {
+    const repo = makeRepo(FIXTURE);
+    const r = toolArchifyExport({ repo, scope: 'layers', confirm: true });
     assert.equal(r.error, 'NO_BASELINE');
     assert.ok(r.message);
   });
@@ -491,7 +498,7 @@ describe('MCP Server: av_archify_export', () => {
     const repo = makeRepo(FIXTURE);
     try {
       toolSessionStart({ repo }); // 建基线
-      const r = toolArchifyExport({ repo, scope: 'layers' });
+      const r = toolArchifyExport({ repo, scope: 'layers', confirm: true });
       assert.ok(!r.error, '不应有错误');
       assert.equal(r.scopeUsed, 'layers');
       assert.ok(fs.existsSync(r.files.base), 'base IR 落盘');
@@ -510,6 +517,11 @@ describe('MCP Server: av_archify_export', () => {
       }
       for (const cn of head.connections) assert.match(cn.id, idRe, `连接 id ${cn.id} 合法`);
       assert.ok(!(head.meta && head.meta.repository), '不发 meta.repository');
+      assert.ok(r.validation, '应返回 validation 口径');
+      assert.ok(['validated', 'validate_failed', 'not_validated', 'not_requested'].includes(r.validation.status));
+      if (r.validation.status === 'not_validated' || r.validation.status === 'not_requested') {
+        assert.match(r.validation.note || '', /不是校验通过的成品|未请求校验/);
+      }
     } finally {
       stopWatcher(repo);
     }
@@ -519,7 +531,7 @@ describe('MCP Server: av_archify_export', () => {
     const repo = makeRepo(FIXTURE);
     try {
       toolSessionStart({ repo });
-      const r = handleToolCall({ name: 'av_archify_export', arguments: { repo, scope: 'changed' } });
+      const r = handleToolCall({ name: 'av_archify_export', arguments: { repo, scope: 'changed', confirm: true } });
       assert.ok(!r.error);
       assert.ok(r.files.head);
     } finally {

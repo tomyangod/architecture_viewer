@@ -1,8 +1,9 @@
 # 架构生成器规范（给 Cursor / Swark / 任意 LLM Agent）
 
-> 本目录是一个「项目架构可视化脚手架」。
-> 你的任务：扫描上级目标仓库，把 6 个 .md 文件按本规范填满 Mermaid 代码。
-> **不要改 HTML、不要改 architecture.config.js、不要新建其他文件。**
+> 本目录是项目的结构可视化套件。
+> **默认任务**：扫描上级仓库，覆写 `block-diagram.md`（静态模块总览）。不要默认一次生成六张图。
+> 类图仅围绕本次修改的类和邻居；C4 Context 需人工确认使用者/外部系统后才写；C4 Container/Component 与无启动/编排证据的 Deployment 不要作为默认交付。
+> **不要改 HTML、不要改 architecture.config.js、不要为凑齐视图而编造关系。**
 
 ## 渲染协议（必须遵守）
 1. 每个 .md 文件由若干「## 子图N：标题」+ 紧跟其后的 ```mermaid 代码块 组成。
@@ -13,7 +14,22 @@
 6. 每个视图推荐 2 张子图，避免单图过大；如内容多可增至 3 张。
 7. **填完后删除** Init 模板页脚 `*模板文件 · 请替换为你项目的实际内容*`（`check --filled` 会因该行失败）。
 
-## 6 个 .md 的填入要求
+## 默认交付 vs 兼容六视图
+
+默认只保证 `block-diagram.md`。其余文件是兼容生成器，停止扩张，需显式 `--views` / `--compat-six-views`。
+
+| 文件 | 地位 | 内容来源 | Mermaid 类型 |
+|------|------|---------|-------------|
+| block-diagram.md | **默认入口** | 扫描到的模块、导入、分层启发式 | flowchart TB |
+| class-diagram.md | 按需、局部 | 本次修改的类与继承邻居 | classDiagram |
+| c4-context.md | 人工确认后可选 | 产品文档中已确认的使用者与外部系统 | C4Context / flowchart |
+| c4-container.md | 兼容，非默认 | 源码模块（**不等同于进程/容器**） | C4Container / flowchart |
+| c4-component.md | 兼容，非默认 | 模块静态依赖，易与 Block 重复 | C4Component / flowchart |
+| deployment-ops.md | 有启动/编排证据才生成 | Dockerfile / compose / k8s / ops 源码 | flowchart TB |
+
+`--refine` 只精修所选视图，不在首发质量承诺内。协议通过不等于关系真实。
+
+## 6 个 .md 的填入要求（兼容路径 `--compat-six-views`）
 | 文件 | 视图 | 内容来源 | Mermaid 类型 |
 |------|------|---------|-------------|
 | c4-context.md | 系统全景 | README、产品文档、外部依赖清单 | C4Context |
@@ -42,7 +58,7 @@
 5. 用 `classDef` + `class` 给节点上色；箭头必须有中文标签（调用/读写/投递…）
 6. **禁止**把分层图画成只有 L1→L2→L3 三个空框；节点要落到真实文件/服务名
 7. 可选覆盖：仓库根 `architecture.layers.json`（见 `templates/architecture.layers.example.json`）
-8. `--refine` 时 6 张图都走读仓摘要（文件树 + 源码摘录）；C4/class/deploy 按视图专用规范画，禁止 `unknown` / 「协作」占位。骨架模式下「好看、一眼分层」仍优先保证 block-diagram
+8. `--refine` 只精修当前选中的视图（默认不是六张）；C4/class/deploy 按视图专用规范画，禁止 `unknown` / 「协作」占位。骨架模式下「好看、一眼分层」仍优先保证 block-diagram
 
 ## deployment-ops.md 视觉规范（复用 Block 语法 · 不上编排状态机）
 

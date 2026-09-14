@@ -74,6 +74,9 @@ describe('CLI bin shim smoke (spawn)', () => {
       // generate 骨架后：check 必须真实执行（OK 或 DRIFT/ERROR 输出），退出码 0/1 均可
       const gen = run(['generate', dir], dir);
       assert.equal(gen.status, 0, gen.stderr);
+      assert.match(gen.stdout, /View policy: default/);
+      assert.ok(fs.existsSync(path.join(kitDir, 'block-diagram.md')));
+      assert.ok(!fs.existsSync(path.join(kitDir, 'c4-container.md')));
       const checkOk = run(['check', kitDir, '--filled', '--drift', '--repo', dir], dir);
       assert.ok([0, 1].includes(checkOk.status), 'check should run, not crash');
       assert.match(checkOk.stdout + checkOk.stderr, /OK|DRIFT|ERROR/);
@@ -97,7 +100,7 @@ describe('CLI archify-export', () => {
   it('无基线时退出码 4 并提示先 session start（退出码契约）', () => {
     const dir = fixtureRepo();
     try {
-      const r = run(['archify-export', dir, '--scope', 'layers'], dir);
+      const r = run(['archify-export', dir, '--confirm', '--scope', 'layers'], dir);
       assert.equal(r.status, 4);
       assert.match(r.stderr + r.stdout, /session start/);
     } finally {
@@ -108,7 +111,7 @@ describe('CLI archify-export', () => {
   it('非法 --scope 退出码 2', () => {
     const dir = fixtureRepo();
     try {
-      const r = run(['archify-export', dir, '--scope', 'bogus'], dir);
+      const r = run(['archify-export', dir, '--confirm', '--scope', 'bogus'], dir);
       assert.equal(r.status, 2);
       assert.match(r.stderr, /Invalid --scope/);
     } finally {
@@ -122,7 +125,7 @@ describe('CLI archify-export', () => {
       const start = run(['session', 'start', dir], dir);
       assert.equal(start.status, 0, start.stderr);
 
-      const r = run(['archify-export', dir, '--scope', 'layers', '--json'], dir);
+      const r = run(['archify-export', dir, '--confirm', '--scope', 'layers', '--json'], dir);
       assert.equal(r.status, 0, r.stderr);
       const out = JSON.parse(r.stdout);
       assert.ok(out.files && out.files.head);
@@ -154,6 +157,47 @@ describe('CLI session report renderer', () => {
       const html = fs.readFileSync(path.join(dir, '.av', 'session-report.html'), 'utf8');
       assert.match(html, /架构变更报告|REPORT_DATA/);
       assert.ok(fs.existsSync(path.join(dir, '.av', 'session-report.builtin.html')));
+    } finally {
+      fs.rmSync(dir, { recursive: true, force: true });
+    }
+  });
+
+  it('session report 默认 renderer 为 builtin', () => {
+    const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'av-cli-rend-def-'));
+    try {
+      fs.mkdirSync(path.join(dir, 'src'), { recursive: true });
+      fs.writeFileSync(path.join(dir, 'src', 'app.py'), 'class App:\n    pass\n');
+      assert.equal(run(['session', 'start', dir], dir).status, 0);
+      const r = run(['session', 'report', dir], dir);
+      assert.equal(r.status, 0, r.stderr + r.stdout);
+      assert.match(r.stdout, /\[builtin\]/);
+    } finally {
+      fs.rmSync(dir, { recursive: true, force: true });
+    }
+  });
+
+  it('archify-export 无 --confirm 时退出 2', () => {
+    const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'av-cli-ax-'));
+    try {
+      fs.mkdirSync(path.join(dir, 'src'), { recursive: true });
+      fs.writeFileSync(path.join(dir, 'src', 'app.py'), 'class App:\n    pass\n');
+      run(['session', 'start', dir], dir);
+      const r = run(['archify-export', dir], dir);
+      assert.equal(r.status, 2);
+      assert.match(r.stderr, /--confirm/);
+    } finally {
+      fs.rmSync(dir, { recursive: true, force: true });
+    }
+  });
+
+  it('generate --views 非法名退出 2', () => {
+    const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'av-cli-views-'));
+    try {
+      fs.mkdirSync(path.join(dir, 'src'), { recursive: true });
+      fs.writeFileSync(path.join(dir, 'src', 'app.py'), 'class App:\n    pass\n');
+      const r = run(['generate', dir, '--views', 'sequence'], dir);
+      assert.equal(r.status, 2);
+      assert.match(r.stderr, /Unknown view/);
     } finally {
       fs.rmSync(dir, { recursive: true, force: true });
     }

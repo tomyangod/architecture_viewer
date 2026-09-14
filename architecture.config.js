@@ -24,7 +24,7 @@
   const USER_CONFIG = {
     project: {
       title: '项目架构可视化全景',
-      subtitle: '系统架构多视图展示 · C4 模型 · 分层模块 · 代码结构 · 部署运维',
+      subtitle: '结构总览（默认）· 按需局部图 · C4/部署为兼容视图',
       headerIcon: '🏗️',
       footerText: '项目架构可视化 · 基于 Mermaid 11 渲染 · 支持缩放/平移/全屏交互'
     }
@@ -41,8 +41,8 @@
   };
 
   /**
-   * 默认配置模板 — 6 个标准架构视图 + 交互功能
-   * 一般不必整份改写；覆盖 Tab 文案或增删视图时再改 tabs
+   * 默认配置模板 — Block 为默认入口；其余为按需/兼容视图
+   * 源文件不存在时 HTML 会隐藏对应 Tab，不会为凑齐六张而显示空图。
    */
   const DEFAULT_CONFIG = {
     // ========== 集成模式配置（嵌入其他页面时使用）==========
@@ -56,7 +56,7 @@
       hideLegend: false,
       hideHeader: false,
       // 默认激活的 tab ID
-      defaultTab: null,
+      defaultTab: 'block',
       // 自动隐藏工具栏（鼠标移开后淡出）
       autoHideToolbar: false,
       // 是否允许跨窗口 postMessage 通信
@@ -98,7 +98,7 @@
     // ========== 项目基本信息 ==========
     project: {
       title: '项目架构可视化全景',
-      subtitle: '系统架构多视图展示 · C4 模型 · 分层模块 · 代码结构 · 部署运维',
+      subtitle: '结构总览（默认）· 按需局部图 · C4/部署为兼容视图',
       headerIcon: '🏗️',
       footerText: '项目架构可视化 · 基于 Mermaid 11 渲染 · 支持缩放/平移/全屏交互'
     },
@@ -128,6 +128,7 @@
         difficulty: '入门级',
         difficultyClass: 'badge-easy',
         sourceFile: 'c4-context.md',
+        optional: true,
         multiBlock: true,
         // 可选：直接内联 Mermaid 代码（不需要外部 md 文件）
         // inlineMermaid: 'C4Context\n    title ...'
@@ -154,6 +155,7 @@
         difficulty: '入门级',
         difficultyClass: 'badge-easy',
         sourceFile: 'c4-container.md',
+        optional: true,
         multiBlock: true,
         guide: {
           title: '🧭 阅读指南',
@@ -178,6 +180,7 @@
         difficulty: '进阶级',
         difficultyClass: 'badge-medium',
         sourceFile: 'c4-component.md',
+        optional: true,
         multiBlock: true,
         guide: {
           title: '🧭 阅读指南',
@@ -202,9 +205,9 @@
         guide: {
           title: '🧭 阅读指南',
           paragraphs: [
-            '推荐首选本视图：彩色分层框一眼区分前端 / API / 异步 / 存储 / 交付。',
-            '节点写法：图标 + 中文名 + 第二行文件名或技术栈；箭头标注调用语义。',
-            'C4 / 部署视图已共用本 Tab 的分层卡片语法；本图仍是观感主视图（层更全、主链路全员 stadium）。'
+            '推荐首选本视图：静态模块分层，帮助定位依赖和风险，不是运行时真相。',
+            '节点写法：图标 + 中文名 + 第二行文件名或技术栈；箭头来自扫描到的导入/继承，需对照源码核实。',
+            'C4 / 类图 / 部署不是默认交付；缺文件时本页会隐藏对应 Tab。'
           ],
           tip: '💡 实线=主数据流，虚线=部署/配置支撑。层色：粉=前端、紫=API、橙=异步、青=存储、绿=交付。'
         },
@@ -223,6 +226,7 @@
         difficulty: '专业级',
         difficultyClass: 'badge-hard',
         sourceFile: 'class-diagram.md',
+        optional: true,
         multiBlock: true,
         guide: {
           title: '🧭 阅读指南',
@@ -243,6 +247,7 @@
         difficulty: '运维级',
         difficultyClass: 'badge-easy',
         sourceFile: 'deployment-ops.md',
+        optional: true,
         multiBlock: true,
         guide: {
           title: '🧭 阅读指南',

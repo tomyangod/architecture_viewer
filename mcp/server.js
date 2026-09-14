@@ -28,6 +28,7 @@ const { computeImpact } = require('../lib/impact');
 const { generateReport, appendSessionHistory, clearStaleSessionReports, buildSessionReportJson, isStaleReport } = require('../lib/session-report');
 const { migrateReport } = require('../lib/report-contract');
 const { exportArchify, finalizeSessionHtml } = require('../lib/archify-export');
+const { DEFAULT_SESSION_RENDERER } = require('../lib/view-policy');
 const { EXIT, exitCodeForAnalysis } = require('../lib/exit-codes');
 const { runAnalyzers } = require('../lib/analyzers');
 const { describeGreenLight } = require('../lib/green-light');
@@ -198,7 +199,11 @@ function generateSessionReportUnsafe(repo) {
     baseGraph: baseline, headGraph: current, diff, findings, impact, analyzerStatus,
     repoName: path.basename(repo), sessionStart, analysisCompleteness: completeness
   });
-  const finalized = finalizeSessionHtml({ repo, builtinHtml: html });
+  const finalized = finalizeSessionHtml({
+    repo,
+    builtinHtml: html,
+    renderer: DEFAULT_SESSION_RENDERER
+  });
 
   return {
     mode: 'incremental',
@@ -982,10 +987,17 @@ function buildExplainResult(target, diff, graph) {
 /**
  * 导出 Archify IR 稀疏图（base/head + sidecar），写到 <repo>/.av/。
  * 默认 scope=changed；图太密或纯新增会自动降级为 layers。
- * validate=true 且本机有 archify CLI 时顺带校验；校验失败不报错，
- * 调用方应回退内置渲染器（session-report.html）。
+ * validate=true 且本机有 archify CLI 时顺带校验。校验失败或不校验都不阻断导出，
+ * 但返回 validation.status=validated|validate_failed|not_validated|not_requested，
+ * 不得把未校验 IR 说成校验通过。调用方默认仍用内置报告。
  */
 function toolArchifyExport(args) {
+  if (args.confirm !== true) {
+    return {
+      error: 'CONFIRM_REQUIRED',
+      message: 'Archify 导出需要人工确认：先核对会话报告里的节点/边证据，再调用并传 confirm=true。Typed JSON / Schema / 路径存在不能单独证明关系正确。Archify 负责讲解已确认的模型，不能替代审查。'
+    };
+  }
   const repo = resolveRepo(args);
   const res = exportArchify({
     repo,
@@ -1003,17 +1015,17 @@ function toolArchifyExport(args) {
     componentCount: res.sidecar.componentCount,
     connectionCount: res.sidecar.connectionCount,
     files: res.files,
-    hint: 'IR 文件可喂给 archify validate/render/compare；downgradedToLayers=true 时为层摘要图。'
+    hint: 'IR 已写出，可供 archify 讲解；导出确认不等于关系已被程序证明。未跑校验或校验失败时，不能当作已验证成品。',
+    validation: res.validation
   };
-  if (res.validation) {
-    out.validation = res.validation.available
-      ? {
-          ok: res.validation.ok,
-          base: { ok: res.validation.base.ok, codes: res.validation.base.codes || [] },
-          head: { ok: res.validation.head.ok, codes: res.validation.head.codes || [] },
-          fallback: res.validation.ok ? null : 'Archify 校验未通过，请使用内置渲染器 session-report.html。'
-        }
-      : { available: false, message: res.validation.message };
+  if (res.validation && res.validation.available) {
+    out.validation = {
+      ok: res.validation.ok,
+      status: res.validation.status,
+      base: { ok: res.validation.base.ok, codes: res.validation.base.codes || [] },
+      head: { ok: res.validation.head.ok, codes: res.validation.head.codes || [] },
+      fallback: res.validation.ok ? null : (res.validation.note || null)
+    };
   }
   return out;
 }
@@ -1061,7 +1073,7 @@ const TOOLS = [
   },
   {
     name: 'av_session_report',
-    description: '看本轮结构验收结论（对话内 verdict：灯色 + 风险计数 + 最严重 1 条）与完整报告。有 git 时默认对照 HEAD，不必先 av_session_start。日常可用 av_guard（会自动 ensure）。有进行中的防抖时会取消并立即重算。HTML（.av/session-report.html）为可选深挖。必须显式传当前工作区绝对路径 repo。',
+    description: '看本轮结构验收结论（对话内 verdict：灯色 + 风险计数 + 最严重 1 条）与完整报告。有 git 时默认对照 HEAD，不必先 av_session_start。日常可用 av_guard（会自动 ensure）。有进行中的防抖时会取消并立即重算。默认写出内置 HTML（Before/Delta/After）。HTML 为可选深挖。必须显式传当前工作区绝对路径 repo。',
     inputSchema: {
       type: 'object',
       properties: {
@@ -1113,11 +1125,12 @@ const TOOLS = [
   },
   {
     name: 'av_archify_export',
-    description: '把本次会话的架构 diff 导出为 Archify IR 稀疏图（Before/After 两个 JSON + sidecar），写到项目 .av/ 目录，可喂给 archify validate/render/compare 出图。默认 scope=changed（只含变更文件）；图太密或纯新增文件时自动降级为 layers 层摘要图。需要可解析基线（git HEAD 或快照）。validate=true 时若本机装了 archify 会顺带校验，校验失败不报错——回退内置报告图即可。必须显式传当前工作区绝对路径 repo。',
+    description: '人工确认后，把本轮结构 diff 导出为 Archify IR 稀疏图（Before/After JSON + sidecar）。默认不导出、不自动出图。必须先核对证据再传 confirm=true。scope=changed（默认）只含变更文件；过密或纯新增时降级为 layers。validate=true 时若本机有 archify 会顺带校验；返回 validation.status=validated|validate_failed|not_validated|not_requested，未校验/失败不得当成已验证成品。必须显式传当前工作区绝对路径 repo。',
     inputSchema: {
       type: 'object',
       properties: {
         repo: { type: 'string', description: '必填。当前工作区根目录的绝对路径。' },
+        confirm: { type: 'boolean', description: '必填为 true。表示已人工核对会话报告中的节点/边证据，同意导出讲解图。' },
         scope: { type: 'string', enum: ['changed', 'violations', 'layers'], description: '导出范围：changed=变更文件（默认），violations=只看违规边，layers=层摘要图' },
         validate: { type: 'boolean', description: '是否顺带运行 archify validate（需要本机有 archify CLI，默认 false）' }
       },

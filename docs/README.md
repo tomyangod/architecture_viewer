@@ -6,7 +6,7 @@
 
 | 文档 | 说明 |
 |------|------|
-| [quickstart.md](./guides/quickstart.md) | **唯一**通用教程：安装、会话门、读报告、CI；含六视图 / 迷你仓（§10） |
+| [quickstart.md](./guides/quickstart.md) | **唯一**通用教程：安装、会话门、读报告、CI；含结构总览 / 迷你仓（§10） |
 | [beginner-guide/](./guides/beginner-guide/index.html) | 小白图文攻略（装 Node + 看样例 + 迷你仓红灯；通用流程链 Quickstart） |
 | [MVP.md](./guides/MVP.md) | 最小可行产品：30 秒看效果 + 三条使用路径 |
 | [welcome.html](./guides/welcome.html) | `setup` 后打开的引导页 |

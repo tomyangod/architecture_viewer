@@ -1533,7 +1533,7 @@
                 大图可缩放查看，分层建议及旧配置需对照源码确认。
             </div>
             <div class="viewer-toolbar">
-                <button class="tool-btn tool-pdf" onclick="exportPDF()" title="导出六视图合订 PDF（浏览器打印 → 另存为 PDF）">
+                <button class="tool-btn tool-pdf" onclick="exportPDF()" title="导出当前可见视图 PDF（浏览器打印 → 另存为 PDF）">
                     <span class="tool-icon">📄</span> 导出 PDF
                 </button>
                 <button class="tool-btn tool-present" onclick="togglePresentation()" title="演示模式：全屏，←/→ 切换视图，Esc 退出">
@@ -1640,8 +1640,9 @@
     function buildTabNavigationHtml() {
         let html = '<div class="tab-navigation" role="tablist">';
         TABS.forEach((tab, index) => {
+            const defaultId = EMBED.defaultTab || 'block';
             html += `
-                <button class="tab-btn ${index === 0 ? 'active' : ''}" onclick="switchTab('${tab.id}')" role="tab" data-tab-index="${index}">
+                <button class="tab-btn ${tab.id === defaultId ? 'active' : ''}" onclick="switchTab('${tab.id}')" role="tab" data-tab-index="${index}" data-tab-id="${tab.id}" data-optional="${tab.optional ? '1' : '0'}">
                     <span class="tab-icon">${tab.icon || '📋'}</span>
                     <span>${escapeHtml(tab.name || '')}</span>
                     <span class="tab-label">${escapeHtml(tab.label || '')}</span>
@@ -1699,7 +1700,7 @@
         }
 
         return `
-            <div id="tab-${tab.id}" class="tab-panel ${index === 0 ? 'active' : ''}">
+            <div id="tab-${tab.id}" class="tab-panel ${(EMBED.defaultTab || 'block') === tab.id ? 'active' : ''}">
                 <div class="diagram-card">
                     <div class="diagram-header">
                         <div class="diagram-title-group">
@@ -1889,6 +1890,23 @@
         }
     }
 
+    function hideOptionalTab(tabId) {
+        var tab = TABS.filter(function (t) { return t.id === tabId; })[0];
+        if (!tab || !tab.optional) return;
+        tab._hidden = true;
+        var btn = document.querySelector('.tab-btn[data-tab-id="' + tabId + '"]');
+        var panel = document.getElementById('tab-' + tabId);
+        if (btn) btn.style.display = 'none';
+        if (panel) {
+            panel.style.display = 'none';
+            panel.classList.remove('active');
+        }
+        if (btn && btn.classList.contains('active')) {
+            var fallback = TABS.filter(function (t) { return !t._hidden && t.id !== tabId; })[0];
+            if (fallback) switchTab(fallback.id);
+        }
+    }
+
     async function loadFromSource(tabId, forceRefresh) {
         const config = diagramSources[tabId];
         if (!config) return;
@@ -1940,6 +1958,11 @@
                 : null;
             if (typeof injected === 'string' && injected.length) {
                 text = injected;
+            } else if (injectedSources) {
+                var miss = new Error('HTTP 404 · ' + config.path);
+                miss.__archClass = 'fetch-fail';
+                miss.httpStatus = 404;
+                throw miss;
             } else {
                 var response;
                 try {
@@ -2024,6 +2047,16 @@
         } catch (e) {
             var errMsg = (e && e.message) ? String(e.message) : String(e);
             console.warn('Failed to load source for', tabId, ':', errMsg);
+            var tabCfg = TABS.filter(function (t) { return t.id === tabId; })[0];
+            var isFetchFail = (e && e.__archClass === 'fetch-fail') || /^HTTP \d+/i.test(errMsg) || /Failed to fetch|NetworkError|TypeError: fetch failed/i.test(errMsg);
+            if (tabCfg && tabCfg.optional && isFetchFail) {
+                hideOptionalTab(tabId);
+                if (btn) {
+                    btn.classList.remove('loading');
+                    btn.disabled = false;
+                }
+                return;
+            }
             await restoreBuiltin(tabId);
             // 按失败原因分类，避免状态条说谎
             var builtinReason;
@@ -3161,6 +3194,84 @@
         });
     }
 
+    function applyGenerateReceipt(receipt) {
+        if (!receipt || typeof receipt !== 'object') return;
+        var retained = {};
+        (receipt.retainedNotUpdated || []).forEach(function (f) { retained[f] = true; });
+        var selected = {};
+        (receipt.selected || []).forEach(function (f) { selected[f] = true; });
+        TABS.forEach(function (tab) {
+            var src = tab.sourceFile;
+            if (!src) return;
+            var btn = document.querySelector('.tab-btn[data-tab-id="' + tab.id + '"]');
+            var panel = document.getElementById('tab-' + tab.id);
+            if (retained[src]) {
+                tab._retainedStale = true;
+                if (btn) {
+                    btn.classList.add('tab-stale');
+                    btn.title = (btn.title ? btn.title + ' · ' : '') + '磁盘保留：本轮未更新，勿当新图';
+                    if (!btn.querySelector('.tab-stale-mark')) {
+                        var mark = document.createElement('span');
+                        mark.className = 'tab-stale-mark';
+                        mark.textContent = '未更新';
+                        mark.style.cssText = 'margin-left:6px;font-size:10px;opacity:.85;border:1px solid currentColor;border-radius:4px;padding:0 4px;';
+                        btn.appendChild(mark);
+                    }
+                }
+                if (panel && !panel.querySelector('.av-stale-banner')) {
+                    var banner = document.createElement('div');
+                    banner.className = 'av-stale-banner legend-bar';
+                    banner.setAttribute('role', 'note');
+                    banner.style.cssText = 'background:#fff8e1;color:#6d4c41;border:1px solid #ffe082;margin:8px 0;';
+                    banner.textContent = '本轮 generate 未更新此图（旧文件仍保留）。默认交付已收缩；要刷新请显式 --views / --compat-six-views。';
+                    var card = panel.querySelector('.diagram-card') || panel;
+                    card.insertBefore(banner, card.firstChild);
+                }
+            } else if (selected[src] && btn) {
+                btn.classList.add('tab-selected-round');
+            }
+        });
+        var notice = document.getElementById('av-evidence-notice');
+        if (notice && receipt.policy) {
+            var extra = document.createElement('div');
+            extra.style.marginTop = '6px';
+            extra.textContent = '本轮视图策略: ' + receipt.policy
+                + ' · 选定 ' + (receipt.selected || []).length
+                + ' · 磁盘保留未更新 ' + (receipt.retainedNotUpdated || []).length;
+            notice.appendChild(extra);
+        }
+    }
+
+    async function probeOptionalTabs() {
+        var injectedSources = (typeof window.__ARCH_INLINE_SOURCES__ === 'object' && window.__ARCH_INLINE_SOURCES__)
+            ? window.__ARCH_INLINE_SOURCES__
+            : null;
+        var tasks = TABS.filter(function (t) { return t.optional && t.sourceFile; }).map(async function (tab) {
+            // inline 模式（Preview/webview）下有内容的 Tab 不做 fetch 探测：
+            // 内容已内置，fetch 必然 404，不能因此隐藏。
+            if (injectedSources && (injectedSources[tab.sourceFile] || injectedSources[tab.id])) return;
+            try {
+                var response = await fetch(tab.sourceFile + '?t=' + Date.now(), { method: 'GET', cache: 'no-store' });
+                if (!response.ok) hideOptionalTab(tab.id);
+            } catch (e) {
+                hideOptionalTab(tab.id);
+            }
+        });
+        await Promise.all(tasks);
+    }
+
+    async function loadGenerateReceipt() {
+        try {
+            if (typeof window.__ARCH_GENERATE_RECEIPT__ === 'object' && window.__ARCH_GENERATE_RECEIPT__) {
+                applyGenerateReceipt(window.__ARCH_GENERATE_RECEIPT__);
+                return;
+            }
+            var response = await fetch('.generate-receipt.json?t=' + Date.now(), { cache: 'no-store' });
+            if (!response.ok) return;
+            applyGenerateReceipt(await response.json());
+        } catch (e) { /* file:// or missing receipt */ }
+    }
+
     // ============================================================
     //  Window load: 保存内置 fallback，然后尝试加载 md 文件
     // ============================================================
@@ -3173,8 +3284,16 @@
         });
         if (TABS.length > 0) {
             setTimeout(async function() {
-                await loadFromSource(TABS[0].id);
+                await probeOptionalTabs();
+                var initial = EMBED.defaultTab || 'block';
+                var startId = TABS.some(function (t) { return t.id === initial && !t._hidden; })
+                    ? initial
+                    : (TABS.filter(function (t) { return !t._hidden; })[0] || TABS[0]).id;
+                await loadFromSource(startId);
+                await loadGenerateReceipt();
             }, 100);
+        } else {
+            loadGenerateReceipt();
         }
     });
     </script>
