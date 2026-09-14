@@ -71,9 +71,20 @@ npm run wbs -- report --week W06
 
 > 首次付款与续费分开统计；关系性/支持性付款单列，不计入核心付费阶段门。未满 28 天的团队不称四周留存；待评估 finding 单列，并记录评估覆盖率。小样本抽检未发现漏检时写"该样本未发现漏检"，不得写"漏报率为零"。逐团队模板见 [seed-users.md](growth/seed-users.md)。
 
-### 固定版本发布记录（2026-09-14）
+### 固定版本发布记录（2026-09-14 · 晚）
 
-- 已发布：`arch-viewer@0.12.2-rc.3` → npm 标签 `next`；`latest` 保持 `0.12.1`。
+- 已发布：`arch-viewer@0.12.2-rc.4` → npm 标签 `next`；`latest` 保持 `0.12.1`。
+- 源提交：`37d4700`（主仓 main，含默认交付收缩与 Preview Tab 修复）。
+- SHA-256：`c270330e2903492114422a5f3eb49b694aaa3ebc608018b7a91b69c8d5facb03`。
+- registry shasum：`1abd6fc5b7fcd4b207228f5bbc90dbb26d75d288`。
+- integrity：`sha512-Qvzp0veav59pDIRLW9b6BcfSxWSXbPfs6Iv05GQwU3rKtB6hWrJx1H2mLB2j+znZQ8AnE/8JKu+5iLubrROeRA==`。
+- registry 全新安装冒烟：`--version` 为 0.12.2-rc.4，发布 tarball 与本地打包逐字节一致。
+- 发布前全量单测 952 通过 / 0 失败 / 1 跳过。
+- 真实托管 PR 与外部团队接入仍 **NOT RUN**，不记为客户安装/激活。
+
+### 固定版本发布记录（2026-09-14 · 上午）
+
+- 已发布：`arch-viewer@0.12.2-rc.3` → 当时 npm 标签 `next`；`latest` 保持 `0.12.1`。`next` 已于当日晚改指 rc.4。rc.3 仍是有效回退版本（核心验收链路与 rc.4 一致）。
 - 源提交：`81e6c43eba0d61ff12e49c468c2608aba08fbb15`（独立整合仓，不含主仓未提交开发）。
 - SHA-256：`4c18d22d37ae83ed8d047df4406d6e3a2b4445f1efe37ce5817e79b9a1aab381`。
 - registry shasum：`4662b77d58340e0311dbc460f2347ee10d85084d`。
@@ -83,7 +94,7 @@ npm run wbs -- report --week W06
 
 ### 固定版本发布记录（2026-09-11）
 
-- 已发布：`arch-viewer@0.12.2-rc.2` → 当时 npm 标签 `next`；`latest` 保持 `0.12.1`。`next` 已于 2026-09-14 改指 rc.3。
+- 已发布：`arch-viewer@0.12.2-rc.2` → 当时 npm 标签 `next`；`latest` 保持 `0.12.1`。`next` 现指 rc.4（经 rc.3）。
 - 源提交：`d3e409d`。integrity 与本地复验 tarball 一致。
 - registry 全新安装冒烟通过（版本、无基线 exit 4、跨层 0→1→0、坏规则 exit 2）。
 - 真实托管 PR 与外部团队接入仍 **NOT RUN**，不记为客户安装/激活。
