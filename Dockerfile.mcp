@@ -1,0 +1,27 @@
+# Architecture Viewer MCP Server — Glama-compatible Dockerfile
+# This image runs the MCP stdio server (mcp/server.js) for introspection and listing.
+# Usage: docker build -f Dockerfile.mcp -t architecture-viewer-mcp .
+#        echo '{"jsonrpc":"2.0","id":1,"method":"tools/list"}' | docker run -i architecture-viewer-mcp
+
+FROM node:20-slim
+
+# git is required for resolveSessionBaseline and av_guard code paths (rev-parse, status, archive)
+RUN apt-get update && apt-get install -y --no-install-recommends git && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /app
+
+# Copy package files first for layer caching
+COPY package.json package-lock.json ./
+
+# Install production dependencies (tree-sitter parsers)
+RUN npm ci --omit=dev && npm cache clean --force
+
+# Copy only what the MCP server needs to run
+COPY lib/ lib/
+COPY mcp/ mcp/
+COPY vendor/ vendor/
+COPY templates/ templates/
+COPY architecture.config.js ./
+
+# The MCP server is stateless and runs over stdio (no ports needed)
+CMD ["node", "mcp/server.js"]
