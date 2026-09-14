@@ -1,6 +1,10 @@
 # Architecture Viewer
 
-**See architecture lights in chat after AI writes code. Green → commit (that accepts the structure).**
+**Review structural changes and risk hints after AI writes code, then decide whether to commit.**
+
+> **Local delivery scope:** six-view diagrams, CLI/MCP structural reports, and human-reviewed risk hints. Green does not guarantee that no dependencies or violations were missed; incomplete analysis is not a pass. See the bundled [delivery scope](docs/delivery-scope.md) for offline operation and limitations. AI refinement, IDE extensions, workspace aggregation, and SaaS are outside the initial quality commitment.
+
+> **Current branch: `0.12.2-rc.3`, unpublished.** Validate a tarball built from the corresponding commit, not an unrelated `latest` or `next` download. The general installation commands below target published packages. Published RC2 did not include the earlier independent RC1 hardening; adjacent version numbers do not prove that fixes were inherited.
 
 Install once → state the request → read the verdict in chat → `git commit`.
 CLI / MCP / Web / PR comment, four surfaces.

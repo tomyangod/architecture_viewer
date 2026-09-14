@@ -41,6 +41,30 @@ function assertFailed(result, reason, side) {
 
 describe('hosted fail-closed graph validation', () => {
   for (const side of ['head', 'base']) {
+    for (const schema of ['schema.sql', 'schema.prisma']) {
+      it(`${side} unreadable ${schema} cannot produce a hosted pass`, t => {
+        const head = fixture(t);
+        const base = fixture(t);
+        const badRoot = side === 'head' ? head : base;
+        const badFile = path.join(badRoot, schema);
+        fs.writeFileSync(badFile, schema.endsWith('.sql') ? 'CREATE TABLE sample (id INT);' : 'model Sample { id Int @id }');
+        const read = fs.readFileSync;
+        t.mock.method(fs, 'readFileSync', function (file, ...args) {
+          if (String(file) === badFile) throw Object.assign(new Error('fixture schema read denied'), { code: 'EACCES' });
+          return read.call(this, file, ...args);
+        });
+        assert.deepEqual(buildGraph(badRoot).stats.unreadableFiles, [schema]);
+        assertFailed(runHostedCheck(head, { pr: 1, baseDir: base }), 'SCAN_FAILED', side);
+      });
+    }
+
+    it(`${side} empty source scan is not a green graph`, (t) => {
+      const head = fixture(t);
+      const base = fixture(t);
+      fs.unlinkSync(path.join(side === 'head' ? head : base, 'service.js'));
+      assertFailed(runHostedCheck(head, { pr: 1, baseDir: base }), 'SCAN_FAILED', side);
+    });
+
     it(`${side} missing scan directory is not an empty healthy graph`, (t) => {
       const head = fixture(t);
       const base = fixture(t);
@@ -69,7 +93,8 @@ describe('hosted fail-closed graph validation', () => {
           assert.doesNotThrow(() => walkFiles(badRoot, ['.js']));
         } else {
           assertFailed(result, 'SCAN_FAILED');
-          assert.throws(() => walkFiles(badRoot, ['.js']), { code: 'EACCES' });
+          assert.deepEqual(walkFiles(badRoot, ['.js']).meta.unreadableDirs, ['service']);
+          assert.deepEqual(buildGraph(badRoot).stats.unreadableDirs, ['service']);
         }
       });
     }
@@ -123,6 +148,10 @@ describe('hosted fail-closed graph validation', () => {
 
   for (const [stats, reason] of [
     [{ parseErrors: 1 }, 'SCAN_FAILED'],
+    [{ unreadableDirs: ['service'] }, 'SCAN_FAILED'],
+    [{ unreadableFiles: ['schema.sql'] }, 'SCAN_FAILED'],
+    [{ scanTruncated: true }, 'SCAN_FAILED'],
+    [{ files: 0, filesParsed: 0 }, 'SCAN_FAILED'],
     [{ layerConfigError: 'fixture damaged layer configuration' }, 'RULES_CONFIG_ERROR']
   ]) {
     it(`persisted base ${reason} is rejected too`, (t) => {

@@ -6,6 +6,7 @@ const { diffGraphs } = require('../../../lib/diff-graph');
 const { evaluateRisk, summarizeFindings, loadSessionRules } = require('../../../lib/risk-rules');
 const { computeImpact } = require('../../../lib/impact');
 const { shouldGate } = require('../../../lib/exit-codes');
+const { assessAnalysisCompleteness } = require('../../../lib/analysis-completeness');
 const { resolveSessionBaseline, scanGitTreeish } = require('../../../lib/session-baseline');
 const { formatComment } = require('./comment');
 
@@ -24,8 +25,9 @@ function validateGraph(graph, side) {
   if (stats.layerConfigError) {
     return { error: 'RULES_CONFIG_ERROR', message: `${side} 分层配置读取/解析失败：${stats.layerConfigError}` };
   }
-  if (stats.parseErrors > 0) {
-    return { error: 'SCAN_FAILED', message: `${side} 扫描有 ${stats.parseErrors} 个文件读取/解析失败，无法对不完整的图出验收结论。` };
+  const completeness = assessAnalysisCompleteness(graph);
+  if (!completeness.allowGreen) {
+    return { error: 'SCAN_FAILED', message: `${side} 分析失败或不完整：${completeness.reasons.join('；')}` };
   }
   return null;
 }

@@ -6,7 +6,7 @@ test.describe('Architecture Viewer MVP smoke', () => {
     await expect(page.locator('h1')).toContainText('架构图');
     await page.locator('#lang-toggle').click();
     await expect(page).toHaveURL(/lang=en/);
-    await expect(page.locator('h1')).toContainText('Architecture diagrams go stale');
+    await expect(page.locator('h1')).toContainText('Diagrams drift. PRs go red.');
     await page.goto('/?lang=zh');
     await expect(page.locator('h1')).toContainText('架构图');
   });

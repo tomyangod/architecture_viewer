@@ -132,4 +132,18 @@ describe('session-report golden + delivery contract', () => {
     assert.doesNotThrow(() => assertReportContract(disk));
     assert.doesNotThrow(() => assertReportContract(htmlData));
   });
+
+  it('HTML 在分析不完整时显示 analysis-banner', () => {
+    const { base, head, diff } = miniGraphs();
+    const { assessAnalysisCompleteness } = require('../lib/analysis-completeness');
+    const completeness = assessAnalysisCompleteness({
+      stats: { files: 2, filesParsed: 1, parseErrors: 1 }
+    });
+    const html = generateReport({
+      baseGraph: base, headGraph: head, diff, findings: [completeness.finding],
+      impact: null, repoName: 'demo', sessionStart: null, analysisCompleteness: completeness
+    });
+    assert.match(html, /analysis-banner/);
+    assert.match(html, /分析不完整/);
+  });
 });
