@@ -143,7 +143,7 @@ More than I'd like to admit. The restart cost isn't the chat — it's re-verifyi
 
 | # | 渠道 | 对象 | 发出时间 | 状态 | 回复摘要 |
 |---|---|---|---|---|---|
-| A1 | 掘金私信 | #1 不破坏架构 | 2026-09-14 | 失败 | 两次「未知错误」，暂搁 |
+| A1 | 掘金私信 | #1 不破坏架构 / 全栈狂人 | 2026-09-14 | 已发 | 精简版成功；https://juejin.cn/notification/im?participantId=530400691368462 |
 | A2 | 掘金私信 | #2 SDD | 2026-09-14 | 已发 |  |
 | A3 | 掘金私信 | #3 Prompt→Spec | 2026-09-14 | 已发 |  |
 | A4 | 掘金私信 | #4 OpenSpec | 2026-09-14 | 已发 |  |
