@@ -98,9 +98,19 @@ npm run wbs -- report --week W06
 | 接入数 | **0** | |
 | 目录侧 | 进行中 | Glama 已上架（质量 B）；awesome #14385 待合；mcp.so 免费 issue 已留评 |
 
+### 固定版本发布记录（2026-09-15）
+
+- 已发布：`arch-viewer@0.12.2-rc.5` → npm 标签 `next`；`latest` 保持 `0.12.1`。
+- 源提交：`b139e31`（会话解释闭环、CRLF 归因、测试关联措辞、手改图保护、未确认分层不阻断）。
+- SHA-256：`4d9fcb365f2cc4f3a3968f5fc93a0212fb8b07947c3e0fac0308d6a724105f43`。
+- registry shasum：`c070fcd8541d1ca1f22c7529d155fe31685e1e76`。
+- integrity：`sha512-VaxKYObgUmZ8siuestCnjTDnnld/c1oZWbs2ub20jtEO2b/0QVUXtZ7bm9LaaKjlvH3FdjNg3p2OkWwKRHysiw==`。
+- registry 全新安装冒烟：`--version` 为 0.12.2-rc.5，发布 tarball 与本地干净打包逐字节一致。
+- 发布前全量单测 1028 通过 / 0 失败 / 1 跳过。
+
 ### 固定版本发布记录（2026-09-14 · 晚）
 
-- 已发布：`arch-viewer@0.12.2-rc.4` → npm 标签 `next`；`latest` 保持 `0.12.1`。
+- 已发布：`arch-viewer@0.12.2-rc.4` → 当时 npm 标签 `next`；`latest` 保持 `0.12.1`。`next` 已于 2026-09-15 改指 rc.5。
 - 源提交：`37d4700`（主仓 main，含默认交付收缩与 Preview Tab 修复）。
 - SHA-256：`c270330e2903492114422a5f3eb49b694aaa3ebc608018b7a91b69c8d5facb03`。
 - registry shasum：`1abd6fc5b7fcd4b207228f5bbc90dbb26d75d288`。
