@@ -23,6 +23,9 @@ function run(args, cwd) {
 
 function tmpRepo() {
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'av-exit-'));
+  fs.mkdirSync(path.join(dir, '.av'));
+  fs.writeFileSync(path.join(dir, '.av/layers.json'),
+    JSON.stringify({ controllers: 'controller', models: 'storage' }));
   fs.mkdirSync(path.join(dir, 'controllers'), { recursive: true });
   fs.mkdirSync(path.join(dir, 'models'), { recursive: true });
   fs.writeFileSync(

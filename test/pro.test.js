@@ -24,6 +24,7 @@ const { parseWebhook, parseRepoUrl, upsertPrComment } = require('../web/lib/pro/
 const { runHostedCheck } = require('../web/lib/pro/host-drift');
 const billing = require('../web/lib/pro/billing');
 const { handler } = require('../web/server');
+const CONFIRMED_LAYERS = JSON.stringify({ controller: 'controller', storage: 'storage' });
 
 function writeTree(dir, files) {
   for (const [rel, body] of Object.entries(files)) {
@@ -196,7 +197,8 @@ describe('Pro entitlement & comments', () => {
 });
 
 describe('hosted check fixtures', () => {
-  it('cross-layer import vs base dir is a red light', () => {
+  for (const confirmed of [false, true]) {
+  it(`cross-layer import is ${confirmed ? 'blocking when configured' : 'review-only when inferred'}`, () => {
     const baseDir = fs.mkdtempSync(path.join(os.tmpdir(), 'av-pro-base-'));
     writeTree(baseDir, {
       'controller/api.py': 'class Api:\n    pass\n',
@@ -207,14 +209,20 @@ describe('hosted check fixtures', () => {
       'controller/api.py': 'class Api:\n    pass\n',
       'storage/repo.py': 'from controller import api\nclass Repo:\n    pass\n'
     });
+    if (confirmed) {
+      writeTree(baseDir, { '.av/layers.json': CONFIRMED_LAYERS });
+      writeTree(headDir, { '.av/layers.json': CONFIRMED_LAYERS });
+    }
     const r = runHostedCheck(headDir, { repoLabel: 'demo/risk', pr: 1, baseDir });
-    assert.equal(r.ok, false);
+    assert.equal(r.ok, !confirmed);
+    assert.equal(r.riskSummary.gateLevel, confirmed ? 'high' : 'none');
     assert.equal(r.protocol, 'incremental');
     assert.ok((r.findings || []).some((f) => f.rule === 'cross-layer-violation'));
     assert.match(r.markdown, /风险/);
     fs.rmSync(baseDir, { recursive: true, force: true });
     fs.rmSync(headDir, { recursive: true, force: true });
   });
+  }
 
   it('identical trees are a green light', () => {
     const dir = makeLayeredRepo();
@@ -313,10 +321,12 @@ describe('Pro HTTP account + webhook', () => {
     const baseDir = fs.mkdtempSync(path.join(os.tmpdir(), 'av-wh-base-'));
     const headDir = fs.mkdtempSync(path.join(os.tmpdir(), 'av-wh-head-'));
     writeTree(baseDir, {
+      '.av/layers.json': CONFIRMED_LAYERS,
       'controller/api.py': 'class Api:\n    pass\n',
       'storage/repo.py': 'class Repo:\n    pass\n'
     });
     writeTree(headDir, {
+      '.av/layers.json': CONFIRMED_LAYERS,
       'controller/api.py': 'class Api:\n    pass\n',
       'storage/repo.py': 'from controller import api\nclass Repo:\n    pass\n'
     });
@@ -410,7 +420,7 @@ describe('Pro Local folder check', () => {
     global.__AV_NOTIFY = async (url, markdown) => {
       sent.push({ url, markdown });
     };
-    const folder = makeLayeredRepo();
+    const folder = makeLayeredRepo({ '.av/layers.json': CONFIRMED_LAYERS });
     fs.writeFileSync(
       path.join(folder, 'storage/repo.py'),
       'from controller import api\nclass Repo:\n    pass\n'

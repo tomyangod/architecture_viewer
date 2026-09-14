@@ -38,6 +38,7 @@ function writeTree(dir, files) {
 
 function pyLayered(dir) {
   writeTree(dir, {
+    '.av/layers.json': JSON.stringify({ controllers: 'controller', services: 'service', models: 'storage' }),
     'controllers/api.py': 'class Api:\n    def handle(self, req):\n        return req\n',
     'services/svc.py': 'from models.db import DB\nclass Svc:\n    def run(self):\n        return DB().save(1)\n',
     'models/db.py': 'class DB:\n    def save(self, x):\n        return x\n'
@@ -46,6 +47,7 @@ function pyLayered(dir) {
 
 function jsLayered(dir) {
   writeTree(dir, {
+    '.av/layers.json': JSON.stringify({ controllers: 'controller', services: 'service', models: 'storage' }),
     'controllers/api.js': 'function handle(req) { return req; }\nmodule.exports = { handle };\n',
     'services/svc.js': 'const { DB } = require("../models/db");\nclass Svc { run() { return new DB().save(1); } }\nmodule.exports = { Svc };\n',
     'models/db.js': 'class DB { save(x) { return x; } }\nmodule.exports = { DB };\n'

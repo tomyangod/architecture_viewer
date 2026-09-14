@@ -27,6 +27,9 @@ const tick = (ms = 150) => new Promise((r) => setTimeout(r, ms));
 
 function makeRepo() {
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'av-w1507-'));
+  fs.mkdirSync(path.join(dir, '.av'));
+  fs.writeFileSync(path.join(dir, '.av/layers.json'),
+    JSON.stringify({ controllers: 'controller', models: 'storage' }));
   fs.mkdirSync(path.join(dir, 'controllers'), { recursive: true });
   fs.mkdirSync(path.join(dir, 'models'), { recursive: true });
   fs.writeFileSync(path.join(dir, 'controllers', 'api.js'),

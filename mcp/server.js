@@ -216,6 +216,7 @@ function generateSessionReportUnsafe(repo) {
       // Authoritative findings severity (same as top-level riskLevel).
       // diff.summary.changeScale is the volume heuristic and must not be read as risk.
       riskLevel: riskSummary.level,
+      gateLevel: riskSummary.gateLevel || riskSummary.level,
       riskCount: findings.length,
       riskCounts: riskSummary.counts
     },
@@ -229,6 +230,7 @@ function generateSessionReportUnsafe(repo) {
       rendererReason: finalized.renderer.reason
     },
     riskLevel: riskSummary.level,
+    gateLevel: riskSummary.gateLevel || riskSummary.level,
     findingsCount: findings.length,
     hasChanges: (diff.summary.totalChanges || 0) > 0,
     implementation: {
@@ -403,6 +405,14 @@ function formatFinding(f) {
     line: f.line || null,
     sourceAnalyzer: f.sourceAnalyzer || 'builtin',
     confidence: f.confidence || 'medium',
+    ...(f.reportOnly === true ? { reportOnly: true } : {}),
+    ...(f.layerConfirmation ? {
+      layerConfirmation: f.layerConfirmation,
+      fromLayerSignal: f.fromLayerSignal || null,
+      toLayerSignal: f.toLayerSignal || null
+    } : {}),
+    ...(f.testEvidence ? { testEvidence: f.testEvidence } : {}),
+    ...(Array.isArray(f.testFiles) ? { testFiles: f.testFiles } : {}),
     ...(f.from && f.to && f.edgeType ? {
       from: f.from,
       to: f.to,
@@ -905,40 +915,55 @@ function loadSessionFindings(repo) {
   if (!Array.isArray(findings) || findings.length === 0) {
     return { error: 'NO_SESSION_FINDING', message: '会话报告里没有 finding。本轮是绿灯——未检测到架构风险（源代码内容可能已修改，但结构指纹无变化）。不要把全楼历史问题当成这次红灯。' };
   }
-  const bp = baselinePath(repo);
-  if (!fs.existsSync(bp)) {
-    return { error: 'NO_SESSION_FINDING', message: '有会话报告但基线已丢失。请重新 av_session_start 后再 report。' };
+  const context = report.explanationContext;
+  if (!context || context.version !== 1 || !Array.isArray(context.nodes) ||
+      context.nodes.some(n => !n || typeof n.id !== 'string') ||
+      context.baseFingerprint !== report.baseFingerprint ||
+      context.headFingerprint !== report.headFingerprint ||
+      !report.diff || report.diff.base?.fingerprint !== report.baseFingerprint ||
+      report.diff.head?.fingerprint !== report.headFingerprint ||
+      !Array.isArray(report.diff.addedEdges) ||
+      report.diff.addedEdges.some(e => !e || typeof e.from !== 'string' ||
+        typeof e.to !== 'string' || typeof e.type !== 'string') ||
+      findings.some(f => !f || typeof f !== 'object' ||
+        typeof f.severity !== 'string' || !f.severity)) {
+    return {
+      error: 'NO_SESSION_FINDING',
+      message: '会话报告缺少匹配的解释证据（旧格式或已损坏）。请重新 av_guard / av_session_report；不要刷新基线或把历史全仓扫描当成本轮结果。'
+    };
   }
   return {
     findings,
     runtime: report.runtime || null,
+    evidence: {
+      generatedAt: report.generatedAt,
+      baselineKind: context.baselineKind,
+      gitHead: context.gitHead,
+      baseFingerprint: context.baseFingerprint,
+      headFingerprint: context.headFingerprint,
+      source: 'session-report',
+      note: '解释的是该报告生成时的证据，不代表当前工作区；修改代码或提交后请重新 av_guard。'
+    },
     diff: report.diff,
     impact: report.impact,
-    baseline: JSON.parse(fs.readFileSync(bp, 'utf8')),
-    graph: buildGraph(repo)
+    baseline: null,
+    graph: { nodes: context.nodes, edges: report.diff.addedEdges }
   };
 }
 
 function toolExplainFinding(args) {
   const repo = resolveRepo(args);
-  let graph, baseline, diff, impact, findings, runtime;
+  let graph, diff, findings, runtime, evidence;
 
   if (args.from === 'session') {
     const loaded = loadSessionFindings(repo);
     if (loaded.error) return { error: loaded.error, message: loaded.message };
-    ({ graph, baseline, diff, impact, findings, runtime } = loaded);
+    ({ graph, diff, findings, runtime, evidence } = loaded);
   } else {
-    ({ graph, baseline, diff, impact, findings, runtime } = liveScanFindings(repo));
+    ({ graph, diff, findings, runtime } = liveScanFindings(repo));
   }
 
-  let target = pickFinding(findings, args);
-
-  // 报告里若是格式化字符串，用同一份 diff/基线还原对象——禁止改走空基线全楼扫描
-  if (!target && findings.length > 0 && typeof findings[0] === 'string') {
-    const teamRules = loadSessionRules(repo);
-    const rawFindings = evaluateRisk(diff, graph, baseline, impact, { rules: teamRules });
-    target = pickFinding(rawFindings, args);
-  }
+  const target = pickFinding(findings, args);
 
   if (!target) {
     return { error: 'NOT_FOUND', message: `没找到对应的红灯。当前共 ${findings.length} 条问题。` };
@@ -947,6 +972,7 @@ function toolExplainFinding(args) {
   return {
     ...buildExplainResult(target, diff, graph),
     mode: args.from === 'session' ? 'incremental' : 'snapshot',
+    ...(evidence ? { evidence } : {}),
     ...(runtime ? { runtime } : {})
   };
 }

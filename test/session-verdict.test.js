@@ -24,6 +24,27 @@ function run(args, cwd) {
 }
 
 describe('formatSessionVerdict', () => {
+  it('surfaces incompatible legacy source hashes instead of claiming unchanged code', () => {
+    const v = formatSessionVerdict({
+      riskSummary: { level: 'none', counts: {} },
+      summary: { totalChanges: 0, sourceChanged: null, sourceComparison: 'incompatible-hash-version' }
+    });
+    assert.match(v.text, /源码内容对比未知/);
+    assert.doesNotMatch(v.text, /源码与结构均未变/);
+  });
+  it('includes INFO in both total and breakdown without escalating the verdict', () => {
+    const v = formatSessionVerdict({
+      riskSummary: { level: 'low', counts: { low: 1, info: 1 } },
+      findings: [{ severity: 'low' }, { severity: 'info' }]
+    });
+    assert.match(v.lines[0], /2 项风险（LOW 1 \/ INFO 1）/);
+    assert.equal(v.level, 'low');
+    const info = formatSessionVerdict({
+      riskSummary: { level: 'none', counts: { info: 1 } }
+    });
+    assert.match(info.lines[0], /1 项风险（INFO 1）/);
+    assert.equal(info.level, 'none');
+  });
   it('绿灯 ≤3 行，含可选详情链接，不强迫打开 HTML', () => {
     const v = formatSessionVerdict({
       riskSummary: { level: 'none', counts: { high: 0, medium: 0, low: 0 } },

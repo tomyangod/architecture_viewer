@@ -81,6 +81,8 @@ test.describe('Webview Preview offline + CSP', () => {
       const page = await context.newPage();
       await page.goto(origin + routePath, { waitUntil: 'domcontentloaded' });
       await expect(page.locator('#av-evidence-notice')).toContainText('Human review required');
+      // Initial tab activation is deferred; wait for it before testing user navigation.
+      await expect(page.locator('#tab-block svg').first()).toBeVisible({ timeout: 30_000 });
 
       for (const tabId of TABS) {
         await page.evaluate((id) => window.switchTab(id), tabId);

@@ -12,7 +12,7 @@ const {
   parseViewList,
   DEFAULT_DIAGRAM_FILES
 } = require('../lib/view-policy');
-const { generateToDir, generateFiles } = require('../lib/index');
+const { generateToDir, generateFiles, initKit } = require('../lib/index');
 const { DIAGRAM_FILES } = require('../lib/kit');
 
 function tmpRepo(files) {
@@ -136,13 +136,12 @@ describe('generateToDir default delivery', () => {
     }
   });
 
-  it('removes leftover placeholder compat diagrams after default generate', () => {
+  it('removes untouched shipped compat diagrams after default generate', () => {
     const repo = tmpRepo({
       'src/app.py': 'class App:\n    pass\n'
     });
     const kit = path.join(repo, 'kit');
-    fs.mkdirSync(kit, { recursive: true });
-    fs.writeFileSync(path.join(kit, 'c4-context.md'), '# x\n\n*模板文件 · 请替换为你项目的实际内容*\n');
+    initKit(repo, 'kit', { compatSix: true });
     try {
       generateToDir(repo, kit);
       assert.ok(!fs.existsSync(path.join(kit, 'c4-context.md')));

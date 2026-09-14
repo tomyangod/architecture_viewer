@@ -25,7 +25,8 @@ function node(id, name, layer, kind) {
     kind: kind || 'class',
     name: name || id,
     path: id.replace(/^file:/, '') + (kind === 'file' ? '' : '.js'),
-    layer
+    layer,
+    layerSignal: 'config:.av/layers.json'
   };
 }
 function edge(from, to, type) {
@@ -33,7 +34,7 @@ function edge(from, to, type) {
 }
 
 describe('session 吃 architecture-rules.yaml（代码图层）', () => {
-  it('forbid_cross_layer 对本轮新增 controller→storage import 亮 HIGH', () => {
+  it('forbid_cross_layer 对两端已确认的新增 controller→storage import 亮 HIGH', () => {
     const rules = loadRules(EXAMPLE);
     const base = { nodes: [], edges: [] };
     const head = {

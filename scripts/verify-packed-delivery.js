@@ -212,7 +212,11 @@ function verifyPackedDelivery({ npmCache, offline = false } = {}) {
     const regressionSuites = [
       'delivery-hardening.test.js', 'python-bindings.test.js', 'js-bindings.test.js',
       'incremental.test.js', 'refine-cache.test.js', 'llm-sanitize.test.js',
-      'layering-snapshot.test.js', 'generate-facts.test.js'
+      'layering-snapshot.test.js', 'generate-facts.test.js',
+      'session-explain-evidence.test.js', 'session-verdict.test.js',
+      'template-cleanup.test.js', 'view-policy.test.js',
+      'source-content-line-endings.test.js', 'test-index.test.js',
+      'inferred-layer-policy.test.js'
     ];
     const hardeningTests = regressionSuites.map(file => {
       const target = path.join(installed, 'test', file);

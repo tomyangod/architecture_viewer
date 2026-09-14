@@ -39,6 +39,9 @@ function makeRepo() {
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'av-w1506-'));
   fs.mkdirSync(path.join(dir, 'controllers'), { recursive: true });
   fs.mkdirSync(path.join(dir, 'models'), { recursive: true });
+  fs.mkdirSync(path.join(dir, '.av'), { recursive: true });
+  fs.writeFileSync(path.join(dir, '.av', 'layers.json'),
+    JSON.stringify({ controllers: 'controller', models: 'storage' }));
 
   // controller 层
   fs.writeFileSync(path.join(dir, 'controllers', 'api.js'),

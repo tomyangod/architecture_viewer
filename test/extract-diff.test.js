@@ -1,9 +1,8 @@
 'use strict';
 
-const { describe, it, before } = require('node:test');
+const { describe, it, after } = require('node:test');
 const assert = require('node:assert/strict');
 const fs = require('fs');
-const os = require('os');
 const path = require('path');
 
 const { buildGraph, extractGraphTo } = require('../lib/extract-graph');
@@ -12,8 +11,14 @@ const { buildReportData, generateReport, formatFileLocLabel, fileLocSeverity } =
 const { evaluateRisk, summarizeFindings } = require('../lib/risk-rules');
 
 /* --- 临时仓库 fixture --- */
+const repos = [];
+after(() => {
+  for (const dir of repos) fs.rmSync(dir, { recursive: true, force: true });
+});
+
 function makeRepo(files) {
-  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'av-extract-'));
+  const dir = fs.mkdtempSync(path.join(__dirname, '.av-extract-'));
+  repos.push(dir);
   for (const [rel, content] of Object.entries(files)) {
     const full = path.join(dir, rel);
     fs.mkdirSync(path.dirname(full), { recursive: true });
@@ -492,8 +497,8 @@ describe('B1-3 续: 风险引擎边契约（regression）', () => {
   it('层级穿透：controller 直达 storage 产生 HIGH finding', () => {
     const headGraph = {
       nodes: [
-        { id: 'cls:Ctl', name: 'Ctl', kind: 'class', layer: 'controller', path: 'ctl.py' },
-        { id: 'cls:Repo', name: 'Repo', kind: 'class', layer: 'storage', path: 'repo.py' }
+        { id: 'cls:Ctl', name: 'Ctl', kind: 'class', layer: 'controller', path: 'ctl.py', layerSignal: 'config:.av/layers.json' },
+        { id: 'cls:Repo', name: 'Repo', kind: 'class', layer: 'storage', path: 'repo.py', layerSignal: 'config:.av/layers.json' }
       ],
       edges: []
     };
@@ -568,6 +573,7 @@ describe('guessLayer: 分层识别智能化', () => {
 describe('summary.changeScale vs 权威 risk.level', () => {
   it('storage→controller：changeScale 是规模启发式，risk.level 才是 findings 严重度', () => {
     const dir = makeRepo({
+      '.av/layers.json': JSON.stringify({ storage: 'storage', controller: 'controller' }),
       'storage/repo.py': 'class Repo:\n    pass\n',
       'controller/api.py': 'class Api:\n    pass\n'
     });
