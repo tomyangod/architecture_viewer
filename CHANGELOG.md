@@ -4,6 +4,10 @@
 
 ## \[Unreleased\]
 
+## \[0.12.2-rc.5\] — 2026-09-15
+
+试点候选包，拟发布到 npm 标签 `next`（不改 `latest`）。在 rc.4 默认交付收缩之上，修复会话解释闭环、增量归因与分层门禁语义。
+
 ### Fixed
 
 - **会话解释闭环**：CLI/MCP 报告保存解释所需的节点证据与对照点，`av_explain_finding(from=session)` 不再依赖仅适用于 snapshot 的基线文件，也不把后续 HEAD/源码混入旧 finding。旧格式、过期或损坏报告要求重新 report，而不是刷新基线。
@@ -15,6 +19,7 @@
 ### Changed
 
 - **分层确认与阻断解耦**：两端分层未经人工配置确认的跨层 finding 为 MEDIUM、`reportOnly=true`，在更严格的 `--fail-on` 下也仅提示审查。仅设置层名禁令不确认端点角色；两端显式分层及明确模块路径合同仍可阻断。CLI/MCP/HTML 保留相应确认与测试证据元数据。
+- **灯色与门禁口径**：对话三行 verdict 的灯色仍跟 `riskSummary.level`（含 report-only）；CLI/MCP 退出码与 `gateLevel` 对齐。因此未确认跨层可能出现 🟠 需关注且 `exit 0`——黄灯是审查提示，不是必须改代码的阻断。
 
 ### Documentation
 
