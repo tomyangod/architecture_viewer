@@ -143,8 +143,15 @@ More than I'd like to admit. The restart cost isn't the chat — it's re-verifyi
 
 | # | 渠道 | 对象 | 发出时间 | 状态 | 回复摘要 |
 |---|---|---|---|---|---|
-| A1–A6 | 掘金 | 见 p1-leads #1–6 |  | 已触达 |  |
-| B1–B3 | GitHub | Graphenium / Yggdrasil / archcodex |  | 已触达 |  |
-| C1–C3 | Reddit | 三个 r/cursor 帖 |  | 已触达 |  |
+| A1 | 掘金私信 | #1 不破坏架构 | 2026-09-14 | 失败 | 两次「未知错误」，暂搁 |
+| A2 | 掘金私信 | #2 SDD | 2026-09-14 | 已发 |  |
+| A3 | 掘金私信 | #3 Prompt→Spec | 2026-09-14 | 已发 |  |
+| A4 | 掘金私信 | #4 OpenSpec | 2026-09-14 | 已发 |  |
+| A5 | 掘金私信 | #5 Cursor 四模式 | 2026-09-14 | 已发 |  |
+| A6 | 掘金私信 | #6 质量保障体系 | 2026-09-14 | 已发 |  |
+| B1 | GitHub | Graphenium | 2026-09-14 | 已发 | https://github.com/lambda-alpha-labs/Graphenium/issues/39 |
+| B2 | GitHub | Yggdrasil | 2026-09-14 | 已发 | https://github.com/krzysztofdudek/Yggdrasil/discussions/95 |
+| B3 | GitHub | archcodex | 2026-09-14 | 已发 | https://github.com/ArchCodexOrg/archcodex/discussions/32 |
+| C1–C3 | Reddit | 三个 r/cursor 帖 | — | 跳过 | 用户此前明确跳过 |
 
 **跟进规则**（outreach-kit §5）：已读未回 3 个工作日后最多跟一次；拒绝即止并记原话；感兴趣排期的约定具体日期。
