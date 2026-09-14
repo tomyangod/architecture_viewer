@@ -2,7 +2,21 @@
 
 > 目标：筛选 10–15 个合格团队，完成 5 次问题访谈，先接入 2 个，再扩到 5 个非关联团队。不是转发量竞赛。
 > 当前没有在本文记录已核实的线索或已发送的消息；下面均为待执行模板。
-> 策略和阶段门：[6–8 周验证计划](../plans/pilot-validation-6w.md)。
+> **主说明：本文（唯一对外口径源）。**  
+> 附录（不得另起定价/卸载/能力边界）：[触达模板](outreach-kit.md) · [红→绿演示](red-green-sample.md) · [当日队列备忘](recruit-kit-2026-09-12.md) · `soft-replies-*.md` · `juejin-post-2026-09-12.md`。  
+> 策略和阶段门：[6–8 周验证计划](../plans/pilot-validation-6w.md)。  
+> **整合负责人：主仓维护者（唯一执行口）。** 其他会话 / worktree 暂停改本批文档与同一批在途源码。试点固定 registry `arch-viewer@0.12.2-rc.3`，不用脏工作区打包。
+
+## 0. 对外口径终审（发消息前核对）
+
+| 项 | 对外可说 | 不可说 / 限制 |
+|---|---|---|
+| 版本 | `arch-viewer@0.12.2-rc.3`（npm `next`） | `latest`、脏工作区源码、未发布的 `session validate` / R18 / R19 |
+| 价格 | Pro ¥29/月；Team ¥99/人/月且**仅人工申请** | Team 自助下单、旧 ¥999/年/仓库、半年赠送换「付费意向」 |
+| 申请接口 | `POST /api/billing/team-application`（登记意向，不生成订单、不开通） | `POST /api/billing/team-order`（已移除） |
+| 许可 | Community 本地 CLI/MCP 为根仓库 Apache-2.0 | 「整仓许可已统一」；托管/账号可随意再分发（产品意图是单独商业许可，尚未全部换独立 LICENSE） |
+| 卸载 | `arch-viewer uninstall .`（可加 `--npm`）；默认保留 `.av/layers.json` 与证据 | 「删整个 `.av/` 即可」；盲删全局 MCP / 其他工具配置 |
+| 能力边界 | 增量结构灯：跨层、结构变化、影响面；绿灯≠业务正确 | 替代测试/安全审计/业务逻辑审查；公网 webhook 托管 PR「现已可用」（仍 NOT RUN） |
 
 ## 1. 招募对象与筛选
 
@@ -35,22 +49,23 @@
 不要求购买、转发或提供好评，也不以半年赠送换“付费意向”。
 
 如果愿意参与，我会提供固定版本、脱敏样例和清晰退出方式。
-源码与说明：https://github.com/heyangyan/architecture_viewer
+源码与说明：https://gitee.com/heyangyan/architecture_viewer
+招募 Issue：https://gitee.com/heyangyan/architecture_viewer/issues/IKF74T
 ```
 
 每条消息记录来源、日期和许可情况。只对已有沟通且未拒绝的人适度跟进；拒绝后停止。不把访谈、免费开通或作者朋友的支持款当产品获客成功。
 
 ## 2. 首次接入（先 2 个团队）
 
-固定版本为 **0.12.2-rc.2**（已发布到 npm `next`；registry 安装已复验）。接入时钉此版本，不用 `latest`。
+固定版本为 **0.12.2-rc.3**（已发布到 npm `next`；registry 安装已复验）。接入时钉此版本，不用 `latest`。
 
 1. 记录团队匿名 ID、接入日期、语言、版本、现有工具和首个真实 PR；由维护者决定可分享哪些脱敏数据。
 2. 在真实仓运行前检查工作区及分层规则，声明 vendored 目录。选定 git HEAD（本地）/PR base（托管）对照方式。
 3. 发布后可使用固定 CLI，不先运行会写全局配置的 setup：
 
 ```bash
-npx --yes --package arch-viewer@0.12.2-rc.2 arch-viewer --version
-npx --yes --package arch-viewer@0.12.2-rc.2 arch-viewer session report /absolute/path/to/repo --renderer builtin
+npx --yes --package arch-viewer@0.12.2-rc.3 arch-viewer --version
+npx --yes --package arch-viewer@0.12.2-rc.3 arch-viewer session report /absolute/path/to/repo --renderer builtin
 ```
 
 有有效 Git HEAD 的仓库无需 `session start`。非 Git 仓只有在客户确认记录当前状态后才建快照。exit 1 表示结构门未通过，不是安装失败；2 为参数/配置、3 为扫描、4 为基线问题。
@@ -94,6 +109,13 @@ npx --yes --package arch-viewer@0.12.2-rc.2 arch-viewer session report /absolute
 
 ## 4. 退出与决策
 
-- 客户可随时停用；托管取消 webhook、撤销专用 PAT，并按部署方的数据保留流程处理账号/仓库信息。
+- 客户可随时停用；本地优先 `arch-viewer uninstall .`（可加 `--npm`），默认保留分层规则与证据；仅客户确认后才用 `--purge` 清会话报告/快照。
+- 托管取消 webhook、撤销专用 PAT，并按部署方的数据保留流程处理账号/仓库信息。
 - 10-09 检查使用证据及观察时长；11-06 按既定阶段门决策。不因日期到了就把晚接入团队填成四周留存。
 - 没达到阶段门时停止订阅能力扩张，按计划转服务化验证；不继续堆语言、SSO 或仪表盘来替代客户证据。
+
+## 5. P1 线索与漏斗执行
+
+执行表：[p1-leads-2026-09-12.md](p1-leads-2026-09-12.md)（目标 10–15 线索 → ~5 访谈 → 2 队接入）。  
+触达只用 [outreach-kit.md](outreach-kit.md)，不再新增 soft-replies-roundN。  
+版本固定 registry `arch-viewer@0.12.2-rc.3`；首周旁路，不默认阻断。

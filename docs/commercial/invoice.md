@@ -9,7 +9,7 @@
 | 档位 | 价格 | 开票内容建议 |
 |------|------|--------------|
 | Pro | ¥29 / 月 / 账号 | 软件服务费 / 技术服务费 |
-| Team | **¥999 / 年 / 仓库** | 同上；备注仓库 URL |
+| Team | **¥99 / 人 / 月**（验证期人工报价，无自助下单） | 同上；备注仓库 URL 与席位数 |
 | 私有化 On-prem | **¥19,999 / 年起** | 软件服务费；档位见 [team-onprem.md](team-onprem.md) |
 
 ## 开票信息收集（客户填）
@@ -53,7 +53,7 @@ curl -X POST "$ARCH_PUBLIC_URL/api/pro/admin/grant" \
   -H "X-Admin-Token: $ARCH_PRO_ADMIN_TOKEN" \
   -d '{"email":"客户注册邮箱","days":31}'
 
-# Team（¥999/年/仓库）
+# Team（¥99/人/月，人工申请成交后开通，席位数按报价单）
 curl -X POST "$ARCH_PUBLIC_URL/api/pro/admin/grant" \
   -H "Content-Type: application/json" \
   -H "X-Admin-Token: $ARCH_PRO_ADMIN_TOKEN" \

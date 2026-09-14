@@ -178,6 +178,6 @@ lib/                              # Scan / diff / impact / risk rules / report /
 |------|-------|------------|
 | Community | Free | CLI session gate + self-hosted Actions (drift gate + PR comment) |
 | Pro | ¥29/mo | Hosted PR comments + incremental sync + email account |
-| Team | ¥999/yr/repo | Org rules + hosted CI gate |
+| Team | ¥99/person/mo (early-adopter, application only) | Org rules + hosted CI gate |
 
 See [COMMERCIAL.md](docs/commercial/COMMERCIAL.md).

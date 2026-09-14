@@ -14,9 +14,9 @@
 
 落地页：`/#pricing` · API：`GET /api/billing/links` · 说明：本文件。
 
-价格：**Pro ¥29 / 月** · **Team ¥999 / 年 / 仓库**（与 [COMMERCIAL.md](COMMERCIAL.md) 一致）。
+价格：**Pro ¥29 / 月** · **Team ¥99 / 人 / 月**（验证期仅人工申请，与 [COMMERCIAL.md](COMMERCIAL.md) 一致）。
 
-Team 下单：落地页定价卡或 `POST /api/billing/team-order` `{ email, repoUrl, channel }`。Lemon Team 商品：`ARCH_PAY_LEMON_TEAM_URL`（默认可沙箱占位）。沙箱（`ARCH_BILLING_SANDBOX=1` 或测试）且邮箱已注册时当场 `grantTeam`。
+Team 验证期不开放自助下单：落地页定价卡「申请试点」或 `POST /api/billing/team-application` `{ email, repoUrl, channel, teamSize? }`，只登记意向、不生成订单、不开通；人工报价（2 个工作日内联系）成交后由管理员走开通流程。
 
 ---
 

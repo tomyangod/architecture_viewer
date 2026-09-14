@@ -16,7 +16,7 @@ alwaysApply: true
 
 约定与边界：
 
-- 基线文件 `.av/graph-baseline.json` 随代码提交（团队共享基线）；`.av/session-report.*` 与 `.av/habit-gate-log.md` 本地生成，不入库。
+- `.av/graph-baseline.json`、`.av/session-report.*`、`.av/habit-gate-log.md` 均为本地会话产物，不入库；有 git 时默认对照 HEAD。分层配置 `.av/layers.json` 可由团队自愿提交。
 - 工具自动跳过 `test/`、`eval/`、`examples/`、`docs/`、压缩文件和 `.gitignore` 忽略项，不要手动调整跳过规则来"消除"变更。
 - 报告只反映代码结构变更（文件/类型/函数/依赖边）；重命名归并、文件内新增函数检测已内置，若把重命名误报成删+增，按工具缺陷处理并反馈。
 - 初次克隆或基线缺失时，先 `npm run arch:baseline` 初始化。

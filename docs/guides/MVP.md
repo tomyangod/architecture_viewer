@@ -100,7 +100,7 @@ node lib/cli.js check examples/showcase-shop/architecture_viewer \
 
 **收费理由已定**：不是「出一张漂亮图」，而是「图与代码不一致就红灯」。
 
-定价骨架：Pro **¥29/月**；Team **¥999/年/仓库**。详见 [COMMERCIAL.md](../commercial/COMMERCIAL.md)。
+定价骨架：Pro **¥29/月**；Team **¥99/人/月**（验证期仅人工申请试点）。详见 [COMMERCIAL.md](../commercial/COMMERCIAL.md)。
 
 ---
 

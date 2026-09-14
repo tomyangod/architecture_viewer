@@ -47,14 +47,19 @@ deepseek-harness/
 archify-main/
 .archify-*/
 
-# Architecture Viewer session artifacts
-# graph-baseline.json is committed (team snapshot, optional); HEAD cache and reports are local
+# Architecture Viewer session artifacts (local only)
+# With git, session report defaults to HEAD; do not commit runtime baselines.
+# Keep .av/layers.json tracked when teams intentionally share layer config.
+.av/graph-baseline.json
 .av/session-report.*
+.av/session-history.jsonl
+.av/session-intent.json
 .av/archify-*.json
 .av/habit-gate-log.md
 .av/workspace.json
 .av/layers.suggested.json
 .av/graph-head.json
+.av/validation-report.json
 
 *.vsix
 *.tgz

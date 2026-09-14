@@ -2,7 +2,7 @@
 
 Architecture Viewer **Community** 继续免费。本页说明如何把同一套 Web 进程当成 **Pro 云** 来卖：客户注册、试用、付费，把 GitHub / Gitee 的 Merge Request / Pull Request webhook 指到你的服务，**由你代跑增量结构验收（对照 PR base 的 session diff + 风险 + 影响面）并在 PR 上评论**。
 
-试点固定版本：`arch-viewer@0.12.2-rc.2`（npm `next`；`latest` 仍为 0.12.1）。真实公网 PR 验收另需单独执行。
+试点固定版本：`arch-viewer@0.12.2-rc.3`（npm `next`；`latest` 仍为 0.12.1）。真实公网 PR 验收另需单独执行。
 
 不引入新的 npm 运行时依赖。数据在 `.data/pro/store.json`。
 

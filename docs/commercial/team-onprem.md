@@ -1,7 +1,7 @@
 # Team 私有化：报价、交付物、SLA
 
 适用：代码不能出网、采购要合同/发票、需要内网 Web + CI 门禁的团队。  
-SaaS Team（¥999 / 年 / 仓库）走落地页下单，见 [COMMERCIAL.md](COMMERCIAL.md)、[billing.md](billing.md)。本文是 **内网交付** 的敲门砖。
+SaaS Team 验证期为**早期采用者计划**（¥99 / 人 / 月，仅人工申请试点，不自助下单），见 [COMMERCIAL.md](COMMERCIAL.md)、[billing.md](billing.md)。本文是 **内网交付** 的敲门砖。
 
 意向与试点记录：[pm/pilots.md](../../pm/pilots.md)「Team 私有化意向」。开票：[invoice.md](invoice.md)。工单：[support.md](support.md)。
 
@@ -9,7 +9,7 @@ SaaS Team（¥999 / 年 / 仓库）走落地页下单，见 [COMMERCIAL.md](COMM
 
 | | SaaS Team | 私有化 On-prem |
 |---|---|---|
-| 价格 | ¥999 / 年 / 仓库 | **¥19,999 / 年起**（部署 + 对接 + 一年支持） |
+| 价格 | ¥99 / 人 / 月（人工申请） | **¥19,999 / 年起**（部署 + 对接 + 一年支持） |
 | 数据 | 你的仓仍在自己 Git；托管的是评论与账号 | 全部跑在你的 VPC / 机房，无强制外网 |
 | 采购 | 落地页 / 对公转账 | 书面意向 → 报价单 → 合同 / 对公 |
 | 适合 | 公开或可出网的仓、要托管 PR 评论 | 金融、政务、核心业务仓、无外网 CI |

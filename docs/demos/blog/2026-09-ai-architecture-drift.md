@@ -142,7 +142,7 @@ npx arch-viewer eval
 |------|------|------------|
 | **Community** | ¥0 | CLI / MCP / 本机网页；Init、Generate、session、check；Actions 漂移模板；自托管分享 |
 | **Pro** | **¥29 / 月** | 账号 + 7 天试用；本机文件夹检查 + 可选企业微信；托管 PR 漂移评论 |
-| **Team** | **¥999 / 年 / 仓库** | 共享图库、组织规范、CI 门禁托管；私有化另议 |
+| **Team** | **¥99 / 人 / 月**（验证期人工申请） | 共享图库、组织规范、CI 门禁托管；私有化另议 |
 
 一句话：**出图是诱饵，漂移红灯才是订阅理由。** Community 不会把「单次 Generate 次数」做成付费墙。细节见 [COMMERCIAL.md](../../commercial/COMMERCIAL.md)。
 
