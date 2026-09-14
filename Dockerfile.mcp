@@ -6,7 +6,7 @@
 FROM node:20-slim
 
 # git is required for resolveSessionBaseline and av_guard code paths (rev-parse, status, archive)
-RUN apt-get update && apt-get install -y --no-install-recommends git && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y --no-install-recommends git build-essential python3 && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
 
