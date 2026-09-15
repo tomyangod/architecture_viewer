@@ -2,8 +2,8 @@
 
 > **一句话**：装一次之后只说话；AI 改完在对话里给你看灯（verdict）。绿灯可提交，**commit 即接受**当前结构。不必先拍照、不必默认打开 HTML。  
 > **适用对象**：第一次把 Architecture Viewer 用到**自己的新项目 / 陌生仓库**上的人。  
-> **适用版本**：arch-viewer **0.12.2-rc.5**（试点候选 · 8 个 MCP 工具 · `av_guard` · git HEAD 基线 · `.arch-viewer-ignore` · 严格规则校验 · 托管增量验收）。本文 2026-09-14。  
-> **试点安装**：固定 `0.12.2-rc.5`（npm 标签 `next`），不要与工作区源码或 `latest`（当前仍是 0.12.1）混用。正式稳定版发布前，文档示例默认钉此候选版。  
+> **适用版本**：arch-viewer **0.12.2-rc.6**（试点候选 · 8 个 MCP 工具 · `av_guard` · git HEAD 基线 · `.arch-viewer-ignore` · 严格规则校验 · 托管增量验收）。本文 2026-09-14。  
+> **试点安装**：固定 `0.12.2-rc.6`（npm 标签 `next`），不要与工作区源码或 `latest`（当前仍是 0.12.1）混用。正式稳定版发布前，文档示例默认钉此候选版。  
 > **零外部分析器**：不需要安装 `lint-imports` 或 dependency-cruiser；分层与契约由 builtin 直接评估。  
 > **职责**：本篇是**唯一**「通用怎么用」（安装、8 工具、日常闭环、读灯、CI）。零基础也可从 §10 迷你仓脚本跟做。舆情仓实测见 [MCP-DEMO](../demos/MCP-DEMO-publicopinionmonitor.md)。
 
@@ -15,10 +15,10 @@
 
 ```bash
 # 试点固定版（推荐）；不要写成 npm i -g arch-viewer（会落到 latest=0.12.1）
-npm i -g arch-viewer@0.12.2-rc.5
+npm i -g arch-viewer@0.12.2-rc.6
 # 或：npm i -g arch-viewer@next
 cd /path/to/你的新项目
-arch-viewer --version             # 应为 0.12.2-rc.5
+arch-viewer --version             # 应为 0.12.2-rc.6
 arch-viewer setup                 # 用户级 MCP
 arch-viewer setup . --project     # 本仓 hooks + AGENTS.md（停手自动跑结构门）
 # 卸干净再升级：arch-viewer uninstall . [--npm] [--purge]
@@ -132,16 +132,16 @@ export REPO="$HOME/Desktop/你的新项目"            # 目标业务仓
 **方式 A · npm（推荐交付给别人 / 试点统一版本）**
 
 ```bash
-npm i -g arch-viewer@0.12.2-rc.5   # 或 arch-viewer@next；勿省略版本以免装到 latest
-arch-viewer --version             # 应为 0.12.2-rc.5（与 MCP initialize.serverInfo.version 同源）
+npm i -g arch-viewer@0.12.2-rc.6   # 或 arch-viewer@next；勿省略版本以免装到 latest
+arch-viewer --version             # 应为 0.12.2-rc.6（与 MCP initialize.serverInfo.version 同源）
 arch-viewer --help
 ```
 
 一次性试用、不装全局：
 
 ```bash
-npx --yes --package arch-viewer@0.12.2-rc.5 arch-viewer --version
-npx --yes --package arch-viewer@0.12.2-rc.5 arch-viewer session report /绝对路径/到仓库 --renderer builtin
+npx --yes --package arch-viewer@0.12.2-rc.6 arch-viewer --version
+npx --yes --package arch-viewer@0.12.2-rc.6 arch-viewer session report /绝对路径/到仓库 --renderer builtin
 ```
 
 **方式 B · 本仓源码**
@@ -708,7 +708,7 @@ av_session_start / av_session_report 仍可用（脚本/高级），但日常优
 
 ## 10. 五分钟最小路径（抄这个）
 
-1. `npm i -g arch-viewer@0.12.2-rc.5` → `cd $REPO` → `arch-viewer setup` →（推荐）`arch-viewer setup . --project` → 重启编辑器  
+1. `npm i -g arch-viewer@0.12.2-rc.6` → `cd $REPO` → `arch-viewer setup` →（推荐）`arch-viewer setup . --project` → 重启编辑器  
 2. 打开 `$REPO` 后对话：「实现一个小改动……改完调 `av_guard`，`repo` 用当前工作区绝对路径」  
 3. 看对话里的 **verdict**：绿灯 → `git commit`；红灯 →「`av_explain_finding` 第 0 条并给补丁」再 `av_guard`  
 4. （可选）打开 `.av/session-report.html` 看 Delta  
@@ -738,9 +738,9 @@ av_session_start / av_session_report 仍可用（脚本/高级），但日常优
 14. **`generate` 把我精修的六视图盖掉了** → 预期行为。精修请用 git；showcase 只 check、不要在原路径 generate（§0.3、§6.4）。  
 15. **开源仓图挤 / 层不对** → 拷 `docs/labs/oss-labs/*.layers.json` 为仓库根 `architecture.layers.json` 再 generate（§6.4）；字段见 LAYERED-STYLE。  
 16. **红灯一定是错吗** → 不一定。表示「值得亲眼看一眼」；你接受就 **commit**（§9）。  
-17. **电脑还没装 Node** → 先装 [Node LTS](https://nodejs.org/)（≥18），终端里 `node -v` 有版本号后再 `npm i -g arch-viewer@0.12.2-rc.5`。
+17. **电脑还没装 Node** → 先装 [Node LTS](https://nodejs.org/)（≥18），终端里 `node -v` 有版本号后再 `npm i -g arch-viewer@0.12.2-rc.6`。
 18. **换电脑 / 升级版本怎么卸干净** → `arch-viewer uninstall .`；连全局包加 `--npm`；要清会话报告加 `--purge`（保留 layers.json）。不要手改别人的 MCP。卸完重启编辑器再装固定版并 `setup`。
-19. **装到了 0.12.1 / 版本对不上** → `npm view arch-viewer dist-tags` 确认 `next`；再 `npm i -g arch-viewer@0.12.2-rc.5`。试点期间不要跟 `latest`。
+19. **装到了 0.12.1 / 版本对不上** → `npm view arch-viewer dist-tags` 确认 `next`；再 `npm i -g arch-viewer@0.12.2-rc.6`。试点期间不要跟 `latest`。
 
 ---
 ## 12. 相关文档
@@ -763,9 +763,9 @@ av_session_start / av_session_report 仍可用（脚本/高级），但日常优
 ### 13.1 安装
 
 ```bash
-npm i -g arch-viewer@0.12.2-rc.5
+npm i -g arch-viewer@0.12.2-rc.6
 cd $REPO
-arch-viewer --version               # 0.12.2-rc.5
+arch-viewer --version               # 0.12.2-rc.6
 arch-viewer session report          # 对照 HEAD；加 --open 才打开图
 # 卸接入：arch-viewer uninstall .
 ```

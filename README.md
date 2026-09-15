@@ -4,7 +4,7 @@
 
 > **本地版交付边界：** 本轮结构变更报告、可定位源码的结构总览，以及人工核实的风险提示。六视图降为兼容功能，不再是默认交付或卖点。绿灯不保证没有漏报；分析不完整不是通过。支持范围、离线模式与已知局限见随包交付的 [首发交付范围](docs/delivery-scope.md)。AI 精修、扩展、多仓和 SaaS 不在首发质量承诺内。
 
-> **当前试点版：`0.12.2-rc.5`（npm 标签 `next`；`latest` 仍为 `0.12.1`）。** 接入请钉 `arch-viewer@0.12.2-rc.5` 或 `@next`，不要与工作区源码或 `latest` 混用。发布记录与源提交见 [docs/commercial/npm-publish.md](docs/commercial/npm-publish.md)。这是有明确边界的本地试点候选，不是稳定商用版。
+> **当前试点版：`0.12.2-rc.6`（npm 标签 `next`；`latest` 仍为 `0.12.1`）。** 接入请钉 `arch-viewer@0.12.2-rc.6` 或 `@next`，不要与工作区源码或 `latest` 混用。发布记录与源提交见 [docs/commercial/npm-publish.md](docs/commercial/npm-publish.md)。这是有明确边界的本地试点候选，不是稳定商用版。
 
 装一次 → 说话改代码 → 对话看灯 → `git commit`。
 CLI / MCP / 网页 / PR 评论四端可用。免费开源（Apache-2.0），零配置、秒级出图，不依赖 LLM。

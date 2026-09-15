@@ -100,12 +100,12 @@ npm run wbs -- report --week W06
 
 ### 固定版本发布记录（2026-09-15）
 
-- 已发布：`arch-viewer@0.12.2-rc.5` → npm 标签 `next`；`latest` 保持 `0.12.1`。
+- 已发布：`arch-viewer@0.12.2-rc.6` → npm 标签 `next`；`latest` 保持 `0.12.1`。
 - 源提交：`b139e31`（会话解释闭环、CRLF 归因、测试关联措辞、手改图保护、未确认分层不阻断）。
 - SHA-256：`4d9fcb365f2cc4f3a3968f5fc93a0212fb8b07947c3e0fac0308d6a724105f43`。
 - registry shasum：`c070fcd8541d1ca1f22c7529d155fe31685e1e76`。
 - integrity：`sha512-VaxKYObgUmZ8siuestCnjTDnnld/c1oZWbs2ub20jtEO2b/0QVUXtZ7bm9LaaKjlvH3FdjNg3p2OkWwKRHysiw==`。
-- registry 全新安装冒烟：`--version` 为 0.12.2-rc.5，发布 tarball 与本地干净打包逐字节一致。
+- registry 全新安装冒烟：`--version` 为 0.12.2-rc.6，发布 tarball 与本地干净打包逐字节一致。
 - 发布前全量单测 1028 通过 / 0 失败 / 1 跳过。
 
 ### 固定版本发布记录（2026-09-14 · 晚）
