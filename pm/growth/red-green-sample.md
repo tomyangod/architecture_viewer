@@ -63,12 +63,12 @@ forbid_cross_layer:
 ```bash
 # 0. 前置：Node ≥ 18、git
 
-# 1. 创建目录和文件：新建 sample-shop/ 及其下的 app/ 目录结构，
+# 1. 创建目录和文件：新建 sample-shop/ 及其下的 .av/、app/ 目录结构，
 #    将上文「仓库结构」和「基线代码」各代码块内容分别粘贴进对应文件
-#    （architecture-rules.yaml、app/controllers/order_controller.py、
+#    （.av/layers.json、architecture-rules.yaml、app/controllers/order_controller.py、
 #    app/services/order_service.py、app/database/orders_repo.py），
-#    其中 service 和 storage 两个 .py 文件任意最小实现即可（例如
-#    order_service.py 定义 OrderService.place() 返回字典，
+#    其中 app/services/order_service.py 和 app/database/orders_repo.py 两个文件
+#    任意最小实现即可（例如 order_service.py 定义 OrderService.place() 返回字典，
 #    orders_repo.py 定义 OrdersRepository.save() 打印日志）。
 
 # 2. 提交基线
@@ -87,6 +87,7 @@ npx --yes arch-viewer@0.12.2-rc.6 session report . --renderer builtin
 # 5. 再次报告：红灯，退出码 1
 npx --yes arch-viewer@0.12.2-rc.6 session report . --renderer builtin
 # 退出码 1 — 检测到 HIGH 级层级穿透，阻断流水线
+# 注：本样例**必须**包含 .av/layers.json 和 forbid_cross_layer 规则才能在 rc.6 上得到 HIGH/exit 1 结果
 
 # 6. 撤销违规改动（走服务层），恢复绿灯
 git checkout app/controllers/order_controller.py
@@ -94,7 +95,9 @@ npx --yes arch-viewer@0.12.2-rc.6 session report . --renderer builtin
 # 退出码 0 — 架构验收门通过
 ```
 
-## 实测输出（录制于 2026-09-12；形态与 rc.6 一致）
+## 实测输出（录制于 2026-09-12 的 rc.2 版本）
+
+> **版本说明：** 下方输出录制于 `arch-viewer@0.12.2-rc.2`。在配置了 `.av/layers.json` 和 `forbid_cross_layer` 规则的情况下，`rc.6` 的行为与此输出一致。
 
 **第 5 步红灯（节选，退出码 1）：**
 
