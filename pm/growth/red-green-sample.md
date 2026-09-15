@@ -87,13 +87,14 @@ npx --yes arch-viewer@0.12.2-rc.6 session report . --renderer builtin
 # 5. 再次报告：红灯，退出码 1
 npx --yes arch-viewer@0.12.2-rc.6 session report . --renderer builtin
 # 退出码 1 — 检测到 HIGH 级层级穿透，阻断流水线
-# 注：本样例**必须**包含 .av/layers.json 和 forbid_cross_layer 规则才能在 rc.6 上得到 HIGH/exit 1 结果
 
 # 6. 撤销违规改动（走服务层），恢复绿灯
 git checkout app/controllers/order_controller.py
 npx --yes arch-viewer@0.12.2-rc.6 session report . --renderer builtin
 # 退出码 0 — 架构验收门通过
 ```
+
+> **注：** 本样例**必须**包含 `.av/layers.json` 和 `forbid_cross_layer` 规则才能在 rc.6 上得到 HIGH/exit 1 结果。
 
 ## 实测输出（录制于 2026-09-12 的 rc.2 版本）
 
