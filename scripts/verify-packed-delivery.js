@@ -216,7 +216,7 @@ function verifyPackedDelivery({ npmCache, offline = false } = {}) {
       'session-explain-evidence.test.js', 'session-verdict.test.js',
       'template-cleanup.test.js', 'view-policy.test.js',
       'source-content-line-endings.test.js', 'test-index.test.js',
-      'inferred-layer-policy.test.js'
+      'inferred-layer-policy.test.js', 'explain-cycle-impact.test.js'
     ];
     const hardeningTests = regressionSuites.map(file => {
       const target = path.join(installed, 'test', file);

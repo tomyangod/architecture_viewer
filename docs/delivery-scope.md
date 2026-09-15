@@ -3,7 +3,7 @@
 本地版候选版本用于人工架构评审，不是无人复核的合并裁决器。首发范围：
 
 - **本轮结构变更报告**：CLI `session start / report / guard` 与 MCP `av_session_start`、`av_session_report`、`av_guard`；全仓摸底用 `av_check_layering`。
-- **可定位源码的局部依赖图 / 结构总览**：`arch-viewer generate` 默认写 `block-diagram.md`（静态模块分层，不是运行时真相）。类图仅按需、围绕本次修改的类和邻居。
+- **可定位源码的局部依赖图 / 结构总览**：`arch-viewer generate` 默认写 `block-diagram.md`（静态模块分层，不是运行时真相）。类图仅按需、围绕本次修改的类和邻居。编排流水线页脚宣称的校验仅限路径存在性、Mermaid 语法与层归属；节点语义（框架标注、业务名）未经运行时核查，需人工复核。
 - **人工确认后的 Archify 讲解图**：`archify-export --confirm` / MCP `av_archify_export` 且 `confirm=true`。内置 HTML（Before/Delta/After）始终可用，无需安装 Archify。
 - 六视图生成器仍可通过 `--compat-six-views` 或 `--views` 调用，属于兼容功能，**停止扩张**，不作为首发卖点或质量承诺。
 - **未选中的用户图保留**：默认 generate 仅删除与当前随包模板逐字节一致的未选中图；修改过、来源不明的旧模板或符号链接保留，不凭「职责描述」等正文词语判断所有权。本轮选定与「磁盘保留未更新」写入 `.generate-receipt.json`，CLI 与 HTML 会标识，避免把旧图当成本轮新产物。选中视图仍按原行为重新生成并覆盖，不承诺所有图无损合并。

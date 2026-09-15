@@ -420,6 +420,12 @@ function formatFinding(f) {
       fromLayer: f.fromLayer || null,
       toLayer: f.toLayer || null
     } : {}),
+    ...(Array.isArray(f.cycleEdges) ? {
+      cycleEdges: f.cycleEdges,
+      newEdge: f.newEdge || null,
+      cycleMembers: f.cycleMembers || null
+    } : {}),
+    ...(f.impactDownstream != null ? { impactDownstream: f.impactDownstream } : {}),
     ...(f.secondarySource ? { secondarySource: f.secondarySource } : {}),
     text: `${icon} [${f.severity.toUpperCase()}] ${f.title}: ${f.message}\n   ${f.detail || ''}`
   };
@@ -953,14 +959,14 @@ function loadSessionFindings(repo) {
 
 function toolExplainFinding(args) {
   const repo = resolveRepo(args);
-  let graph, diff, findings, runtime, evidence;
+  let graph, diff, findings, runtime, evidence, impact;
 
   if (args.from === 'session') {
     const loaded = loadSessionFindings(repo);
     if (loaded.error) return { error: loaded.error, message: loaded.message };
-    ({ graph, diff, findings, runtime, evidence } = loaded);
+    ({ graph, diff, findings, runtime, evidence, impact } = loaded);
   } else {
-    ({ graph, diff, findings, runtime } = liveScanFindings(repo));
+    ({ graph, diff, findings, runtime, impact } = liveScanFindings(repo));
   }
 
   const target = pickFinding(findings, args);
@@ -970,14 +976,14 @@ function toolExplainFinding(args) {
   }
 
   return {
-    ...buildExplainResult(target, diff, graph),
+    ...buildExplainResult(target, diff, graph, impact),
     mode: args.from === 'session' ? 'incremental' : 'snapshot',
     ...(evidence ? { evidence } : {}),
     ...(runtime ? { runtime } : {})
   };
 }
 
-function buildExplainResult(target, diff, graph) {
+function buildExplainResult(target, diff, graph, impact) {
   let edgeEvidence = null;
   if (target.from && target.to && target.edgeType) {
     // Match identity and location, never display names (which can repeat across scopes).
@@ -1001,11 +1007,44 @@ function buildExplainResult(target, diff, graph) {
     }
   }
 
+  // circular-import carries an ordered ring instead of a single edge.
+  let cycleEvidence = null;
+  if (target.rule === 'circular-import' && Array.isArray(target.cycleEdges) && target.cycleEdges.length) {
+    cycleEvidence = {
+      edges: target.cycleEdges.map(e => ({ from: e.from, to: e.to, isNew: e.isNew === true })),
+      newEdge: target.newEdge || null,
+      note: target.newEdge
+        ? '环路径为完整仓库相对路径；isNew 标记本轮闭合该环的那条边，优先从它断开。'
+        : '环路径为完整仓库相对路径。快照摸底没有"本轮新边"概念：任选环上一条边断开即可，优先选跨职责最多的一条。'
+    };
+  }
+
+  // broad-impact: show the seed and a concrete downstream sample from the stored impact.
+  let impactEvidence = null;
+  if ((target.rule === 'broad-impact' || target.rule === 'behavior-changed-broad-impact') &&
+      impact && Array.isArray(impact.items)) {
+    const seedId = target.detail || target.id || null;
+    const item = impact.items.find(it => it.id === seedId) ||
+      impact.items.find(it => target.file && it.node && it.node.path === target.file);
+    if (item) {
+      impactEvidence = {
+        seed: item.node ? { id: item.node.id, name: item.node.name, file: item.node.path || null, layer: item.node.layer || null } : null,
+        change: item.change,
+        directCount: (item.direct || []).length,
+        transitiveCount: (item.transitive || []).length,
+        directSample: (item.direct || []).slice(0, 10).map(d => ({ name: d.name, file: d.path || null })),
+        note: '这是影响面提醒，不是已证实的缺陷；先核对直接下游并补/跑测试，再判断是否拆职责。'
+      };
+    }
+  }
+
   return {
     finding: formatFinding(target),
     rule: target.rule,
     severity: target.severity,
     edgeEvidence,
+    ...(cycleEvidence ? { cycleEvidence } : {}),
+    ...(impactEvidence ? { impactEvidence } : {}),
     suggestion: suggestForFinding(target)
   };
 }
@@ -1059,7 +1098,7 @@ function toolArchifyExport(args) {
 const TOOLS = [
   {
     name: 'av_guard',
-    description: '日常结构验收（跨 Cursor / Claude / DeepSeek Harness 等）：无基线时自动 ensure，有 git 对照 HEAD，返回 ≤3 行 verdict。宣称完成前优先调这个。HTML 详情可选。必须显式传当前工作区绝对路径 repo。',
+    description: '日常结构验收（跨 Cursor / Claude / DeepSeek Harness 等）：无基线时自动 ensure，有 git 默认对照 HEAD，显式 snapshot 基线时对照会话快照——以 verdict 与返回的 baselineKind 为准，不要只看本描述。返回 ≤3 行 verdict。宣称完成前优先调这个。HTML 详情可选。必须显式传当前工作区绝对路径 repo。',
     inputSchema: {
       type: 'object',
       properties: {

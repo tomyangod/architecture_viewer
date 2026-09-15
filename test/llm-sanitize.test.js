@@ -4,6 +4,16 @@ const { describe, it } = require('node:test');
 const assert = require('node:assert/strict');
 const { sanitizeDiagramMd, stillHasPlaceholder, viewSpecFor } = require('../lib/llm-generate');
 
+describe('generated diagram footer wording', () => {
+  it('orch pipeline must not claim runtime fact-checking it does not perform', () => {
+    // 契约回归：流水线只做路径存在性 + mermaid 语法 + 层归属的确定性校验，
+    // 页脚不得宣称「已过事实核查」（曾掩盖 Flask 标注错误、待办泄漏、臆造节点）。
+    const src = require('fs').readFileSync(require('path').join(__dirname, '../lib/orch/run.js'), 'utf8');
+    assert.ok(!src.includes('已过事实核查'), 'footer must not overclaim fact-checking');
+    assert.match(src, /静态校验 · 语义请人工复核/);
+  });
+});
+
 describe('sanitizeDiagramMd', () => {
   it('strips template footer while keeping mermaid', () => {
     const raw = [
@@ -33,10 +43,10 @@ describe('sanitizeDiagramMd', () => {
       '  A-->B',
       '```',
       '',
-      '*由 Architecture Viewer 编排流水线生成 · 已过事实核查*"'
+      '*由 Architecture Viewer 编排流水线生成 · 已过路径/语法静态校验 · 语义请人工复核*"'
     ].join('\n');
     const clean = sanitizeDiagramMd(raw);
-    assert.match(clean, /已过事实核查/);
+    assert.match(clean, /静态校验/);
     assert.ok(!/"/.test(clean.replace(/```[\s\S]*```/, '')), 'no leftover quote outside mermaid');
   });
 
@@ -52,7 +62,7 @@ describe('sanitizeDiagramMd', () => {
       '```',
       '',
       '---',
-      '*由 Architecture Viewer 编排流水线生成 · 已过事实核查*',
+      '*由 Architecture Viewer 编排流水线生成 · 已过路径/语法静态校验 · 语义请人工复核*',
       '"',
       '}'
     ].join('\n');
@@ -60,7 +70,7 @@ describe('sanitizeDiagramMd', () => {
     assert.ok(!clean.endsWith('"\n}'), 'JSON cruft must be removed');
     assert.ok(!/"\s*\}\s*$/.test(clean), 'no trailing quote/brace envelope');
     // Legitimate footnote survives
-    assert.match(clean, /已过事实核查/);
+    assert.match(clean, /静态校验/);
     // Mermaid body untouched
     assert.match(clean, /flowchart TB/);
     assert.match(clean, /A\["入口"\] --> B\["路由"\]/);
