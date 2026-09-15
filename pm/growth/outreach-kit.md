@@ -37,7 +37,7 @@
 ```text
 Hi [Name], I saw your point about [specific pain: e.g. "AI changes broke layering and no one noticed until production"]. 
 
-I'm testing Architecture Viewer (open source, Apache-2.0): after AI edits, it diffs the dependency graph vs git HEAD and reports only this-round structural changes (new cross-layer edges, deleted types, blast radius) with file-path evidence. Fully local/offline, pinned to arch-viewer@0.12.2-rc.5.
+I'm testing Architecture Viewer (open source, Apache-2.0): after AI edits, it diffs the dependency graph vs git HEAD and reports only this-round structural changes (new cross-layer edges, deleted types, blast radius) with file-path evidence. Fully local/offline, pinned to arch-viewer@0.12.2-rc.6.
 
 Quick question: how do you currently catch cross-layer violations before merging? (Manual review? Static tool? Post-merge?)
 
@@ -49,7 +49,7 @@ If useful, I can share a one-liner npx command (no install) or run a demo on one
 ```text
 你好 [名字]，看到你提到 [具体痛点：如「AI 改动后没人说得清架构变了什么」/ 「跨层依赖人工 review 漏了」]。
 
-我在测试开源工具 Architecture Viewer（Apache-2.0）：AI 改完后对照 git HEAD 检查本轮新增的跨层依赖、删除类型和影响面，带文件路径和依赖链可复核。本地离线，钉 arch-viewer@0.12.2-rc.5。
+我在测试开源工具 Architecture Viewer（Apache-2.0）：AI 改完后对照 git HEAD 检查本轮新增的跨层依赖、删除类型和影响面，带文件路径和依赖链可复核。本地离线，钉 arch-viewer@0.12.2-rc.6。
 
 想问一句：你们现在合入前靠什么确认没跨层？（人工？工具？合入后再说？）
 
@@ -79,7 +79,7 @@ If this resonates, feel free to join the discussion at https://github.com/tomyan
 ```text
 你好 [名字]，看了《[文章名]》，其中 [具体痛点引用：1 句话] 特别有共鸣。
 
-我在测试开源工具 Architecture Viewer：AI 改完后对照 git HEAD 检查本轮新增跨层依赖和影响面，本地离线，钉 arch-viewer@0.12.2-rc.5。
+我在测试开源工具 Architecture Viewer：AI 改完后对照 git HEAD 检查本轮新增跨层依赖和影响面，本地离线，钉 arch-viewer@0.12.2-rc.6。
 
 想问一句：你们现在合入前靠什么确认没跨层？（人工过 diff？dependency-cruiser？合入后再说？）
 
@@ -99,7 +99,7 @@ Architecture Viewer（Apache-2.0）：对照 git HEAD 检查本轮新增跨层�
 
 **试一下（无需安装）：**
 ```bash
-npx --yes arch-viewer@0.12.2-rc.5 session report <your-repo-path>
+npx --yes arch-viewer@0.12.2-rc.6 session report <your-repo-path>
 ```
 
 脱敏样例见 [链接] 或贴图。

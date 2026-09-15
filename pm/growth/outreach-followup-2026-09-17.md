@@ -16,7 +16,7 @@
 
 如果你们最近合入过 AI 大改的 PR（或正在 review 的），我可以拿 diff 跑一次 Architecture Viewer 演示——看红绿灯和跨层依赖报告准不准，你不用装任何东西。公开仓库我直接跑，私有仓库你发我 git diff 输出即可。
 
-或者我发一行 npx 命令（arch-viewer@0.12.2-rc.5）+ 脱敏样例图，回头有空可以自己 3 秒试完。
+或者我发一行 npx 命令（arch-viewer@0.12.2-rc.6）+ 脱敏样例图，回头有空可以自己 3 秒试完。
 
 如果最近没这类需求也完全 OK，回复「暂不需要」即可，我不再打扰。
 ```
@@ -34,7 +34,7 @@
 
 如果你们最近有 AI 改动的 PR 正在 review（或刚合入的），我可以拿 diff 跑一次 Architecture Viewer 演示，看跨层依赖检查准不准、会不会和你们现有的 SDD 分层规则冲突，你完全不用装东西。
 
-或者发一行 npx 命令（arch-viewer@0.12.2-rc.5）和样例图，回头方便时 3 秒跑完。
+或者发一行 npx 命令（arch-viewer@0.12.2-rc.6）和样例图，回头方便时 3 秒跑完。
 
 如果最近没这类需求也完全没问题，回复「暂不需要」即可，不再打扰。
 ```
@@ -50,7 +50,7 @@
 
 如果你们最近又遇到"Prompt 里写了 MUST NOT 但 Agent 还是擅自改"的情况，我可以拿那次 diff 跑一次 Architecture Viewer 演示（公开仓库 / 或你发 git diff 输出），看能不能在合入前就用红灯拦住，你不用装任何东西。
 
-或者我发 npx 一行命令（arch-viewer@0.12.2-rc.5）+ 样例，回头自己试。
+或者我发 npx 一行命令（arch-viewer@0.12.2-rc.6）+ 样例，回头自己试。
 
 如果最近没遇到也完全 OK，回「暂不需要」即可，我不再打扰。
 ```
@@ -66,7 +66,7 @@
 
 我整理了一份「依赖检查工具定位对比」（dependency-cruiser vs Import Linter vs Architecture Viewer 各自适合什么场景），如果对你们的 OpenSpec 漂移检测有参考价值，回复「要」我发你。
 
-或者我发 npx 一行命令（arch-viewer@0.12.2-rc.5）试试对照 git HEAD 检查本轮结构变化的效果。
+或者我发 npx 一行命令（arch-viewer@0.12.2-rc.6）试试对照 git HEAD 检查本轮结构变化的效果。
 
 如果最近没这类需求，回「暂不需要」也完全没问题，不再打扰。
 ```
@@ -82,7 +82,7 @@
 
 如果你们最近用 Cursor Agent 模式跑过大改（几十个文件那种），我可以拿 diff 跑一次 Architecture Viewer 演示，看红绿灯能不能在 3 秒内说清"本轮架构变了什么"，你不用装任何东西。
 
-或者发 npx 一行命令（arch-viewer@0.12.2-rc.5）+ 脱敏样例，回头自己试。
+或者发 npx 一行命令（arch-viewer@0.12.2-rc.6）+ 脱敏样例，回头自己试。
 
 如果最近没用 Agent 大改或者现有方案够用，回「暂不需要」即可，不再打扰。
 ```
@@ -98,7 +98,7 @@
 
 如果你们的 AI 交付质量流水线里正好在考虑加「结构门」（跨层依赖检查），我可以拿你们一个真实 PR 的 diff 跑一次 Architecture Viewer 演示——看红灯准不准、会不会和现有 CI（测试/lint）冲突，你完全不用装东西。
 
-或者我发 npx 一行命令（arch-viewer@0.12.2-rc.5）和样例图，回头方便时自己试。
+或者我发 npx 一行命令（arch-viewer@0.12.2-rc.6）和样例图，回头方便时自己试。
 
 如果最近不在这个优先级上也完全 OK，回「暂不需要」即可，不再打扰。
 ```
@@ -116,7 +116,7 @@ Hi, totally understand if this isn't a current priority.
 
 If you have a recent AI-heavy PR (merged or under review), I can run Architecture Viewer on the diff as a demo (I'll run it on the public repo or you can send me `git diff` output) — shows cross-layer findings with zero setup on your end. Would be curious to compare what Graphenium flags vs what AV catches.
 
-Or I can share the npx one-liner (arch-viewer@0.12.2-rc.5) + sample screenshots for later.
+Or I can share the npx one-liner (arch-viewer@0.12.2-rc.6) + sample screenshots for later.
 
 If it's not relevant right now, just reply "not needed" and I won't follow up again.
 ```
@@ -132,7 +132,7 @@ Hi, totally understand if this isn't a current priority.
 
 If you have a recent commit where the agent read the rules and still skipped them (like the hexagonal / repository pattern case you mentioned), I can run Architecture Viewer on that diff as a demo — see if it would have flagged the violation with a red light before merge. You don't need to install anything; I can run it or share a one-liner.
 
-Or I can share the npx command (arch-viewer@0.12.2-rc.5) + sample screenshots for later.
+Or I can share the npx command (arch-viewer@0.12.2-rc.6) + sample screenshots for later.
 
 If it's not relevant right now, just reply "not needed" and I won't follow up again.
 ```
@@ -148,7 +148,7 @@ Hi, totally understand if this isn't a current priority.
 
 If you're curious how Architecture Viewer's "what changed this round" view compares to archcodex's constraint checks, I can run a demo on one of your recent PRs (or any public repo PR you think is interesting) — zero setup on your end.
 
-Or I can share the npx one-liner (arch-viewer@0.12.2-rc.5) + sample screenshots for later.
+Or I can share the npx one-liner (arch-viewer@0.12.2-rc.6) + sample screenshots for later.
 
 If it's not relevant right now, just reply "not needed" and I won't follow up again.
 ```
@@ -161,7 +161,7 @@ If it's not relevant right now, just reply "not needed" and I won't follow up ag
 - [ ] 对方未在 09-14–09-16 期间回复过（若已回复改用 §2 访谈话术，不用本文）
 - [ ] 本次跟进**不要 15 分钟会议**，仅给礼物（演示 offer / npx 命令）或对比文章
 - [ ] 明确给出路：「回复暂不需要即可，不再打扰」
-- [ ] 版本号统一 `arch-viewer@0.12.2-rc.5`（非 rc.4）
+- [ ] 版本号统一 `arch-viewer@0.12.2-rc.6`（非 rc.5 / latest）
 - [ ] A1–A6 用中文，B1–B3 用英文
 - [ ] 发送后在 [seed-users.md](seed-users.md) 漏斗或 [outreach-batch-2026-09-14.md](outreach-batch-2026-09-14.md) 登记表记录"Day-3 已跟进"状态
 
