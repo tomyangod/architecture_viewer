@@ -1,6 +1,6 @@
 # 国内软触达文案（2026-09-12）
 
-> 以下为当日发出原文，钉的是当时的 `0.12.2-rc.2`。**新消息改钉 `0.12.2-rc.3`**，见 [outreach-kit.md](outreach-kit.md)。
+> 以下为当日发出原文，钉的是当时的 `0.12.2-rc.2`。**新消息改钉 `0.12.2-rc.6`**，见 [outreach-kit.md](outreach-kit.md)。
 > 手动发送；记录来源与日期。拒绝后停止。附招募 Issue：https://gitee.com/heyangyan/architecture_viewer/issues/IKF74T
 
 ## 1. 掘金｜Cursor Rules 分层（Controller 禁止直调 Mapper）
