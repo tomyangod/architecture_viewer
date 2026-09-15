@@ -50,7 +50,6 @@
 
 如果感兴趣可以进一步交流试点细节。
 源码与说明：https://github.com/tomyangod/architecture_viewer 或 https://gitee.com/heyangyan/architecture_viewer
-招募 Issue：https://gitee.com/heyangyan/architecture_viewer/issues/IKF74T
 ```
 
 每条消息记录来源、日期和许可情况。只对已有沟通且未拒绝的人适度跟进；拒绝后停止。不把访谈、免费开通或作者朋友的支持款当产品获客成功。

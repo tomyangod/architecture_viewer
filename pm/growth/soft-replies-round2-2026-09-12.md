@@ -1,6 +1,6 @@
-# 第二轮软触达（2026-09-12）
+# 第二轮软触达（2026-09-12）【历史记录，已发送】
 
-> 以下为当日发出原文。**新消息改钉 `0.12.2-rc.6`**，见 [outreach-kit.md](outreach-kit.md)。
+> **历史存档：** 以下为 2026-09-12 当日已发送原文，仅作记录参考。**新消息统一使用** [outreach-kit.md](outreach-kit.md)，版本钉 `0.12.2-rc.6`。
 
 招募：https://gitee.com/heyangyan/architecture_viewer/issues/IKF74T
 掘金：https://juejin.cn/post/7684463933702029322
