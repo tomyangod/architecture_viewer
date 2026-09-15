@@ -8,6 +8,9 @@
 **一句话定位：**
 > AI 改码后，对照 git HEAD 检查新增跨层依赖和结构变化；本地运行，不替代测试和业务逻辑审查。
 
+**CTA 阶梯纪律（2026-09-15 起执行）：**
+> 首次触达**仅要一句话回复**（如确认痛点的轻问）或给零承诺礼物（npx 一行命令/样例），**禁止直接要 15 分钟会议**。访谈与试点仅在对方回复后、第二或第三轮再提。允许每级明确退出（「暂不需要」）。
+
 | 项 | 准确说法 | 不能说 |
 |---|---|---|
 | 版本 | 试点钉 `arch-viewer@0.12.2-rc.6`（npm `next`） | "装 latest 就行"（latest 是 0.12.1，缺本轮修复） |
@@ -21,54 +24,94 @@
 
 ## 1. 首次触达（三个渠道变体）
 
-### A. GitHub / Gitee 公开项目（基于具体 issue / PR / commit 讨论）
+**重要：** 首次触达**不要 15 分钟会议**，仅：① 引子（精准引用对方痛点）+ ② 工具 2–3 句话 + ③ **一个轻问**（可一句话回复）或零承诺礼物（npx 命令/样例）。访谈移至 §2,仅在对方回复后使用。
+
+**GitHub 特别规则（2026-09-15 起）：** 禁止在第三方仓库新开招募 issue;优先回复现有 discussion/issue,或引导到 tomyangod/architecture_viewer 自有仓库讨论区报名。
+
+**CTA 终点优先级：** 回复本消息（最低摩擦）> GitHub discussion（tomyangod/architecture_viewer）> Gitee IKF74T（仅作国内用户备选）。
+
+### A. GitHub / Gitee 公开项目（现有讨论回复或轻问）
+
+**场景 1：回复现有 issue/discussion（优先）**
 
 ```text
-你好 [名字]，我看到你在 [仓库] 的 [issue/PR 链接] 里处理 [具体问题：如 AI 一次改动跨了多个模块 / 依赖约束被破坏 / review 时没人说得清架构变化]。
+Hi [Name], I saw your point about [specific pain: e.g. "AI changes broke layering and no one noticed until production"]. 
 
-我在验证一个开源工具 Architecture Viewer（Community 本地能力 Apache-2.0，Gitee 可搜）：
-AI 改完代码后，它对照 git HEAD 检查本轮新增的跨层依赖、删除的类型和影响面，
-结论只有灯和可复核的文件/依赖链，不替代测试和人工评审，代码全程不出本机。
+I'm testing Architecture Viewer (open source, Apache-2.0): after AI edits, it diffs the dependency graph vs git HEAD and reports only this-round structural changes (new cross-layer edges, deleted types, blast radius) with file-path evidence. Fully local/offline, pinned to arch-viewer@0.12.2-rc.5.
 
-正在找 2 个有真实 PR 流程的 Python/JS 团队做两周试点：本地 CLI 免费，
-每周约 15 分钟反馈，可随时退出，不要求提供私有代码或 PAT。
+Quick question: how do you currently catch cross-layer violations before merging? (Manual review? Static tool? Post-merge?)
 
-想先约 15 分钟，听你讲最近一次这类问题是怎么发现、花了多久，再判断适不适合试。
-本周 [周三] 或 [周四] 哪个时间方便？
+If useful, I can share a one-liner npx command (no install) or run a demo on one of your recent PRs.
 ```
 
-### B. 掘金 / 知乎等技术文章作者（基于具体文章内容）
+（中文版）
 
 ```text
-你好 [名字]，看了你写的《[文章名]》，其中 [具体段落：如你们用 AI 改码后的 review 流程 / 依赖约束做法] 很有共鸣。
+你好 [名字]，看到你提到 [具体痛点：如「AI 改动后没人说得清架构变了什么」/ 「跨层依赖人工 review 漏了」]。
 
-我在做一个开源小工具 Architecture Viewer，正好卡在你文中提到的那个环节：
-AI 一次改几十个文件后，合入前快速说清"架构到底变了什么、有没有跨层、谁被波及"。
-本地运行、对照 git HEAD、不连服务器。
+我在测试开源工具 Architecture Viewer（Apache-2.0）：AI 改完后对照 git HEAD 检查本轮新增的跨层依赖、删除类型和影响面，带文件路径和依赖链可复核。本地离线，钉 arch-viewer@0.12.2-rc.5。
 
-想请你帮个忙：如果你们团队最近遇到过类似情况，花 15 分钟聊聊当时怎么处理的？
-我也在招募少量团队免费试用两周，合适的话再演示一条你们真实变更上的红灯/绿灯。
+想问一句：你们现在合入前靠什么确认没跨层？（人工？工具？合入后再说？）
+
+如果有用，我可以发一行 npx 命令（无需安装）或拿你们最近一个 PR 跑一次演示。
 ```
 
-### C. 社区招募区（公开发帖，遵守板块规则）
+**场景 2：无现有讨论，引导到自有仓库（次选）**
 
 ```text
-【开源工具试点招募】AI 改码后的架构验收门 · 限 2 个团队
+（在对方仓库 README/文档相关位置礼貌留言）
 
-Architecture Viewer（Community 本地 Apache-2.0）：AI 改完代码后，对照 git HEAD 检查
-新增跨层依赖、被删类型、影响面；本地离线运行，代码不出本机，不替代测试。
+Hi, noticed [your project] deals with [architecture constraint / module boundaries]. Built Architecture Viewer to solve a related problem: checking what structurally changed after AI edits (cross-layer deps, impact radius) vs git HEAD.
 
-试点内容（两周）：
-- 在你们一个持续开发的 Python/JS/TS 仓库上使用，与现有 review 流程并行
-- 每周约 15 分钟反馈：它有没有发现现有工具/人工评审漏掉的结构问题，有没有增加负担
-- 免费，不要私有代码、不要 token，可随时退出
-
-适合：有 PR 流程、常用 AI 跨文件改码、有明确模块边界的团队。
-报名：回帖或私信，我会先约 15 分钟了解你们最近一次实际问题，再确认是否接入。
-脱敏演示：[红→绿样例链接 / 附图]
+If this resonates, feel free to join the discussion at https://github.com/tomyangod/architecture_viewer/discussions — happy to share npx one-liner or sample there.
 ```
 
-## 2. 访谈提纲（15 分钟，先问事实不问评价）
+（中文版，引导到 GitHub 或 Gitee）
+
+```text
+你好，看到 [你们项目] 有 [架构分层 / 模块边界] 相关的实践。我做了个工具 Architecture Viewer 解决类似问题：AI 改完后检查本轮结构变化（跨层依赖、影响面）对照 git HEAD。
+
+如果有共鸣，欢迎到 https://github.com/tomyangod/architecture_viewer/discussions （或 Gitee https://gitee.com/heyangyan/architecture_viewer/issues/IKF74T ）讨论，可以发 npx 一行命令或样例。
+```
+
+### B. 掘金 / 知乎等技术文章作者（轻问 + 可选礼物）
+
+```text
+你好 [名字]，看了《[文章名]》，其中 [具体痛点引用：1 句话] 特别有共鸣。
+
+我在测试开源工具 Architecture Viewer：AI 改完后对照 git HEAD 检查本轮新增跨层依赖和影响面，本地离线，钉 arch-viewer@0.12.2-rc.5。
+
+想问一句：你们现在合入前靠什么确认没跨层？（人工过 diff？dependency-cruiser？合入后再说？）
+
+如果感兴趣，我可以：
+- 发一行 npx 命令，3 秒跑完看红绿灯（无需安装）
+- 或发脱敏样例图，看报告长什么样
+
+回复「要」或「暂不需要」都可以，不打扰。
+```
+
+### C. 社区招募区（公开发帖，给 npx 命令 + 讨论区链接）
+
+```text
+【开源工具】AI 改码后的架构验收：本轮新增了哪些跨层依赖？
+
+Architecture Viewer（Apache-2.0）：对照 git HEAD 检查本轮新增跨层依赖、删除类型、影响面，带文件路径可复核。本地离线，代码不出本机。
+
+**试一下（无需安装）：**
+```bash
+npx --yes arch-viewer@0.12.2-rc.5 session report <your-repo-path>
+```
+
+脱敏样例见 [链接] 或贴图。
+
+讨论 / 反馈 / 报名试点：https://github.com/tomyangod/architecture_viewer/discussions （国内用户可到 Gitee https://gitee.com/heyangyan/architecture_viewer/issues/IKF74T ）
+
+适合：有 PR 流程、常用 AI 跨文件改码、有模块边界的团队。
+```
+
+## 2. 访谈提纲（15 分钟，**仅在对方回复 §1 轻问后使用**）
+
+**前置条件：** 对方已回复 §1 的轻问（如"我们靠人工 review"/"dependency-cruiser 但噪音多"），确认痛点真实且有意愿进一步交流。此时可提议"方便的话约 15 分钟详细聊聊"。
 
 按顺序问，回答前不演示产品：
 
@@ -116,7 +159,43 @@ Architecture Viewer 两周本地试点说明
 
 ## 5. 跟进模板
 
-**已读未回（3 个工作日后，最多跟一次）：**
+**Day-3 跟进（3 个工作日后，最多跟一次，给价值不要日历）：**
+
+**版本 A：礼物型（优先）**
+
+```text
+[名字] 你好，理解可能在忙优先级更高的事。
+
+如果你们最近合入过 AI 大改的 PR（或正在 review 的），我可以拿 diff 跑一次 Architecture Viewer 演示（公开仓库直接跑 / 私有仓库你发我 git diff 输出），看红绿灯和跨层依赖报告准不准，**你不用装任何东西**。
+
+或者我发一行 npx 命令 + 脱敏样例图，回头有空可以自己试。
+
+如果最近没这类需求也完全 OK，回复「暂不需要」即可，我不再打扰。
+```
+
+（英文版）
+
+```text
+Hi [Name], totally understand if this isn't a current priority.
+
+If you have a recent AI-heavy PR (merged or under review), I can run Architecture Viewer on the diff as a demo (public repo: I'll run it; private: send me `git diff` output) — shows cross-layer findings with zero setup on your end.
+
+Or I can share the npx one-liner + sample screenshots for later.
+
+If it's not relevant right now, just reply "not needed" and I won't follow up again.
+```
+
+**版本 B：对比文章/样例（次选）**
+
+```text
+[名字] 你好，不知道上次提到的架构检查工具是否有机会看。
+
+我整理了一份 dependency-cruiser vs Import Linter vs Architecture Viewer 的定位对比（各自适合什么场景、覆盖什么检查），如果感兴趣回复「要」我发你。
+
+或者回复「暂不需要」也完全 OK，我不再打扰。
+```
+
+**版本 C：最小负担确认（保底）**
 
 ```text
 [名字] 你好，理解可能忙。如果最近没有这类痛点也完全没问题，回复一个"暂不需要"即可，我不再打扰。
