@@ -66,20 +66,23 @@ forbid_cross_layer:
 #    文件内容见上；service/storage 两个文件任意最小实现即可
 cd sample-shop && git init && git add -A && git commit -m baseline
 
-# 2. 基线报告：绿灯（对照 git HEAD，无需 session start）
+# 2. 提交基线
+git init && git add -A && git commit -m baseline
+
+# 3. 基线报告：绿灯（对照 git HEAD，无需 session start）
 npx --yes arch-viewer@0.12.2-rc.6 session report . --renderer builtin
 # 退出码 0 — 基线合规，controller → service → storage 符合层级约束
 
-# 3. 模拟 AI 的"快捷"改动：控制器直接 import 存储层
+# 4. 模拟 AI 的"快捷"改动：控制器直接 import 存储层
 #    在 order_controller.py 顶部加：
 #    from app.database.orders_repo import OrdersRepository
 #    并在 create() 里调用 OrdersRepository().save(order)
 
-# 4. 再次报告：红灯，退出码 1
+# 5. 再次报告：红灯，退出码 1（layers.json 确保跨层违规为阻断级）
 npx --yes arch-viewer@0.12.2-rc.6 session report . --renderer builtin
 # 退出码 1 — 检测到 HIGH 级层级穿透，阻断流水线
 
-# 5. 撤销违规改动（走服务层），恢复绿灯
+# 6. 撤销违规改动（走服务层），恢复绿灯
 git checkout app/controllers/order_controller.py
 npx --yes arch-viewer@0.12.2-rc.6 session report . --renderer builtin
 # 退出码 0 — 架构验收门通过
@@ -93,7 +96,9 @@ npx --yes arch-viewer@0.12.2-rc.6 session report . --renderer builtin
 
 ## 实测输出（2026-09-12，rc.2）
 
-**第 4 步红灯（节选，退出码 1）：**
+**注：** 以下输出录制于 rc.2。rc.6 要求 `.av/layers.json` 明确配置才能触发阻断级跨层违规（HIGH），否则自动推断的层级为 reportOnly MEDIUM，退出码为 0。本样例已更新步骤包含 layers.json 配置。
+
+**第 5 步红灯（节选，退出码 1）：**
 
 ```text
 --- 新增关系 ---
@@ -109,7 +114,7 @@ npx --yes arch-viewer@0.12.2-rc.6 session report . --renderer builtin
 
 要点：每条发现都带**具体文件、方向、规则名**，可人工复核；同时区分"结构违规（HIGH）"与"函数体变化（INFO，不判业务对错）"。
 
-**第 5 步绿灯（退出码 0）：**
+**第 6 步绿灯（退出码 0）：**
 
 ```text
 ✅ 架构验收门通过：退出码 = 0，检测到源码内容变化，未检测到架构结构变化。未检查业务逻辑。

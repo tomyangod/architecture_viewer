@@ -99,7 +99,7 @@ Architecture Viewer（Apache-2.0）：对照 git HEAD 检查本轮新增跨层�
 
 **试一下（无需安装）：**
 ```bash
-npx --yes arch-viewer@0.12.2-rc.6 session report <your-repo-path>
+npx --yes arch-viewer@0.12.2-rc.6 session report /absolute/path/to/repo
 ```
 
 脱敏样例见 [链接] 或贴图。
@@ -133,7 +133,7 @@ npx --yes arch-viewer@0.12.2-rc.6 session report <your-repo-path>
 谢谢今天的交流。按你说的情况，建议这样开始：
 
 1. 本周内选一个正在开发的仓库和一个真实 PR，我陪你跑第一次（约 30 分钟）。
-2. 版本统一用 0.12.2-rc.6：npx --yes --package arch-viewer@0.12.2-rc.6 arch-viewer session report <仓库路径>
+2. 版本统一用 0.12.2-rc.6：npx --yes --package arch-viewer@0.12.2-rc.6 arch-viewer session report /absolute/path/to/repo
 3. 第一周只作旁路参考，不设阻断；你们判断哪些发现有价值。
 4. 每周用我发的表格反馈一次，约 15 分钟。
 5. 本地分析永久免费；托管 PR 评论的公网自动投递还没上线，需要的话先记下来，上线后单独验证。
@@ -166,7 +166,7 @@ Architecture Viewer 两周本地试点说明
 ```text
 [名字] 你好，理解可能在忙优先级更高的事。
 
-如果你们最近合入过 AI 大改的 PR（或正在 review 的），我可以提供一行 npx 命令让你在本地跑一次 Architecture Viewer（npx --yes --package arch-viewer@0.12.2-rc.6 arch-viewer session report <仓库路径>），看红绿灯和跨层依赖报告准不准。公开仓库我也可以直接跑演示。
+如果你们最近合入过 AI 大改的 PR（或正在 review 的），我可以提供一行 npx 命令让你在本地跑一次 Architecture Viewer（npx --yes --package arch-viewer@0.12.2-rc.6 arch-viewer session report /absolute/path/to/repo），看红绿灯和跨层依赖报告准不准。公开仓库我也可以直接跑演示。
 
 或者我发一行 npx 命令 + 脱敏样例图，回头有空可以自己试。
 
@@ -178,7 +178,7 @@ Architecture Viewer 两周本地试点说明
 ```text
 Hi [Name], totally understand if this isn't a current priority.
 
-If you have a recent AI-heavy PR (merged or under review), I can share the npx one-liner for you to run locally (npx --yes --package arch-viewer@0.12.2-rc.6 arch-viewer session report <repo-path>) — shows cross-layer findings. For public repos I can also run a demo directly.
+If you have a recent AI-heavy PR (merged or under review), I can share the npx one-liner for you to run locally (npx --yes --package arch-viewer@0.12.2-rc.6 arch-viewer session report /absolute/path/to/repo) — shows cross-layer findings. For public repos I can also run a demo directly.
 
 Or I can share the npx one-liner + sample screenshots for later.
 
@@ -190,7 +190,7 @@ If it's not relevant right now, just reply "not needed" and I won't follow up ag
 ```text
 [名字] 你好，不知道上次提到的架构检查工具是否有机会看。
 
-我可以发你一份红→绿样例（脱敏演示：AI 改码引入跨层依赖 → 红灯 → 修复 → 绿灯，见 [red-green-sample.md](red-green-sample.md)），回头方便时 3 秒看完。
+我可以发你一份红→绿样例（脱敏演示：AI 改码引入跨层依赖 → 红灯 → 修复 → 绿灯，见 https://github.com/tomyangod/architecture_viewer/blob/main/pm/growth/red-green-sample.md），回头方便时 3 秒看完。
 
 或者回复「暂不需要」也完全 OK，我不再打扰。
 ```

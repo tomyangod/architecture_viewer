@@ -167,13 +167,13 @@
    - 答得上 = 痛点真实;答不上 = 非目标用户,双方都省时间。
 
 2. **首次消息附零承诺礼物** — 例子：
-   - `npx --yes arch-viewer@0.12.2-rc.5 session report .` 一行命令,无需安装
+   - `npx --yes arch-viewer@0.12.2-rc.6 session report /absolute/path/to/repo` 一行命令,无需安装
    - 脱敏红绿样例图直接贴在消息里（非链接）
    - 「我整理了三种常见拦截方案的对比,回复要的话发你」
 
 3. **Day-3 跟进不再要日历，给软价值** — 例子：
-   - 「理解可能不是当前优先级。如果你们最近合入过 AI 大改的 PR,我可以提供一行 npx 命令让你在本地跑一次演示（npx --yes --package arch-viewer@0.12.2-rc.6 arch-viewer session report <仓库路径>）。公开仓库我也可以直接跑,看红绿灯准不准。」
-   - 「刚写了一篇对比文章（dependency-cruiser vs Import Linter vs Architecture Viewer 的定位差异）,要的话发你。」
+   - 「理解可能不是当前优先级。如果你们最近合入过 AI 大改的 PR,我可以提供一行 npx 命令让你在本地跑一次演示（npx --yes --package arch-viewer@0.12.2-rc.6 arch-viewer session report /absolute/path/to/repo）。公开仓库我也可以直接跑,看红绿灯准不准。」
+   - 「我可以发你一份红→绿样例（https://github.com/tomyangod/architecture_viewer/blob/main/pm/growth/red-green-sample.md）,回头方便时 3 秒看完。」
    - 允许「暂不需要」明确退出。
 
 4. **在 tomyangod/architecture_viewer 开设公开报名 discussion** — 作为 GitHub 用户的原生 CTA 终点,避免跳 Gitee。
