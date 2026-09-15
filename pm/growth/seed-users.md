@@ -44,12 +44,12 @@
 不替代测试、业务逻辑审查或安全审计，绿灯不是“代码正确”。
 
 正在招募少量 Python/JS/TS 团队，与现有 review 流程并行试用。
-希望先花 15 分钟了解你最近一次实际遇到的问题，再判断是否适合接入。
+想问一下：你们团队最近有遇到过这类问题吗？
 本地 CLI/MCP 免费；托管 Pro 公示 ¥29/月，Team 仅人工报价申请。
 不要求购买、转发或提供好评，也不以半年赠送换“付费意向”。
 
-如果愿意参与，我会提供固定版本、脱敏样例和清晰退出方式。
-源码与说明：https://gitee.com/heyangyan/architecture_viewer
+如果感兴趣可以进一步交流试点细节。
+源码与说明：https://github.com/tomyangod/architecture_viewer 或 https://gitee.com/heyangyan/architecture_viewer
 招募 Issue：https://gitee.com/heyangyan/architecture_viewer/issues/IKF74T
 ```
 

@@ -53,7 +53,7 @@ If useful, I can share a one-liner npx command (no install) or run a demo on one
 
 想问一句：你们现在合入前靠什么确认没跨层？（人工？工具？合入后再说？）
 
-如果有用，我可以发一行 npx 命令（无需安装）或拿你们最近一个 PR 跑一次演示。
+如果有用，我可以发一行 npx 命令（无需安装）或针对公开仓库跑一次演示。
 ```
 
 **场景 2：无现有讨论，引导到自有仓库（次选）**
@@ -166,7 +166,7 @@ Architecture Viewer 两周本地试点说明
 ```text
 [名字] 你好，理解可能在忙优先级更高的事。
 
-如果你们最近合入过 AI 大改的 PR（或正在 review 的），我可以拿 diff 跑一次 Architecture Viewer 演示（公开仓库直接跑 / 私有仓库你发我 git diff 输出），看红绿灯和跨层依赖报告准不准，**你不用装任何东西**。
+如果你们最近合入过 AI 大改的 PR（或正在 review 的），我可以提供一行 npx 命令让你在本地跑一次 Architecture Viewer（npx --yes --package arch-viewer@0.12.2-rc.6 arch-viewer session report <仓库路径>），看红绿灯和跨层依赖报告准不准。公开仓库我也可以直接跑演示。
 
 或者我发一行 npx 命令 + 脱敏样例图，回头有空可以自己试。
 
@@ -178,7 +178,7 @@ Architecture Viewer 两周本地试点说明
 ```text
 Hi [Name], totally understand if this isn't a current priority.
 
-If you have a recent AI-heavy PR (merged or under review), I can run Architecture Viewer on the diff as a demo (public repo: I'll run it; private: send me `git diff` output) — shows cross-layer findings with zero setup on your end.
+If you have a recent AI-heavy PR (merged or under review), I can share the npx one-liner for you to run locally (npx --yes --package arch-viewer@0.12.2-rc.6 arch-viewer session report <repo-path>) — shows cross-layer findings. For public repos I can also run a demo directly.
 
 Or I can share the npx one-liner + sample screenshots for later.
 
@@ -190,7 +190,7 @@ If it's not relevant right now, just reply "not needed" and I won't follow up ag
 ```text
 [名字] 你好，不知道上次提到的架构检查工具是否有机会看。
 
-我整理了一份 dependency-cruiser vs Import Linter vs Architecture Viewer 的定位对比（各自适合什么场景、覆盖什么检查），如果感兴趣回复「要」我发你。
+我可以发你一份红→绿样例（脱敏演示：AI 改码引入跨层依赖 → 红灯 → 修复 → 绿灯，见 [red-green-sample.md](red-green-sample.md)），回头方便时 3 秒看完。
 
 或者回复「暂不需要」也完全 OK，我不再打扰。
 ```

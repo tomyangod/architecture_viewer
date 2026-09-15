@@ -1,7 +1,8 @@
 # 触达批次包：12 条待发（2026-09-14 晚）
 
-> 目标：今晚–明早全部发出。口径基准见 [outreach-kit.md](outreach-kit.md) §0；发一条、登记一条（[seed-users.md](seed-users.md) 漏斗 + [p1-leads-2026-09-12.md](p1-leads-2026-09-12.md) 状态列）。
-> 版本：`arch-viewer@0.12.2-rc.4`（npm `next`；若 rc.4 发布受阻，用 rc.3 亦可——核心验收链路两版一致）。
+> **历史备注：** 以下为当日发出原文，钉的是当时的 `arch-viewer@0.12.2-rc.4`，并使用了访谈邀约 CTA。**此后新消息改钉 `0.12.2-rc.6` + 新 CTA 阶梯**（轻问题/无日历），见 [outreach-kit.md](outreach-kit.md)。  
+> 目标：今晚–明早全部发出。口径基准见 [outreach-kit.md](outreach-kit.md) §0；发一条、登记一条（[seed-users.md](seed-users.md) 漏斗 + [p1-leads-2026-09-12.md](p1-leads-2026-09-12.md) 状态列）。  
+> 版本：`arch-viewer@0.12.2-rc.4`（npm `next`；若 rc.4 发布受阻，用 rc.3 亦可——核心验收链路两版一致）。  
 > 纪律：只发个性化消息；拒绝即止；已触达历史名单勿重复刷。
 
 ---
