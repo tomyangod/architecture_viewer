@@ -13,7 +13,9 @@
 
 ```text
 sample-shop/
-├── architecture-rules.yaml          # 团队分层禁令（可选；无此文件内置规则也会报层级穿透）
+├── .av/
+│   └── layers.json                  # 层级定义（rc.6 必需，否则推断为 MEDIUM reportOnly）
+├── architecture-rules.yaml          # 团队分层禁令（与 layers.json 配合使用）
 └── app/
     ├── controllers/order_controller.py
     ├── services/order_service.py
@@ -33,7 +35,19 @@ class OrderController:
         return self.service.place(payload["sku"], payload["qty"])
 ```
 
-可选的团队规则文件（演示"团队约定也能进灯"）：
+**层级定义文件（rc.6 必需，否则推断层级为 reportOnly 中等风险，不会阻断）：**
+
+```json
+{
+  "app/controllers": "controller",
+  "app/services": "service",
+  "app/database": "storage"
+}
+```
+
+> 说明：`.av/layers.json` 使用**目录路径 → 层级名**的扁平映射格式。这是 Architecture Viewer 层级配置的标准格式，被 `lib/layer-infer.js` 的 `normalizeLayerDefinitions()` 和 `matchUserLayer()` 函数识别。支持完整路径匹配（优先）或路径段匹配。
+
+团队规则文件（与 layers.json 配合使用，定义层间禁令）：
 
 ```yaml
 version: 1
@@ -48,12 +62,13 @@ forbid_cross_layer:
 
 ```bash
 # 0. 前置：Node ≥ 18、git
-# 1. 建仓并提交基线（文件内容见上，service/storage 两个文件任意最小实现即可）
+# 1. 建仓并提交基线（包含 .av/layers.json、architecture-rules.yaml、三个 Python 文件）
+#    文件内容见上；service/storage 两个文件任意最小实现即可
 cd sample-shop && git init && git add -A && git commit -m baseline
 
 # 2. 基线报告：绿灯（对照 git HEAD，无需 session start）
 npx --yes arch-viewer@0.12.2-rc.6 session report . --renderer builtin
-# 退出码 0
+# 退出码 0 — 基线合规，controller → service → storage 符合层级约束
 
 # 3. 模拟 AI 的"快捷"改动：控制器直接 import 存储层
 #    在 order_controller.py 顶部加：
@@ -62,12 +77,19 @@ npx --yes arch-viewer@0.12.2-rc.6 session report . --renderer builtin
 
 # 4. 再次报告：红灯，退出码 1
 npx --yes arch-viewer@0.12.2-rc.6 session report . --renderer builtin
+# 退出码 1 — 检测到 HIGH 级层级穿透，阻断流水线
 
 # 5. 撤销违规改动（走服务层），恢复绿灯
 git checkout app/controllers/order_controller.py
 npx --yes arch-viewer@0.12.2-rc.6 session report . --renderer builtin
-# 退出码 0
+# 退出码 0 — 架构验收门通过
 ```
+
+**重要：rc.6 行为变化**
+
+- **有 `.av/layers.json`**：明确层级定义 → `forbid_cross_layer` 违规判定为 **HIGH**（阻断级，exit 1）
+- **无 `.av/layers.json`**：推断层级（基于目录名/import 语义）→ 违规降级为 **MEDIUM reportOnly**（exit 0，不阻断）
+- 本演示**必须包含** `.av/layers.json` 才能展示红灯阻断效果
 
 ## 实测输出（2026-09-12，rc.2）
 
