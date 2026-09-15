@@ -1,7 +1,8 @@
 # 触达批次包：12 条待发（2026-09-14 晚）
 
-> 目标：今晚–明早全部发出。口径基准见 [outreach-kit.md](outreach-kit.md) §0；发一条、登记一条（[seed-users.md](seed-users.md) 漏斗 + [p1-leads-2026-09-12.md](p1-leads-2026-09-12.md) 状态列）。
-> 版本：`arch-viewer@0.12.2-rc.6`（npm `next`）。
+> **历史备注：** 以下为当日发出原文，钉的是当时的 `arch-viewer@0.12.2-rc.4`，并使用了访谈邀约 CTA。**此后新消息改钉 `0.12.2-rc.6` + 新 CTA 阶梯**（轻问题/无日历），见 [outreach-kit.md](outreach-kit.md)。  
+> 目标：今晚–明早全部发出。口径基准见 [outreach-kit.md](outreach-kit.md) §0；发一条、登记一条（[seed-users.md](seed-users.md) 漏斗 + [p1-leads-2026-09-12.md](p1-leads-2026-09-12.md) 状态列）。  
+> 版本：`arch-viewer@0.12.2-rc.4`（npm `next`；若 rc.4 发布受阻，用 rc.3 亦可——核心验收链路两版一致）。  
 > 纪律：只发个性化消息；拒绝即止；已触达历史名单勿重复刷。
 
 ---
@@ -17,9 +18,9 @@ URL: https://juejin.cn/post/7675242010802733108
 ```text
 你好，看了你写的《AI写代码不难，难的是不破坏架构》，其中「局部正确、全局失控」这个说法很有共鸣——单文件都能过 review，拼起来跨层了没人知道。
 
-我在验证开源工具 Architecture Viewer：AI 改完后对照 git HEAD，自动列出本轮新增的跨层依赖、被删类型和影响面；本地离线运行，钉 arch-viewer@0.12.2-rc.6，不替代测试与人工评审。
+我在验证开源工具 Architecture Viewer：AI 改完后对照 git HEAD，自动列出本轮新增的跨层依赖、被删类型和影响面；本地离线运行，钉 arch-viewer@0.12.2-rc.4，不替代测试与人工评审。
 
-想问一下：你们最近一次这类问题怎么发现的？如果感兴趣可以进一步交流两周本地试点细节（不要私码/PAT）。报名：https://gitee.com/heyangyan/architecture_viewer/issues/IKF74T
+想先约 15 分钟，听你讲最近一次这类问题怎么发现的、花了多久；合适再谈两周本地试点（不要私码/PAT）。报名：https://gitee.com/heyangyan/architecture_viewer/issues/IKF74T
 ```
 
 ### A2 · SDD/分层约束
@@ -28,9 +29,9 @@ URL: https://juejin.cn/post/7621551215504556075
 ```text
 你好，看了你写的《告别 Vibe Coding：用 SDD 让 AI 编程提效 50%，三工具实战对比》，其中跨库约束、Controller 不写业务这条分层纪律很有共鸣——规则写在文档里，AI 一轮改动就可能悄悄打破。
 
-我在验证开源工具 Architecture Viewer：AI 改完后对照 git HEAD，检查本轮有没有新增跨层依赖、破坏分层；每条结论带文件路径和依赖链可人工复核，本地离线，钉 arch-viewer@0.12.2-rc.6。
+我在验证开源工具 Architecture Viewer：AI 改完后对照 git HEAD，检查本轮有没有新增跨层依赖、破坏分层；每条结论带文件路径和依赖链可人工复核，本地离线，钉 arch-viewer@0.12.2-rc.4。
 
-想问一下：你们现在靠什么拦这类问题（CI？人工？）？如果感兴趣可以进一步交流两周本地试点细节（不要私码/PAT）。报名：https://gitee.com/heyangyan/architecture_viewer/issues/IKF74T
+想先约 15 分钟听你讲：你们现在靠什么拦这类问题（CI？人工？）；合适再谈两周本地试点（不要私码/PAT）。报名：https://gitee.com/heyangyan/architecture_viewer/issues/IKF74T
 ```
 
 ### A3 · Prompt→Spec「MUST NOT 擅自新增分层」
@@ -39,9 +40,9 @@ URL: https://juejin.cn/post/7651954728704376838
 ```text
 你好，看了你写的《从 Prompt 到 Spec：一套通用 AI 编码规范工程化落地方法论》，其中「Prompt 里写 MUST NOT，Agent 仍然擅自新增分层」这个痛点太真实了——指令约束不住模型，最后还是靠人翻 diff。
 
-我在验证开源工具 Architecture Viewer：不改提示词，AI 改完后对照 git HEAD 出结构结论——新增了哪些跨层依赖、谁被波及；本地离线、不连服务器，钉 arch-viewer@0.12.2-rc.6。
+我在验证开源工具 Architecture Viewer：不改提示词，AI 改完后对照 git HEAD 出结构结论——新增了哪些跨层依赖、谁被波及；本地离线、不连服务器，钉 arch-viewer@0.12.2-rc.4。
 
-想问一下：那次擅自分层后来怎么收场的？如果感兴趣可以进一步交流两周本地试点细节（不要私码/PAT）。报名：https://gitee.com/heyangyan/architecture_viewer/issues/IKF74T
+想约 15 分钟听你讲那次擅自分层后来怎么收场的；合适再谈两周本地试点（不要私码/PAT）。报名：https://gitee.com/heyangyan/architecture_viewer/issues/IKF74T
 ```
 
 ### A4 · OpenSpec 实现与 specs 漂移
@@ -50,9 +51,9 @@ URL: https://juejin.cn/post/7648157267779321871
 ```text
 你好，看了你写的《OpenSpec规约编程实践》，其中「实现与 specs 漂移检测」的思路很有共鸣——spec 有了，但每次合入前没人逐条核对实现还符合不符合。
 
-我在验证开源工具 Architecture Viewer，走的是相邻半步：对照 git HEAD 检查本轮代码的结构事实（新增跨层依赖、删除的类型、影响面），每条附依赖链可复核；本地离线，钉 arch-viewer@0.12.2-rc.6。
+我在验证开源工具 Architecture Viewer，走的是相邻半步：对照 git HEAD 检查本轮代码的结构事实（新增跨层依赖、删除的类型、影响面），每条附依赖链可复核；本地离线，钉 arch-viewer@0.12.2-rc.4。
 
-想问一下：你们的 spec 漂移目前靠什么发现？如果感兴趣可以进一步交流两周本地试点细节（不要私码/PAT）。报名：https://gitee.com/heyangyan/architecture_viewer/issues/IKF74T
+想约 15 分钟聊聊：你们的 spec 漂移目前靠什么发现？合适再谈两周本地试点（不要私码/PAT）。报名：https://gitee.com/heyangyan/architecture_viewer/issues/IKF74T
 ```
 
 ### A5 · Ask→Plan→Agent 后仍缺结构验收
@@ -61,9 +62,9 @@ URL: https://juejin.cn/post/7658998681744605219
 ```text
 你好，看了你写的《Cursor 四模式选型指南：Ask / Plan / Agent / Debug 何时用哪个？》，其中「Ask→Plan→Agent 都上了，合入前还是没人说得清架构变了什么」这个判断很准——规划环节补齐了，验收环节还是空的。
 
-我在验证开源工具 Architecture Viewer：AI 改完后对照 git HEAD 出一份结构验收结论（红/绿灯 + 本轮跨层依赖、影响面清单），在对话里 3 行看完，本地离线，钉 arch-viewer@0.12.2-rc.6。
+我在验证开源工具 Architecture Viewer：AI 改完后对照 git HEAD 出一份结构验收结论（红/绿灯 + 本轮跨层依赖、影响面清单），在对话里 3 行看完，本地离线，钉 arch-viewer@0.12.2-rc.4。
 
-想问一下：你们最近一次大改动靠什么确认没破坏结构？如果感兴趣可以进一步交流两周本地试点细节（不要私码/PAT）。报名：https://gitee.com/heyangyan/architecture_viewer/issues/IKF74T
+想约 15 分钟听你讲最近一次大改动靠什么确认没破坏结构；合适再谈两周本地试点（不要私码/PAT）。报名：https://gitee.com/heyangyan/architecture_viewer/issues/IKF74T
 ```
 
 ### A6 · AI 交付质量体系缺结构门
@@ -72,9 +73,9 @@ URL: https://juejin.cn/post/7623711769807634483
 ```text
 你好，看了你写的《为了交付一个AI辅助开发的项目，我们搭了一套质量保障体系》，其中「AI 交付质量体系里缺一道结构门」的观点很有共鸣——测试管功能、lint 管风格，结构（分层、依赖方向）恰恰没人管。
 
-我在验证开源工具 Architecture Viewer：AI 改完后对照 git HEAD 检查跨层依赖与影响面，红灯只亮在本轮相关的变化上，噪音低，可挂在 CI 也可在会话里直接看，本地离线，钉 arch-viewer@0.12.2-rc.6。
+我在验证开源工具 Architecture Viewer：AI 改完后对照 git HEAD 检查跨层依赖与影响面，红灯只亮在本轮相关的变化上，噪音低，可挂在 CI 也可在会话里直接看，本地离线，钉 arch-viewer@0.12.2-rc.4。
 
-想问一下：你们的交付流水线里这道门打算放哪？如果感兴趣可以进一步交流两周本地试点细节（不要私码/PAT）。报名：https://gitee.com/heyangyan/architecture_viewer/issues/IKF74T
+想约 15 分钟聊聊你们的交付流水线里这道门打算放哪；合适再谈两周本地试点（不要私码/PAT）。报名：https://gitee.com/heyangyan/architecture_viewer/issues/IKF74T
 ```
 
 ---
@@ -90,7 +91,7 @@ Hi [维护者名]，I came across Graphenium while surveying tools that guard ar
 
 I'm building Architecture Viewer (open source, Apache-2.0): after an AI coding session it diffs the dependency graph against git HEAD and reports only this-round structural changes (new cross-layer edges, deleted types, blast radius), with file-path evidence for every finding. Fully local/offline.
 
-Not pitching a swap — I'd genuinely value comparing notes: which checks your users actually keep enabled, where the false positives bite hardest. If this resonates I'm happy to share our pilot data (46% initial FP rate, root-caused to vendored dirs) in return.
+Not pitching a swap — I'd genuinely value 15 minutes comparing notes: which checks your users actually keep enabled, where the false positives bite hardest. Happy to share our pilot data (46% initial FP rate, root-caused to vendored dirs) in return.
 ```
 
 ### B2 · Yggdrasil（「Agent 读了规则仍跳过」亲历者）
@@ -100,7 +101,7 @@ Hi [维护者名]，I read about your experience where the agent read the rules 
 
 I built Architecture Viewer (open source, Apache-2.0): it doesn't ask the agent to obey; it checks the diff after the fact against git HEAD — new cross-layer dependencies, deleted types, impact radius, each with verifiable evidence chains. Local and offline, works as an MCP tool or CI gate.
 
-Would be interested to hear how that incident was eventually caught? If it resonates, I'm piloting with 2 teams (free, no PAT, no code leaves your machine).
+Would you have 15 minutes to walk me through how that incident was eventually caught? If it resonates, I'm piloting with 2 teams (free, no PAT, no code leaves your machine).
 ```
 
 ### B3 · archcodex（结构约束 + CI，问并用）
@@ -110,7 +111,7 @@ Hi [维护者名]，saw archcodex's approach to structural constraints + CI enfo
 
 I'm curious whether your users pair it with a "what changed this round" view: I maintain Architecture Viewer (open source), which diffs the dependency graph against git HEAD per AI session and reports only this-round structural changes with evidence chains. Wondering if the two compose well — constraint rules for policy, session diff for review.
 
-Curious to compare notes if you're interested? Also recruiting 2 pilot teams (free, local-only) if you know users who'd fit.
+15 minutes to compare notes? Also recruiting 2 pilot teams (free, local-only) if you know users who'd fit.
 ```
 
 ---

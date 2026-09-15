@@ -172,7 +172,7 @@
    - 「我整理了三种常见拦截方案的对比,回复要的话发你」
 
 3. **Day-3 跟进不再要日历，给软价值** — 例子：
-   - 「理解可能不是当前优先级。如果你们最近合入过 AI 大改的 PR,我可以拿你们的 diff 跑一次演示（公开仓库 / 你发我 patch),看红绿灯准不准,不用你们装任何东西。」
+   - 「理解可能不是当前优先级。如果你们最近合入过 AI 大改的 PR,我可以提供一行 npx 命令让你在本地跑一次演示（npx --yes --package arch-viewer@0.12.2-rc.6 arch-viewer session report <仓库路径>）。公开仓库我也可以直接跑,看红绿灯准不准。」
    - 「刚写了一篇对比文章（dependency-cruiser vs Import Linter vs Architecture Viewer 的定位差异）,要的话发你。」
    - 允许「暂不需要」明确退出。
 

@@ -166,7 +166,7 @@ Architecture Viewer 两周本地试点说明
 ```text
 [名字] 你好，理解可能在忙优先级更高的事。
 
-如果你们最近合入过 AI 大改的 PR（或正在 review 的），我可以拿 diff 跑一次 Architecture Viewer 演示（公开仓库直接跑 / 私有仓库你发我 git diff 输出），看红绿灯和跨层依赖报告准不准，**你不用装任何东西**。
+如果你们最近合入过 AI 大改的 PR（或正在 review 的），我可以提供一行 npx 命令让你在本地跑一次 Architecture Viewer（npx --yes --package arch-viewer@0.12.2-rc.6 arch-viewer session report <仓库路径>），看红绿灯和跨层依赖报告准不准。公开仓库我也可以直接跑演示。
 
 或者我发一行 npx 命令 + 脱敏样例图，回头有空可以自己试。
 
@@ -178,7 +178,7 @@ Architecture Viewer 两周本地试点说明
 ```text
 Hi [Name], totally understand if this isn't a current priority.
 
-If you have a recent AI-heavy PR (merged or under review), I can run Architecture Viewer on the diff as a demo (public repo: I'll run it; private: send me `git diff` output) — shows cross-layer findings with zero setup on your end.
+If you have a recent AI-heavy PR (merged or under review), I can share the npx one-liner for you to run locally (npx --yes --package arch-viewer@0.12.2-rc.6 arch-viewer session report <repo-path>) — shows cross-layer findings. For public repos I can also run a demo directly.
 
 Or I can share the npx one-liner + sample screenshots for later.
 

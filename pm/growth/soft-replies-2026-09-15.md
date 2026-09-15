@@ -1,7 +1,8 @@
 # 软评批次：2026-09-15（新模板）
 
+> **历史记录：** 以下为当日发出原文，钉的是当时的 `0.12.2-rc.5`。**此后新消息钉 `0.12.2-rc.6`**，见 [outreach-kit.md](outreach-kit.md)。  
 > **新 CTA 模式**：可回问题 + rc.5 版本 · 无访谈邀约 · 无 Gitee 硬 CTA  
-> 版本：`arch-viewer@0.12.2-rc.5` · 作者：yanheyang
+> 作者：yanheyang
 
 ---
 

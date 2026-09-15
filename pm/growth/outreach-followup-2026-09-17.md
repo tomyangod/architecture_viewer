@@ -14,7 +14,7 @@
 ```text
 你好，理解可能在忙其他优先级更高的事。
 
-如果你们最近合入过 AI 大改的 PR（或正在 review 的），我可以拿 diff 跑一次 Architecture Viewer 演示——看红绿灯和跨层依赖报告准不准，你不用装任何东西。公开仓库我直接跑，私有仓库你发我 git diff 输出即可。
+如果你们最近合入过 AI 大改的 PR（或正在 review 的），我可以提供一行 npx 命令让你在本地跑一次 Architecture Viewer——看红绿灯和跨层依赖报告准不准（npx --yes --package arch-viewer@0.12.2-rc.6 arch-viewer session report <仓库路径>）。公开仓库我也可以直接跑演示，私有仓库只在本地。
 
 或者我发一行 npx 命令（arch-viewer@0.12.2-rc.6）+ 脱敏样例图，回头有空可以自己 3 秒试完。
 
@@ -48,7 +48,7 @@
 ```text
 你好，不知道上次提到的架构检查工具是否有机会看。
 
-如果你们最近又遇到"Prompt 里写了 MUST NOT 但 Agent 还是擅自改"的情况，我可以拿那次 diff 跑一次 Architecture Viewer 演示（公开仓库 / 或你发 git diff 输出），看能不能在合入前就用红灯拦住，你不用装任何东西。
+如果你们最近又遇到"Prompt 里写了 MUST NOT 但 Agent 还是擅自改"的情况，我可以提供一行 npx 命令让你在本地跑一次 Architecture Viewer（npx --yes --package arch-viewer@0.12.2-rc.6 arch-viewer session report <仓库路径>），看能不能在合入前就用红灯拦住。公开仓库我也可以直接跑演示。
 
 或者我发 npx 一行命令（arch-viewer@0.12.2-rc.6）+ 样例，回头自己试。
 
@@ -64,7 +64,7 @@
 ```text
 你好，理解可能在忙优先级更高的事。
 
-我整理了一份「依赖检查工具定位对比」（dependency-cruiser vs Import Linter vs Architecture Viewer 各自适合什么场景），如果对你们的 OpenSpec 漂移检测有参考价值，回复「要」我发你。
+我可以发你一份红→绿样例（脱敏演示：AI 改码引入跨层依赖 → 红灯 → 修复 → 绿灯），看对你们的 OpenSpec 漂移检测是否有参考价值。
 
 或者我发 npx 一行命令（arch-viewer@0.12.2-rc.6）试试对照 git HEAD 检查本轮结构变化的效果。
 
@@ -114,7 +114,7 @@
 ```text
 Hi, totally understand if this isn't a current priority.
 
-If you have a recent AI-heavy PR (merged or under review), I can run Architecture Viewer on the diff as a demo (I'll run it on the public repo or you can send me `git diff` output) — shows cross-layer findings with zero setup on your end. Would be curious to compare what Graphenium flags vs what AV catches.
+If you have a recent AI-heavy PR (merged or under review), I can share the npx one-liner for you to run locally (npx --yes --package arch-viewer@0.12.2-rc.6 arch-viewer session report <repo-path>) — shows cross-layer findings with zero setup. For public repos I can also run a demo directly. Would be curious to compare what Graphenium flags vs what AV catches.
 
 Or I can share the npx one-liner (arch-viewer@0.12.2-rc.6) + sample screenshots for later.
 
