@@ -53,7 +53,7 @@ If useful, I can share a one-liner npx command (no install) or run a demo on one
 
 想问一句：你们现在合入前靠什么确认没跨层？（人工？工具？合入后再说？）
 
-如果有用，我可以发一行 npx 命令（无需安装）或拿你们最近一个 PR 跑一次演示。
+如果有用，我可以发一行 npx 命令（无需安装）或针对公开仓库跑一次演示。
 ```
 
 **场景 2：无现有讨论，引导到自有仓库（次选）**
@@ -190,7 +190,7 @@ If it's not relevant right now, just reply "not needed" and I won't follow up ag
 ```text
 [名字] 你好，不知道上次提到的架构检查工具是否有机会看。
 
-我整理了一份 dependency-cruiser vs Import Linter vs Architecture Viewer 的定位对比（各自适合什么场景、覆盖什么检查），如果感兴趣回复「要」我发你。
+我可以发你一份红→绿样例（脱敏演示：AI 改码引入跨层依赖 → 红灯 → 修复 → 绿灯，见 [red-green-sample.md](red-green-sample.md)），回头方便时 3 秒看完。
 
 或者回复「暂不需要」也完全 OK，我不再打扰。
 ```

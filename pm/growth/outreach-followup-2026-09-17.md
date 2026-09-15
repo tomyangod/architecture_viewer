@@ -32,7 +32,7 @@
 ```text
 你好，理解可能在忙。
 
-如果你们最近有 AI 改动的 PR 正在 review（或刚合入的），我可以拿 diff 跑一次 Architecture Viewer 演示，看跨层依赖检查准不准、会不会和你们现有的 SDD 分层规则冲突，你完全不用装东西。
+如果你们最近有 AI 改动的 PR 正在 review（或刚合入的），我可以提供一行 npx 命令让你在本地跑一次 Architecture Viewer（npx --yes --package arch-viewer@0.12.2-rc.6 arch-viewer session report <仓库路径>），看跨层依赖检查准不准、会不会和你们现有的 SDD 分层规则冲突。公开仓库我也可以直接跑演示。
 
 或者发一行 npx 命令（arch-viewer@0.12.2-rc.6）和样例图，回头方便时 3 秒跑完。
 
@@ -64,7 +64,7 @@
 ```text
 你好，理解可能在忙优先级更高的事。
 
-我可以发你一份红→绿样例（脱敏演示：AI 改码引入跨层依赖 → 红灯 → 修复 → 绿灯），看对你们的 OpenSpec 漂移检测是否有参考价值。
+我可以发你一份红→绿样例（脱敏演示：AI 改码引入跨层依赖 → 红灯 → 修复 → 绿灯，见 [red-green-sample.md](red-green-sample.md)），看对你们的 OpenSpec 漂移检测是否有参考价值，回头方便时 3 秒看完。
 
 或者我发 npx 一行命令（arch-viewer@0.12.2-rc.6）试试对照 git HEAD 检查本轮结构变化的效果。
 
@@ -80,7 +80,7 @@
 ```text
 你好，不知道上次提到的结构验收工具是否有机会看。
 
-如果你们最近用 Cursor Agent 模式跑过大改（几十个文件那种），我可以拿 diff 跑一次 Architecture Viewer 演示，看红绿灯能不能在 3 秒内说清"本轮架构变了什么"，你不用装任何东西。
+如果你们最近用 Cursor Agent 模式跑过大改（几十个文件那种），我可以提供一行 npx 命令让你在本地跑一次 Architecture Viewer（npx --yes --package arch-viewer@0.12.2-rc.6 arch-viewer session report <仓库路径>），看红绿灯能不能在 3 秒内说清"本轮架构变了什么"。公开仓库我也可以直接跑演示。
 
 或者发 npx 一行命令（arch-viewer@0.12.2-rc.6）+ 脱敏样例，回头自己试。
 
@@ -96,7 +96,7 @@
 ```text
 你好，理解可能在忙其他事。
 
-如果你们的 AI 交付质量流水线里正好在考虑加「结构门」（跨层依赖检查），我可以拿你们一个真实 PR 的 diff 跑一次 Architecture Viewer 演示——看红灯准不准、会不会和现有 CI（测试/lint）冲突，你完全不用装东西。
+如果你们的 AI 交付质量流水线里正好在考虑加「结构门」（跨层依赖检查），我可以提供一行 npx 命令让你在本地跑一次 Architecture Viewer（npx --yes --package arch-viewer@0.12.2-rc.6 arch-viewer session report <仓库路径>），看红灯准不准、会不会和现有 CI（测试/lint）冲突。公开仓库我也可以直接跑演示。
 
 或者我发 npx 一行命令（arch-viewer@0.12.2-rc.6）和样例图，回头方便时自己试。
 
