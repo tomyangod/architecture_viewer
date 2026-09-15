@@ -62,12 +62,18 @@ forbid_cross_layer:
 
 ```bash
 # 0. 前置：Node ≥ 18、git
-# 1. 建仓并提交基线（包含 .av/layers.json、architecture-rules.yaml、三个 Python 文件）
-#    文件内容见上；service/storage 两个文件任意最小实现即可
-cd sample-shop && git init && git add -A && git commit -m baseline
+
+# 1. 创建目录和文件：新建 sample-shop/ 及其下的 app/ 目录结构，
+#    将上文「仓库结构」和「基线代码」各代码块内容分别粘贴进对应文件
+#    （architecture-rules.yaml、app/controllers/order_controller.py、
+#    app/services/order_service.py、app/database/orders_repo.py），
+#    其中 service 和 storage 两个 .py 文件任意最小实现即可（例如
+#    order_service.py 定义 OrderService.place() 返回字典，
+#    orders_repo.py 定义 OrdersRepository.save() 打印日志）。
 
 # 2. 提交基线
-git init && git add -A && git commit -m baseline
+cd sample-shop
+git init && git add -A && git commit -m "baseline"
 
 # 3. 基线报告：绿灯（对照 git HEAD，无需 session start）
 npx --yes arch-viewer@0.12.2-rc.6 session report . --renderer builtin
@@ -78,7 +84,7 @@ npx --yes arch-viewer@0.12.2-rc.6 session report . --renderer builtin
 #    from app.database.orders_repo import OrdersRepository
 #    并在 create() 里调用 OrdersRepository().save(order)
 
-# 5. 再次报告：红灯，退出码 1（layers.json 确保跨层违规为阻断级）
+# 5. 再次报告：红灯，退出码 1
 npx --yes arch-viewer@0.12.2-rc.6 session report . --renderer builtin
 # 退出码 1 — 检测到 HIGH 级层级穿透，阻断流水线
 
@@ -88,15 +94,7 @@ npx --yes arch-viewer@0.12.2-rc.6 session report . --renderer builtin
 # 退出码 0 — 架构验收门通过
 ```
 
-**重要：rc.6 行为变化**
-
-- **有 `.av/layers.json`**：明确层级定义 → `forbid_cross_layer` 违规判定为 **HIGH**（阻断级，exit 1）
-- **无 `.av/layers.json`**：推断层级（基于目录名/import 语义）→ 违规降级为 **MEDIUM reportOnly**（exit 0，不阻断）
-- 本演示**必须包含** `.av/layers.json` 才能展示红灯阻断效果
-
-## 实测输出（2026-09-12，rc.2）
-
-**注：** 以下输出录制于 rc.2。rc.6 要求 `.av/layers.json` 明确配置才能触发阻断级跨层违规（HIGH），否则自动推断的层级为 reportOnly MEDIUM，退出码为 0。本样例已更新步骤包含 layers.json 配置。
+## 实测输出（录制于 2026-09-12；形态与 rc.6 一致）
 
 **第 5 步红灯（节选，退出码 1）：**
 
