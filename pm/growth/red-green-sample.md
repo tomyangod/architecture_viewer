@@ -48,30 +48,40 @@ forbid_cross_layer:
 
 ```bash
 # 0. 前置：Node ≥ 18、git
-# 1. 建仓并提交基线（文件内容见上，service/storage 两个文件任意最小实现即可）
-cd sample-shop && git init && git add -A && git commit -m baseline
 
-# 2. 基线报告：绿灯（对照 git HEAD，无需 session start）
+# 1. 创建目录和文件：新建 sample-shop/ 及其下的 app/ 目录结构，
+#    将上文「仓库结构」和「基线代码」各代码块内容分别粘贴进对应文件
+#    （architecture-rules.yaml、app/controllers/order_controller.py、
+#    app/services/order_service.py、app/database/orders_repo.py），
+#    其中 service 和 storage 两个 .py 文件任意最小实现即可（例如
+#    order_service.py 定义 OrderService.place() 返回字典，
+#    orders_repo.py 定义 OrdersRepository.save() 打印日志）。
+
+# 2. 提交基线
+cd sample-shop
+git init && git add -A && git commit -m "baseline"
+
+# 3. 基线报告：绿灯（对照 git HEAD，无需 session start）
 npx --yes arch-viewer@0.12.2-rc.6 session report . --renderer builtin
 # 退出码 0
 
-# 3. 模拟 AI 的"快捷"改动：控制器直接 import 存储层
+# 4. 模拟 AI 的"快捷"改动：控制器直接 import 存储层
 #    在 order_controller.py 顶部加：
 #    from app.database.orders_repo import OrdersRepository
 #    并在 create() 里调用 OrdersRepository().save(order)
 
-# 4. 再次报告：红灯，退出码 1
+# 5. 再次报告：红灯，退出码 1
 npx --yes arch-viewer@0.12.2-rc.6 session report . --renderer builtin
 
-# 5. 撤销违规改动（走服务层），恢复绿灯
+# 6. 撤销违规改动（走服务层），恢复绿灯
 git checkout app/controllers/order_controller.py
 npx --yes arch-viewer@0.12.2-rc.6 session report . --renderer builtin
 # 退出码 0
 ```
 
-## 实测输出（2026-09-12，rc.2）
+## 实测输出（录制于 2026-09-12；形态与 rc.6 一致）
 
-**第 4 步红灯（节选，退出码 1）：**
+**第 5 步红灯（节选，退出码 1）：**
 
 ```text
 --- 新增关系 ---
@@ -87,7 +97,7 @@ npx --yes arch-viewer@0.12.2-rc.6 session report . --renderer builtin
 
 要点：每条发现都带**具体文件、方向、规则名**，可人工复核；同时区分"结构违规（HIGH）"与"函数体变化（INFO，不判业务对错）"。
 
-**第 5 步绿灯（退出码 0）：**
+**第 6 步绿灯（退出码 0）：**
 
 ```text
 ✅ 架构验收门通过：退出码 = 0，检测到源码内容变化，未检测到架构结构变化。未检查业务逻辑。
