@@ -4,6 +4,20 @@
 
 ## \[Unreleased\]
 
+## \[0.12.2-rc.6\] — 2026-09-15
+
+试点候选包，已发布到 npm 标签 `next`（不改 `latest`）。在 rc.5 解释闭环与分层门禁解耦之上，修正出图页脚夸大校验范围、环路径消歧与 explain 结构化证据。
+
+### Fixed
+
+- **出图页脚不再夸大校验范围**：编排流水线页脚与阶段名从「已过事实核查」改为「已过路径/语法静态校验 · 语义请人工复核」——流水线只做路径存在性、Mermaid 语法与层归属的确定性校验，不校验运行时语义（如框架标注、节点真实性）。
+- **环路径消歧**：circular-import 的链路文案改用完整仓库相对路径，不再把不同目录下的同名文件（如两个 `browser_launcher.py`）糊成一份。
+- **explain 结构化证据**：`av_explain_finding` 对 circular-import 返回 `cycleEvidence`（有序环边 + 标记本轮闭合环的新边及其文件/行号），对 broad-impact 返回 `impactEvidence`（种子实体、直接/间接下游计数与直接下游样本）；修法建议点名具体新边，快照摸底下不虚构「本轮新边」。broad-impact 不再落入空泛默认建议。
+
+### Changed
+
+- **基线口径明示**：verdict 在 snapshot 基线下显式标注「对照会话快照（非 git HEAD）」；`av_guard` / `av_session_report` 工具描述改为「以 verdict 与返回的 baselineKind 为准」，不再只写「对照 HEAD」。
+
 ## \[0.12.2-rc.5\] — 2026-09-15
 
 试点候选包，已发布到 npm 标签 `next`（不改 `latest`）。在 rc.4 默认交付收缩之上，修复会话解释闭环、增量归因与分层门禁语义。
