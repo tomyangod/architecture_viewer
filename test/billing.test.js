@@ -240,4 +240,19 @@ describe('GTM diagnostic + pricing reversal', () => {
     assert.match(html, /id="pay-afdian"/);
     assert.match(html, /id="pay-lemon"/);
   });
+
+  it('landing hero uses dependency/caller copy, not gate-as-proven titles', () => {
+    const html = fs.readFileSync(path.join(__dirname, '..', 'web', 'public', 'index.html'), 'utf8');
+    const js = fs.readFileSync(path.join(__dirname, '..', 'web', 'public', 'app.js'), 'utf8');
+    assert.match(html, /AI 改完代码，先看这次改动涉及哪些依赖和调用方/);
+    assert.match(html, /结构通过不代表功能正确/);
+    assert.match(html, /社区能力免费。下面是试验报价/);
+    assert.doesNotMatch(html, /谁验收架构/);
+    assert.doesNotMatch(html, /出图免费，漂移闭环收费/);
+    assert.doesNotMatch(html, /架构图一脱节/);
+    assert.match(js, /After AI edits the code, see which dependencies and callers/);
+    assert.match(js, /Community is free\. Paid items below are experimental offers/);
+    assert.doesNotMatch(js, /谁验收架构/);
+    assert.doesNotMatch(js, /Diagrams free\. Drift loop paid/);
+  });
 });

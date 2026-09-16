@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Architecture Viewer — 把仓库变成永不漂移的架构图门户</title>
-  <meta name="description" content="VS Code / Cursor 扩展：扫描仓库一键生成 C4 六视图，预览、做漂移校验，跟着 PR 一起更新，让架构图再也不脱节。" />
+  <title>Architecture Viewer — AI 改完代码，先看这次改动涉及哪些依赖和调用方</title>
+  <meta name="description" content="对照 Git 基线，列出结构变化、潜在影响和需要复查的位置，方便把检查结果交回 AI。不替代测试或完整代码审查；结构通过不代表功能正确。" />
   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
   <link rel="alternate icon" href="/favicon.ico" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -29,11 +29,10 @@
     </header>
 
     <section class="hero" id="top">
-      <p class="eyebrow" data-i18n="hero.eyebrow">开源 Apache-2.0 · 漂移红灯进 CI · CLI + Web</p>
-      <h1 data-i18n-html="hero.title">架构图一脱节，PR 就红灯。</h1>
+      <p class="eyebrow" data-i18n="hero.eyebrow">开源 Apache-2.0 · 对照 Git 基线 · CLI / MCP</p>
+      <h1 data-i18n="hero.title">AI 改完代码，先看这次改动涉及哪些依赖和调用方。</h1>
       <p class="lede" data-i18n="hero.lede">
-        Community 免费：粘贴 Git URL 出六视图，把 Actions 模板丢进仓库，图与代码不一致就拦合并。
-        可选精修（DeepSeek Key，约 30–90 秒）。Pro 再做托管评论与增量同步。
+        Architecture Viewer 对照 Git 基线，列出结构变化、潜在影响和需要复查的位置，方便你把检查结果交回 AI 处理。不替代测试或完整代码审查；结构通过不代表功能正确。
       </p>
 
       <div class="try-it">
@@ -108,29 +107,28 @@
 
     <section class="split" id="pain">
       <div>
-        <h2>为什么别再手画架构图</h2>
-        <p class="section-copy">
-          大多数架构图的半衰期就是发出去那天的下午。人走、代码动、需求改，图就开始撒谎。
-          我们的解法不是让你"更勤奋"，而是让代码 <strong>自己告诉图该怎么变</strong>。
+        <h2 data-i18n="pain.title">跨文件改完，先核对依赖和调用方</h2>
+        <p class="section-copy" data-i18n="pain.copy">
+          价值是看清这一轮动了谁；证据是文件、边、规则和 Git 基线；边界是不替代测试或完整审查。结构变化不一定是坏事，结构通过也不代表功能正确。
         </p>
       </div>
       <div class="pair">
         <article>
-          <h3>痛点</h3>
+          <h3 data-i18n="pain.leftTitle">常见卡点</h3>
           <ul class="feature-list feature-vs">
-            <li>写完一次就没人维护</li>
-            <li>新人入职看的是"去年的真相"</li>
-            <li>评审会上对不上模块名</li>
-            <li>运维部署跟图上的架构不一致</li>
+            <li data-i18n="pain.left1">AI 跨模块改代码，调用方和依赖容易漏</li>
+            <li data-i18n="pain.left2">编译、单测、AI 自查过了，结构边仍可能变了</li>
+            <li data-i18n="pain.left3">全仓历史债和本轮增量混在一起，难复查</li>
+            <li data-i18n="pain.left4">把结果交回 AI 时，缺少可指认的文件和边</li>
           </ul>
         </article>
         <article>
           <h3>Architecture Viewer</h3>
           <ul class="feature-list feature-vs win">
-            <li>Generate 一键更新六视图</li>
-            <li>PR 里自动跑 Validate，漂移直接红</li>
-            <li>节点 ID 对齐到真实模块 / 服务名</li>
-            <li>部署目录、compose 服务、入口文件都纳入扫描</li>
+            <li data-i18n="pain.right1">对照 Git 基线列出本轮结构变化</li>
+            <li data-i18n="pain.right2">标出潜在影响面和需要复查的位置</li>
+            <li data-i18n="pain.right3">规则可复验；不承诺无误报、无漏报</li>
+            <li data-i18n="pain.right4">本地 CLI / MCP，方便把检查结果交回 AI</li>
           </ul>
         </article>
       </div>
@@ -288,9 +286,9 @@ npm install
     </section>
 
     <section class="pricing" id="pricing">
-      <h2 data-i18n="pricing.title">AI 改完码，谁验收架构？</h2>
+      <h2 data-i18n="pricing.title">社区能力免费。下面是试验报价。</h2>
       <p class="section-copy" data-i18n="pricing.copy">
-        工具永远免费。付费买的是人：AI 改码架构体检（早鸟 ¥999）或 Team 入门包（¥4,999/年，5 席）。Pro 降为赞助/托管便利档（¥29/月或 ¥199/年）。
+        分析能力本身免费。体检、Team 入门包、Pro 都是试验报价，不是已验证的商业模式：早鸟体检 ¥999、Team ¥4,999/年（5 席）、Pro ¥29/月或 ¥199/年。
       </p>
       <div class="price-grid">
         <article class="featured">
@@ -309,7 +307,7 @@ npm install
           </div>
         </article>
         <article>
-          <p class="price-tag">主推付费 · 5 席入门包</p>
+          <p class="price-tag">试验报价 · 5 席入门包</p>
           <h3>Team</h3>
           <p class="price">¥4,999<span>/年</span></p>
           <ul>
