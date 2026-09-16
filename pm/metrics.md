@@ -96,7 +96,7 @@ npm run wbs -- report --week W06
 | 回复数 | **0** | 截至快照无有效回复 |
 | 访谈数 | **0** | |
 | 接入数 | **0** | |
-| 目录侧 | 进行中 | Glama 已上架（质量 B）；awesome #14385 已于 2026-09-16 合并；mcp.so 免费 issue 已留评 |
+| 目录侧 | 进行中 | Glama 已上架（质量 B）；awesome #14385 待合；mcp.so 免费 issue 已留评 |
 
 ### 固定版本发布记录（2026-09-15 · 下午）
 
@@ -104,7 +104,7 @@ npm run wbs -- report --week W06
 - 源提交：`8863ed6`（出图页脚如实化、环路径消歧、explain 结构化证据、snapshot 基线口径明示）。
 - SHA-256：`bb6ed0d26815b3c8b7c53d7fc2b708fff7c63ef44865142488ea46b7603d47b1`。
 - registry shasum：`0138d89dff28cedbbca21a76f4d691b696ecc40f`。
-- integrity：`sha512-AIubHdFrxo3H6EzJDyp14gZUu+Urj95R4Wv0+lpYhzaCxprUkHb6oOLK4m5cq1LDXUe3Pgg6SeOOXxN8CsIV7A==`。
+- integrity：`sha512-AIubHdFrxo3H6EzJDyp14gZUu+Arj95R4Wv0+lpYhzaCxprUkHb6oOLK4m5cq1LDXUe3Pgg6SeOOXxN8CsIV7A==`。
 - registry 全新安装冒烟：`--version` 为 0.12.2-rc.6，发布 tarball 与本地干净打包逐字节一致。
 - 发布前全量单测 1034 通过 / 0 失败 / 1 跳过。
 
@@ -163,6 +163,6 @@ npm run wbs -- report --week W06
 
 > 决策点 2026-11-06（第 8 周）：至少 3 个**真实** Pro 付费试点（订单号 + 开通确认）。沙箱 / 自测 grant **不算**；首次付款与续费分行记录。开通命令见 [docs/commercial/billing.md](../docs/commercial/billing.md)。
 
-| 日期 | 订单号 | 类型（Pro 首购 / Pro 续费 / Team 申请） | 金额 | 渠道 | 注册邮箱（可打码） | 开通确认 | 状态 |
+| 日期 | 订单号 | 类型（Pro 首购 / Pro 续费 / Team 入门包 / Team 按席 / 诊断服务） | 金额 | 渠道 | 注册邮箱（可打码） | 开通确认 | 状态 |
 |---|---|---|---|---|---|---|---|
 |  |  | Pro |  | 爱发电 / 微信 / Lemon / Stripe |  | whoami=pro / 控制台 active | 待首笔 |
