@@ -68,8 +68,8 @@
       'demo.copyCmd': '复制本地复现命令',
       'dl.title': '安装 · 一分钟跑起来',
       'dl.copy': 'Community 永远免费 + 开源（Apache-2.0）。两种方式任选其一。',
-      'pricing.title': '出图免费，漂移闭环收费',
-      'pricing.copy': 'Community：Actions 漂移模板自托管免费。Pro：本机文件夹检查、企业微信提醒、托管 PR 评论（¥29/月）。Team：组织规范与门禁托管。'
+      'pricing.title': 'AI 改完码，谁验收架构？',
+      'pricing.copy': '工具永远免费。付费买的是人：AI 改码架构体检（早鸟 ¥999）或 Team 入门包（¥4,999/年，5 席）。Pro 降为赞助/托管便利档（¥29/月或 ¥199/年）。'
     },
     en: {
       'brand': 'Architecture Viewer',
@@ -127,8 +127,8 @@
       'demo.copyCmd': 'Copy local reproduce commands',
       'dl.title': 'Install · up in one minute',
       'dl.copy': 'Community stays free and open source (Apache-2.0). Pick any path.',
-      'pricing.title': 'Diagrams free. Drift loop paid.',
-      'pricing.copy': 'Community: free self-hosted Actions drift template. Pro: local folder check, WeCom alert, hosted PR comments (¥29/mo). Team: org rules and hosted gates.'
+      'pricing.title': 'AI shipped the code. Who accepts the architecture?',
+      'pricing.copy': 'The tool stays free. You pay for a human architecture checkup (early bird ¥999) or the Team starter (¥4,999/year, 5 seats). Pro is a sponsor/convenience tier at ¥29/month or ¥199/year.'
     }
   };
 

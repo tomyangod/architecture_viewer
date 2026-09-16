@@ -288,11 +288,45 @@ npm install
     </section>
 
     <section class="pricing" id="pricing">
-      <h2 data-i18n="pricing.title">出图免费，漂移闭环收费</h2>
+      <h2 data-i18n="pricing.title">AI 改完码，谁验收架构？</h2>
       <p class="section-copy" data-i18n="pricing.copy">
-        Community：Actions 漂移模板自托管免费。Pro：注册试用 7 天，托管 PR 漂移评论（¥29/月）。Team：组织规范与门禁托管。
+        工具永远免费。付费买的是人：AI 改码架构体检（早鸟 ¥999）或 Team 入门包（¥4,999/年，5 席）。Pro 降为赞助/托管便利档（¥29/月或 ¥199/年）。
       </p>
       <div class="price-grid">
+        <article class="featured">
+          <p class="price-tag">早鸟 · 限 3 席至 2026-09-30</p>
+          <h3>AI 改码架构体检</h3>
+          <p class="price">¥999<span> 早鸟</span></p>
+          <p class="section-copy" style="font-size:0.85rem;margin-bottom:0.65rem">其后 <strong>¥1,999 / 次</strong>。工具免费，付钱的是人把扫描跑完、判真伪、讲 45 分钟。</p>
+          <ul>
+            <li>扫描报告 · 增量 diff · 修复优先级 · 45 分钟讲解</li>
+            <li>私有仓本地跑，零上传；无有效发现全额退款</li>
+            <li>实测：约 5.7 万行仓、误报 46%→修复、第三方 7.0 分</li>
+          </ul>
+          <div class="price-cta">
+            <a class="btn primary" id="pay-wechat" href="https://gitee.com/heyangyan/architecture_viewer/blob/master/docs/commercial/billing.md#%E5%BE%AE%E4%BF%A1%E6%94%B6%E6%AC%BE" target="_blank" rel="noopener">微信预约</a>
+            <a class="btn ghost" href="https://github.com/tomyangod/architecture_viewer/blob/main/docs/commercial/diagnostic-service.md" target="_blank" rel="noopener">交付说明</a>
+          </div>
+        </article>
+        <article>
+          <p class="price-tag">主推付费 · 5 席入门包</p>
+          <h3>Team</h3>
+          <p class="price">¥4,999<span>/年</span></p>
+          <ul>
+            <li>5 席位 + 托管评论 + 发票 + 支持承诺</li>
+            <li>也可按 <strong>¥99/人/月</strong> 人工报价</li>
+            <li>早期采用者计划 · <a href="https://gitee.com/heyangyan/architecture_viewer/blob/master/docs/commercial/team-onprem.md" target="_blank" rel="noopener">私有化报价</a></li>
+          </ul>
+          <p class="section-copy" style="font-size:0.85rem;margin-bottom:0.5rem">验证期不开放自助下单，提交后 2 个工作日内人工联系报价。仓库 URL 选填。</p>
+          <form id="team-apply" class="account-form" style="margin-top:0.5rem">
+            <label>工作邮箱 <input type="email" id="team-email" required autocomplete="email" placeholder="you@company.com" /></label>
+            <label>仓库 HTTPS URL（选填） <input type="url" id="team-repo" placeholder="https://gitee.com/org/repo" /></label>
+            <div class="price-cta">
+              <button type="submit" class="btn primary" id="team-apply-btn">申请 Team 试点</button>
+            </div>
+            <p id="team-apply-tip" class="try-status" hidden></p>
+          </form>
+        </article>
         <article>
           <h3>Community</h3>
           <p class="price">¥0</p>
@@ -305,9 +339,11 @@ npm install
             <a class="btn ghost" href="#download">立即下载</a>
           </div>
         </article>
-        <article class="featured">
+        <article>
+          <p class="price-tag">赞助 / 托管便利</p>
           <h3>Pro</h3>
           <p class="price">¥29<span>/月</span></p>
+          <p class="section-copy" style="font-size:0.85rem;margin-bottom:0.65rem">或 <strong>¥199 / 年</strong>。不再作为主验证对象。</p>
           <ul>
             <li><strong>本机文件夹检查 + 企微提醒</strong></li>
             <li>托管 PR 漂移评论</li>
@@ -316,30 +352,11 @@ npm install
           <div class="price-cta">
             <a class="btn primary" href="/account.html">注册试用</a>
             <a class="btn ghost" id="pay-afdian" href="https://afdian.com/a/architecture-viewer" target="_blank" rel="noopener">爱发电</a>
-            <a class="btn ghost" id="pay-wechat" href="https://gitee.com/heyangyan/architecture_viewer/blob/master/docs/commercial/billing.md#%E5%BE%AE%E4%BF%A1%E6%94%B6%E6%AC%BE" target="_blank" rel="noopener">微信</a>
             <a class="btn ghost" id="pay-lemon" href="https://arch-viewer.lemonsqueezy.com/" target="_blank" rel="noopener">Lemon Squeezy</a>
           </div>
           <p class="section-copy" style="margin-top:0.75rem;font-size:0.9rem">
             付款后按 <a href="https://gitee.com/heyangyan/architecture_viewer/blob/master/docs/commercial/billing.md" target="_blank" rel="noopener">收款开通 SOP</a> 核验开通；Community 能力永不付费墙。
           </p>
-        </article>
-        <article>
-          <h3>Team</h3>
-          <p class="price">¥99<span>/人/月</span></p>
-          <ul>
-            <li><strong>CI 托管评论</strong>（按人）</li>
-            <li>architecture-rules 规范包</li>
-            <li>早期采用者计划 · <a href="https://gitee.com/heyangyan/architecture_viewer/blob/master/docs/commercial/team-onprem.md" target="_blank" rel="noopener">私有化报价</a></li>
-          </ul>
-          <p class="section-copy" style="font-size:0.85rem;margin-bottom:0.5rem">验证期不开放自助下单，提交后 2 个工作日内人工联系报价。</p>
-          <form id="team-apply" class="account-form" style="margin-top:0.5rem">
-            <label>工作邮箱 <input type="email" id="team-email" required autocomplete="email" placeholder="you@company.com" /></label>
-            <label>仓库 HTTPS URL <input type="url" id="team-repo" required placeholder="https://gitee.com/org/repo" /></label>
-            <div class="price-cta">
-              <button type="submit" class="btn primary" id="team-apply-btn">申请 Team 试点</button>
-            </div>
-            <p id="team-apply-tip" class="try-status" hidden></p>
-          </form>
         </article>
       </div>
     </section>
@@ -347,7 +364,7 @@ npm install
     <footer class="foot">
       <span>Architecture Viewer · v<span id="ver">0.1.0</span> · Apache-2.0</span>
       <span>
-        <a href="/account.html">Pro</a> · <a href="/api/health">API</a> · <a href="https://gitee.com/heyangyan/architecture_viewer/blob/master/docs/commercial/billing.md" target="_blank" rel="noopener">收款开通</a> · <a href="https://gitee.com/heyangyan/architecture_viewer/blob/master/docs/commercial/support.md" target="_blank" rel="noopener">支持</a> · <a href="https://gitee.com/heyangyan/architecture_viewer/blob/master/docs/commercial/invoice.md" target="_blank" rel="noopener">发票</a> · <a href="https://gitee.com/heyangyan/architecture_viewer/blob/master/docs/commercial/COMMERCIAL.md" target="_blank" rel="noopener">商业说明</a> · <a href="https://gitee.com/heyangyan/architecture_viewer/blob/master/docs/commercial/landing-deploy.md" target="_blank" rel="noopener">落地页部署</a>
+        <a href="/account.html">Pro</a> · <a href="/api/health">API</a> · <a href="https://github.com/tomyangod/architecture_viewer/blob/main/docs/commercial/diagnostic-service.md" target="_blank" rel="noopener">架构体检</a> · <a href="https://gitee.com/heyangyan/architecture_viewer/blob/master/docs/commercial/billing.md" target="_blank" rel="noopener">收款开通</a> · <a href="https://gitee.com/heyangyan/architecture_viewer/blob/master/docs/commercial/support.md" target="_blank" rel="noopener">支持</a> · <a href="https://gitee.com/heyangyan/architecture_viewer/blob/master/docs/commercial/invoice.md" target="_blank" rel="noopener">发票</a> · <a href="https://gitee.com/heyangyan/architecture_viewer/blob/master/docs/commercial/COMMERCIAL.md" target="_blank" rel="noopener">商业说明</a> · <a href="https://gitee.com/heyangyan/architecture_viewer/blob/master/docs/commercial/landing-deploy.md" target="_blank" rel="noopener">落地页部署</a>
       </span>
     </footer>
   </div>

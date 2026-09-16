@@ -28,7 +28,7 @@ Community CLI / `docker compose` **可以自己搭**，不收费。私有化买�
 
 | 项目 | 价格 | 说明 |
 |---|---|---|
-| 架构健康度诊断 | ¥4,999 / 次 | 全量 `session report` + 不超过 10 页书面结论 |
+| 架构健康度诊断 | ¥4,999 / 次 | 全量 `session report` + 不超过 10 页书面结论。对外单次「AI 改码架构体检」（早鸟 ¥999 / 常规 ¥1,999）是另一 SKU，见 [diagnostic-service.md](diagnostic-service.md) |
 | 分层 / rules 定制 | ¥9,999 起 | 按你们的模块约定写 `architecture-rules.yaml` |
 
 价格不含差旅；远程交付为默认。报价有效期 30 天。续费按当年档位，提前 30 天对公续约。
