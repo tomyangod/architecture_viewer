@@ -134,6 +134,31 @@ describe('W11-01 Team pricing copy', () => {
     assert.equal(r.status, 400);
   });
 
+  it('accepts team application without repoUrl; validates format only when provided', async () => {
+    const email = 'team-norepo-' + Date.now() + '@example.com';
+    const ok = await request('POST', '/api/billing/team-application', {
+      email,
+      channel: 'landing'
+    });
+    assert.equal(ok.status, 200, ok.body);
+    const d = JSON.parse(ok.body);
+    assert.equal(d.ok, true);
+    assert.equal(d.mode, 'manual-application');
+
+    const empty = await request('POST', '/api/billing/team-application', {
+      email: 'team-empty-' + Date.now() + '@example.com',
+      repoUrl: '   ',
+      channel: 'landing'
+    });
+    assert.equal(empty.status, 200, empty.body);
+
+    const bad = await request('POST', '/api/billing/team-application', {
+      email: 'team-badurl-' + Date.now() + '@example.com',
+      repoUrl: 'not-a-url'
+    });
+    assert.equal(bad.status, 400);
+  });
+
   it('legacy /api/billing/team-order route is gone (no self-serve ¥999 product)', async () => {
     const r = await request('POST', '/api/billing/team-order', {
       email: 'x@example.com',
@@ -177,5 +202,57 @@ describe('W12-01 team on-prem quote', () => {
     const page = await request('GET', '/');
     assert.equal(page.status, 200);
     assert.match(page.body, /team-onprem\.md/);
+  });
+});
+
+describe('GTM diagnostic + pricing reversal', () => {
+  it('diagnostic-service.md is a sendable close page with the four deliverables and WeChat SOP', () => {
+    const md = fs.readFileSync(path.join(__dirname, '..', 'docs', 'commercial', 'diagnostic-service.md'), 'utf8');
+    assert.match(md, /扫描报告/);
+    assert.match(md, /增量 diff/);
+    assert.match(md, /修复优先级/);
+    assert.match(md, /45\s*分钟/);
+    assert.match(md, /¥999/);
+    assert.match(md, /¥1,?999/);
+    assert.match(md, /2026-09-30/);
+    assert.match(md, /零上传/);
+    assert.match(md, /退款/);
+    assert.match(md, /工具本身免费|工具免费/);
+    assert.match(md, /billing\.md/);
+    assert.match(md, /AV-Diagnostic/);
+  });
+
+  it('landing features diagnostic first with pay-wechat, then Team ¥4,999, keeps per-seat and Pro convenience price', () => {
+    const html = fs.readFileSync(path.join(__dirname, '..', 'web', 'public', 'index.html'), 'utf8');
+    const featured = html.match(/<article class="featured">[\s\S]*?<\/article>/);
+    assert.ok(featured, 'featured diagnostic card');
+    assert.match(featured[0], /AI 改码架构体检/);
+    assert.match(featured[0], /¥999/);
+    assert.match(featured[0], /id="pay-wechat"/);
+    const diagIdx = html.indexOf('AI 改码架构体检');
+    const teamIdx = html.indexOf('id="team-apply"');
+    assert.ok(diagIdx > 0 && teamIdx > diagIdx, 'diagnostic card before team form');
+    assert.match(html, /¥4,999/);
+    assert.match(html, /¥99/);
+    assert.match(html, /人\/月|人 \/ 月/);
+    assert.match(html, /team-onprem\.md/);
+    assert.match(html, /¥199/);
+    assert.match(html, /id="pay-afdian"/);
+    assert.match(html, /id="pay-lemon"/);
+  });
+
+  it('landing hero uses dependency/caller copy, not gate-as-proven titles', () => {
+    const html = fs.readFileSync(path.join(__dirname, '..', 'web', 'public', 'index.html'), 'utf8');
+    const js = fs.readFileSync(path.join(__dirname, '..', 'web', 'public', 'app.js'), 'utf8');
+    assert.match(html, /AI 改完代码，先看这次改动涉及哪些依赖和调用方/);
+    assert.match(html, /结构通过不代表功能正确/);
+    assert.match(html, /社区能力免费。下面是试验报价/);
+    assert.doesNotMatch(html, /谁验收架构/);
+    assert.doesNotMatch(html, /出图免费，漂移闭环收费/);
+    assert.doesNotMatch(html, /架构图一脱节/);
+    assert.match(js, /After AI edits the code, see which dependencies and callers/);
+    assert.match(js, /Community is free\. Paid items below are experimental offers/);
+    assert.doesNotMatch(js, /谁验收架构/);
+    assert.doesNotMatch(js, /Diagrams free\. Drift loop paid/);
   });
 });

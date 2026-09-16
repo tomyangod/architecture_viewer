@@ -34,7 +34,7 @@ function teamPlan() {
   return {
     mode: 'manual-application',
     priceLabel: '¥99 / 人 / 月',
-    note: '早期采用者计划，人工报价，2 个工作日内联系',
+    note: 'Team 验证期仅接受试点申请。仓库 URL 选填，填写时才校验 http(s) 格式。',
     features: ['ci_hosted', 'rules_pack', 'gallery']
   };
 }
@@ -71,8 +71,8 @@ function createTeamApplication(body) {
     err.status = 400;
     throw err;
   }
-  if (!/^https?:\/\//i.test(repoUrl)) {
-    const err = new Error('请填写仓库 HTTPS URL');
+  if (repoUrl && !/^https?:\/\//i.test(repoUrl)) {
+    const err = new Error('仓库 URL 需为 http(s) 地址；也可留空');
     err.status = 400;
     throw err;
   }

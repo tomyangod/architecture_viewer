@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Architecture Viewer — 把仓库变成永不漂移的架构图门户</title>
-  <meta name="description" content="VS Code / Cursor 扩展：扫描仓库一键生成 C4 六视图，预览、做漂移校验，跟着 PR 一起更新，让架构图再也不脱节。" />
+  <title>Architecture Viewer — AI 改完代码，先看这次改动涉及哪些依赖和调用方</title>
+  <meta name="description" content="对照 Git 基线，列出结构变化、潜在影响和需要复查的位置，方便把检查结果交回 AI。不替代测试或完整代码审查；结构通过不代表功能正确。" />
   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
   <link rel="alternate icon" href="/favicon.ico" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -29,11 +29,10 @@
     </header>
 
     <section class="hero" id="top">
-      <p class="eyebrow" data-i18n="hero.eyebrow">开源 Apache-2.0 · 漂移红灯进 CI · CLI + Web</p>
-      <h1 data-i18n-html="hero.title">架构图一脱节，PR 就红灯。</h1>
+      <p class="eyebrow" data-i18n="hero.eyebrow">开源 Apache-2.0 · 对照 Git 基线 · CLI / MCP</p>
+      <h1 data-i18n="hero.title">AI 改完代码，先看这次改动涉及哪些依赖和调用方。</h1>
       <p class="lede" data-i18n="hero.lede">
-        Community 免费：粘贴 Git URL 出六视图，把 Actions 模板丢进仓库，图与代码不一致就拦合并。
-        可选精修（DeepSeek Key，约 30–90 秒）。Pro 再做托管评论与增量同步。
+        Architecture Viewer 对照 Git 基线，列出结构变化、潜在影响和需要复查的位置，方便你把检查结果交回 AI 处理。不替代测试或完整代码审查；结构通过不代表功能正确。
       </p>
 
       <div class="try-it">
@@ -108,29 +107,28 @@
 
     <section class="split" id="pain">
       <div>
-        <h2>为什么别再手画架构图</h2>
-        <p class="section-copy">
-          大多数架构图的半衰期就是发出去那天的下午。人走、代码动、需求改，图就开始撒谎。
-          我们的解法不是让你"更勤奋"，而是让代码 <strong>自己告诉图该怎么变</strong>。
+        <h2 data-i18n="pain.title">跨文件改完，先核对依赖和调用方</h2>
+        <p class="section-copy" data-i18n="pain.copy">
+          价值是看清这一轮动了谁；证据是文件、边、规则和 Git 基线；边界是不替代测试或完整审查。结构变化不一定是坏事，结构通过也不代表功能正确。
         </p>
       </div>
       <div class="pair">
         <article>
-          <h3>痛点</h3>
+          <h3 data-i18n="pain.leftTitle">常见卡点</h3>
           <ul class="feature-list feature-vs">
-            <li>写完一次就没人维护</li>
-            <li>新人入职看的是"去年的真相"</li>
-            <li>评审会上对不上模块名</li>
-            <li>运维部署跟图上的架构不一致</li>
+            <li data-i18n="pain.left1">AI 跨模块改代码，调用方和依赖容易漏</li>
+            <li data-i18n="pain.left2">编译、单测、AI 自查过了，结构边仍可能变了</li>
+            <li data-i18n="pain.left3">全仓历史债和本轮增量混在一起，难复查</li>
+            <li data-i18n="pain.left4">把结果交回 AI 时，缺少可指认的文件和边</li>
           </ul>
         </article>
         <article>
           <h3>Architecture Viewer</h3>
           <ul class="feature-list feature-vs win">
-            <li>Generate 一键更新六视图</li>
-            <li>PR 里自动跑 Validate，漂移直接红</li>
-            <li>节点 ID 对齐到真实模块 / 服务名</li>
-            <li>部署目录、compose 服务、入口文件都纳入扫描</li>
+            <li data-i18n="pain.right1">对照 Git 基线列出本轮结构变化</li>
+            <li data-i18n="pain.right2">标出潜在影响面和需要复查的位置</li>
+            <li data-i18n="pain.right3">规则可复验；不承诺无误报、无漏报</li>
+            <li data-i18n="pain.right4">本地 CLI / MCP，方便把检查结果交回 AI</li>
           </ul>
         </article>
       </div>
@@ -288,11 +286,45 @@ npm install
     </section>
 
     <section class="pricing" id="pricing">
-      <h2 data-i18n="pricing.title">出图免费，漂移闭环收费</h2>
+      <h2 data-i18n="pricing.title">社区能力免费。下面是试验报价。</h2>
       <p class="section-copy" data-i18n="pricing.copy">
-        Community：Actions 漂移模板自托管免费。Pro：注册试用 7 天，托管 PR 漂移评论（¥29/月）。Team：组织规范与门禁托管。
+        分析能力本身免费。体检、Team 入门包、Pro 都是试验报价，不是已验证的商业模式：早鸟体检 ¥999、Team ¥4,999/年（5 席）、Pro ¥29/月或 ¥199/年。
       </p>
       <div class="price-grid">
+        <article class="featured">
+          <p class="price-tag">早鸟 · 限 3 席至 2026-09-30</p>
+          <h3>AI 改码架构体检</h3>
+          <p class="price">¥999<span> 早鸟</span></p>
+          <p class="section-copy" style="font-size:0.85rem;margin-bottom:0.65rem">其后 <strong>¥1,999 / 次</strong>。工具免费，付钱的是人把扫描跑完、判真伪、讲 45 分钟。</p>
+          <ul>
+            <li>扫描报告 · 增量 diff · 修复优先级 · 45 分钟讲解</li>
+            <li>私有仓本地跑，零上传；无有效发现全额退款</li>
+            <li>实测：约 5.7 万行仓、误报 46%→修复、第三方 7.0 分</li>
+          </ul>
+          <div class="price-cta">
+            <a class="btn primary" id="pay-wechat" href="https://gitee.com/heyangyan/architecture_viewer/blob/master/docs/commercial/billing.md#%E5%BE%AE%E4%BF%A1%E6%94%B6%E6%AC%BE" target="_blank" rel="noopener">微信预约</a>
+            <a class="btn ghost" href="https://github.com/tomyangod/architecture_viewer/blob/main/docs/commercial/diagnostic-service.md" target="_blank" rel="noopener">交付说明</a>
+          </div>
+        </article>
+        <article>
+          <p class="price-tag">试验报价 · 5 席入门包</p>
+          <h3>Team</h3>
+          <p class="price">¥4,999<span>/年</span></p>
+          <ul>
+            <li>5 席位 + 托管评论 + 发票 + 支持承诺</li>
+            <li>也可按 <strong>¥99/人/月</strong> 人工报价</li>
+            <li>早期采用者计划 · <a href="https://gitee.com/heyangyan/architecture_viewer/blob/master/docs/commercial/team-onprem.md" target="_blank" rel="noopener">私有化报价</a></li>
+          </ul>
+          <p class="section-copy" style="font-size:0.85rem;margin-bottom:0.5rem">验证期不开放自助下单，提交后 2 个工作日内人工联系报价。仓库 URL 选填。</p>
+          <form id="team-apply" class="account-form" style="margin-top:0.5rem">
+            <label>工作邮箱 <input type="email" id="team-email" required autocomplete="email" placeholder="you@company.com" /></label>
+            <label>仓库 HTTPS URL（选填） <input type="url" id="team-repo" placeholder="https://gitee.com/org/repo" /></label>
+            <div class="price-cta">
+              <button type="submit" class="btn primary" id="team-apply-btn">申请 Team 试点</button>
+            </div>
+            <p id="team-apply-tip" class="try-status" hidden></p>
+          </form>
+        </article>
         <article>
           <h3>Community</h3>
           <p class="price">¥0</p>
@@ -305,9 +337,11 @@ npm install
             <a class="btn ghost" href="#download">立即下载</a>
           </div>
         </article>
-        <article class="featured">
+        <article>
+          <p class="price-tag">赞助 / 托管便利</p>
           <h3>Pro</h3>
           <p class="price">¥29<span>/月</span></p>
+          <p class="section-copy" style="font-size:0.85rem;margin-bottom:0.65rem">或 <strong>¥199 / 年</strong>。不再作为主验证对象。</p>
           <ul>
             <li><strong>本机文件夹检查 + 企微提醒</strong></li>
             <li>托管 PR 漂移评论</li>
@@ -316,30 +350,11 @@ npm install
           <div class="price-cta">
             <a class="btn primary" href="/account.html">注册试用</a>
             <a class="btn ghost" id="pay-afdian" href="https://afdian.com/a/architecture-viewer" target="_blank" rel="noopener">爱发电</a>
-            <a class="btn ghost" id="pay-wechat" href="https://gitee.com/heyangyan/architecture_viewer/blob/master/docs/commercial/billing.md#%E5%BE%AE%E4%BF%A1%E6%94%B6%E6%AC%BE" target="_blank" rel="noopener">微信</a>
             <a class="btn ghost" id="pay-lemon" href="https://arch-viewer.lemonsqueezy.com/" target="_blank" rel="noopener">Lemon Squeezy</a>
           </div>
           <p class="section-copy" style="margin-top:0.75rem;font-size:0.9rem">
             付款后按 <a href="https://gitee.com/heyangyan/architecture_viewer/blob/master/docs/commercial/billing.md" target="_blank" rel="noopener">收款开通 SOP</a> 核验开通；Community 能力永不付费墙。
           </p>
-        </article>
-        <article>
-          <h3>Team</h3>
-          <p class="price">¥99<span>/人/月</span></p>
-          <ul>
-            <li><strong>CI 托管评论</strong>（按人）</li>
-            <li>architecture-rules 规范包</li>
-            <li>早期采用者计划 · <a href="https://gitee.com/heyangyan/architecture_viewer/blob/master/docs/commercial/team-onprem.md" target="_blank" rel="noopener">私有化报价</a></li>
-          </ul>
-          <p class="section-copy" style="font-size:0.85rem;margin-bottom:0.5rem">验证期不开放自助下单，提交后 2 个工作日内人工联系报价。</p>
-          <form id="team-apply" class="account-form" style="margin-top:0.5rem">
-            <label>工作邮箱 <input type="email" id="team-email" required autocomplete="email" placeholder="you@company.com" /></label>
-            <label>仓库 HTTPS URL <input type="url" id="team-repo" required placeholder="https://gitee.com/org/repo" /></label>
-            <div class="price-cta">
-              <button type="submit" class="btn primary" id="team-apply-btn">申请 Team 试点</button>
-            </div>
-            <p id="team-apply-tip" class="try-status" hidden></p>
-          </form>
         </article>
       </div>
     </section>
@@ -347,7 +362,7 @@ npm install
     <footer class="foot">
       <span>Architecture Viewer · v<span id="ver">0.1.0</span> · Apache-2.0</span>
       <span>
-        <a href="/account.html">Pro</a> · <a href="/api/health">API</a> · <a href="https://gitee.com/heyangyan/architecture_viewer/blob/master/docs/commercial/billing.md" target="_blank" rel="noopener">收款开通</a> · <a href="https://gitee.com/heyangyan/architecture_viewer/blob/master/docs/commercial/support.md" target="_blank" rel="noopener">支持</a> · <a href="https://gitee.com/heyangyan/architecture_viewer/blob/master/docs/commercial/invoice.md" target="_blank" rel="noopener">发票</a> · <a href="https://gitee.com/heyangyan/architecture_viewer/blob/master/docs/commercial/COMMERCIAL.md" target="_blank" rel="noopener">商业说明</a> · <a href="https://gitee.com/heyangyan/architecture_viewer/blob/master/docs/commercial/landing-deploy.md" target="_blank" rel="noopener">落地页部署</a>
+        <a href="/account.html">Pro</a> · <a href="/api/health">API</a> · <a href="https://github.com/tomyangod/architecture_viewer/blob/main/docs/commercial/diagnostic-service.md" target="_blank" rel="noopener">架构体检</a> · <a href="https://gitee.com/heyangyan/architecture_viewer/blob/master/docs/commercial/billing.md" target="_blank" rel="noopener">收款开通</a> · <a href="https://gitee.com/heyangyan/architecture_viewer/blob/master/docs/commercial/support.md" target="_blank" rel="noopener">支持</a> · <a href="https://gitee.com/heyangyan/architecture_viewer/blob/master/docs/commercial/invoice.md" target="_blank" rel="noopener">发票</a> · <a href="https://gitee.com/heyangyan/architecture_viewer/blob/master/docs/commercial/COMMERCIAL.md" target="_blank" rel="noopener">商业说明</a> · <a href="https://gitee.com/heyangyan/architecture_viewer/blob/master/docs/commercial/landing-deploy.md" target="_blank" rel="noopener">落地页部署</a>
       </span>
     </footer>
   </div>

@@ -30,6 +30,7 @@
 | 文档 | 说明 |
 |------|------|
 | [COMMERCIAL.md](./commercial/COMMERCIAL.md) | 开源边界与 Community / Pro / Team 定价 |
+| [diagnostic-service.md](./commercial/diagnostic-service.md) | AI 改码架构体检成交页（早鸟 ¥999 / 常规 ¥1,999） |
 | [billing.md](./commercial/billing.md) | 收款 → 核验 → 开通 SOP |
 | [support.md](./commercial/support.md) | 支持渠道 |
 | [invoice.md](./commercial/invoice.md) | 对公开票 |

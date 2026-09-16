@@ -14,9 +14,9 @@
 
 落地页：`/#pricing` · API：`GET /api/billing/links` · 说明：本文件。
 
-价格（2026-09-16 COMMERCIAL v3）：**Pro ¥29 / 月或 ¥199 / 年（赞助档）** · **Team 入门包 ¥4,999 / 年（主推，人工报价）** · **架构体检诊断 ¥1,999 / 次（早鸟 ¥999 限 3 席至 09-30，现金流通路同下方微信/对公流程）** · Team 按席 ¥99/人/月仍验证期人工申请，与 [COMMERCIAL.md](COMMERCIAL.md) 一致。
+价格（2026-09-16 COMMERCIAL v3）：**Pro ¥29 / 月或 ¥199 / 年（赞助档）** · **Team 入门包 ¥4,999 / 年（人工报价）** · **AI 改码架构体检 ¥1,999 / 次**（早鸟 **¥999** 限 3 席至 2026-09-30，见 [diagnostic-service.md](diagnostic-service.md)） · Team 按席 ¥99 / 人 / 月仍验证期人工申请，与 [COMMERCIAL.md](COMMERCIAL.md) 一致。
 
-Team 验证期不开放自助下单：落地页定价卡「申请试点」或 `POST /api/billing/team-application` `{ email, repoUrl, channel, teamSize? }`，只登记意向、不生成订单、不开通；人工报价（2 个工作日内联系）成交后由管理员走开通流程。
+Team 验证期不开放自助下单：落地页定价卡「申请试点」或 `POST /api/billing/team-application` `{ email, repoUrl?, channel, teamSize? }`，只登记意向、不生成订单、不开通；`repoUrl` 选填，填写时才校验 `http(s)://` 格式。人工报价（2 个工作日内联系）成交后由管理员走开通流程。
 
 ---
 
@@ -73,11 +73,18 @@ curl -X POST "$ARCH_PUBLIC_URL/api/pro/admin/license" \
 暂无独立商户号时：
 
 1. 运营用个人/对公微信收款码（**勿**把静态二维码提交进公开 git；放在私密运营文档或 `ARCH_PAY_WECHAT_URL` 指向的私有页）。
-2. 客户转账备注：`AV-Pro you@example.com`。
-3. 运营按上文「核验 → 开通」执行。
+2. 客户转账备注：
+   - Pro：`AV-Pro you@example.com`
+   - 架构体检：`AV-Diagnostic` + 微信号或邮箱（私有仓不要写仓库 URL）
+   - Team：`AV-Team` + 注册邮箱（成交后开通，见 [invoice.md](invoice.md)）
+3. 运营按上文「核验 → 开通」执行；**体检不是开通许可证**，核验后按 [diagnostic-service.md](diagnostic-service.md) 排期交付（到账后 48 小时内）。
 4. 需要发票：走 [invoice.md](invoice.md) 对公流程。
 
-把 `ARCH_PAY_WECHAT_URL` 设成你托管的说明页后，定价区「微信」按钮会直达该页。
+把 `ARCH_PAY_WECHAT_URL` 设成你托管的说明页后，定价区「微信预约 / 微信」按钮会直达该页。落地页体检卡的预约按钮 `id="pay-wechat"` 指向本锚点（或环境变量覆盖）。
+
+### 诊断服务（同一微信通道）
+
+不另开商户、不新增支付链接。客户按上表转 **¥999**（早鸟，2026-09-30 前且 3 席未满）或 **¥1,999**，备注 `AV-Diagnostic`。无有效发现全额退款，条件写在成交页。私有仓扫描在客户机器上跑，零上传。
 
 ---
 
