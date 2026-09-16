@@ -34,7 +34,7 @@ function teamPlan() {
   return {
     mode: 'manual-application',
     priceLabel: '¥99 / 人 / 月',
-    note: 'Team 验证期仅接受试点申请。仓库 URL 选填，填写时才校验 http(s) 格式。'
+    note: 'Team 验证期仅接受试点申请。仓库 URL 选填，填写时才校验 http(s) 格式。',
     features: ['ci_hosted', 'rules_pack', 'gallery']
   };
 }
