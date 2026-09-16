@@ -2,7 +2,7 @@
   "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
   "name": "io.github.tomyangod/architecture-viewer",
   "title": "Architecture Viewer",
-  "description": "Local MCP architecture gate: after AI edits, 3-line verdict vs git HEAD. Offline, no LLM.",
+  "description": "After AI edits, see which deps and callers this change touches. Local MCP, no LLM.",
   "version": "0.12.2-rc.6",
   "websiteUrl": "https://github.com/tomyangod/architecture_viewer",
   "repository": {
