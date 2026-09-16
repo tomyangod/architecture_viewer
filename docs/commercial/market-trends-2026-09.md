@@ -8,8 +8,9 @@
 ## 板块一：AI 编码 Agent 市场规模与增速
 
 **数据点 1.1｜开发者 AI 工具渗透率**
-- 84% 开发者「正在使用或计划使用」AI 编码工具（2024 年为 76%）；51% 职业开发者每日使用；对 AI 输出准确性的信任度跌至 **29%**（前一年为 40%）。
+- 84% 开发者「正在使用或计划使用」AI 编码工具（2024 年为 76%）；51% 职业开发者每日使用；对 AI 输出**准确性**的信任度跌至 **29%**（前一年为 40%）。
 - 来源：**Stack Overflow 2025 Developer Survey**（2025-08 发布，49,000+ 受访者）。全球。
+- **限定**：29% 是对 AI 输出准确性的信任度下降，支持「对 AI 输出存在不信任」；不直接证明用户需要独立架构工具（不信任可能来自逻辑/安全/可解释性，非仅架构）。
 
 **数据点 1.2｜平台级活跃度**
 - GitHub 开发者总数 **180M+**；新开发者首周即用 Copilot 比例 **80%**；月均合并 PR **4,320 万**（同比 +23%）；全年合并 PR **5.187 亿**（+29%）；AI 相关公开仓库超 **430 万**。
@@ -41,7 +42,7 @@
 
 **数据点 2.3｜Greptile**：约 **$30M A 轮**（Benchmark 领投，2025），全仓上下文审查，定价 $30/活跃开发者·月。来源：BirJob / Sacra（2025–2026）。全球。
 
-**数据点 2.4｜Zügel**：hello2morrow 的 MCP Server，「编码 Agent 的架构良知」，写前架构约束检查，Java/Python/C#；v26.5.6 发布于 2026-09-11。来源：hello2morrow 官方博客。全球。
+**数据点 2.4｜Sonargraph MCP（竞争确认）**：hello2morrow 的 Sonargraph MCP Server，「编码 Agent 的架构良知」，提供写前架构约束检查，支持 Java/Python/C#，可独立于 Sonargraph 使用；v26.5.11 发布于 2026-09-14 左右。来源：hello2morrow 官方博客 https://blog.hello2morrow.com/2026/07/sonargraph-mcp-2/。全球。**意义**：市场有需求信号 AND 直接竞争——AV 差异化必须在真实项目中证明（更易接入、输出更可复核、噪音更低），不是「我们发明了 MCP 架构检查」。
 
 **数据点 2.5｜「从泛审查转向架构验证」信号**：AI code review 演进至第三代「Agent Reviewers」，架构审查能力评分从第一代 5 升至第三代 78（满分 100）；行业叙事「verify architecture not code」。来源：crashbytes 三代能力模型（2026）/ SD Times《2026 Quality Collapse》（2026）。全球。
 
@@ -61,9 +62,10 @@
 - 开发者约 **33%** 工作时间（约 13.5h/周）处理技术债；技术债占企业技术资产价值 20–40%。来源：Stripe《Developer Coefficient》/ McKinsey。全球。
 - 75% 技术决策者预计技术债将在 2025 年升至中/高级别。来源：Forrester 2025 predictions。全球。
 
-**锚点 B｜架构违规率**：iBuidl 对 **14,000 个 PR** 六个月实测：AI 辅助代码语法/逻辑 bug 率比人写低 12%，但**架构违规率（耦合、忽略既有抽象）高 23%**。来源：iBuidl telemetry study（经 antoniopagano.com 2026 综述引用）。全球。
+**锚点 B｜架构违规率（研究线索，非硬证据）**：iBuidl 对 **14,000 个 PR** 六个月观察：AI 辅助代码语法/逻辑 bug 率比人写低 12%，但**架构违规率（耦合、忽略既有抽象）高 23%**。来源：iBuidl telemetry study（经 antoniopagano.com 2026 综述引用）。全球。
+- **限定**：这是**研究线索 / 博客引用**，非独立验证的市场锚点；原始报告未公开方法学/对照组细节，不可作为硬性市场证据或定价依据，仅作需求信号参考。
 
-- 「architecture erosion at machine speed」叙事集中出现；Zügel 实验显示 Agent 一次会话可制造 11 类循环依赖，传统规则引擎与 PR 审查均难捕获。来源：SD Times（2026）/ hello2morrow 博客（2026）。全球。
+- 「architecture erosion at machine speed」叙事集中出现；Sonargraph 实验显示 Agent 一次会话可制造 11 类循环依赖，传统规则引擎与 PR 审查均难捕获。来源：SD Times（2026）/ hello2morrow 博客（2026）。全球。
 - 未找到「架构漂移」招聘 JD 频次、社媒讨论量的公开量化数据。
 
 ## 板块五：中国市场特异性
@@ -88,4 +90,4 @@
 
 ---
 
-**三锚点精确出处**：信任缺口 29% = Stack Overflow 2025（2025-08）；架构违规率 +23% = iBuidl 14,000-PR 实测（2026）；技术债 $2.41T = Accenture 2025 Digital Core。
+**三锚点精确出处**：信任缺口 29% = Stack Overflow 2025（2025-08）；架构违规率 +23% = iBuidl 14,000-PR 观察（2026，博客引用，研究线索非硬证据）；软件质量成本 $2.41T（其中技术债 $1.52T）= CISQ / Synopsys 2022（美国，宏观痛点，不作为 AV 可寻址市场）；Sonargraph MCP = hello2morrow 2026-09（竞争确认）。
