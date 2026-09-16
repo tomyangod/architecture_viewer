@@ -14,7 +14,7 @@
 
 落地页：`/#pricing` · API：`GET /api/billing/links` · 说明：本文件。
 
-价格：**Pro ¥29 / 月** · **Team ¥99 / 人 / 月**（验证期仅人工申请，与 [COMMERCIAL.md](COMMERCIAL.md) 一致）。
+价格（2026-09-16 COMMERCIAL v3）：**Pro ¥29 / 月或 ¥199 / 年（赞助档）** · **Team 入门包 ¥4,999 / 年（主推，人工报价）** · **架构体检诊断 ¥1,999 / 次（早鸟 ¥999 限 3 席至 09-30，现金流通路同下方微信/对公流程）** · Team 按席 ¥99/人/月仍验证期人工申请，与 [COMMERCIAL.md](COMMERCIAL.md) 一致。
 
 Team 验证期不开放自助下单：落地页定价卡「申请试点」或 `POST /api/billing/team-application` `{ email, repoUrl, channel, teamSize? }`，只登记意向、不生成订单、不开通；人工报价（2 个工作日内联系）成交后由管理员走开通流程。
 
