@@ -144,15 +144,15 @@ More than I'd like to admit. The restart cost isn't the chat — it's re-verifyi
 
 | # | 渠道 | 对象 | 发出时间 | 状态 | 回复摘要 |
 |---|---|---|---|---|---|
-| A1 | 掘金私信 | #1 不破坏架构 / 全栈狂人 | 2026-09-14 | 已发 | 精简版成功；https://juejin.cn/notification/im?participantId=530400691368462 |
-| A2 | 掘金私信 | #2 SDD | 2026-09-14 | 已发 |  |
-| A3 | 掘金私信 | #3 Prompt→Spec | 2026-09-14 | 已发 |  |
-| A4 | 掘金私信 | #4 OpenSpec | 2026-09-14 | 已发 |  |
-| A5 | 掘金私信 | #5 Cursor 四模式 | 2026-09-14 | 已发 |  |
-| A6 | 掘金私信 | #6 质量保障体系 | 2026-09-14 | 已发 |  |
-| B1 | GitHub | Graphenium | 2026-09-14 | 已发 | https://github.com/lambda-alpha-labs/Graphenium/issues/39 |
-| B2 | GitHub | Yggdrasil | 2026-09-14 | 已发 | https://github.com/krzysztofdudek/Yggdrasil/discussions/95 |
-| B3 | GitHub | archcodex | 2026-09-14 | 已发 | https://github.com/ArchCodexOrg/archcodex/discussions/32 |
+| A1 | 掘金私信 | #1 不破坏架构 / 全栈狂人 | 2026-09-14 | 已发 | 精简版成功；https://juejin.cn/notification/im?participantId=530400691368462；Day-3 失败（掘金未关注单条限制） |
+| A2 | 掘金私信 | #2 SDD / 陈酒尽余欢 | 2026-09-14 | 已发 | Day-3 失败（掘金未关注单条限制） |
+| A3 | 掘金私信 | #3 Prompt→Spec / brycegao | 2026-09-14 | 已发 | Day-3 失败（掘金未关注单条限制） |
+| A4 | 掘金私信 | #4 OpenSpec / 常温推理 | 2026-09-14 | 已发 | Day-3 失败（掘金未关注单条限制） |
+| A5 | 掘金私信 | #5 Cursor 四模式 / 牧艺 | 2026-09-14 | 已发 | Day-3 失败（掘金未关注单条限制） |
+| A6 | 掘金私信 | #6 质量保障体系 / 进击的尘埃 | 2026-09-14 | 已发 | Day-3 失败（掘金未关注单条限制） |
+| B1 | GitHub | Graphenium | 2026-09-14 | 已发 | https://github.com/lambda-alpha-labs/Graphenium/issues/39；Day-3 已跟进 2026-09-17 https://github.com/lambda-alpha-labs/Graphenium/issues/39#issuecomment-5707027755 |
+| B2 | GitHub | Yggdrasil | 2026-09-14 | 已发 | https://github.com/krzysztofdudek/Yggdrasil/discussions/95；Day-3 已跟进 2026-09-17 https://github.com/krzysztofdudek/Yggdrasil/discussions/95#discussioncomment-18474276 |
+| B3 | GitHub | archcodex | 2026-09-14 | 已发 | https://github.com/ArchCodexOrg/archcodex/discussions/32；Day-3 已跟进 2026-09-17 https://github.com/ArchCodexOrg/archcodex/discussions/32#discussioncomment-18474288 |
 | C1–C3 | Reddit | 三个 r/cursor 帖 | — | 跳过 | 用户此前明确跳过 |
 
 **跟进规则**（outreach-kit §5）：已读未回 3 个工作日后最多跟一次；拒绝即止并记原话；感兴趣排期的约定具体日期。
