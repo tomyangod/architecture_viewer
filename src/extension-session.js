@@ -16,7 +16,7 @@ const vscode = require('vscode');
 const fs = require('fs');
 const path = require('path');
 
-const { buildGraph } = require('../lib/extract-graph');
+const { buildGraph, attachCallEdges } = require('../lib/extract-graph');
 const { diffGraphs } = require('../lib/diff-graph');
 const { summarizeFindings } = require('../lib/risk-rules');
 const { runAnalyzers } = require('../lib/analyzers');
@@ -273,7 +273,8 @@ async function runAnalysis(state, status, notify) {
     await tick(); // 让出事件循环，刷新「分析中」角标
     const baseline = resolved.graph;
     const sessionStartTs = baseline.sessionStartedAt || baseline.cachedAt || null;
-    const current = buildGraph(root);
+    const current = buildGraph(root, { calls: true });
+    attachCallEdges(current, { incremental: true, base: baseline });
     const diff = diffGraphs(baseline, current);
     const impact = computeImpact(diff, baseline, current);
     const { merged, sources: analyzerStatus } = runAnalyzers(root, { current, baseline, diff, impact });
@@ -281,6 +282,8 @@ async function runAnalysis(state, status, notify) {
     const riskSummary = summarizeFindings(findings);
 
     fs.mkdirSync(avDir(root), { recursive: true });
+    const { buildAwareness, markAwarenessSeen } = require('../lib/awareness');
+    const awareness = buildAwareness({ findings, diff, repo: root, headGraph: current });
     const html = generateReport({
       baseGraph: baseline,
       headGraph: current,
@@ -289,7 +292,8 @@ async function runAnalysis(state, status, notify) {
       analyzerStatus,
       impact,
       repoName: path.basename(root),
-      sessionStart: sessionStartTs
+      sessionStart: sessionStartTs,
+      awareness
     });
     fs.writeFileSync(reportHtmlPath(root), html);
     fs.writeFileSync(
@@ -297,9 +301,13 @@ async function runAnalysis(state, status, notify) {
       JSON.stringify(buildSessionReportJson({
         diff, findings, riskSummary, impact, analyzerStatus,
         baseGraph: baseline, headGraph: current,
-        repoName: path.basename(root)
+        repoName: path.basename(root),
+        awareness
       }), null, 2)
     );
+    try {
+      markAwarenessSeen(root, { awareness, headFingerprint: current.fingerprint });
+    } catch { /* best-effort */ }
 
     state.result = { diff, findings, riskSummary, impact, analyzerStatus, htmlPath: reportHtmlPath(root) };
     state.hasBaseline = true;

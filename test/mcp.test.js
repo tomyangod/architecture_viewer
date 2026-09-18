@@ -599,6 +599,8 @@ describe('MCP Server: 输入 schema 校验（fail-closed）', () => {
   it('合法参数通过', () => {
     const v = validateToolArgs('av_archify_export', { repo: '/tmp/x', scope: 'layers', validate: false });
     assert.equal(v.scope, 'layers');
+    const muted = validateToolArgs('av_guard', { repo: '/tmp/x', muteAwareness: 'schema-touched' });
+    assert.equal(muted.muteAwareness, 'schema-touched');
   });
 
   it('handleToolCall 非法参数不执行工具', () => {
