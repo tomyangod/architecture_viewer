@@ -29,6 +29,7 @@ const { computeImpact } = require('../lib/impact');
 const { generateReport, appendSessionHistory, clearStaleSessionReports, buildSessionReportJson, isStaleReport } = require('../lib/session-report');
 const { formatReviewWalkText, emptyWalk } = require('../lib/review-walk');
 const { migrateReport } = require('../lib/report-contract');
+const { ALLOWED_MUTE_RULES } = require('../lib/awareness');
 const { exportArchify, finalizeSessionHtml } = require('../lib/archify-export');
 const { DEFAULT_SESSION_RENDERER } = require('../lib/view-policy');
 const { EXIT, exitCodeForAnalysis } = require('../lib/exit-codes');
@@ -1196,7 +1197,7 @@ const TOOLS = [
         repo: { type: 'string', description: '必填。当前工作区根目录的绝对路径。' },
         editDir: { type: 'string', description: '可选。正在改代码的目录；与 repo 冲突时中止。' },
         confirmRepo: { type: 'string', description: '可选。确认检查 repo（当 cwd 是另一个 Git 根时）。' },
-        muteAwareness: { type: 'string', enum: ['schema-touched', 'signature-break', 'layer-skip', 'new-external-dep', 'sensitive-sink'], description: '仅当用户明确说「不用再看这类」时传入规则名。写入感知偏好，不影响门禁退出码。' }
+        muteAwareness: { type: 'string', enum: Array.from(ALLOWED_MUTE_RULES), description: '仅当用户明确说「不用再看这类」时传入规则名。写入感知偏好，不影响门禁退出码。' }
       },
       required: ['repo']
     }
@@ -1238,7 +1239,7 @@ const TOOLS = [
         from: { type: 'string', enum: ['session'], description: '可选：从会话报告取数据' },
         editDir: { type: 'string', description: '可选。正在改代码的目录；与 repo 冲突时中止。' },
         confirmRepo: { type: 'string', description: '可选。确认检查 repo（当 cwd 是另一个 Git 根时）。' },
-        muteAwareness: { type: 'string', enum: ['schema-touched', 'signature-break', 'layer-skip', 'new-external-dep', 'sensitive-sink'], description: '仅当用户明确说「不用再看这类」时传入规则名。写入感知偏好，不影响门禁退出码。' }
+        muteAwareness: { type: 'string', enum: Array.from(ALLOWED_MUTE_RULES), description: '仅当用户明确说「不用再看这类」时传入规则名。写入感知偏好，不影响门禁退出码。' }
       },
       required: ['repo']
     }
