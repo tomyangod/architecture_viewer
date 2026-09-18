@@ -83,12 +83,16 @@ describe('session-report golden + delivery contract', () => {
     );
   });
 
-  it('HTML 含 Before/Delta/After 三栏与无障碍语义标记', () => {
+  it('HTML 含审查走查首屏，三栏图降为可折叠结构对照', () => {
     const { base, head, diff } = miniGraphs();
     const html = generateReport({
       baseGraph: base, headGraph: head, diff, findings: [], impact: null,
       repoName: 'demo', sessionStart: null
     });
+    assert.match(html, /id="walk-section"/);
+    assert.match(html, /审查走查/);
+    assert.match(html, /id="graph-details"/);
+    assert.match(html, /结构对照 Before \/ Delta \/ After/);
     assert.match(html, /id="graph-before"/);
     assert.match(html, /id="graph-delta"/);
     assert.match(html, /id="graph-after"/);
@@ -98,6 +102,10 @@ describe('session-report golden + delivery contract', () => {
     assert.match(html, /lang="zh-CN"/);
     assert.match(html, /meta name="viewport"/);
     assert.match(html, /triple-graph/);
+    assert.ok(
+      html.indexOf('id="walk-section"') < html.indexOf('id="graph-details"'),
+      '走查首屏应排在结构对照之前'
+    );
   });
 
   it('golden: 规范化 report payload 与金文件逐字节一致', () => {

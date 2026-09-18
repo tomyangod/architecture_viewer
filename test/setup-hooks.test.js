@@ -149,11 +149,12 @@ describe('av_guard MCP', () => {
     }
   });
 
-  it('TOOLS 含 av_guard 且共 8 个', () => {
-    assert.equal(TOOLS.length, 8);
+  it('TOOLS 含 av_guard 且共 9 个', () => {
+    assert.equal(TOOLS.length, 9);
     assert.ok(TOOLS.some((t) => t.name === 'av_guard'));
     assert.ok(TOOLS.some((t) => t.name === 'av_session_start'));
     assert.ok(TOOLS.some((t) => t.name === 'av_session_report'));
+    assert.ok(TOOLS.some((t) => t.name === 'av_review_walk'));
   });
 
   it('无基线时自动 ensure，返回 verdict', () => {

@@ -3,11 +3,12 @@
 /**
  * Architecture Viewer MCP Server
  *
- * 暴露 8 个工具给 AI Agent（Cursor / Claude / DeepSeek Harness / Windsurf…）：
+ * 暴露 9 个工具给 AI Agent（Cursor / Claude / DeepSeek Harness / Windsurf…）：
  *   av_guard           — 日常结构门：ensure 基线 + 本轮 verdict（优先）
  *   av_session_start    — AI 改代码前记录快照基线（高级 / 无 git）
  *   av_session_changes  — 轻量：有没有架构变更
  *   av_session_report   — 完整报告（与 av_guard 同级 verdict；HTML 可选）
+ *   av_review_walk      — 本轮变更的人工阅读顺序（≤8 行；HTML 可选深挖）
  *   av_status           — 基线 / 监听 / 缓存 / 是否过期（给人看）
  *   av_check_layering   — 实时检测当前代码的跨层违规（不需要基线）
  *   av_explain_finding  — 解释一条违规的结构化事实
@@ -26,6 +27,7 @@ const { evaluateRisk, collectSnapshotInventory, summarizeFindings, LAYER_LABEL, 
 const { writeSessionIntent } = require('../lib/session-intent');
 const { computeImpact } = require('../lib/impact');
 const { generateReport, appendSessionHistory, clearStaleSessionReports, buildSessionReportJson, isStaleReport } = require('../lib/session-report');
+const { formatReviewWalkText, emptyWalk } = require('../lib/review-walk');
 const { migrateReport } = require('../lib/report-contract');
 const { exportArchify, finalizeSessionHtml } = require('../lib/archify-export');
 const { DEFAULT_SESSION_RENDERER } = require('../lib/view-policy');
@@ -138,9 +140,9 @@ function shouldWatchFile(filePath) {
  * 核心报告生成逻辑（watcher 和手动调用共用）。
  * 生成 diff + 风险 + 影响面 + HTML/JSON 文件，返回结构化结果。
  */
-function generateSessionReport(repo) {
+function generateSessionReport(repo, opts) {
   try {
-    return generateSessionReportUnsafe(repo);
+    return generateSessionReportUnsafe(repo, opts || {});
   } catch (e) {
     const rulesFailed = e && e.code === 'RULES_CONFIG_ERROR';
     return {
@@ -153,7 +155,7 @@ function generateSessionReport(repo) {
   }
 }
 
-function generateSessionReportUnsafe(repo) {
+function generateSessionReportUnsafe(repo, opts = {}) {
   const resolved = resolveSessionBaseline(repo);
   if (!resolved.ok) {
     if (resolved.error === 'SCAN_FAILED') {
@@ -163,7 +165,7 @@ function generateSessionReportUnsafe(repo) {
   }
   const baseline = resolved.graph;
   const sessionStart = baseline.sessionStartedAt || baseline.cachedAt || null;
-  const current = buildGraph(repo);
+  const current = buildGraph(repo, { calls: true });
   const runtime = getRuntimeIdentity();
   require('../lib/extract-graph').attachCallEdges(current, { incremental: true, base: baseline });
   const diff = diffGraphs(baseline, current);
@@ -514,6 +516,55 @@ function toolSessionStart(args) {
     intent: intentRec && intentRec.text ? intentRec.text : null,
     message: `已经拍好了"改之前"的照片（${graph.stats.files} 个文件、${graph.stats.types} 个组件）。请在最终回复中回显：实际修改目录、基线目录、报告目录。现在开始改代码；改完后优先调 av_session_report（不必等防抖），也可先用 av_session_changes。看状态用 av_status。报告确认无误后，再调 av_session_start 刷新基线，开始下一轮。`,
     nextStep: '让 AI 改代码。改完后直接调 av_session_report 看完整报告和红灯（会取消防抖立即生成）；确认报告无误后，再调 av_session_start 刷新基线。'
+  };
+}
+
+function toolReviewWalk(args) {
+  const report = toolSessionReport(args);
+  if (!report) return noBaselinePayload();
+  if (report.error) return report;
+
+  let walk = null;
+  const jsonPath = report.reportPaths && report.reportPaths.json;
+  if (jsonPath && fs.existsSync(jsonPath)) {
+    try {
+      const raw = JSON.parse(fs.readFileSync(jsonPath, 'utf8'));
+      if (raw && raw.reviewWalk) walk = raw.reviewWalk;
+    } catch { /* fall through */ }
+  }
+  if (!walk) walk = emptyWalk('no-report-walk');
+
+  const reportPath = (report.verdict && report.verdict.reportPath) || '.av/session-report.html';
+  const text = formatReviewWalkText(walk, { reportPath });
+  const lines = text.split('\n').filter((l) => l.length > 0);
+  return {
+    tool: 'av_review_walk',
+    message: text,
+    lines,
+    walk: {
+      entry: walk.entry || null,
+      steps: (walk.steps || []).slice(0, 8).map((s) => ({
+        order: s.order,
+        name: s.name,
+        layer: s.layer,
+        status: s.status,
+        path: s.path,
+        layerSkip: !!s.layerSkip,
+        sinks: (s.sinks || []).slice(0, 4)
+      })),
+      skips: (walk.skips || []).slice(0, 4).map((s) => ({
+        fromName: s.fromName,
+        toName: s.toName,
+        fromLayer: s.fromLayer,
+        toLayer: s.toLayer,
+        detail: s.detail
+      })),
+      stats: walk.stats || null
+    },
+    reportPaths: report.reportPaths,
+    nextStep: (walk.stats && walk.stats.skipCount)
+      ? '按阅读顺序打开源码核对越层与副作用；结构全貌见 session-report.html。'
+      : '按阅读顺序打开源码；结构全貌见 session-report.html。'
   };
 }
 
@@ -1138,12 +1189,25 @@ const TOOLS = [
   },
   {
     name: 'av_session_report',
-    description: '看本轮结构验收结论（对话内 verdict：灯色 + 风险计数 + 最严重 1 条）与完整报告。有 git 时默认对照 HEAD，不必先 av_session_start。日常可用 av_guard（会自动 ensure）。有进行中的防抖时会取消并立即重算。默认写出内置 HTML（Before/Delta/After）。HTML 为可选深挖。必须显式传当前工作区绝对路径 repo。',
+    description: '看本轮结构验收结论（对话内 verdict：灯色 + 风险计数 + 最严重 1 条）与完整报告。有 git 时默认对照 HEAD，不必先 av_session_start。日常可用 av_guard（会自动 ensure）。有进行中的防抖时会取消并立即重算。默认写出内置 HTML。HTML 为可选深挖。人审阅读顺序用 av_review_walk。必须显式传当前工作区绝对路径 repo。',
     inputSchema: {
       type: 'object',
       properties: {
         repo: { type: 'string', description: '必填。当前工作区根目录的绝对路径。' },
         from: { type: 'string', enum: ['session'], description: '可选：从会话报告取数据' },
+        editDir: { type: 'string', description: '可选。正在改代码的目录；与 repo 冲突时中止。' },
+        confirmRepo: { type: 'string', description: '可选。确认检查 repo（当 cwd 是另一个 Git 根时）。' }
+      },
+      required: ['repo']
+    }
+  },
+  {
+    name: 'av_review_walk',
+    description: '本轮 AI 改动的人工审查阅读顺序（≤8 行）：从入口往下剥，标出越层与副作用启发式。会生成/刷新会话报告；长内容仍在 HTML。不判断业务对错。必须显式传当前工作区绝对路径 repo。',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        repo: { type: 'string', description: '必填。当前工作区根目录的绝对路径。' },
         editDir: { type: 'string', description: '可选。正在改代码的目录；与 repo 冲突时中止。' },
         confirmRepo: { type: 'string', description: '可选。确认检查 repo（当 cwd 是另一个 Git 根时）。' }
       },
@@ -1181,7 +1245,7 @@ const TOOLS = [
       type: 'object',
       properties: {
         repo: { type: 'string', description: '必填。当前工作区根目录的绝对路径。' },
-        rule: { type: 'string', description: '规则名（cross-layer-violation, layer-skip, removed-type, new-external-dep, public-surface-changed, schema-touched, invariant-broken, intent-mismatch, behavior-untested）' },
+        rule: { type: 'string', description: '规则名（cross-layer-violation, layer-skip, removed-type, new-external-dep, public-surface-changed, schema-touched, invariant-broken, intent-mismatch, behavior-untested, enum-exhaustiveness, exception-contract-drift）' },
         index: { type: 'integer', description: '问题列表中的序号（从0开始）' },
         from: { type: 'string', enum: ['session'], description: '从会话报告取本轮红灯；报告不存在或 findings 为空时返回 NO_SESSION_FINDING，绝不改扫全楼' }
       },
@@ -1281,6 +1345,7 @@ function handleToolCall(params) {
     case 'av_session_start': return toolSessionStart(validated);
     case 'av_session_changes': return toolSessionChanges(validated);
     case 'av_session_report': return toolSessionReport(validated);
+    case 'av_review_walk': return toolReviewWalk(validated);
     case 'av_status': return toolSessionStatus(validated);
     case 'av_check_layering': return toolCheckLayering(validated);
     case 'av_explain_finding': return toolExplainFinding(validated);
@@ -1344,7 +1409,7 @@ function createServer() {
 
 module.exports = {
   TOOLS, handleToolCall, validateToolArgs,
-  toolSessionGuard, toolSessionStart, toolSessionReport, toolSessionChanges, toolSessionStatus, toolCheckLayering, toolExplainFinding, toolArchifyExport,
+  toolSessionGuard, toolSessionStart, toolSessionReport, toolSessionChanges, toolSessionStatus, toolCheckLayering, toolExplainFinding, toolArchifyExport, toolReviewWalk,
   buildExplainResult, createServer, generateSessionReport, peekSessionDiff,
   startWatcher, stopWatcher, getWatcherState, flushWatcherDebounce, shouldWatchFile,
   resolveRepo, resolveDebounceMs, DEFAULT_DEBOUNCE_MS, PKG_VERSION
