@@ -305,9 +305,12 @@ async function runAnalysis(state, status, notify) {
         awareness
       }), null, 2)
     );
-    try {
-      markAwarenessSeen(root, { awareness, headFingerprint: current.fingerprint });
-    } catch { /* best-effort */ }
+    // Only mark awareness as seen for explicit report (when user opens webview), not automatic analysis
+    if (notify) {
+      try {
+        markAwarenessSeen(root, { awareness, headFingerprint: current.fingerprint });
+      } catch { /* best-effort */ }
+    }
 
     state.result = { diff, findings, riskSummary, impact, analyzerStatus, htmlPath: reportHtmlPath(root) };
     state.hasBaseline = true;

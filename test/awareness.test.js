@@ -316,6 +316,29 @@ describe('awareness layer P0', () => {
     assert.equal(aw.silent, false);
   });
 
+  it('rejects unknown rule names in mute/unmute', () => {
+    const repo = tmpRepo();
+    assert.throws(
+      () => muteAwarenessRule(repo, 'unknown-rule'),
+      /Unknown rule "unknown-rule"/
+    );
+    assert.throws(
+      () => unmuteAwarenessRule(repo, 'invalid-rule'),
+      /Unknown rule "invalid-rule"/
+    );
+  });
+
+  it('accepts valid rule names in mute/unmute', () => {
+    const repo = tmpRepo();
+    const validRules = ['schema-touched', 'signature-break', 'layer-skip', 'new-external-dep', 'sensitive-sink'];
+    for (const rule of validRules) {
+      const cursor1 = muteAwarenessRule(repo, rule);
+      assert.ok(cursor1.mutedRules.includes(rule));
+      const cursor2 = unmuteAwarenessRule(repo, rule);
+      assert.ok(!cursor2.mutedRules.includes(rule));
+    }
+  });
+
   it('P2 portrait lists entries, external deps, sink counts without inventing modules', () => {
     const { buildSparsePortrait } = require('../lib/awareness');
     const headGraph = {
