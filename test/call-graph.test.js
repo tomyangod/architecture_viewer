@@ -207,6 +207,71 @@ export function createTodo() { return 2; }
       'unrelated other.js must not be resolved incrementally');
   });
 
+  it('增量：只改 throw（实现指纹变、结构边不变）仍解析调用方', () => {
+    const dir = makeRepo({
+      'src/service/save.js': `
+export function save(x) { return x; }
+`,
+      'src/controller/handle.js': `
+import { save } from '../service/save';
+export function handle() { return save(1); }
+`,
+      'src/other.js': `
+export function helper() { return 2; }
+export function unused() { return helper(); }
+`
+    });
+    const base = toPersistableGraph(buildGraph(dir));
+    fs.writeFileSync(path.join(dir, 'src/service/save.js'), `
+export function save(x) {
+  if (!x) throw new QuotaError('no');
+  return x;
+}
+`);
+    const head = buildGraph(dir);
+    attachCallEdges(head, { incremental: true, base });
+    const calls = callEdges(head);
+    assert.ok(calls.some((e) => e.from.includes('handle') && e.to.includes('save')),
+      `throw-only edit must keep caller call edge: ${JSON.stringify(calls)}`);
+    assert.ok(!calls.some((e) => e.from.includes('other')),
+      'unrelated other.js must stay unresolved incrementally');
+  });
+
+  it('Python sys.path 根：handle → alerts_detail call 边', () => {
+    const dir = makeRepo({
+      'backend/services/alerts_service.py': `
+def alerts_detail(alert_id):
+    return alert_id
+`,
+      'backend/routes/alerts.py': `
+from services.alerts_service import alerts_detail
+def handle_alerts_detail(alert_id):
+    return alerts_detail(alert_id)
+`
+    });
+    const g = buildGraph(dir, { calls: true });
+    const edge = callEdges(g).find((e) => e.from.endsWith('alerts#handle_alerts_detail') && e.to.endsWith('alerts_service#alerts_detail'));
+    assert.ok(edge, `expected handle → alerts_detail, got ${JSON.stringify(callEdges(g))}`);
+    assert.equal(unresolvedEdges(g).filter((e) => e.from.includes('handle_alerts_detail')).length, 0);
+  });
+
+  it('Python from-import alias：bar() 绑到 foo', () => {
+    const dir = makeRepo({
+      'backend/services/alerts_service.py': `
+def alerts_list():
+    return []
+`,
+      'backend/routes/alerts.py': `
+from services.alerts_service import alerts_list as _alerts_list_query
+def handle_alerts_list():
+    return _alerts_list_query()
+`
+    });
+    const g = buildGraph(dir, { calls: true });
+    const edge = callEdges(g).find((e) => e.from.endsWith('#handle_alerts_list') && e.to.endsWith('#alerts_list'));
+    assert.ok(edge, `expected alias call to alerts_list, got ${JSON.stringify(callEdges(g))}`);
+  });
+
   it('diffGraphs 忽略 call 边，避免基线无 call 时全量误报', () => {
     const dir = makeRepo({
       'src/a.js': `

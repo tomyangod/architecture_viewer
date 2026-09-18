@@ -83,7 +83,8 @@ describe('W16-03a: Analyzer interface', () => {
   });
 
   it('内置适配器输出 nodes/edges 与 buildGraph 一致', () => {
-    const graph = buildGraph(dir);
+    // builtin 适配器快照固定带 call 边（buildGraph(repo, { calls: true })），比对需同口径
+    const graph = buildGraph(dir, { calls: true });
     const result = builtinAnalyzer.analyze(dir);
 
     assert.equal(result.nodes.length, graph.nodes.length);
