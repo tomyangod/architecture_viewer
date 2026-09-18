@@ -4,7 +4,7 @@
 
 > **Local delivery scope:** this-round structural change reports, a locatable source overview, and human-reviewed risk hints. Six-view diagrams are compatibility features, not the default deliverable. Green does not guarantee that no dependencies or violations were missed; incomplete analysis is not a pass. See the bundled [delivery scope](docs/delivery-scope.md) for offline operation and limitations. AI refinement, IDE extensions, workspace aggregation, and SaaS are outside the initial quality commitment.
 
-> **Current pilot: `0.12.2-rc.6` (npm tag `next`; `latest` remains `0.12.1`).** Pin `arch-viewer@0.12.2-rc.6` or `@next`; do not mix with a dirty workspace or `latest`. Release notes (incl. source commit): [docs/commercial/npm-publish.md](docs/commercial/npm-publish.md). Local pilot candidate with explicit boundaries — not a stable commercial release.
+> **Current pilot: `0.12.2-rc.7` (npm tag `next`; `latest` remains `0.12.1`).** Pin `arch-viewer@0.12.2-rc.7` or `@next`; do not mix with a dirty workspace or `latest`. Release notes (incl. source commit): [docs/commercial/npm-publish.md](docs/commercial/npm-publish.md). Local pilot candidate with explicit boundaries — not a stable commercial release.
 
 Install once → state the request → read the verdict in chat → `git commit`.
 CLI / MCP / Web / PR comment, four surfaces.

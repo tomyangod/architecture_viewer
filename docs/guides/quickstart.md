@@ -2,8 +2,8 @@
 
 > **一句话**：装一次之后只说话；AI 改完在对话里给你看灯（verdict）。绿灯可提交，**commit 即接受**当前结构。不必先拍照、不必默认打开 HTML。  
 > **适用对象**：第一次把 Architecture Viewer 用到**自己的新项目 / 陌生仓库**上的人。  
-> **适用版本**：arch-viewer **0.12.2-rc.6**（试点候选 · 8 个 MCP 工具 · `av_guard` · git HEAD 基线 · `.arch-viewer-ignore` · 严格规则校验 · 托管增量验收）。本文 2026-09-14。  
-> **试点安装**：固定 `0.12.2-rc.6`（npm 标签 `next`），不要与工作区源码或 `latest`（当前仍是 0.12.1）混用。正式稳定版发布前，文档示例默认钉此候选版。  
+> **适用版本**：arch-viewer **0.12.2-rc.7**（试点候选 · 8 个 MCP 工具 · `av_guard` · git HEAD 基线 · `.arch-viewer-ignore` · 严格规则校验 · 托管增量验收）。本文 2026-09-18。  
+> **试点安装**：固定 `0.12.2-rc.7`（npm 标签 `next`），不要与工作区源码或 `latest`（当前仍是 0.12.1）混用。正式稳定版发布前，文档示例默认钉此候选版。  
 > **零外部分析器**：不需要安装 `lint-imports` 或 dependency-cruiser；分层与契约由 builtin 直接评估。  
 > **职责**：本篇是**唯一**「通用怎么用」（安装、8 工具、日常闭环、读灯、CI）。零基础也可从 §10 迷你仓脚本跟做。舆情仓实测见 [MCP-DEMO](../demos/MCP-DEMO-publicopinionmonitor.md)。
 
@@ -15,10 +15,10 @@
 
 ```bash
 # 试点固定版（推荐）；不要写成 npm i -g arch-viewer（会落到 latest=0.12.1）
-npm i -g arch-viewer@0.12.2-rc.6
+npm i -g arch-viewer@0.12.2-rc.7
 # 或：npm i -g arch-viewer@next
 cd /path/to/你的新项目
-arch-viewer --version             # 应为 0.12.2-rc.6
+arch-viewer --version             # 应为 0.12.2-rc.7
 arch-viewer setup                 # 用户级 MCP
 arch-viewer setup . --project     # 本仓 hooks + AGENTS.md（停手自动跑结构门）
 # 卸干净再升级：arch-viewer uninstall . [--npm] [--purge]
