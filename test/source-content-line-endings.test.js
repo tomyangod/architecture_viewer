@@ -160,6 +160,6 @@ test('HEAD caches from raw-hash version 2 rebuild into normalized hashes', (t) =
   assert.equal(refreshed.ok, true);
   assert.equal(refreshed.cacheHit, false);
   const cache = JSON.parse(fs.readFileSync(cachePath, 'utf8'));
-  assert.equal(cache.baselineCacheVersion, 3);
+  assert.equal(cache.baselineCacheVersion, 4);
   assert.equal(cache.sourceContentHashVersion, SOURCE_CONTENT_HASH_VERSION);
 });

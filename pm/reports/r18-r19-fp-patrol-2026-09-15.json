@@ -1,0 +1,334 @@
+{
+  "generatedAt": "2026-09-15T08:21:08.376Z",
+  "method": "git archive parent/head + WIP(9634a3a) buildGraph({calls:true}) + evaluateRisk",
+  "scannerLib": "agents/w21-in-flight-development@9634a3a (main tip lacks R18/R19)",
+  "mainTipNote": "architecture_viewer main@2ff5553 has no enum-exhaustiveness / exception-contract-drift; patrol uses W21 WIP lib",
+  "days": 3,
+  "w21_01b_deferred": true,
+  "summary": {
+    "commits": 10,
+    "r18_count": 0,
+    "r19_count": 0,
+    "suspicious_silence": 2,
+    "errors": 0
+  },
+  "results": [
+    {
+      "repo": "architecture_viewer",
+      "sha": "8863ed6",
+      "fullSha": "8863ed6dc202550e28bf58d6e46dc8e8740d6428",
+      "subject": "chore: bump pilot to 0.12.2-rc.6 for next-tag release",
+      "parent": "fa12dc6",
+      "files": [
+        "CHANGELOG.md",
+        "README.en.md",
+        "README.md",
+        "docs/commercial/PRO-SAAS.md",
+        "docs/delivery-scope.md",
+        "docs/guides/quickstart.md",
+        "package-lock.json",
+        "package.json",
+        "pm/checklists/release-smoke.md",
+        "pm/growth/outreach-kit.md",
+        "pm/growth/p1-onboard-checklist.md",
+        "pm/growth/seed-users.md"
+      ],
+      "ms": 6114,
+      "callEdges": 4163,
+      "r18": [],
+      "r19": [],
+      "addedThrows": [],
+      "suspiciousSilence": [],
+      "fired": 0
+    },
+    {
+      "repo": "architecture_viewer",
+      "sha": "f05c3de",
+      "fullSha": "f05c3deda5e219c6f44168331bb9ecbc5b097cdb",
+      "subject": "fix: honest diagram footer and structured cycle/impact explain evidence",
+      "parent": "b536cbb",
+      "files": [
+        "CHANGELOG.md",
+        "docs/delivery-scope.md",
+        "lib/orch/lib.js",
+        "lib/orch/run.js",
+        "lib/risk-rules.js",
+        "lib/session-verdict.js",
+        "mcp/server.js",
+        "scripts/verify-packed-delivery.js",
+        "test/explain-cycle-impact.test.js",
+        "test/llm-sanitize.test.js"
+      ],
+      "ms": 5785,
+      "callEdges": 4163,
+      "r18": [],
+      "r19": [],
+      "addedThrows": [],
+      "suspiciousSilence": [],
+      "fired": 0
+    },
+    {
+      "repo": "architecture_viewer",
+      "sha": "25577cf",
+      "fullSha": "25577cf668889e5c448ad5fcd6ab2a46ec9d148f",
+      "subject": "ci: temporarily skip Windows jobs during pilot freeze (#3)",
+      "parent": "b536cbb",
+      "files": [
+        ".github/workflows/ci.yml"
+      ],
+      "ms": 5602,
+      "callEdges": 4160,
+      "r18": [],
+      "r19": [],
+      "addedThrows": [],
+      "suspiciousSilence": [],
+      "fired": 0
+    },
+    {
+      "repo": "architecture_viewer",
+      "sha": "5c8f3f2",
+      "fullSha": "5c8f3f2fe21f3cccbedec9aef46f12b0bcb51c07",
+      "subject": "chore: bump pilot to 0.12.2-rc.5 for next-tag release",
+      "parent": "16a0b37",
+      "files": [
+        "CHANGELOG.md",
+        "README.en.md",
+        "README.md",
+        "docs/commercial/PRO-SAAS.md",
+        "docs/commercial/npm-publish.md",
+        "docs/delivery-scope.md",
+        "docs/guides/quickstart.md",
+        "package-lock.json",
+        "package.json",
+        "pm/checklists/release-smoke.md",
+        "pm/growth/outreach-kit.md",
+        "pm/growth/p1-onboard-checklist.md"
+      ],
+      "ms": 5982,
+      "callEdges": 4160,
+      "r18": [],
+      "r19": [],
+      "addedThrows": [],
+      "suspiciousSilence": [],
+      "fired": 0
+    },
+    {
+      "repo": "architecture_viewer",
+      "sha": "16a0b37",
+      "fullSha": "16a0b37474fa6ba2c15359a53a59f8e96240dcab",
+      "subject": "fix: close session explain on HEAD and stop gating unconfirmed layers",
+      "parent": "6c07d65",
+      "files": [
+        "CHANGELOG.md",
+        "docs/delivery-scope.md",
+        "lib/analyzers/builtin.js",
+        "lib/cli.js",
+        "lib/diff-graph.js",
+        "lib/extract-graph.js",
+        "lib/extract/call-graph.js",
+        "lib/extract/test-index.js",
+        "lib/index.js",
+        "lib/init.js",
+        "lib/risk-rules.js",
+        "lib/runtime-identity.js"
+      ],
+      "ms": 5826,
+      "callEdges": 4160,
+      "r18": [],
+      "r19": [],
+      "addedThrows": [
+        {
+          "id": "lib/index#removeUnselectedTemplates",
+          "throws": [
+            "err"
+          ],
+          "path": "lib/index.js",
+          "layer": "util"
+        },
+        {
+          "id": "lib/init#copyFile",
+          "throws": [
+            "err"
+          ],
+          "path": "lib/init.js",
+          "layer": "util"
+        }
+      ],
+      "suspiciousSilence": [
+        {
+          "id": "lib/index#removeUnselectedTemplates",
+          "throws": [
+            "err"
+          ],
+          "path": "lib/index.js",
+          "reach": [
+            {
+              "id": "web/server#generateFromPath",
+              "layer": "controller",
+              "name": "generateFromPath"
+            },
+            {
+              "id": "web/server#handleApi",
+              "layer": "controller",
+              "name": "handleApi"
+            },
+            {
+              "id": "web/server#handler",
+              "layer": "controller",
+              "name": "handler"
+            },
+            {
+              "id": "file:web/server.js",
+              "layer": "controller",
+              "name": "server.js"
+            }
+          ]
+        },
+        {
+          "id": "lib/init#copyFile",
+          "throws": [
+            "err"
+          ],
+          "path": "lib/init.js",
+          "reach": [
+            {
+              "id": "web/server#generateFromPath",
+              "layer": "controller",
+              "name": "generateFromPath"
+            },
+            {
+              "id": "web/server#handleApi",
+              "layer": "controller",
+              "name": "handleApi"
+            },
+            {
+              "id": "web/server#handler",
+              "layer": "controller",
+              "name": "handler"
+            },
+            {
+              "id": "file:web/server.js",
+              "layer": "controller",
+              "name": "server.js"
+            }
+          ]
+        }
+      ],
+      "fired": 0
+    },
+    {
+      "repo": "architecture_viewer",
+      "sha": "8ca4352",
+      "fullSha": "8ca4352847a3a1b1692a6a95fa8dc567272a6615",
+      "subject": "fix(mcp): install build-essential for tree-sitter in Dockerfile.mcp",
+      "parent": "37d4700",
+      "files": [
+        "Dockerfile.mcp"
+      ],
+      "ms": 5830,
+      "callEdges": 4144,
+      "r18": [],
+      "r19": [],
+      "addedThrows": [],
+      "suspiciousSilence": [],
+      "fired": 0
+    },
+    {
+      "repo": "publicopinionmonitor_v2",
+      "sha": "1419faa",
+      "fullSha": "1419faa3f866c667c6a74a2566f4dc886cbb6a9c",
+      "subject": "refactor(imports): update utility imports to improve module organization",
+      "parent": "2be7261",
+      "files": [
+        "proxy/proxy_ip_pool.py",
+        "proxy/proxy_mixin.py"
+      ],
+      "ms": 12366,
+      "callEdges": 5277,
+      "r18": [],
+      "r19": [],
+      "addedThrows": [],
+      "suspiciousSilence": [],
+      "fired": 0
+    },
+    {
+      "repo": "publicopinionmonitor_v2",
+      "sha": "2be7261",
+      "fullSha": "2be726163f5a67bc767e26ef5ee9e1e3b6a97229",
+      "subject": "refactor(architecture): streamline module dependencies and enhance layer definitions",
+      "parent": "42e5dab",
+      "files": [
+        ".av/layers.json",
+        "backend/core/utils.py",
+        "backend/services/alerts_service.py",
+        "config/__init__.py",
+        "data_collection/_wechat_article_collector.py",
+        "data_collection/_wechat_browser_detect.py",
+        "data_collection/_wechat_content_crawler.py",
+        "data_collection/_wechat_driver_lifecycle.py",
+        "data_collection/_wechat_driver_service.py",
+        "data_collection/_wechat_login_manager.py",
+        "data_collection/_wechat_login_ns.py",
+        "data_collection/_wechat_public_platform.py"
+      ],
+      "ms": 12045,
+      "callEdges": 5277,
+      "r18": [],
+      "r19": [],
+      "addedThrows": [],
+      "suspiciousSilence": [],
+      "fired": 0
+    },
+    {
+      "repo": "publicopinionmonitor_v2",
+      "sha": "42e5dab",
+      "fullSha": "42e5dab65f88d03859bf6d1322513cbfb5d72e0d",
+      "subject": "fix(arch): break util→service/config edges for crawler tooling",
+      "parent": "0c48dc5",
+      "files": [
+        ".av/layers.json",
+        ".gitignore",
+        "config/__init__.py",
+        "data_collection/weibo/core.py",
+        "data_collection/xhs/core.py",
+        "tools/crawler/browser_profile_reaper.py",
+        "tools/crawler/cdp_browser.py",
+        "tools/crawler/cdp_settings.py",
+        "tools/crawler/easing.py",
+        "tools/crawler/shared_browser_keepers.py"
+      ],
+      "ms": 12092,
+      "callEdges": 5272,
+      "r18": [],
+      "r19": [],
+      "addedThrows": [],
+      "suspiciousSilence": [],
+      "fired": 0
+    },
+    {
+      "repo": "publicopinionmonitor_v2",
+      "sha": "0c48dc5",
+      "fullSha": "0c48dc59325807753a506662d438420dfab6c096",
+      "subject": "refactor(crawler): centralize crawler_debug_enabled function",
+      "parent": "456d2bb",
+      "files": [
+        "data_collection/crawler_log_policy.py",
+        "test/unit/test_crawler_log_policy.py",
+        "tools/crawler/browser_launcher.py",
+        "tools/crawler/browser_profile_reaper.py",
+        "tools/general/crawler_debug.py",
+        "tools/general/utils.py"
+      ],
+      "ms": 12068,
+      "callEdges": 5265,
+      "r18": [],
+      "r19": [],
+      "addedThrows": [],
+      "suspiciousSilence": [],
+      "fired": 0
+    }
+  ],
+  "needsHuman": true,
+  "outcome": "NOTIFY",
+  "brief_zh": "【R18/R19 FP 巡检 2026-09-15】非 QUIET\n\nR18/R19 finding：0\n\n可疑静默（addedThrows 可达 controller/entrypoint，但未出 R19）：\n- AV 16a0b37「fix: close session explain on HEAD and stop gating unconfirmed layers」\n  · rule: exception-contract-drift（未触发 / 可疑静默）\n  · lib/index#removeUnselectedTemplates 新增抛出 err，可达 web/server#generateFromPath / handleApi / handler → 建议标签：待确认 TN（opaque err 重抛，或召回缺口）\n  · lib/init#copyFile 新增抛出 err，同上可达 web/server 控制器 → 建议标签：待确认 TN\n\nW21-01b：仍 deferred（R18/R19 保持 reportOnly，未进 merge gate）\n报告：pm/reports/r18-r19-fp-patrol-2026-09-15.json\n注：main tip 无 R18/R19 实现；本次扫描器用 agents/w21-in-flight-development@9634a3a + buildGraph({calls:true})"
+}

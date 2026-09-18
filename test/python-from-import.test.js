@@ -102,6 +102,39 @@ describe('Python from pkg import mod 精确解析', () => {
     assert.equal(pkg.file, 'services/__init__.py');
   });
 
+  it('sys.path 根：from services.x import fn 落到 backend/services/x.py', () => {
+    const dir = makeRepo({
+      'backend/services/alerts_service.py': 'def alerts_detail(i):\n    return i\n',
+      'backend/routes/alerts.py': 'from services.alerts_service import alerts_detail\ndef handle_alerts_detail(i):\n    return alerts_detail(i)\n'
+    });
+    try {
+      const g = buildGraph(dir, { calls: true });
+      const imports = g.edges.filter((e) => e.type === 'import' && e.from === 'file:backend/routes/alerts.py');
+      assert.ok(
+        imports.some((e) => e.to === 'file:backend/services/alerts_service.py'),
+        '应落到 backend/services，不是 ext:services: ' + imports.map((e) => e.to).join(',')
+      );
+      assert.ok(!imports.some((e) => e.to === 'ext:services'));
+    } finally {
+      fs.rmSync(dir, { recursive: true, force: true });
+    }
+  });
+
+  it('suffix 歧义（两处 services/x）不乱绑', () => {
+    const map = new Map([
+      ['backend/services/alerts_service', 'backend/services/alerts_service.py'],
+      ['tools/services/alerts_service', 'tools/services/alerts_service.py']
+    ]);
+    const fe = { package: 'backend/routes', module: 'backend/routes/alerts' };
+    assert.equal(resolvePyModule('services.alerts_service', fe, map), null);
+  });
+
+  it('单段 specifier 不做 suffix（避免 json.py 误绑）', () => {
+    const map = new Map([['vendor/json', 'vendor/json.py']]);
+    const fe = { package: '', module: 'app' };
+    assert.equal(resolvePyModule('json', fe, map), null);
+  });
+
   it('resolvePyModule 对 null/非字符串 specifier 返回 null（不抛）', () => {
     const fe = { package: '', module: 'a' };
     assert.equal(resolvePyModule(null, fe, new Map()), null);

@@ -1,0 +1,175 @@
+{
+  "generatedAt": "2026-09-17T08:08:24.938Z",
+  "days": 3,
+  "repos": [
+    "architecture_viewer",
+    "publicopinionmonitor_v2"
+  ],
+  "summary": {
+    "commits": 12,
+    "r18_r19_fired": 0,
+    "addedThrows_silent": 1
+  },
+  "results": [
+    {
+      "repo": "architecture_viewer",
+      "subject": "Add growth retro and rewrite outreach CTA ladder (#4)",
+      "dateHint": 3,
+      "sha": "f0b38fa",
+      "fullSha": "f0b38fa5da60d383e83e83acff10503bbb695532",
+      "ms": 5394,
+      "r18": [],
+      "r19": [],
+      "addedThrows": [],
+      "fired": 0
+    },
+    {
+      "repo": "architecture_viewer",
+      "subject": "chore: bump pilot to 0.12.2-rc.6 for next-tag release",
+      "dateHint": 3,
+      "sha": "8863ed6",
+      "fullSha": "8863ed6dc202550e28bf58d6e46dc8e8740d6428",
+      "ms": 5098,
+      "r18": [],
+      "r19": [],
+      "addedThrows": [],
+      "fired": 0
+    },
+    {
+      "repo": "architecture_viewer",
+      "subject": "fix: honest diagram footer and structured cycle/impact explain evidence",
+      "dateHint": 3,
+      "sha": "f05c3de",
+      "fullSha": "f05c3deda5e219c6f44168331bb9ecbc5b097cdb",
+      "ms": 4857,
+      "r18": [],
+      "r19": [],
+      "addedThrows": [],
+      "fired": 0
+    },
+    {
+      "repo": "architecture_viewer",
+      "subject": "ci: temporarily skip Windows jobs during pilot freeze (#3)",
+      "dateHint": 3,
+      "sha": "25577cf",
+      "fullSha": "25577cf668889e5c448ad5fcd6ab2a46ec9d148f",
+      "ms": 5150,
+      "r18": [],
+      "r19": [],
+      "addedThrows": [],
+      "fired": 0
+    },
+    {
+      "repo": "architecture_viewer",
+      "subject": "chore: bump pilot to 0.12.2-rc.5 for next-tag release",
+      "dateHint": 3,
+      "sha": "5c8f3f2",
+      "fullSha": "5c8f3f2fe21f3cccbedec9aef46f12b0bcb51c07",
+      "ms": 4970,
+      "r18": [],
+      "r19": [],
+      "addedThrows": [],
+      "fired": 0
+    },
+    {
+      "repo": "architecture_viewer",
+      "subject": "fix: close session explain on HEAD and stop gating unconfirmed layers",
+      "dateHint": 3,
+      "sha": "16a0b37",
+      "fullSha": "16a0b37474fa6ba2c15359a53a59f8e96240dcab",
+      "ms": 4976,
+      "r18": [],
+      "r19": [],
+      "addedThrows": [
+        {
+          "id": "lib/index#removeUnselectedTemplates",
+          "throws": [
+            "err"
+          ],
+          "path": "lib/index.js"
+        },
+        {
+          "id": "lib/init#copyFile",
+          "throws": [
+            "err"
+          ],
+          "path": "lib/init.js"
+        }
+      ],
+      "fired": 0
+    },
+    {
+      "repo": "architecture_viewer",
+      "subject": "fix(mcp): install build-essential for tree-sitter in Dockerfile.mcp",
+      "dateHint": 3,
+      "sha": "8ca4352",
+      "fullSha": "8ca4352847a3a1b1692a6a95fa8dc567272a6615",
+      "ms": 4870,
+      "r18": [],
+      "r19": [],
+      "addedThrows": [],
+      "fired": 0
+    },
+    {
+      "repo": "architecture_viewer",
+      "subject": "chore(release): prepare 0.12.2-rc.4 — default delivery shrink as pilot candidate",
+      "dateHint": 3,
+      "sha": "37d4700",
+      "fullSha": "37d470082fd0d7492c7ce3ce35ec75d72723737c",
+      "ms": 5355,
+      "r18": [],
+      "r19": [],
+      "addedThrows": [],
+      "fired": 0
+    },
+    {
+      "repo": "publicopinionmonitor_v2",
+      "subject": "refactor(imports): update utility imports to improve module organization",
+      "dateHint": 3,
+      "sha": "1419faa",
+      "fullSha": "1419faa3f866c667c6a74a2566f4dc886cbb6a9c",
+      "ms": 15094,
+      "r18": [],
+      "r19": [],
+      "addedThrows": [],
+      "fired": 0
+    },
+    {
+      "repo": "publicopinionmonitor_v2",
+      "subject": "refactor(architecture): streamline module dependencies and enhance layer definitions",
+      "dateHint": 3,
+      "sha": "2be7261",
+      "fullSha": "2be726163f5a67bc767e26ef5ee9e1e3b6a97229",
+      "ms": 14991,
+      "r18": [],
+      "r19": [],
+      "addedThrows": [],
+      "fired": 0
+    },
+    {
+      "repo": "publicopinionmonitor_v2",
+      "subject": "fix(arch): break util→service/config edges for crawler tooling",
+      "dateHint": 3,
+      "sha": "42e5dab",
+      "fullSha": "42e5dab65f88d03859bf6d1322513cbfb5d72e0d",
+      "ms": 15708,
+      "r18": [],
+      "r19": [],
+      "addedThrows": [],
+      "fired": 0
+    },
+    {
+      "repo": "publicopinionmonitor_v2",
+      "subject": "refactor(crawler): centralize crawler_debug_enabled function",
+      "dateHint": 3,
+      "sha": "0c48dc5",
+      "fullSha": "0c48dc59325807753a506662d438420dfab6c096",
+      "ms": 14896,
+      "r18": [],
+      "r19": [],
+      "addedThrows": [],
+      "fired": 0
+    }
+  ],
+  "needsHuman": true
+}
