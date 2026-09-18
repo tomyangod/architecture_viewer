@@ -29,6 +29,7 @@ const { computeImpact } = require('../lib/impact');
 const { generateReport, appendSessionHistory, clearStaleSessionReports, buildSessionReportJson, isStaleReport } = require('../lib/session-report');
 const { formatReviewWalkText, emptyWalk } = require('../lib/review-walk');
 const { migrateReport } = require('../lib/report-contract');
+const { ALLOWED_MUTE_RULES } = require('../lib/awareness');
 const { exportArchify, finalizeSessionHtml } = require('../lib/archify-export');
 const { DEFAULT_SESSION_RENDERER } = require('../lib/view-policy');
 const { EXIT, exitCodeForAnalysis } = require('../lib/exit-codes');
@@ -190,7 +191,17 @@ function generateSessionReportUnsafe(repo, opts = {}) {
   const dir = avDir(repo);
   fs.mkdirSync(dir, { recursive: true });
   const { buildAwareness, markAwarenessSeen, muteAwarenessRule } = require('../lib/awareness');
-  if (opts.muteAwareness) muteAwarenessRule(repo, opts.muteAwareness);
+  if (opts.muteAwareness) {
+    try {
+      muteAwarenessRule(repo, opts.muteAwareness);
+    } catch (e) {
+      return {
+        error: 'INVALID_RULE',
+        message: e.message,
+        nextStep: 'Use one of the allowed rules: schema-touched, signature-break, layer-skip, new-external-dep, sensitive-sink'
+      };
+    }
+  }
   const awareness = buildAwareness({ findings, diff, repo, headGraph: current });
   const reportJsonPath = path.join(dir, 'session-report.json');
   fs.writeFileSync(reportJsonPath, JSON.stringify({
@@ -209,14 +220,13 @@ function generateSessionReportUnsafe(repo, opts = {}) {
     builtinHtml: html,
     renderer: DEFAULT_SESSION_RENDERER
   });
-  try {
-    markAwarenessSeen(repo, { awareness, headFingerprint: current.fingerprint });
-  } catch { /* best-effort cursor */ }
+  // Don't mark as seen here - let the caller decide (explicit report/guard should mark; debounce/watcher should not)
 
   return {
     mode: 'incremental',
     runtime,
     generatedAt: Date.now(),
+    _rawAwareness: awareness, // For markAwarenessSeen by explicit report/guard tools
     summary: {
       ...diff.summary,
       baseFingerprint: diff.base.fingerprint,
@@ -597,6 +607,15 @@ function toolSessionReport(args) {
   if (!report) return noBaselinePayload();
   if (report.error) return report;
   if (live) live.autoReport = report;
+  
+  // Mark awareness as seen for explicit report (user requested and sees the result)
+  if (report._rawAwareness && report.summary && report.summary.headFingerprint) {
+    try {
+      const { markAwarenessSeen } = require('../lib/awareness');
+      markAwarenessSeen(repo, { awareness: report._rawAwareness, headFingerprint: report.summary.headFingerprint });
+    } catch { /* best-effort */ }
+  }
+  
   return hadPending ? { ...report, flushedDebounce: true } : report;
 }
 
@@ -636,6 +655,14 @@ function toolSessionGuard(args) {
   if (!report) return { ...noBaselinePayload(), ensured };
   if (report.error) return { ...report, ensured };
   if (live) live.autoReport = report;
+
+  // Mark awareness as seen for explicit guard (user requested and sees the result)
+  if (report._rawAwareness && report.summary && report.summary.headFingerprint) {
+    try {
+      const { markAwarenessSeen } = require('../lib/awareness');
+      markAwarenessSeen(repo, { awareness: report._rawAwareness, headFingerprint: report.summary.headFingerprint });
+    } catch { /* best-effort */ }
+  }
 
   const out = {
     ...report,
@@ -1170,7 +1197,7 @@ const TOOLS = [
         repo: { type: 'string', description: '必填。当前工作区根目录的绝对路径。' },
         editDir: { type: 'string', description: '可选。正在改代码的目录；与 repo 冲突时中止。' },
         confirmRepo: { type: 'string', description: '可选。确认检查 repo（当 cwd 是另一个 Git 根时）。' },
-        muteAwareness: { type: 'string', description: '仅当用户明确说「不用再看这类」时传入规则名（schema-touched / signature-break / layer-skip / new-external-dep / sensitive-sink）。写入感知偏好，不影响门禁退出码。' }
+        muteAwareness: { type: 'string', enum: Array.from(ALLOWED_MUTE_RULES), description: '仅当用户明确说「不用再看这类」时传入规则名。写入感知偏好，不影响门禁退出码。' }
       },
       required: ['repo']
     }
@@ -1212,7 +1239,7 @@ const TOOLS = [
         from: { type: 'string', enum: ['session'], description: '可选：从会话报告取数据' },
         editDir: { type: 'string', description: '可选。正在改代码的目录；与 repo 冲突时中止。' },
         confirmRepo: { type: 'string', description: '可选。确认检查 repo（当 cwd 是另一个 Git 根时）。' },
-        muteAwareness: { type: 'string', description: '仅当用户明确说「不用再看这类」时传入规则名。写入感知偏好，不影响门禁退出码。' }
+        muteAwareness: { type: 'string', enum: Array.from(ALLOWED_MUTE_RULES), description: '仅当用户明确说「不用再看这类」时传入规则名。写入感知偏好，不影响门禁退出码。' }
       },
       required: ['repo']
     }

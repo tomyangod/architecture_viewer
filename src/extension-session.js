@@ -252,6 +252,14 @@ async function sessionReport(state, status, context) {
   if (!state.result) return;
 
   openReportWebview(context, state.result, root);
+  
+  // Mark awareness as seen only when webview is opened (user actually sees the cards)
+  if (state.result.awareness && state.result.headFingerprint) {
+    try {
+      const { markAwarenessSeen } = require('../lib/awareness');
+      markAwarenessSeen(root, { awareness: state.result.awareness, headFingerprint: state.result.headFingerprint });
+    } catch { /* best-effort */ }
+  }
 }
 
 /** 跑一次 head 提取 + diff + impact + risk，落盘 HTML/JSON，更新角标。 */
@@ -305,11 +313,9 @@ async function runAnalysis(state, status, notify) {
         awareness
       }), null, 2)
     );
-    try {
-      markAwarenessSeen(root, { awareness, headFingerprint: current.fingerprint });
-    } catch { /* best-effort */ }
+    // Don't mark awareness as seen here - only mark when webview is opened in sessionReport
 
-    state.result = { diff, findings, riskSummary, impact, analyzerStatus, htmlPath: reportHtmlPath(root) };
+    state.result = { diff, findings, riskSummary, impact, analyzerStatus, htmlPath: reportHtmlPath(root), awareness, headFingerprint: current.fingerprint };
     state.hasBaseline = true;
 
     const s = diff.summary;

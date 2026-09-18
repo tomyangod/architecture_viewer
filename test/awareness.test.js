@@ -278,6 +278,31 @@ describe('awareness layer P0', () => {
     assert.equal(aw.cards[0].walkAnchor, 'walk-step-4');
   });
 
+  it('does not match a.js card to data.js walk step (path-boundary aware)', () => {
+    const aw = buildAwareness({
+      findings: [{
+        rule: 'schema-touched',
+        severity: 'high',
+        file: 'a.js',
+        line: 1,
+        title: 'schema',
+        message: 'm'
+      }],
+      ignoreLastCards: true
+    });
+    attachAwarenessEvidence(aw, {
+      steps: [{
+        order: 1,
+        path: 'data.js',
+        name: 'DataService',
+        line: 1
+      }]
+    });
+    // a.js should NOT match data.js due to path-boundary awareness
+    assert.equal(aw.cards[0].walkOrder, undefined);
+    assert.equal(aw.cards[0].walkAnchor, undefined);
+  });
+
   it('daily L2 cap drops extra L2 but keeps L3', () => {
     const day = new Date().toISOString().slice(0, 10);
     const cursor = {
@@ -314,6 +339,29 @@ describe('awareness layer P0', () => {
       ]
     });
     assert.equal(aw.silent, false);
+  });
+
+  it('rejects unknown rule names in mute/unmute', () => {
+    const repo = tmpRepo();
+    assert.throws(
+      () => muteAwarenessRule(repo, 'unknown-rule'),
+      /Unknown rule "unknown-rule"/
+    );
+    assert.throws(
+      () => unmuteAwarenessRule(repo, 'invalid-rule'),
+      /Unknown rule "invalid-rule"/
+    );
+  });
+
+  it('accepts valid rule names in mute/unmute', () => {
+    const repo = tmpRepo();
+    const validRules = ['schema-touched', 'signature-break', 'layer-skip', 'new-external-dep', 'sensitive-sink'];
+    for (const rule of validRules) {
+      const cursor1 = muteAwarenessRule(repo, rule);
+      assert.ok(cursor1.mutedRules.includes(rule));
+      const cursor2 = unmuteAwarenessRule(repo, rule);
+      assert.ok(!cursor2.mutedRules.includes(rule));
+    }
   });
 
   it('P2 portrait lists entries, external deps, sink counts without inventing modules', () => {
