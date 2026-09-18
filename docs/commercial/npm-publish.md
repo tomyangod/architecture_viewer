@@ -44,21 +44,21 @@ npx --yes --package arch-viewer@0.12.2-rc.7 arch-viewer session report /绝对�
 
 ## 口径提醒
 
-- 对话三行 verdict 灯色跟 `riskSummary.level`；退出码跟 `gateLevel`。未确认跨层可能 🟠 + exit 0。
+- 对话三行 verdict 灯色跟 `riskSummary.level`；退出码跟 `gateLevel`。未确认跨层时，灯色可能为 🟠 而进程退出码仍为 0（两者独立）。
 - 编排流水线页脚只证明路径/语法/层归属的静态校验，不证明运行时语义。
 - 不要把未提交 / dirty 工作区 tarball 当作已发布的 rc 版本。
 - 本地验收：待发布前执行全量单测与离线安装包回归。
 
 ---
 
-# 上一版：0.12.2-rc.6
+## 上一版：0.12.2-rc.6
 
 > 2026-09-15：**已发布**到 npm 标签 `next`。`latest` 保持 `0.12.1`。发布源提交 `8863ed6`（含修复 `f05c3de` + 版本钉 `8863ed6`）。
 > 本版 = rc.5 解释闭环与分层门禁解耦 + **出图页脚如实化 / 环路径消歧 / explain 结构化证据 / snapshot 基线口径明示**。
 
 包名：`arch-viewer`。二进制：`arch-viewer`、`arch-viewer-mcp`。
 
-## 发布记录
+### 发布记录
 
 | 项 | 值 |
 |---|---|
@@ -72,7 +72,7 @@ npx --yes --package arch-viewer@0.12.2-rc.7 arch-viewer session report /绝对�
 | 发布时间 | 2026-09-15T06:34:38.286Z |
 | 发布方式 | 干净 `git archive` tarball + `npm publish --tag next`（网页 2FA） |
 
-## 试点安装
+### 试点安装
 
 ```bash
 npm i -g arch-viewer@0.12.2-rc.6
@@ -89,22 +89,22 @@ npx --yes --package arch-viewer@0.12.2-rc.7 arch-viewer session report /绝对�
 
 详见 [quickstart](../guides/quickstart.md)。
 
-## 发布后复验（2026-09-15）
+### 发布后复验（2026-09-15）
 
 - `npm view arch-viewer dist-tags` → `latest=0.12.1`, `next=0.12.2-rc.6`
 - 下载 registry tarball SHA-256 与本地干净打包逐字节一致
 - 全新目录 `npm install arch-viewer@0.12.2-rc.6` → `arch-viewer --version` = `0.12.2-rc.6`
 
-## 口径提醒
+### 口径提醒
 
-- 对话三行 verdict 灯色跟 `riskSummary.level`；退出码跟 `gateLevel`。未确认跨层可能 🟠 + exit 0。
+- 对话三行 verdict 灯色跟 `riskSummary.level`；退出码跟 `gateLevel`。未确认跨层时，灯色可能为 🟠 而进程退出码仍为 0（两者独立）。
 - 编排流水线页脚只证明路径/语法/层归属的静态校验，不证明运行时语义。
 - 不要把未提交 / dirty 工作区 tarball 当作已发布的 rc.4、rc.5 或 rc.6。
 - 本地验收（2026-09-15）：全量单测 1034 通过 / 0 失败 / 1 跳过；离线安装包回归 195 通过。
 
 ---
 
-# 上一版：0.12.2-rc.5
+## 上一版：0.12.2-rc.5
 
 | 项 | 值 |
 |---|---|
