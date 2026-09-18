@@ -1,6 +1,6 @@
 # 固定试点版发布：0.12.2-rc.7
 
-> 2026-09-18：**待发布**到 npm 标签 `next`。`latest` 保持 `0.12.1`。发布源提交 `2f4d5b7`。
+> 2026-09-18：**已发布**到 npm 标签 `next`。`latest` 保持 `0.12.1`。发布源提交 `82a8ff0`。
 > 本版 = rc.6 + **稀疏敏感面卡片与肖像**（feat #22）+ **Review Walk 功能**（feat #20）+ **R18 枚举完备性与 R19 异常漂移**（feat #21）。
 
 包名：`arch-viewer`。二进制：`arch-viewer`、`arch-viewer-mcp`。
@@ -11,12 +11,12 @@
 |---|---|
 | 版本 | `0.12.2-rc.7` |
 | 标签 | `next`（未改 `latest=0.12.1`） |
-| 源提交 | `2f4d5b7` |
-| 干净树 tarball SHA-256 | **待发布后回填** |
-| registry shasum | **待发布后回填** |
-| integrity | **待发布后回填** |
-| 文件数 | **待发布后回填** |
-| 发布时间 | **待发布后回填** |
+| 源提交 | `82a8ff0` |
+| 干净树 tarball SHA-256 | `d87b11cc574fc2f7ddb8bebc6821ff8cd2546ea5b66cf204ddc9b0d98777ff0a` |
+| registry shasum | `a345f2d44b305eb700fc5fc19a32ce8946e85871` |
+| integrity | `sha512-WPgzupPx5X0XS/gNUlocFN+KOc2p1qRcSLb1sh4H4DYDggKQspw1LvWA1BM2+2fjlwgrGzI8OzsWU1KyBCf4PQ==` |
+| 文件数 | 146 |
+| 发布时间 | 2026-09-18 |
 | 发布方式 | 干净 `git archive` tarball + `npm publish --tag next`（网页 2FA） |
 
 ## 试点安装
@@ -36,7 +36,7 @@ npx --yes --package arch-viewer@0.12.2-rc.7 arch-viewer session report /绝对�
 
 详见 [quickstart](../guides/quickstart.md)。
 
-## 发布后复验（待发布后补充）
+## 发布后复验（2026-09-18）
 
 - `npm view arch-viewer dist-tags` → `latest=0.12.1`, `next=0.12.2-rc.7`
 - 下载 registry tarball SHA-256 与本地干净打包逐字节一致

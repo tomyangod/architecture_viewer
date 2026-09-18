@@ -49,7 +49,7 @@ If useful, I can share a one-liner npx command (no install) or run a demo on one
 ```text
 你好 [名字]，看到你提到 [具体痛点：如「AI 改动后没人说得清架构变了什么」/ 「跨层依赖人工 review 漏了」]。
 
-我在测试开源工具 Architecture Viewer（Apache-2.0）：AI 改完后对照 git HEAD 检查本轮新增的跨层依赖、删除类型和影响面，带文件路径和依赖链可复核。本地离线，钉 arch-viewer@0.12.2-rc.6。
+我在测试开源工具 Architecture Viewer（Apache-2.0）：AI 改完后对照 git HEAD 检查本轮新增的跨层依赖、删除类型和影响面，带文件路径和依赖链可复核。本地离线，钉 arch-viewer@0.12.2-rc.7。
 
 想问一句：你们现在合入前靠什么确认没跨层？（人工？工具？合入后再说？）
 
@@ -79,7 +79,7 @@ If this resonates, feel free to join the discussion at https://github.com/tomyan
 ```text
 你好 [名字]，看了《[文章名]》，其中 [具体痛点引用：1 句话] 特别有共鸣。
 
-我在测试开源工具 Architecture Viewer：AI 改完后对照 git HEAD 检查本轮新增跨层依赖和影响面，本地离线，钉 arch-viewer@0.12.2-rc.6。
+我在测试开源工具 Architecture Viewer：AI 改完后对照 git HEAD 检查本轮新增跨层依赖和影响面，本地离线，钉 arch-viewer@0.12.2-rc.7。
 
 想问一句：你们现在合入前靠什么确认没跨层？（人工过 diff？dependency-cruiser？合入后再说？）
 
@@ -146,7 +146,7 @@ npx --yes arch-viewer@0.12.2-rc.7 session report /absolute/path/to/repo
 ```text
 Architecture Viewer 两周本地试点说明
 
-· 做什么：在你们一个真实仓库上，用固定版本 0.12.2-rc.6 对照 git HEAD
+· 做什么：在你们一个真实仓库上，用固定版本 0.12.2-rc.7 对照 git HEAD
   检查每轮改动的结构变化（跨层依赖、删除类型、影响面），与现有 review 并行。
 · 成本：本地 CLI 免费；不要求提供私有代码、仓库地址或任何 token；分析全程离线。
 · 你们的投入：首次接入约 30 分钟（可协助）；之后每周约 15 分钟反馈。
