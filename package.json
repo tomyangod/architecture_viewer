@@ -1,5 +1,6 @@
 {
   "name": "arch-viewer",
+  "mcpName": "io.github.tomyangod/architecture-viewer",
   "displayName": "Architecture Viewer",
   "description": "AI 写完代码后，自动看清架构变了什么：会话基线 → 变更图谱 → 影响面分析，IDE 状态栏 / PR 评论 / CLI 三端可用。",
   "version": "0.12.2-rc.6",

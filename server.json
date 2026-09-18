@@ -1,0 +1,43 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "io.github.tomyangod/architecture-viewer",
+  "title": "Architecture Viewer",
+  "description": "After AI edits, see which deps and callers this change touches. Local MCP, no LLM.",
+  "version": "0.12.2-rc.6",
+  "websiteUrl": "https://github.com/tomyangod/architecture_viewer",
+  "repository": {
+    "url": "https://github.com/tomyangod/architecture_viewer",
+    "source": "github",
+    "id": "1369773456"
+  },
+  "packages": [
+    {
+      "registryType": "npm",
+      "registryBaseUrl": "https://registry.npmjs.org",
+      "identifier": "arch-viewer",
+      "version": "0.12.2-rc.6",
+      "runtimeHint": "npx",
+      "transport": {
+        "type": "stdio"
+      },
+      "runtimeArguments": [
+        {
+          "type": "named",
+          "name": "-y",
+          "description": "Auto-install the npm package without prompting"
+        },
+        {
+          "type": "named",
+          "name": "--package",
+          "value": "arch-viewer@0.12.2-rc.6",
+          "description": "Package that contains the arch-viewer-mcp stdio binary"
+        },
+        {
+          "type": "positional",
+          "value": "arch-viewer-mcp",
+          "description": "MCP stdio entry (not the default arch-viewer CLI bin)"
+        }
+      ]
+    }
+  ]
+}
