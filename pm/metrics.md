@@ -98,14 +98,24 @@ npm run wbs -- report --week W06
 | 接入数 | **0** | |
 | 目录侧 | 进行中 | Glama 已上架（质量 B）；awesome #14385 待合；mcp.so 免费 issue 已留评 |
 
-### 固定版本发布记录（2026-09-15 · 下午）
+### 固定版本发布记录（2026-09-18）
 
 - 已发布：`arch-viewer@0.12.2-rc.7` → npm 标签 `next`；`latest` 保持 `0.12.1`。
+- 源提交：`82a8ff0`（稀疏敏感面卡片与肖像 #22、Review Walk 功能 #20、R18 枚举完备性与 R19 异常漂移 #21）。
+- SHA-256：`d87b11cc574fc2f7ddb8bebc6821ff8cd2546ea5b66cf204ddc9b0d98777ff0a`。
+- registry shasum：`a345f2d44b305eb700fc5fc19a32ce8946e85871`。
+- integrity：`sha512-WPgzupPx5X0XS/gNUlocFN+KOc2p1qRcSLb1sh4H4DYDggKQspw1LvWA1BM2+2fjlwgrGzI8OzsWU1KyBCf4PQ==`。
+- registry 全新安装冒烟：`--version` 为 0.12.2-rc.7，发布 tarball 与本地干净打包逐字节一致。
+- 发布前全量单测通过，离线安装包回归通过。
+
+### 固定版本发布记录（2026-09-15 · 下午）
+
+- 已发布：`arch-viewer@0.12.2-rc.6` → 当时 npm 标签 `next`；`latest` 保持 `0.12.1`。`next` 已于 2026-09-18 改指 rc.7。
 - 源提交：`8863ed6`（出图页脚如实化、环路径消歧、explain 结构化证据、snapshot 基线口径明示）。
 - SHA-256：`bb6ed0d26815b3c8b7c53d7fc2b708fff7c63ef44865142488ea46b7603d47b1`。
 - registry shasum：`0138d89dff28cedbbca21a76f4d691b696ecc40f`。
 - integrity：`sha512-AIubHdFrxo3H6EzJDyp14gZUu+Arj95R4Wv0+lpYhzaCxprUkHb6oOLK4m5cq1LDXUe3Pgg6SeOOXxN8CsIV7A==`。
-- registry 全新安装冒烟：`--version` 为 0.12.2-rc.7，发布 tarball 与本地干净打包逐字节一致。
+- registry 全新安装冒烟：`--version` 为 0.12.2-rc.6，发布 tarball 与本地干净打包逐字节一致。
 - 发布前全量单测 1034 通过 / 0 失败 / 1 跳过。
 
 ### 固定版本发布记录（2026-09-15 · 早）
