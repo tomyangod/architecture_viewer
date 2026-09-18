@@ -189,23 +189,29 @@ function generateSessionReportUnsafe(repo, opts = {}) {
 
   const dir = avDir(repo);
   fs.mkdirSync(dir, { recursive: true });
+  const { buildAwareness, markAwarenessSeen, muteAwarenessRule } = require('../lib/awareness');
+  if (opts.muteAwareness) muteAwarenessRule(repo, opts.muteAwareness);
+  const awareness = buildAwareness({ findings, diff, repo, headGraph: current });
   const reportJsonPath = path.join(dir, 'session-report.json');
   fs.writeFileSync(reportJsonPath, JSON.stringify({
     ...buildSessionReportJson({
       diff, findings, riskSummary, impact, analyzerStatus, baseGraph: baseline, headGraph: current,
-      repoName: path.basename(repo), analysisCompleteness: completeness
+      repoName: path.basename(repo), analysisCompleteness: completeness, awareness
     }),
     runtime
   }, null, 2));
   const html = generateReport({
     baseGraph: baseline, headGraph: current, diff, findings, impact, analyzerStatus,
-    repoName: path.basename(repo), sessionStart, analysisCompleteness: completeness
+    repoName: path.basename(repo), sessionStart, analysisCompleteness: completeness, awareness
   });
   const finalized = finalizeSessionHtml({
     repo,
     builtinHtml: html,
     renderer: DEFAULT_SESSION_RENDERER
   });
+  try {
+    markAwarenessSeen(repo, { awareness, headFingerprint: current.fingerprint });
+  } catch { /* best-effort cursor */ }
 
   return {
     mode: 'incremental',
@@ -224,6 +230,13 @@ function generateSessionReportUnsafe(repo, opts = {}) {
     },
     findings: findings.map(formatFinding),
     impact: formatImpact(impact),
+    awareness: {
+      silent: awareness.silent,
+      level: awareness.level,
+      cards: awareness.cards,
+      portrait: awareness.portrait || null,
+      stats: awareness.stats
+    },
     reportPaths: {
       json: reportJsonPath,
       html: finalized.htmlPath,
@@ -262,7 +275,8 @@ function generateSessionReportUnsafe(repo, opts = {}) {
         reportPath: finalized.htmlPath,
         baselineKind: resolved.kind,
         hasUncommitted: resolved.hasUncommitted,
-        analysisCompleteness: completeness
+        analysisCompleteness: completeness,
+        awareness
       });
       return {
         baselineKind: resolved.kind,
@@ -579,7 +593,7 @@ function toolSessionReport(args) {
 
   // Contract/config/binary changes are not all watched. Explicit acceptance
   // always rechecks; autoReport remains useful for lightweight status polling.
-  const report = generateSessionReport(repo);
+  const report = generateSessionReport(repo, { muteAwareness: args.muteAwareness });
   if (!report) return noBaselinePayload();
   if (report.error) return report;
   if (live) live.autoReport = report;
@@ -618,7 +632,7 @@ function toolSessionGuard(args) {
 
   const { state, hadPending } = flushWatcherDebounce(repo);
   const live = state || getWatcherState(repo);
-  const report = generateSessionReport(repo);
+  const report = generateSessionReport(repo, { muteAwareness: args.muteAwareness });
   if (!report) return { ...noBaselinePayload(), ensured };
   if (report.error) return { ...report, ensured };
   if (live) live.autoReport = report;
@@ -1155,7 +1169,8 @@ const TOOLS = [
       properties: {
         repo: { type: 'string', description: '必填。当前工作区根目录的绝对路径。' },
         editDir: { type: 'string', description: '可选。正在改代码的目录；与 repo 冲突时中止。' },
-        confirmRepo: { type: 'string', description: '可选。确认检查 repo（当 cwd 是另一个 Git 根时）。' }
+        confirmRepo: { type: 'string', description: '可选。确认检查 repo（当 cwd 是另一个 Git 根时）。' },
+        muteAwareness: { type: 'string', description: '仅当用户明确说「不用再看这类」时传入规则名（schema-touched / signature-break / layer-skip / new-external-dep / sensitive-sink）。写入感知偏好，不影响门禁退出码。' }
       },
       required: ['repo']
     }
@@ -1196,7 +1211,8 @@ const TOOLS = [
         repo: { type: 'string', description: '必填。当前工作区根目录的绝对路径。' },
         from: { type: 'string', enum: ['session'], description: '可选：从会话报告取数据' },
         editDir: { type: 'string', description: '可选。正在改代码的目录；与 repo 冲突时中止。' },
-        confirmRepo: { type: 'string', description: '可选。确认检查 repo（当 cwd 是另一个 Git 根时）。' }
+        confirmRepo: { type: 'string', description: '可选。确认检查 repo（当 cwd 是另一个 Git 根时）。' },
+        muteAwareness: { type: 'string', description: '仅当用户明确说「不用再看这类」时传入规则名。写入感知偏好，不影响门禁退出码。' }
       },
       required: ['repo']
     }
@@ -1259,7 +1275,7 @@ const TOOLS = [
       type: 'object',
       properties: {
         repo: { type: 'string', description: '必填。当前工作区根目录的绝对路径。' },
-        confirm: { type: 'boolean', description: '必填为 true。表示已人工核对会话报告中的节点/边证据，同意导出讲解图。' },
+        confirm: { type: 'boolean', description: '必填为 true。表示已人工核对会话报告中的感知 cards / 走查 / 节点边证据，同意导出讲解图。无确认不得自动成片。' },
         scope: { type: 'string', enum: ['changed', 'violations', 'layers'], description: '导出范围：changed=变更文件（默认），violations=只看违规边，layers=层摘要图' },
         validate: { type: 'boolean', description: '是否顺带运行 archify validate（需要本机有 archify CLI，默认 false）' }
       },

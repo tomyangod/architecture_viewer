@@ -276,4 +276,26 @@ describe('CLI session report renderer', () => {
       fs.rmSync(dir, { recursive: true, force: true });
     }
   });
+
+  it('session awareness mute/unmute/status 写入 cursor 且不充当门禁', () => {
+    const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'av-cli-aw-'));
+    try {
+      const mute = run(['session', 'awareness', 'mute', 'schema-touched', dir], dir);
+      assert.equal(mute.status, 0, mute.stderr + mute.stdout);
+      assert.match(mute.stdout, /已静音/);
+      assert.match(mute.stdout, /schema-touched/);
+      const status = run(['session', 'awareness', 'status', dir], dir);
+      assert.equal(status.status, 0, status.stderr);
+      assert.match(status.stdout, /schema-touched/);
+      const unmute = run(['session', 'awareness', 'unmute', 'schema-touched', dir], dir);
+      assert.equal(unmute.status, 0, unmute.stderr);
+      assert.match(unmute.stdout, /已恢复/);
+      const after = run(['session', 'awareness', 'status', dir], dir);
+      assert.doesNotMatch(after.stdout, /schema-touched/);
+      const bad = run(['session', 'awareness', 'mute'], dir);
+      assert.equal(bad.status, 2);
+    } finally {
+      fs.rmSync(dir, { recursive: true, force: true });
+    }
+  });
 });

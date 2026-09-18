@@ -60,6 +60,7 @@ archify-main/
 .av/layers.suggested.json
 .av/graph-head.json
 .av/validation-report.json
+.av/awareness-cursor.json
 
 *.vsix
 *.tgz
