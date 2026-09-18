@@ -40,7 +40,7 @@
 - [ ] 非 Git 仓无快照时 report exit 4；仅临时仓可使用 `session start` 建快照。
 - [ ] 无效规则明确返回配置错误，不伪装绿灯。
 - [ ] 新增目录排除时显示分析范围变化，不将排除当成代码修复。
-- [ ] MCP `initialize` 返回包版本，`tools/list` 有 8 个工具（含 `av_guard`、`av_status`），均显式要求 repo。
+- [ ] MCP `initialize` 返回包版本，`tools/list` 有 9 个工具（含 `av_guard`、`av_review_walk`、`av_status`），均显式要求 repo。
 - [ ] 安装包中的 MCP 可对临时仓调用 `av_guard`，结果与 CLI 同源；结束时关闭进程。
 - [ ] setup 只在隔离 HOME/临时项目验证，不修改维护者真实 AI 工具配置。
 

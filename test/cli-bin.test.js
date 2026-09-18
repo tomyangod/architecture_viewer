@@ -23,6 +23,7 @@ describe('CLI bin shim smoke (spawn)', () => {
     assert.equal(r.status, 0, 'stderr: ' + r.stderr);
     assert.match(r.stdout, /Architecture Viewer CLI/);
     assert.match(r.stdout, /arch-viewer (init|generate|check)/);
+    assert.match(r.stdout, /session walk/);
   });
 
   it('--version / -V 打印 package.json 版本', () => {
@@ -171,6 +172,52 @@ describe('CLI session report renderer', () => {
       const r = run(['session', 'report', dir], dir);
       assert.equal(r.status, 0, r.stderr + r.stdout);
       assert.match(r.stdout, /\[builtin\]/);
+    } finally {
+      fs.rmSync(dir, { recursive: true, force: true });
+    }
+  });
+
+  it('session walk 输出 ≤8 行阅读顺序并刷新报告', () => {
+    const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'av-cli-walk-'));
+    try {
+      fs.mkdirSync(path.join(dir, 'controller'), { recursive: true });
+      fs.mkdirSync(path.join(dir, 'service'), { recursive: true });
+      fs.mkdirSync(path.join(dir, '.av'), { recursive: true });
+      fs.writeFileSync(path.join(dir, '.av', 'layers.json'),
+        JSON.stringify({ controller: 'controller', service: 'service' }));
+      fs.writeFileSync(path.join(dir, 'controller', 'c.py'),
+        'from service.s import S\nclass C:\n  def __init__(self, s: S):\n    self.s = s\n  def run(self):\n    return self.s.do()\n');
+      fs.writeFileSync(path.join(dir, 'service', 's.py'),
+        'class S:\n  def do(self):\n    return 1\n');
+      assert.equal(run(['session', 'start', dir], dir).status, 0);
+      fs.writeFileSync(path.join(dir, 'service', 'pay.py'),
+        'class Pay:\n  def charge(self, x):\n    return x\n');
+      fs.writeFileSync(path.join(dir, 'controller', 'c.py'),
+        'from service.s import S\nfrom service.pay import Pay\nclass C:\n  def __init__(self, s: S, p: Pay):\n    self.s = s\n    self.p = p\n  def run(self):\n    return self.p.charge(self.s.do())\n');
+      const r = run(['session', 'walk', dir], dir);
+      assert.equal(r.status, 0, r.stderr + r.stdout);
+      assert.match(r.stdout, /审查走查/);
+      const body = r.stdout.split('\n').filter((l) => l.trim());
+      // walk body + next-step line; keep under a small budget
+      assert.ok(body.length <= 10, `too many lines:\n${r.stdout}`);
+      assert.ok(fs.existsSync(path.join(dir, '.av', 'session-report.html')));
+      const j = run(['session', 'walk', dir, '--json'], dir);
+      assert.equal(j.status, 0, j.stderr + j.stdout);
+      const payload = JSON.parse(j.stdout);
+      assert.ok(payload.walk);
+      assert.ok(Array.isArray(payload.walk.steps));
+    } finally {
+      fs.rmSync(dir, { recursive: true, force: true });
+    }
+  });
+
+  it('session walk 无基线时退出 4', () => {
+    const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'av-cli-walk-nb-'));
+    try {
+      fs.writeFileSync(path.join(dir, 'a.js'), 'module.exports = 1;\n');
+      const r = run(['session', 'walk', dir], dir);
+      assert.equal(r.status, 4);
+      assert.match(r.stderr, /baseline|基线|No baseline/i);
     } finally {
       fs.rmSync(dir, { recursive: true, force: true });
     }

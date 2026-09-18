@@ -308,5 +308,90 @@
   "implementation": {
     "count": 0,
     "changes": []
-  }
+  },
+  "reviewWalk": {
+    "entry": {
+      "id": "cls:Gone",
+      "name": "Gone",
+      "layer": "service",
+      "path": "gone.js",
+      "reason": "变更闭包中无入边的节点"
+    },
+    "steps": [
+      {
+        "order": 1,
+        "id": "cls:Gone",
+        "name": "Gone",
+        "method": null,
+        "kind": "class",
+        "layer": "service",
+        "path": "gone.js",
+        "line": null,
+        "status": "removed",
+        "changeSummary": "本轮删除",
+        "sinks": [],
+        "layerSkip": false,
+        "violationDetail": null,
+        "why": "变更闭包中无入边的节点"
+      },
+      {
+        "order": 2,
+        "id": "cls:Keep",
+        "name": "Keep",
+        "method": null,
+        "kind": "class",
+        "layer": "util",
+        "path": "keep.js",
+        "line": null,
+        "status": "modified",
+        "changeSummary": "本轮修改",
+        "sinks": [],
+        "layerSkip": false,
+        "violationDetail": null,
+        "why": "调用链下一跳"
+      },
+      {
+        "order": 3,
+        "id": "cls:MoveMe",
+        "name": "MoveMe",
+        "method": null,
+        "kind": "class",
+        "layer": "service",
+        "path": "new.js",
+        "line": null,
+        "status": "moved",
+        "changeSummary": "本轮移动",
+        "sinks": [],
+        "layerSkip": false,
+        "violationDetail": null,
+        "why": "调用链下一跳"
+      },
+      {
+        "order": 4,
+        "id": "cls:New",
+        "name": "New",
+        "method": null,
+        "kind": "class",
+        "layer": "service",
+        "path": "new.js",
+        "line": null,
+        "status": "added",
+        "changeSummary": "本轮新增",
+        "sinks": [],
+        "layerSkip": false,
+        "violationDetail": null,
+        "why": "调用链下一跳"
+      }
+    ],
+    "skips": [],
+    "stats": {
+      "stepCount": 4,
+      "sinkCount": 0,
+      "skipCount": 0,
+      "entryFound": true,
+      "usedCallEdges": false,
+      "reason": null
+    }
+  },
+  "callEdges": []
 }

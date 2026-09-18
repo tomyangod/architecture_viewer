@@ -178,12 +178,13 @@ arch-viewer uninstall . --purge    # 再删 .av 会话报告与快照（**仍保
 
 > 列出你可用的 MCP 工具，有没有 `av_guard`？
 
-应看到 **8 个工具**：
+应看到 **9 个工具**：
 
 | 工具名 | 干什么 | 日常频率 |
 |--------|--------|----------|
 | `av_guard` | **优先**：ensure 基线 + 本轮 verdict | 宣称完成前 |
 | `av_session_report` | 完整报告 + 同级 verdict；HTML 可选 | 要深挖时 |
+| `av_review_walk` | 本轮变更阅读顺序（≤8 行） | 人审 AI 改动时 |
 | `av_session_start` | 无 git 快照 / 高级刷新 | 少用 |
 | `av_session_changes` | 轻量：有没有架构变更（秒回） | 可选 |
 | `av_status` | 基线 / 监听仓 / 缓存 / 是否过期 | 状态不清楚时 |
@@ -656,6 +657,7 @@ cd "$LAB/showcase-shop/architecture_viewer" && python3 -m http.server 8081
 | **日常结构门** | `av_guard` | `arch-viewer session report` / `session guard` |
 | 轻量有无变更 | `av_session_changes` | （看报告 / diff） |
 | 完整报告 / HTML | `av_session_report` | `arch-viewer session report --open`（可选） |
+| 人审阅读顺序 | `av_review_walk` | `arch-viewer session walk` |
 | 会话状态 | `av_status` | （看 `.av/` 与命令回显） |
 | 强制三栏高亮 | — | `session report --renderer builtin --open` |
 | 解释红灯 | `av_explain_finding` | 看 HTML findings |

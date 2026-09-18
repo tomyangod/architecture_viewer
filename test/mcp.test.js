@@ -7,7 +7,7 @@ const os = require('os');
 const path = require('path');
 const { spawn } = require('child_process');
 
-const { TOOLS, handleToolCall, toolSessionStart, toolSessionReport, toolSessionChanges, toolSessionStatus, toolCheckLayering, toolExplainFinding, toolArchifyExport, stopWatcher, resolveRepo, PKG_VERSION } = require('../mcp/server');
+const { TOOLS, handleToolCall, toolSessionStart, toolSessionReport, toolSessionChanges, toolSessionStatus, toolCheckLayering, toolExplainFinding, toolArchifyExport, toolReviewWalk, stopWatcher, resolveRepo, PKG_VERSION } = require('../mcp/server');
 const { execFileSync } = require('child_process');
 const { clearStaleSessionReports } = require('../lib/session-report');
 
@@ -62,13 +62,14 @@ def get_async_engine():
 };
 
 describe('MCP Server: tools/list', () => {
-  it('暴露且仅暴露 8 个工具', () => {
+  it('暴露且仅暴露 9 个工具', () => {
     const names = TOOLS.map(t => t.name);
-    assert.equal(names.length, 8);
+    assert.equal(names.length, 9);
     assert.ok(names.includes('av_guard'));
     assert.ok(names.includes('av_session_start'));
     assert.ok(names.includes('av_session_changes'));
     assert.ok(names.includes('av_session_report'));
+    assert.ok(names.includes('av_review_walk'));
     assert.ok(names.includes('av_status'));
     assert.ok(names.includes('av_check_layering'));
     assert.ok(names.includes('av_explain_finding'));
@@ -431,7 +432,7 @@ describe('MCP Server: stdio JSON-RPC 协议', () => {
   it('initialize + tools/list + tools/call 全链路', async () => {
     const serverPath = path.join(__dirname, '..', 'mcp', 'server.js');
     const child = spawn('node', [serverPath], { stdio: ['pipe', 'pipe', 'pipe'] });
-
+    try {
     const lines = [];
     child.stdout.setEncoding('utf8');
     child.stdout.on('data', (d) => lines.push(...d.split('\n').filter(Boolean)));
@@ -469,13 +470,14 @@ describe('MCP Server: stdio JSON-RPC 协议', () => {
 
     send({ jsonrpc: '2.0', id: 2, method: 'tools/list', params: {} });
     const listResp = await waitForResponse(2);
-    assert.equal(listResp.result.tools.length, 8);
+    assert.equal(listResp.result.tools.length, 9);
 
     send({ jsonrpc: '2.0', id: 3, method: 'tools/call', params: { name: 'av_check_layering', arguments: { repo: makeRepo(FIXTURE) } } });
     const callResp = await waitForResponse(3);
     assert.ok(callResp.result.content[0].text.includes('layerCoverage'));
-
+  } finally {
     child.kill();
+  }
   });
 });
 
@@ -534,6 +536,34 @@ describe('MCP Server: av_archify_export', () => {
       const r = handleToolCall({ name: 'av_archify_export', arguments: { repo, scope: 'changed', confirm: true } });
       assert.ok(!r.error);
       assert.ok(r.files.head);
+    } finally {
+      stopWatcher(repo);
+    }
+  });
+});
+
+describe('MCP Server: av_review_walk', () => {
+  it('无基线时返回 NO_BASELINE', () => {
+    const repo = makeRepo(FIXTURE);
+    const r = toolReviewWalk({ repo });
+    assert.equal(r.error, 'NO_BASELINE');
+  });
+
+  it('对话走查 ≤8 行，含入口与可选 HTML 链接', () => {
+    const repo = makeRepo(FIXTURE);
+    try {
+      toolSessionStart({ repo });
+      fs.writeFileSync(
+        path.join(repo, 'backend/routes/orders.py'),
+        fs.readFileSync(path.join(repo, 'backend/routes/orders.py'), 'utf8') +
+          '\nfrom database.db_session import save\n'
+      );
+      const r = toolReviewWalk({ repo });
+      assert.ok(!r.error, r.message || JSON.stringify(r));
+      assert.equal(r.tool, 'av_review_walk');
+      assert.ok(r.lines.length <= 8, r.lines.join('\n'));
+      assert.match(r.message, /审查走查/);
+      assert.ok(r.walk);
     } finally {
       stopWatcher(repo);
     }
