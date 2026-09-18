@@ -4,6 +4,19 @@
 
 ## \[Unreleased\]
 
+## \[0.12.2-rc.7\] — 2026-09-18
+
+试点候选包，已发布到 npm 标签 `next`（不改 `latest`）。包含 #21/#20/#22/#23 的修复，在 rc.6 基础上改进 awareness 机制、敏感面卡片与事实核查审计更正。
+
+### Fixed
+
+- **awareness seen-cursor + path match + mute allowlist**：修复游标跟踪与路径匹配逻辑，增加静音白名单支持。
+- **awareness sparse sensitive-surface cards and portrait**：优化敏感面卡片展示，支持稀疏卡片布局与 portrait 模式。
+
+### Documentation
+
+- **2026-09-16 fact-check audit corrections and positioning tightening**：事实核查审计更正与定位收紧，提高文档准确性。
+
 ## \[0.12.2-rc.6\] — 2026-09-15
 
 试点候选包，已发布到 npm 标签 `next`（不改 `latest`）。在 rc.5 解释闭环与分层门禁解耦之上，修正出图页脚夸大校验范围、环路径消歧与 explain 结构化证据。

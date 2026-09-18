@@ -13,7 +13,7 @@
 
 | 项 | 准确说法 | 不能说 |
 |---|---|---|
-| 版本 | 试点钉 `arch-viewer@0.12.2-rc.6`（npm `next`） | "装 latest 就行"（latest 是 0.12.1，缺本轮修复） |
+| 版本 | 试点钉 `arch-viewer@0.12.2-rc.7`（npm `next`） | "装 latest 就行"（latest 是 0.12.1，缺本轮修复） |
 | 价格 | Pro ¥29/月（验证期定价）；Team ¥99/人/月且仅人工申请 | 承诺折扣、半年赠送换"付费意向"、旧 ¥999/年/仓库 |
 | 付款 | 爱发电可付（页面已在线）；微信/对公转账后人工开通；卡支付待配置 | "支持信用卡自助开通" |
 | 许可 | Community 本地能力 Apache-2.0 | "整仓随便再分发"（托管/账号为商业许可路线） |
@@ -37,7 +37,7 @@
 ```text
 Hi [Name], I saw your point about [specific pain: e.g. "AI changes broke layering and no one noticed until production"]. 
 
-I'm testing Architecture Viewer (open source, Apache-2.0): after AI edits, it diffs the dependency graph vs git HEAD and reports only this-round structural changes (new cross-layer edges, deleted types, blast radius) with file-path evidence. Fully local/offline, pinned to arch-viewer@0.12.2-rc.6.
+I'm testing Architecture Viewer (open source, Apache-2.0): after AI edits, it diffs the dependency graph vs git HEAD and reports only this-round structural changes (new cross-layer edges, deleted types, blast radius) with file-path evidence. Fully local/offline, pinned to arch-viewer@0.12.2-rc.7.
 
 Quick question: how do you currently catch cross-layer violations before merging? (Manual review? Static tool? Post-merge?)
 
@@ -99,7 +99,7 @@ Architecture Viewer（Apache-2.0）：对照 git HEAD 检查本轮新增跨层�
 
 **试一下（无需安装）：**
 ```bash
-npx --yes arch-viewer@0.12.2-rc.6 session report /absolute/path/to/repo
+npx --yes arch-viewer@0.12.2-rc.7 session report /absolute/path/to/repo
 ```
 
 脱敏样例见 [链接] 或贴图。
@@ -133,7 +133,7 @@ npx --yes arch-viewer@0.12.2-rc.6 session report /absolute/path/to/repo
 谢谢今天的交流。按你说的情况，建议这样开始：
 
 1. 本周内选一个正在开发的仓库和一个真实 PR，我陪你跑第一次（约 30 分钟）。
-2. 版本统一用 0.12.2-rc.6：npx --yes --package arch-viewer@0.12.2-rc.6 arch-viewer session report /absolute/path/to/repo
+2. 版本统一用 0.12.2-rc.7：npx --yes --package arch-viewer@0.12.2-rc.7 arch-viewer session report /absolute/path/to/repo
 3. 第一周只作旁路参考，不设阻断；你们判断哪些发现有价值。
 4. 每周用我发的表格反馈一次，约 15 分钟。
 5. 本地分析永久免费；托管 PR 评论的公网自动投递还没上线，需要的话先记下来，上线后单独验证。
@@ -166,7 +166,7 @@ Architecture Viewer 两周本地试点说明
 ```text
 [名字] 你好，理解可能在忙优先级更高的事。
 
-如果你们最近合入过 AI 大改的 PR（或正在 review 的），我可以提供一行 npx 命令让你在本地跑一次 Architecture Viewer（npx --yes --package arch-viewer@0.12.2-rc.6 arch-viewer session report /absolute/path/to/repo），看红绿灯和跨层依赖报告准不准。公开仓库我也可以直接跑演示。
+如果你们最近合入过 AI 大改的 PR（或正在 review 的），我可以提供一行 npx 命令让你在本地跑一次 Architecture Viewer（npx --yes --package arch-viewer@0.12.2-rc.7 arch-viewer session report /absolute/path/to/repo），看红绿灯和跨层依赖报告准不准。公开仓库我也可以直接跑演示。
 
 或者我发一行 npx 命令 + 脱敏样例图，回头有空可以自己试。
 
@@ -178,7 +178,7 @@ Architecture Viewer 两周本地试点说明
 ```text
 Hi [Name], totally understand if this isn't a current priority.
 
-If you have a recent AI-heavy PR (merged or under review), I can share the npx one-liner for you to run locally (npx --yes --package arch-viewer@0.12.2-rc.6 arch-viewer session report /absolute/path/to/repo) — shows cross-layer findings. For public repos I can also run a demo directly.
+If you have a recent AI-heavy PR (merged or under review), I can share the npx one-liner for you to run locally (npx --yes --package arch-viewer@0.12.2-rc.7 arch-viewer session report /absolute/path/to/repo) — shows cross-layer findings. For public repos I can also run a demo directly.
 
 Or I can share the npx one-liner + sample screenshots for later.
 

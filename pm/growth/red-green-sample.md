@@ -2,7 +2,7 @@
 
 > 性质声明：**这是人为构造的功能演示，不是客户发现。** 仓库名、类名、业务均为虚构通用示例（sample-shop 订单服务）。
 > 用途：访谈/首次接入时 2 分钟复现"AI 改码引入跨层依赖 → 红灯 → 修复 → 绿灯"。
-> 版本：接入命令钉 `arch-viewer@0.12.2-rc.6`（npm `next`）；下面「实测输出」仍是 2026-09-12 在 rc.2 上录的，演示形态未改。不要用 `@latest`（0.12.1 不含本轮修复）。
+> 版本：接入命令钉 `arch-viewer@0.12.2-rc.7`（npm `next`）；下面「实测输出」仍是 2026-09-12 在 rc.2 上录的，演示形态未改。不要用 `@latest`（0.12.1 不含本轮修复）。
 > 关联：[触达模板](outreach-kit.md) · [招募与接入流程](seed-users.md) · [验证计划](../plans/pilot-validation-6w.md)
 
 ## 一句话说明（演示时口述）
@@ -76,7 +76,7 @@ cd sample-shop
 git init && git add -A && git commit -m "baseline"
 
 # 3. 基线报告：绿灯（对照 git HEAD，无需 session start）
-npx --yes arch-viewer@0.12.2-rc.6 session report . --renderer builtin
+npx --yes arch-viewer@0.12.2-rc.7 session report . --renderer builtin
 # 退出码 0 — 基线合规，controller → service → storage 符合层级约束
 
 # 4. 模拟 AI 的"快捷"改动：控制器直接 import 存储层
@@ -85,12 +85,12 @@ npx --yes arch-viewer@0.12.2-rc.6 session report . --renderer builtin
 #    并在 create() 里调用 OrdersRepository().save(order)
 
 # 5. 再次报告：红灯，退出码 1
-npx --yes arch-viewer@0.12.2-rc.6 session report . --renderer builtin
+npx --yes arch-viewer@0.12.2-rc.7 session report . --renderer builtin
 # 退出码 1 — 检测到 HIGH 级层级穿透，阻断流水线
 
 # 6. 撤销违规改动（走服务层），恢复绿灯
 git checkout app/controllers/order_controller.py
-npx --yes arch-viewer@0.12.2-rc.6 session report . --renderer builtin
+npx --yes arch-viewer@0.12.2-rc.7 session report . --renderer builtin
 # 退出码 0 — 架构验收门通过
 ```
 

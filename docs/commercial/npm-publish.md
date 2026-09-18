@@ -9,7 +9,7 @@
 
 | 项 | 值 |
 |---|---|
-| 版本 | `0.12.2-rc.6` |
+| 版本 | `0.12.2-rc.7` |
 | 标签 | `next`（未改 `latest=0.12.1`） |
 | 源提交 | `8863ed6` |
 | 干净树 tarball SHA-256 | `bb6ed0d26815b3c8b7c53d7fc2b708fff7c63ef44865142488ea46b7603d47b1` |
@@ -30,8 +30,8 @@ arch-viewer --version   # 0.12.2-rc.6
 一次性：
 
 ```bash
-npx --yes --package arch-viewer@0.12.2-rc.6 arch-viewer --version
-npx --yes --package arch-viewer@0.12.2-rc.6 arch-viewer session report /绝对路径/到仓库 --renderer builtin
+npx --yes --package arch-viewer@0.12.2-rc.7 arch-viewer --version
+npx --yes --package arch-viewer@0.12.2-rc.7 arch-viewer session report /绝对路径/到仓库 --renderer builtin
 ```
 
 详见 [quickstart](../guides/quickstart.md)。
